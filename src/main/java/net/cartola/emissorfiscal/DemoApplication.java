@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal;
+package net.cartola.emissorfiscal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
