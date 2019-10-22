@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.tributacaofederal;
+package net.cartola.emissorfiscal.tributacao.federal;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
