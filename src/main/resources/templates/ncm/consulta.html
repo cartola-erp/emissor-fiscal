@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Consulta de NCM </title>
+	</head>
+
+	<body>
+		<section id="ncm-container container">
+
+			<!-- BREADCRUMB -->
+			<div class="container">
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
+								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Home</a></li>
+								<li class="breadcrumb-item"><a href="/ncm/consulta" style="color: #1b8140; font-weight: 500">Consultar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">NCM</li>
+							</ol>
+						</nav>
+					<div>
+				<div>
+			<div>
+
+			<div class="container">
+
+				<!-- FORMULÁRIO para CONSULTAR OS NCMS -->
+				<form action="/ncm/consulta/numero " method="POST" >
+					<div class="input-group col-sm-auto col-md-auto col-lg-auto">
+					
+						<div class="input-group-prepend">
+							<label><b>Pesquisar NCM pelo Número: </b></label>
+						</div>
+						
+						<div class="form-group col-md-8">
+							<input type="text" class="form-control" id="txtNumero" name="numero" placeholder="Informe o número do NCM...">
+						</div>
+							
+						<div class="input-group-btn" id="divBtnPesquisar">
+
+							<button class="btn btn-outline-primary" type="submit" id="btnPesquisar"> 
+								<!-- <img th:src="@{/img/lupa-buscar-72px.png" width="23px" height="23px"> -->
+							</button>	
+						</div>					
+					</div>
+				</form>
+
+
+				<!-- TABELA COM OS NCMS CONSULTADOS-->
+				<table class="table  table-hover table-responsive container ">
+					<thead>
+						<tr>
+							<!-- <th scope="col"> <b> ID </b> </th> -->	
+							<th scope="col"> <b> Número</b> </th>
+							<th scope="col"> <b> Exceção </b> </th>	
+												
+							<th scope="col"> <b> Editar </b> </th>	
+						</tr>
+					</thead>
+									
+					<tbody>
+						<tr th:each="ncm : ${listNcm}">
+							<!-- <th scope="row" th:text="${consultorio.id}"> 2</th> -->
+							<td scope="row" th:text="${ncm.numero}"> 12.000.021-90 </td>	
+							<td scope="row" th:text="${ncm.excecao}"> 123.321.901-99 </td>	
+					
+											
+											
+						<!-- 			EDITAR -->
+							<td scope="row">
+								<!-- <a th:href="${(#mvc.url('CC#edit').arg(0, consultorio.id)).build()}"> -->
+									<button type="submit" class="btn btn-outline-light">
+										<img th:src="@{/img/editar.svg}" src="./img/editar.svg" width="15px" height="15px"> 
+									</button>
+								</a>
+							</td>
+											<!-- DELETAR/INATIVAR -->
+							<!-- <td	scope="row">		
+								<form th:method="DELETE" th:action="${(#mvc.url('CC#delete').arg(0, consultorio.id)).build()}">
+									<button type="submit" class="btn btn-secondary" >
+										<img th:src="@{/img/cancelar-2.svg}" src="./img/cancelar-2.svg" width="25px" height="25px"> 
+									</button>
+								</form>
+							</td>
+							-->
+
+						 </tr>
+					</tbody>
+							
+						<!-- PAGINAÇÃO ? -->
+						<!-- <ul class="nav nav-pills ">
+							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listConsultorios.totalPages)}">
+								 <a th:href="@{/consultorio/consultar/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
+								 </a>
+							</li>	
+						</ul>
+						-->
+				</table>
+						
+						<!-- 
+						<ul class="nav nav-pills ">
+							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listConsultorios.totalPages)}">
+								 <a th:href="@{/consultorio/consultar/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
+								 </a>
+							</li>	
+						</ul>
+						-->
+			</div>
+   		<section>
+
+	</body>
+
+</html>

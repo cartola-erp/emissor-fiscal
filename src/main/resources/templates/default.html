@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html th:fragment="layout (title, content)" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title th:replace="${title}">Emissor Fiscal</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <!-- MDBootstrap -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+    <!-- Google font -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.5/css/mdb.min.css" rel="stylesheet">
+    <!-- / MDBootstrap -->
+
+    <!-- Fonts Google -->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,900|Open+Sans|Roboto" rel="stylesheet">
+
+    <!-- IMPORTAS CSS aqui-->
+    <!-- Default -->
+    <link rel="stylesheet" href="../css/default.css">
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar  navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand mr-5" th:href="@{/}" style="color: azure; font-weight: bold">Emissor Fiscal</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado"
+            aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+            <div class="nav-item dropdown ml-5">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Cadastrar
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <!-- TODO: templates -->
+                    <a class="dropdown-item" th:href="@{/ncm/cadastro}">NCM</a>
+                    <a class="dropdown-item" th:href="@{/estado/cadastro}">Estado</a>
+                   <!--  <a class="dropdown-item" th:href="@{/equipe}">Equipe</a> -->
+                </div>
+            </div>
+
+            <div class="nav-item dropdown ml-5">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Consultar
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <!-- TODO: templates -->
+                    <a class="dropdown-item" th:href="@{/ncm/consulta}">NCM</a>
+                    <a class="dropdown-item" th:href="@{/estado/cadastro}">Estado</a>
+                    <!--  <a class="dropdown-item" th:href="@{/equipe}">Equipe</a> -->
+            
+               </div>
+            </div>
+           <!--  <a class="ml-5" th:href="@{/assistencia}" id="navbar-a">Assistências</a> -->     
+        </div>
+    </nav>
+
+    
+    <main role="main">
+        <div th:replace="${content}">
+            <p>Layout content</p>
+        </div>
+    </main>
+    
+
+    <!-- MDBootstrap Scripts (IMPORTAR JS/ JQUERY AQUI) -->
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</body>
+
+</html>
