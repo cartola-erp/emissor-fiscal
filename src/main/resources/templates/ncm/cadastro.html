@@ -42,10 +42,21 @@
 						</div>
 					</div>	
 					
+					<div class="form-row md-form " >
+						<!--Textarea with icon prefix-->
+						<!-- <div class="md-form"> -->
+							<i class="fas fa-pencil-alt prefix"></i>
+							<textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea>
+							<label for="txtDescricao">Informe uma descrição</label>
+						<!-- </div> -->
+
+					</div>	
+
+
 					<div class="form-row">
 						<input type="text" class="form-control" id="txt" th:field="*{id}" name="id" hidden="true" >
 						<div class = "form-group col-md-12">
-							<button type="submit" class="btn btn-dark col-md-12"><strong>Alterar/Cadastrar</strong></button>
+							<button type="submit" class="btn btn-outline-primary col-md-12"><strong>Alterar/Cadastrar</strong></button>
 						</div>
 					</div>
 				</form>

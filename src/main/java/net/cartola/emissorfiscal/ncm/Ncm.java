@@ -28,6 +28,7 @@ public class Ncm implements Serializable {
 	private Long id;
 	private int numero;
 	private int excecao;
+	private String descricao;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,6 +57,15 @@ public class Ncm implements Serializable {
 
 	public void setExcecao(int excecao) {
 		this.excecao = excecao;
+	}
+
+	
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 	@Override

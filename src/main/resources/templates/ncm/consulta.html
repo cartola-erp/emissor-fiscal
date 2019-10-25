@@ -8,7 +8,7 @@
 	</head>
 
 	<body>
-		<section id="ncm-container container">
+		<section id="consulta-ncm-container">
 
 			<!-- BREADCRUMB -->
 			<div class="container">
@@ -28,11 +28,11 @@
 			<div class="container">
 
 				<!-- FORMULÁRIO para CONSULTAR OS NCMS -->
-				<form action="/ncm/consulta/numero " method="POST" >
+				<form action="/ncm/consulta" method="POST" >
                     <div class="form-group form-row col-md-12">
                         <div class="form-group col-md-8">
                             <label><b>Pesquisar NCM pelo Número: </b></label>
-                            <input type="text" class="form-control" id="txtNumero" name="numero" placeholder="Informe o número do NCM...">
+                            <input type="text" class="form-control" id="txtNumero" name="numeroNcm" placeholder="Informe o número do NCM...">
                         </div>
 
                         <div class="form-group col-md-4" style="padding-top: 25px;">
@@ -51,7 +51,8 @@
 							<!-- <th scope="col"> <b> ID </b> </th> -->	
 							<th scope="col"> <b> Número</b> </th>
 							<th scope="col"> <b> Exceção </b> </th>	
-												
+                            <th scope="col"> <b> Descrição </b> </th>	
+					
                             <th scope="col"> <b> Editar </b> </th>	
                             <th scope="col"> <b> Deletar </b> </th>
 						</tr>
@@ -62,25 +63,25 @@
 							<!-- <th scope="row" th:text="${consultorio.id}"> 2</th> -->
 							<td scope="row" th:text="${ncm.numero}"> 12.000.021-90 </td>	
 							<td scope="row" th:text="${ncm.excecao}"> 123.321.901-99 </td>	
-											
+                            <td scope="row" th:text="${ncm.descricao}"> Essa é uma descrição qualquer do NCM </td>	
 											
 					      <!-- 			EDITAR -->
                             <td scope="row">
-                                <!-- <a th:href="${(#mvc.url('CC#edit').arg(0, consultorio.id)).build()}"> -->
-                                <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl">
-                                    <span data-feather="edit-3">Editar</span>
-                                </button>
-                                <!-- </a> -->
+                                <a th:href="@{'/ncm/editar/' + ${ncm.id}}">
+                                    <button type="button" class="btn btn-outline-primary ajusta-botao-tbl">
+                                        <span data-feather="edit-3">Editar</span>
+                                    </button>
+                                </a>
                             </td>
 
-                            <!-- DELETAR/INATIVAR -->
+                            <!-- DELETAR -->
                             <td scope="row">
-                                <!-- <form th:method="DELETE" th:action="${(#mvc.url('CC#delete').arg(0, consultorio.id)).build()}"> -->
-                                <button type="submit" class="btn btn-outline-primary">
-                                    <span data-feather="trash-2">Deletar</span>
-                                    <!-- <img th:src="@{/img/cancelar-2.svg}" src="./img/cancelar-2.svg" width="25px" height="25px">  -->
-                                </button>
-                                <!-- </form> -->
+                                <!-- <form th:method="DELETE" th:action="${(#mvc.url('NC#delete').arg(0, ncm.id)).build()}"> -->
+                                <form th:method="POST" method="DELETE" th:action="@{'/ncm/deletar/' + ${ncm.id}}">
+                                    <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl">
+                                        <span data-feather="trash-2">Deletar</span>
+                                    </button>
+                                </form>
                             </td>
 
 						 </tr>
