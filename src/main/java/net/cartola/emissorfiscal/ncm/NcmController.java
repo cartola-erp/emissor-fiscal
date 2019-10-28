@@ -40,11 +40,8 @@ public class NcmController {
 		if (result.hasErrors() || existeNumeroEExecao ){
 			ModelAndView mv = new ModelAndView("ncm/cadastro");
 			mv.addObject("ncm", ncm);
-			if (existeNumeroEExecao) {
-				mv.addObject("mensagemErro", "Já existe essa combinação de NÚMERO e EXCEÇÃO");
-			} else {
-				mv.addObject("mensagemErro", "Por favor, preencha corretamente todos os dados");
-			}
+			mv.addObject("mensagemErro", ncmService.getMensagensErros(result, existeNumeroEExecao));
+				
 			return mv;
 		}
 		ModelAndView mv = new ModelAndView("redirect:/ncm/cadastro");

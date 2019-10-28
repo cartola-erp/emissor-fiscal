@@ -1,10 +1,13 @@
 package net.cartola.emissorfiscal.ncm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 
 @Service
 public class NcmService {
@@ -37,4 +40,15 @@ public class NcmService {
 		return repository.findNumeroAndExcecao(ncm.getNumero(), ncm.getExcecao()).isPresent();
 	}
 
+
+	public List<String> getMensagensErros(BindingResult bindResult, boolean existeNumeroEExecao) {
+		List<String> msg = new ArrayList<>();
+		for(ObjectError objError : bindResult.getAllErrors()) {
+			msg.add(objError.getDefaultMessage());
+		}
+		if (existeNumeroEExecao) {
+			msg.add("Já existe essa combinação de NÚMERO e EXCEÇÃO");
+		}
+		return msg;
+	}
 }

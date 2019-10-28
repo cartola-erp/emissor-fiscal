@@ -59,7 +59,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <!-- TODO: templates -->
                     <a class="dropdown-item" th:href="@{/ncm/consulta}">NCM</a>
-                    <a class="dropdown-item" th:href="@{/estado/cadastro}">Estado</a>
+                    <a class="dropdown-item" th:href="@{/estado/consulta}">Estado</a>
                     <!--  <a class="dropdown-item" th:href="@{/equipe}">Equipe</a> -->
             
                </div>
@@ -73,9 +73,9 @@
         <div class="container">
 
             <div class="alert alert-danger alert-dismissible" role="alert" th:if="${not #strings.isEmpty(mensagemErro)}">
-                <!-- <div  th:each= "msg : ${mensagemErro}" > -->
-                    <span th:text="${mensagemErro}"></span>
-                <!-- </div> -->
+                <div  th:each= "msg : ${mensagemErro}" >
+                    <span th:text="${msg}"></span>
+                </div>
             </div>
                     
             <div class="alert alert-success alert-dismissible" role="alert"  th:if="${not #strings.isEmpty(mensagemSucesso)}">

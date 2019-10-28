@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 /**
  * Ncm
@@ -42,6 +45,7 @@ public class Ncm implements Serializable {
 	}
 
 	@Column(name = "nume", nullable = false)
+	@Positive(message="O NÚMERO tem que ser positivo e maior que ZERO")
 	public int getNumero() {
 		return numero;
 	}
@@ -51,6 +55,7 @@ public class Ncm implements Serializable {
 	}
 
 	@Column(name = "exce", nullable = false)
+	@Positive(message="A EXCEÇÃO tem que ser positiva e maior que ZERO")
 	public int getExcecao() {
 		return excecao;
 	}
@@ -59,7 +64,8 @@ public class Ncm implements Serializable {
 		this.excecao = excecao;
 	}
 
-	
+	@NotNull(message = "A DESCRIÇÃO, não pode ser NULA")
+	@NotBlank(message = "É obrigatória uma DESCRIÇÃO")
 	public String getDescricao() {
 		return descricao;
 	}
