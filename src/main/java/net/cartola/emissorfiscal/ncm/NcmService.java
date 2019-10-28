@@ -1,6 +1,5 @@
 package net.cartola.emissorfiscal.ncm;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,5 +32,9 @@ public class NcmService {
 		repository.deleteById(id);
 	}
 	
+	
+	public boolean existeNumeroEExcecao(Ncm ncm) {
+		return repository.findNumeroAndExcecao(ncm.getNumero(), ncm.getExcecao()).isPresent();
+	}
 
 }

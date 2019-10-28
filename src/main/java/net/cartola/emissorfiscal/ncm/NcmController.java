@@ -1,5 +1,8 @@
 package net.cartola.emissorfiscal.ncm;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,23 +29,28 @@ public class NcmController {
 	public ModelAndView loadNcm() {
 		ModelAndView mv = new ModelAndView("ncm/cadastro");
 		Ncm ncm = new Ncm();
-		
 		mv.addObject("ncm", ncm);
-		
+		// mv.addObject("textBtnCadastrarEditar", "Cadastrar");
 		return mv;
 	}
 	
 	@PostMapping("/cadastro")
 	public ModelAndView save(@Valid Ncm ncm, BindingResult result, RedirectAttributes attributes) {
-		if (result.hasErrors()) {
-			// Terminar de implementar a validação
+		boolean existeNumeroEExecao = ncmService.existeNumeroEExcecao(ncm);
+		if (result.hasErrors() || existeNumeroEExecao ){
 			ModelAndView mv = new ModelAndView("ncm/cadastro");
-						
+			mv.addObject("ncm", ncm);
+			if (existeNumeroEExecao) {
+				mv.addObject("mensagemErro", "Já existe essa combinação de NÚMERO e EXCEÇÃO");
+			} else {
+				mv.addObject("mensagemErro", "Por favor, preencha corretamente todos os dados");
+			}
 			return mv;
 		}
-		ModelAndView mv = new ModelAndView("ncm/cadastro");
+		ModelAndView mv = new ModelAndView("redirect:/ncm/cadastro");
 	
 		ncmService.save(ncm);
+		attributes.addFlashAttribute("mensagemSucesso", "NCM alterado/cadastrado com sucesso!");
 		return mv;
 	}
 		
@@ -50,7 +58,6 @@ public class NcmController {
 	public ModelAndView findAll() {
 		ModelAndView mv = new ModelAndView("ncm/consulta");
 		mv.addObject("listNcm", ncmService.findAll());
-		
 		
 		return mv;
 	}
@@ -69,15 +76,15 @@ public class NcmController {
 		ModelAndView mv = new ModelAndView("ncm/cadastro");
 		Ncm ncm = ncmService.findOne(id).get();
 		mv.addObject("ncm", ncm);
-		
-		// mv.addObject("estados", Arrays.asList(Estado.values()));
+		// mv.addObject("textBtnCadastrarEditar", "Editar");
+
 		return mv;
 	}
 
 	@PostMapping("/deletar/{id}")
 	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes) {
 		ncmService.deleteById(id);
-		// attributes.addFlashAttribute("mensagemSucesso", "Ncm deletado com sucesso!");
+		attributes.addFlashAttribute("mensagemSucesso", "Ncm deletado com sucesso!");
 		return new ModelAndView("redirect:/ncm/consulta");
 	}
 }
