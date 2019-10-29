@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Consulta de Estado </title>
+	</head>
+
+	<body>
+		<section id="consulta-estado-container">
+
+			<!-- BREADCRUMB -->
+			<div class="container">
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
+								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Home</a></li>
+								<li class="breadcrumb-item"><a href="/estado/consulta" style="color: #1b8140; font-weight: 500">Consultar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">Estado</li>
+							</ol>
+						</nav>
+					<div>
+				<div>
+			<div>
+
+			<div class="container">
+
+				<!-- FORMULÁRIO para CONSULTAR OS NCMS -->
+				<form action="/estado/consulta" method="POST" >
+                    <div class="form-group form-row col-md-12">
+                        <div class="form-group col-md-8">
+                            <label><b>Pesquisar Estado pela Sigla: </b></label>
+                            <input type="text" class="form-control somenteLetras" id="txtSigla" name="siglaEstado" placeholder="Informe a sigla do estado...">
+                        </div>
+
+                        <div class="form-group col-md-4" style="padding-top: 25px;">
+                            <button class="btn btn-outline-primary" type="submit" id="btnPesquisar" style="margin-top:auto;">
+                                <span data-feather="search">search</span>
+                            </button>
+                        </div>
+                    </div>
+				</form>
+
+
+				<!-- TABELA COM OS NCMS CONSULTADOS-->
+				<table class="table  table-hover table-responsive container ">
+					<thead>
+						<tr>
+							<!-- <th scope="col"> <b> ID </b> </th> -->	
+							<th scope="col"> <b> Sigla </b> </th>
+							<th scope="col"> <b> Nome </b> </th>	
+					
+                            <th scope="col"> <b> Editar </b> </th>	
+                            <th scope="col"> <b> Deletar </b> </th>
+						</tr>
+					</thead>
+									
+					<tbody>
+						<tr th:each="estado : ${listEstado}">
+							<!-- <th scope="row" th:text="${consultorio.id}"> 2</th> -->
+							<td scope="row" th:text="${estado.sigla}"> 12.000.021-90 </td>	
+							<td scope="row" th:text="${estado.nome}"> 123.321.901-99 </td>	
+											
+					      <!-- 			EDITAR -->
+                            <td scope="row">
+                                <a th:href="@{'/estado/editar/' + ${estado.id}}">
+                                    <button type="button" class="btn btn-outline-primary ajusta-botao-tbl">
+                                        <span data-feather="edit-3">Editar</span>
+                                    </button>
+                                </a>
+                            </td>
+
+                            <!-- DELETAR -->
+                            <td scope="row">
+                                <!-- <form th:method="DELETE" th:action="${(#mvc.url('NC#delete').arg(0, ncm.id)).build()}"> -->
+                                <form th:method="POST" method="DELETE" th:action="@{'/estado/deletar/' + ${estado.id}}">
+                                    <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl">
+                                        <span data-feather="trash-2">Deletar</span>
+                                    </button>
+                                </form>
+                            </td>
+
+						 </tr>
+					</tbody>
+							
+						<!-- PAGINAÇÃO ? -->
+						<!-- <ul class="nav nav-pills ">
+							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listConsultorios.totalPages)}">
+								 <a th:href="@{/consultorio/consultar/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
+								 </a>
+							</li>	
+						</ul>
+						-->
+				</table>
+						
+						<!-- 
+						<ul class="nav nav-pills ">
+							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listConsultorios.totalPages)}">
+								 <a th:href="@{/consultorio/consultar/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
+								 </a>
+							</li>	
+						</ul>
+						-->
+			</div>
+   		<section>
+
+	</body>
+
+</html>
