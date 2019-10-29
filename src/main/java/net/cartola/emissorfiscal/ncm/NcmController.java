@@ -64,7 +64,7 @@ public class NcmController {
 		return mv;
 	}
 
-	// Método que irá carregar na tela de cadastro, os valores cadastrados de um atendente (para poder editar)
+	// Método que irá carregar na tela de cadastro, os valores cadastrados de um NCM (para poder editar)
 	@GetMapping("/editar/{id}")
 	public ModelAndView edit(@PathVariable long id) {
 		ModelAndView mv = new ModelAndView("ncm/cadastro");

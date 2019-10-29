@@ -64,7 +64,7 @@ public class EstadoController {
 		return mv;
 	}
 
-	// Método que irá carregar na tela de cadastro, os valores cadastrados de um atendente (para poder editar)
+	// Método que irá carregar na tela de cadastro, os valores cadastrados de um Estado (para poder editar)
 	@GetMapping("/editar/{id}")
 	public ModelAndView edit(@PathVariable long id) {
 		ModelAndView mv = new ModelAndView("estado/cadastro");

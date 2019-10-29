@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Cadastro de operação </title>
+	</head>
+
+	<body>
+		<section id="operacao-container container">
+
+			<!-- BREADCRUMB -->
+			<div class="container">
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
+								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Home</a></li>
+								<li class="breadcrumb-item"><a href="/operacao/cadastro" style="color: #1b8140; font-weight: 500">Cadastrar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">Operação</li>
+							</ol>
+						</nav>
+					<div>
+				<div>
+			<div>
+
+			<div class="container">
+
+				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
+				<form th:action="@{/operacao/cadastro}" th:object="${operacao}" method="POST"  >
+					<!-- <div class="form-row"> -->
+						<div class="form-row md-form " >
+							<i class="fas fa-pencil-alt prefix"></i>
+							<textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea>
+							<label for="txtDescricao">Informe a descrição da operação</label>
+						</div>	
+
+					<div class="form-row">
+						<input type="text" class="form-control" id="txt" th:field="*{id}" name="id" hidden="true" >
+						<div class = "form-group col-md-12">
+							<button type="submit" class="btn btn-outline-primary col-md-12"><strong>Alterar/Cadastrar</strong></button>
+							<!-- <button type="submit" class="btn btn-outline-primary col-md-12" th:text="${textBtnCadastrarEditar}"><strong> </strong></button> -->
+						</div>
+					</div>
+				</form>
+
+			</div>
+   		<section>
+
+	</body>
+
+</html>
