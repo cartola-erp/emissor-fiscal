@@ -33,19 +33,19 @@
 							
 						<div class="form-group col-md-6">
 							<label for="txtNumero"><strong>Numero do NCM</strong></label>
-							<input type="text" class="form-control " id="txtNumero" th:field="*{numero}" name="numero" placeholder="Insira o número do ncm..." minlength="8" maxlength="8" required>
+							<input type="text" class="form-control somenteNumeros" id="txtNumero" th:field="*{numero}" name="numero" placeholder="Insira o número do ncm..." minlength="8" maxlength="8" required>
 						</div>
 						
 						<div class="form-group col-md-6">
 							<label for="txtExcecao"><strong>Exceção</strong></label>
-							<input type="text" class="form-control " id="txtExcecao" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required>
+							<input type="text" class="form-control somenteNumeros" id="txtExcecao" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required>
 						</div>
 					</div>	
 					
 					<div class="form-row md-form " >
-							<i class="fas fa-pencil-alt prefix"></i>
-							<textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea>
-							<label for="txtDescricao">Informe uma descrição</label>
+						<i class="fas fa-pencil-alt prefix"></i>
+						<textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea>
+						<label for="txtDescricao">Informe uma descrição</label>
 					</div>	
 
 
