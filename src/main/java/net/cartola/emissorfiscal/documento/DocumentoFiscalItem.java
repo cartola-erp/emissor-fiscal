@@ -3,6 +3,8 @@ package net.cartola.emissorfiscal.documento;
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,9 +18,8 @@ import net.cartola.emissorfiscal.ncm.Ncm;
 @Table(name="docu_fisc")
 public class DocumentoFiscalItem {
 
-//	@Id 
-//	@Generated(Generatio)
 	private Long id;
+	private Finalidade finalidade = Finalidade.CONSUMO;
 	private BigDecimal quantidade;
 	private BigDecimal valorUnitario;
 	private Ncm ncm;
@@ -26,6 +27,7 @@ public class DocumentoFiscalItem {
 	private BigDecimal icmsBase;
 	private BigDecimal icmsAliquota;
 	private BigDecimal icmsValor;
+	
 	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Long getId() {
@@ -79,6 +81,15 @@ public class DocumentoFiscalItem {
 	}
 	public void setIcmsValor(BigDecimal icmsValor) {
 		this.icmsValor = icmsValor;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	public Finalidade getFinalidade() {
+		return finalidade;
+	}
+	
+	public void setFinalidade(Finalidade finalidade) {
+		this.finalidade = finalidade;
 	}
 	
 	
