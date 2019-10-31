@@ -9,11 +9,11 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class HomeController {
 	
-	@GetMapping
-	public ModelAndView home() {
-		ModelAndView mv = new ModelAndView("home");
-		
-		return mv.addObject("obj1", "DEu certo?");
-		
-	}
+//	@GetMapping
+//	public ModelAndView home() {
+//		ModelAndView mv = new ModelAndView("home");
+//		
+//		return mv.addObject("obj1", "DEu certo?");
+//		
+//	}
 }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Cadastro de operação </title>
+	</head>
+
+	<body>
+		<section id="operacao-container container">
+
+			<!-- BREADCRUMB -->
+			<div class="container">
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
+								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Simulação de calculo</a></li>
+								<!-- <li class="breadcrumb-item"><a href="/" style="color: #1b8140; font-weight: 500">Simulação de calculo</a></li>			 -->
+								<!-- <li class="breadcrumb-item active" aria-current="page">Simulação de calculo</li> -->
+							</ol>
+						</nav>
+					<div>
+				<div>
+			<div>
+
+			<div class="container">
+
+				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
+				<!-- <form th:action="@{/operacao/cadastro}" th:object="${operacao}" method="POST"  > -->
+				<form th:action="@{simulador/calculo}" th:object="${documentoFiscal}" method="POST"  >
+
+
+					<!-- OPERAÇÃO -->
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="cmbOperacao"><strong>Operação</strong></label>
+							<select class="custom-select" >
+							<option selected id="opOperacao"> </option>
+								<!-- <option th:field="{operacao.descricao}"  th:each="operacao : ${listOperacao}" th:value="${operacao}" th:text="${operacao.descricao}" ></option> -->
+								<option th:each="operacao : ${listOperacao}" th:value="${operacao}" th:text="${operacao.descricao}" ></option>
+							</select>
+						</div>
+					</div>
+
+					<!-- ESTADOS -->
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="cmbEstadoOrigem"><strong>Estado ORIGEM</strong></label>
+							<select class="custom-select" name="emitenteUf">
+								<option selected id="opEstadoOrigem"> </option>
+								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
+								<option th:each="estadoOrigem : ${listEstado}" th:value="${estadoOrigem.sigla}" th:text="${estadoOrigem.sigla}" ></option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label for="cmbEstadoDestino"><strong>Estado DESTINO</strong></label>
+							<select class="custom-select" name="destinatarioUf">
+								<option selected id="opEstadoDestino"> </option>
+								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
+								<option th:each="estadoDestino : ${listEstado}" th:value="${estadoDestino.sigla}" th:text="${estadoDestino.sigla}" ></option>
+							</select>
+						</div>
+					</div>
+
+					<!-- ITEM -->
+					<div class="form-row">
+						<div class="form-group col-md-2"> 
+							<label for="txtQuantidadeItem"><strong>Qtd Item</strong></label>
+							<!-- <input type="number" class="form-control somenteNumeros" id="txtQuantidadeItem" th:field="*{itens[0].quantidade}" name="itens[0].quantidade" placeholder="Ins..." minlength="8" maxlength="8" required> -->
+							<input type="number" class="form-control somenteNumeros" id="txtQuantidadeItem" name="itens[0].quantidade" placeholder="Quantidade" minlength="0" required>
+						</div>
+						
+						<div class="form-group col-md-4">
+							<label for="txtValorItem"><strong>Valor do Item</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control somenteNumeros" id="txtValorItem" ame="itens[0].valorUnitario" placeholder="Insira o valor do item..." minlength="1" maxlength="10" required>
+						</div> 
+
+
+						<div class="form-group col-md-6">
+							<label for="cmbFinalidade"><strong>Finalidade</strong></label>
+							<select class="custom-select" name="itens[0].finalidade" >
+								<option selected id="opFinalidade"> </option>
+								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
+								<option th:each="finalidade : ${finalidades}" th:value="${finalidade}" th:text="${finalidade}" ></option>
+							</select>
+						</div>
+	
+							<!-- <div class="form-group col-md-6"> -->
+							<!-- <label for="txtExcecao"><strong>Exceção</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtExcecao" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required>
+						</div>  -->
+					</div>	
+
+					<!-- PESSOA (REGIME TRIBUTARIO) emitenteRegimeApuracao-->
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="txtEmitenteRegimeTributario"><strong>Regime Tributário</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control " id="txtEmitenteRegimeTributario" name="emitenteRegimeApuracao" placeholder="Insira o regime tributário..." minlength="2" maxlength="10" required>
+						</div> 
+					</div>	
+
+					<!-- RESULTADO DO CALCULO -->
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<i class="fas fa-pencil-alt prefix"></i>
+							<!-- <textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea> -->
+							<textarea id="txtResultadoCalculo" class="md-textarea form-control " rows="2" ></textarea>
+							<label for="txtDescricao">Resultados dos cálculos</label>
+						</div>
+					</div>	
+
+
+					<!-- BOTÃO CALCULAR -->
+					<div class="form-row">
+						<!-- <input type="text" class="form-control" id="txt" th:field="*{id}" name="id" hidden="true" > -->
+						<div class = "form-group col-md-12">
+							<button type="submit" class="btn btn-outline-primary col-md-12"><strong>CALCULAR</strong></button>
+							<!-- <button type="submit" class="btn btn-outline-primary col-md-12" th:text="${textBtnCadastrarEditar}"><strong> </strong></button> -->
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+   		<section>
+
+	</body>
+
+</html>
