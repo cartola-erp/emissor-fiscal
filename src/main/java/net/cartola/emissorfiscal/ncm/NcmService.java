@@ -19,8 +19,12 @@ public class NcmService {
 		return repository.findAll();
 	}
 	
-	public Ncm save(Ncm ncm) {
-		return repository.saveAndFlush(ncm);
+	public Optional<Ncm> save(Ncm ncm) {
+		boolean isNumeroCorreto = isNumeroNcmCorreto(ncm.getNumero());
+		if (!isNumeroCorreto) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(repository.saveAndFlush(ncm));
 	}
 
 	public List<Ncm> findByNumero(int numeroNcm) {
@@ -36,10 +40,27 @@ public class NcmService {
 	}
 	
 	
+	// ====================  "VALIDAÇÕES" =================== 
 	public boolean existeNumeroEExcecao(Ncm ncm) {
 		return repository.findNumeroAndExcecao(ncm.getNumero(), ncm.getExcecao()).isPresent();
 	}
 
+	public boolean isNumeroNcmCorreto(int numero)  {
+		String numeroNcm = Integer.toString(numero);
+		if (numeroNcm.length() <= 7 || numeroNcm.length() >= 9) {
+			return  false;
+		} 
+		return true;
+	}
+	
+	public boolean isExcecaoCorreto(int excecao) {
+		String excecaoNcm = Integer.toString(excecao);
+		if (excecaoNcm.length() >= 3 || excecaoNcm.length() == 1) {
+			return false;
+		}
+		return true;
+	}
+	
 
 	public List<String> getMensagensErros(BindingResult bindResult, boolean existeNumeroEExecao) {
 		List<String> msg = new ArrayList<>();
