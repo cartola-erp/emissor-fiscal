@@ -19,8 +19,8 @@ public class OperacaoService {
 		return repository.findAll();
 	}
 	
-	public Operacao save(Operacao operacao) {
-		return repository.saveAndFlush(operacao);
+	public Optional<Operacao> save(Operacao operacao) {
+		return Optional.ofNullable(repository.saveAndFlush(operacao));
 	}
 
 	public List<Operacao> findByParteDaDescricao(String descricaoOperacao) {
