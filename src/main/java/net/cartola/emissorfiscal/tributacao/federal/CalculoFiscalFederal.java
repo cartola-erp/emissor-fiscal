@@ -13,6 +13,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
+import net.cartola.emissorfiscal.tributacao.Imposto;
 
 public class CalculoFiscalFederal implements CalculoFiscal {
 
@@ -28,6 +29,8 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	@Override
 	public List<CalculoImposto> calculaImposto(DocumentoFiscal documentoFiscal) {
 		List<CalculoImposto> listaImpostos = new LinkedList<>();
+		CalculoImposto pis = new CalculoImposto();
+		pis.setImposto(Imposto.PIS);
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm)
 				.collect(Collectors.toSet());
 
@@ -36,7 +39,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 		
 		documentoFiscal.getItens().stream().forEach(di -> {
 			TributacaoFederal tributacao = mapaTributacoesPorNcm.get(di.getNcm());
-			calculoPisCofins.calcula(di, tributacao);
+			calculoPisCofins.calculaPis(di, tributacao);
 		});
 		
 		return listaImpostos;

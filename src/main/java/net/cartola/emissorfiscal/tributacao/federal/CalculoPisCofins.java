@@ -7,8 +7,12 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 @Service
 public class CalculoPisCofins {
 
-	public void calcula(DocumentoFiscalItem documentoFiscalItem, TributacaoFederal tributacao) {
-		
+	public void calculaPis(DocumentoFiscalItem documentoFiscalItem, TributacaoFederal tributacao) {
+
 	}
-	
+
+	public void calculaCofins(DocumentoFiscalItem documentoFiscalItem, TributacaoFederal tributacao) {
+
+	}
+
 }
