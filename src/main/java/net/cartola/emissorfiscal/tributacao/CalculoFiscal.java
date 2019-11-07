@@ -1,8 +1,10 @@
 package net.cartola.emissorfiscal.tributacao;
 
+import java.util.List;
+
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 
 public interface CalculoFiscal {
 	
-	CalculoImposto calculaImposto(DocumentoFiscal documentoFiscal);
+	List<CalculoImposto> calculaImposto(DocumentoFiscal documentoFiscal);
 }
