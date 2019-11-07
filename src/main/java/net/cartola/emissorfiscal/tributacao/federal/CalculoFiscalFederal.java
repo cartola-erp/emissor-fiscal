@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,26 +24,30 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 
 	@Autowired
 	private CalculoPisCofins calculoPisCofins;
-	
+
 	@Autowired
 	private CalculoIpi calculoIpi;
 
 	@Override
-	public List<CalculoImposto> calculaImposto(DocumentoFiscal documentoFiscal) {
+	public void calculaImposto(DocumentoFiscal documentoFiscal) {
 		List<CalculoImposto> listaImpostos = new LinkedList<>();
-		CalculoImposto pis = new CalculoImposto();
-		pis.setImposto(Imposto.PIS);
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm)
 				.collect(Collectors.toSet());
 
 		Map<Ncm, TributacaoFederal> mapaTributacoesPorNcm = ncms.stream()
 				.collect(Collectors.toMap(ncm -> ncm, ncm -> tributacaoFederalRepository.findByNcm(ncm).get(0)));
-		
+
 		documentoFiscal.getItens().stream().forEach(di -> {
 			TributacaoFederal tributacao = mapaTributacoesPorNcm.get(di.getNcm());
-			calculoPisCofins.calculaPis(di, tributacao);
+			listaImpostos.add(calculoPisCofins.calculaPis(di, tributacao));
+			listaImpostos.add(calculoPisCofins.calculaCofins(di, tributacao));
 		});
 		
-		return listaImpostos;
+		documentoFiscal.setIpiBase(totaliza(listaImpostos.stream().filter(ipi -> ipi.getImposto().equals(Imposto.IPI)).collect(Collectors.toList())));
+	}
+
+	private BigDecimal totaliza(List<CalculoImposto> collect) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.documento;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
@@ -15,8 +16,10 @@ import javax.persistence.Table;
 import net.cartola.emissorfiscal.ncm.Ncm;
 
 @Entity
-@Table(name="docu_fisc")
-public class DocumentoFiscalItem {
+@Table(name = "docu_fisc")
+public class DocumentoFiscalItem implements Serializable {
+
+	private static final long serialVersionUID = -3885752189101767947L;
 
 	private Long id;
 	private Finalidade finalidade = Finalidade.CONSUMO;
@@ -27,71 +30,162 @@ public class DocumentoFiscalItem {
 	private BigDecimal icmsBase;
 	private BigDecimal icmsAliquota;
 	private BigDecimal icmsValor;
-	
-	
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+	private BigDecimal pisBase;
+	private BigDecimal pisAliquota;
+	private BigDecimal pisValor;
+	private BigDecimal cofinsBase;
+	private BigDecimal cofinsAliquota;
+	private BigDecimal cofinsValor;
+	private BigDecimal ipiBase;
+	private BigDecimal ipiAliquota;
+	private BigDecimal ipiValor;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public BigDecimal getQuantidade() {
-		return quantidade;
-	}
-	public void setQuantidade(BigDecimal quantidade) {
-		this.quantidade = quantidade;
-	}
-	public BigDecimal getValorUnitario() {
-		return valorUnitario;
-	}
-	public void setValorUnitario(BigDecimal valorUnitario) {
-		this.valorUnitario = valorUnitario;
-	}
-	
-	@ManyToOne
-	@JoinColumn(name="ncm_id", referencedColumnName="ncm_id" )
-	public Ncm getNcm() {
-		return ncm;
-	}
-	
-	public void setNcm(Ncm ncm) {
-		this.ncm = ncm;
-	}
-	public int getCfop() {
-		return cfop;
-	}
-	public void setCfop(int cfop) {
-		this.cfop = cfop;
-	}
-	public BigDecimal getIcmsBase() {
-		return icmsBase;
-	}
-	public void setIcmsBase(BigDecimal icmsBase) {
-		this.icmsBase = icmsBase;
-	}
-	public BigDecimal getIcmsAliquota() {
-		return icmsAliquota;
-	}
-	public void setIcmsAliquota(BigDecimal icmsAliquota) {
-		this.icmsAliquota = icmsAliquota;
-	}
-	public BigDecimal getIcmsValor() {
-		return icmsValor;
-	}
-	public void setIcmsValor(BigDecimal icmsValor) {
-		this.icmsValor = icmsValor;
-	}
-	
+
 	@Enumerated(EnumType.STRING)
 	public Finalidade getFinalidade() {
 		return finalidade;
 	}
-	
+
 	public void setFinalidade(Finalidade finalidade) {
 		this.finalidade = finalidade;
 	}
-	
-	
-	
+
+	public BigDecimal getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(BigDecimal quantidade) {
+		this.quantidade = quantidade;
+	}
+
+	public BigDecimal getValorUnitario() {
+		return valorUnitario;
+	}
+
+	public void setValorUnitario(BigDecimal valorUnitario) {
+		this.valorUnitario = valorUnitario;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id")
+	public Ncm getNcm() {
+		return ncm;
+	}
+
+	public void setNcm(Ncm ncm) {
+		this.ncm = ncm;
+	}
+
+	public int getCfop() {
+		return cfop;
+	}
+
+	public void setCfop(int cfop) {
+		this.cfop = cfop;
+	}
+
+	public BigDecimal getIcmsBase() {
+		return icmsBase;
+	}
+
+	public void setIcmsBase(BigDecimal icmsBase) {
+		this.icmsBase = icmsBase;
+	}
+
+	public BigDecimal getIcmsAliquota() {
+		return icmsAliquota;
+	}
+
+	public void setIcmsAliquota(BigDecimal icmsAliquota) {
+		this.icmsAliquota = icmsAliquota;
+	}
+
+	public BigDecimal getIcmsValor() {
+		return icmsValor;
+	}
+
+	public void setIcmsValor(BigDecimal icmsValor) {
+		this.icmsValor = icmsValor;
+	}
+
+	public BigDecimal getPisBase() {
+		return pisBase;
+	}
+
+	public void setPisBase(BigDecimal pisBase) {
+		this.pisBase = pisBase;
+	}
+
+	public BigDecimal getPisAliquota() {
+		return pisAliquota;
+	}
+
+	public void setPisAliquota(BigDecimal pisAliquota) {
+		this.pisAliquota = pisAliquota;
+	}
+
+	public BigDecimal getPisValor() {
+		return pisValor;
+	}
+
+	public void setPisValor(BigDecimal pisValor) {
+		this.pisValor = pisValor;
+	}
+
+	public BigDecimal getCofinsBase() {
+		return cofinsBase;
+	}
+
+	public void setCofinsBase(BigDecimal cofinsBase) {
+		this.cofinsBase = cofinsBase;
+	}
+
+	public BigDecimal getCofinsAliquota() {
+		return cofinsAliquota;
+	}
+
+	public void setCofinsAliquota(BigDecimal cofinsAliquota) {
+		this.cofinsAliquota = cofinsAliquota;
+	}
+
+	public BigDecimal getCofinsValor() {
+		return cofinsValor;
+	}
+
+	public void setCofinsValor(BigDecimal cofinsValor) {
+		this.cofinsValor = cofinsValor;
+	}
+
+	public BigDecimal getIpiBase() {
+		return ipiBase;
+	}
+
+	public void setIpiBase(BigDecimal ipiBase) {
+		this.ipiBase = ipiBase;
+	}
+
+	public BigDecimal getIpiAliquota() {
+		return ipiAliquota;
+	}
+
+	public void setIpiAliquota(BigDecimal ipiAliquota) {
+		this.ipiAliquota = ipiAliquota;
+	}
+
+	public BigDecimal getIpiValor() {
+		return ipiValor;
+	}
+
+	public void setIpiValor(BigDecimal ipiValor) {
+		this.ipiValor = ipiValor;
+	}
 }

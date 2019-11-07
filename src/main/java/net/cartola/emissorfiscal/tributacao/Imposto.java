@@ -1,5 +1,5 @@
 package net.cartola.emissorfiscal.tributacao;
 
 public enum Imposto {
-	IPI, PIS, CONFIS, ICMS, ICMS_ST
+	IPI, PIS, COFINS, ICMS, ICMS_ST;
 }

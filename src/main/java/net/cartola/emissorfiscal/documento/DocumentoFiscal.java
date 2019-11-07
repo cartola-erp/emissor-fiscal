@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.documento;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -10,7 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class DocumentoFiscal {
+public class DocumentoFiscal implements Serializable {
+
+	private static final long serialVersionUID = 250495916716488531L;
 
 	private Long id;
 	private String tipo;
@@ -21,6 +24,12 @@ public class DocumentoFiscal {
 	private List<DocumentoFiscalItem> itens;
 	private BigDecimal icmsBase;
 	private BigDecimal icmsValor;
+	private BigDecimal pisBase;
+	private BigDecimal pisValor;
+	private BigDecimal cofinsBase;
+	private BigDecimal cofinsValor;
+	private BigDecimal ipiBase;
+	private BigDecimal ipiValor;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -97,4 +106,51 @@ public class DocumentoFiscal {
 		this.icmsValor = icmsValor;
 	}
 
+	public BigDecimal getPisBase() {
+		return pisBase;
+	}
+
+	public void setPisBase(BigDecimal pisBase) {
+		this.pisBase = pisBase;
+	}
+
+	public BigDecimal getPisValor() {
+		return pisValor;
+	}
+
+	public void setPisValor(BigDecimal pisValor) {
+		this.pisValor = pisValor;
+	}
+
+	public BigDecimal getCofinsBase() {
+		return cofinsBase;
+	}
+
+	public void setCofinsBase(BigDecimal cofinsBase) {
+		this.cofinsBase = cofinsBase;
+	}
+
+	public BigDecimal getCofinsValor() {
+		return cofinsValor;
+	}
+
+	public void setCofinsValor(BigDecimal cofinsValor) {
+		this.cofinsValor = cofinsValor;
+	}
+
+	public BigDecimal getIpiBase() {
+		return ipiBase;
+	}
+
+	public void setIpiBase(BigDecimal ipiBase) {
+		this.ipiBase = ipiBase;
+	}
+
+	public BigDecimal getIpiValor() {
+		return ipiValor;
+	}
+
+	public void setIpiValor(BigDecimal ipiValor) {
+		this.ipiValor = ipiValor;
+	}
 }
