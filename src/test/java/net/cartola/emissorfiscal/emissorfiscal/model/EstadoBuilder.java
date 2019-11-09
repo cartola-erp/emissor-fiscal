@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.emissorfiscal.model;
 
 import net.cartola.emissorfiscal.estado.Estado;
+import net.cartola.emissorfiscal.estado.EstadoSigla;
 
 /**
  * 5 de nov de 2019
@@ -24,7 +25,7 @@ public class EstadoBuilder {
 		return this;
 	}
 
-	public EstadoBuilder withSigla(String sigla) {
+	public EstadoBuilder withSigla(EstadoSigla sigla) {
 		estado.setSigla(sigla);
 		return this;
 	}

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,8 +31,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Estado implements Comparable<Estado>, Serializable {
 
 	private static final long serialVersionUID = 309485301L;
+
 	private Long id;
-	private String sigla;
+	private EstadoSigla sigla = EstadoSigla.SP;
 	private String nome;
 
 	@Id
@@ -44,20 +47,32 @@ public class Estado implements Comparable<Estado>, Serializable {
 		this.id = id;
 	}
 
+//	@Column(name = "sigla", length = 2)
+//	@NotNull(message = "sigla não pode ser vazia")
+//	@Size(min = 1, max = 2, message = "tamanho da sigla deve conter entre 1 e 2")
+//	public String getSigla() {
+//		return sigla;
+//	}
+//
+//	public void setSigla(String sigla) {
+//		this.sigla = sigla;
+//	}
+
 	@Column(name = "sigla", length = 2)
 	@NotNull(message = "sigla não pode ser vazia")
-	@Size(min = 1, max = 2, message = "tamanho da sigla deve conter entre 1 e 2")
-	public String getSigla() {
+	@Size(min = 2, max = 2, message = "tamanho da sigla deve conter entre 2 e 2")
+	@Enumerated(EnumType.STRING)
+	public EstadoSigla getSigla() {
 		return sigla;
 	}
 
-	public void setSigla(String sigla) {
+	public void setSigla(EstadoSigla sigla) {
 		this.sigla = sigla;
 	}
 
 	@NotNull(message = "descrição não pode ser vazia")
-	@Size(min = 1, max = 255, message = "tamanho da descrição deve conter entre 1 e 255")
-	@Column(name = "nome", length = 255)
+	@Size(min = 1, max = 19, message = "tamanho da descrição deve conter entre 1 e 19")
+	@Column(name = "nome", length = 19)
 	public String getNome() {
 		return nome;
 	}

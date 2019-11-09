@@ -1,7 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,12 +41,26 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 			listaImpostos.add(calculoPisCofins.calculaPis(di, tributacao));
 			listaImpostos.add(calculoPisCofins.calculaCofins(di, tributacao));
 		});
-		
-		documentoFiscal.setIpiBase(totaliza(listaImpostos.stream().filter(ipi -> ipi.getImposto().equals(Imposto.IPI)).collect(Collectors.toList())));
+
+		setaPisBaseValor(documentoFiscal, listaImpostos);
+		setaCofinsBaseValor(documentoFiscal, listaImpostos);
 	}
 
-	private BigDecimal totaliza(List<CalculoImposto> collect) {
-		// TODO Auto-generated method stub
-		return null;
+	private void setaPisBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
+		documentoFiscal.setPisBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getValorUnitario)
+				.reduce(BigDecimal.ZERO, BigDecimal::add));
+		documentoFiscal.setPisValor(totaliza(listaImpostos.stream().filter(ipi -> ipi.getImposto().equals(Imposto.PIS))
+				.collect(Collectors.toList())));
+	}
+
+	private void setaCofinsBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
+		documentoFiscal.setCofinsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getValorUnitario)
+				.reduce(BigDecimal.ZERO, BigDecimal::add));
+		documentoFiscal.setCofinsValor(totaliza(listaImpostos.stream()
+				.filter(ipi -> ipi.getImposto().equals(Imposto.COFINS)).collect(Collectors.toList())));
+	}
+
+	private BigDecimal totaliza(List<CalculoImposto> listaImposto) {
+		return listaImposto.stream().map(CalculoImposto::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 }

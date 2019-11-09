@@ -20,11 +20,15 @@ public class EstadoService {
 	}
 	
 	public Optional<Estado> save(Estado estado) {
-		estado.setSigla(estado.getSigla().toUpperCase());
+//		estado.setSigla(estado.getSigla().toUpperCase());
 		return Optional.ofNullable(repository.saveAndFlush(estado));
 	}
 
-	public List<Estado> findBySigla(String siglaEstado) {
+	public Optional<Estado> findBySigla(EstadoSigla siglaEstado) {
+		return repository.findEstadoBySigla(siglaEstado.name());
+	}
+	
+	public Optional<Estado> findBySiglaNome(String siglaEstado) {
 		return repository.findEstadoBySigla(siglaEstado);
 	}
 

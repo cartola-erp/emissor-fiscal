@@ -116,8 +116,8 @@ public class TributacaoEstadualLogicTest {
 		item.setQuantidade(new BigDecimal(2));
 		
 		DocumentoFiscal doc = new DocumentoFiscal();
-		doc.setDestinatarioUf(opEstadoOrigem.get().getSigla());
-		doc.setEmitenteUf(opEstadoOrigem.get().getSigla());
+		doc.setDestinatarioUf(opEstadoOrigem.get().getSigla().name());
+		doc.setEmitenteUf(opEstadoOrigem.get().getSigla().name());
 		
 		List<DocumentoFiscalItem> itens = Arrays.asList(item);
 		doc.setItens(itens);
