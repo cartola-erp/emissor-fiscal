@@ -1,5 +1,8 @@
 package net.cartola.emissorfiscal.emissorfiscal.service;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -7,14 +10,11 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoRepository;
-import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmRepository;
-import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoRepository;
-import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualRepository;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalRepository;
 
@@ -26,15 +26,6 @@ import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalRepository;
 
 @Component
 public class TestHelper {
-
-	@Autowired
-	private EstadoService estadoService;
-
-	@Autowired
-	private OperacaoService operacaoService;
-
-	@Autowired
-	private NcmService ncmService;
 
 	@Autowired
 	private EstadoRepository estadoRepository;
@@ -58,6 +49,7 @@ public class TestHelper {
 	private TributacaoFederalRepository tributacaoFederalRepository;
 
 	public void criarEstados() {
+		List<Estado> estados = new LinkedList<>();
 		String[][] data = { { "SP", "São Paulo" }, { "MG", "Minas Gerais" }, { "RS", "Rio Grande do Sul" },
 				{ "PR", "Paraná" } };
 
@@ -66,11 +58,13 @@ public class TestHelper {
 			Estado estado = new Estado();
 			estado.setSigla(EstadoSigla.valueOf(dados[aux++]));
 			estado.setNome(dados[aux++]);
-			estadoService.save(estado);
+			estados.add(estado);
 		}
+		estadoRepository.saveAll(estados);
 	}
 
 	public void criarOperacoes() {
+		List<Operacao> operacoes = new LinkedList<>();
 		String[][] data = { { "Venda" }, { "Compra" }, { "Devolução" }, { "Exportação" }, { "Remessa" }, { "Retorno" },
 				{ "Venda Consignada" }, { "Venda para entrega futura" } };
 
@@ -78,11 +72,13 @@ public class TestHelper {
 			int aux = 0;
 			Operacao operacao = new Operacao();
 			operacao.setDescricao(dados[aux]);
-			operacaoService.save(operacao);
+			operacoes.add(operacao);
 		}
+		operacaoRepository.saveAll(operacoes);
 	}
 
 	public void criarNcm() {
+		List<Ncm> ncms = new LinkedList<>();
 		String[][] data = { { "12345678", "43", "Essa é uma DESCRIÇÃO do PRIMEIRO NCM para o teste" },
 				{ "89101112", "32", "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste" },
 				{ "34561287", "54", "Essa é uma DESCRIÇÃO do TERCEIRO NCM para o teste" } };
@@ -93,8 +89,9 @@ public class TestHelper {
 			ncm.setNumero(Integer.parseInt(dados[aux++]));
 			ncm.setExcecao(Integer.parseInt(dados[aux++]));
 			ncm.setDescricao(dados[aux++]);
-			ncmService.save(ncm);
+			ncms.add(ncm);
 		}
+		ncmRepository.saveAll(ncms);
 	}
 
 	public void cleanUp() {
