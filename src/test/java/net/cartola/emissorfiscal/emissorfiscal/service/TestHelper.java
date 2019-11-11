@@ -6,8 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
+import net.cartola.emissorfiscal.documento.Pessoa;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoRepository;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
@@ -92,6 +95,36 @@ public class TestHelper {
 			ncms.add(ncm);
 		}
 		ncmRepository.saveAll(ncms);
+	}
+
+	public void criarDocumentoFiscal() {
+		List<DocumentoFiscal> documentosFiscais = new LinkedList<>();
+
+		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA" },
+				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA" },
+				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA" },
+				{ "tipo4", "SP", "Emitente Regime Apuração 1", "MG", "JURIDICA" } };
+
+		int aux = 0;
+		for (String[] dados : data) {
+			DocumentoFiscal docFiscal = new DocumentoFiscal();
+			docFiscal.setTipo(dados[aux++]);
+			docFiscal.setEmitenteUf(EstadoSigla.valueOf(dados[aux++]));
+			docFiscal.setEmitenteRegimeApuracao(dados[aux++]);
+			docFiscal.setDestinatarioUf(EstadoSigla.valueOf(dados[aux++]));
+			docFiscal.setDestinatarioPessoa(Pessoa.valueOf(dados[aux++]));
+			docFiscal.setItens(criarDocumentoFiscalItem());
+			documentosFiscais.add(docFiscal);
+		}
+		docFiscalRepository.saveAll(documentosFiscais);
+	}
+
+	public List<DocumentoFiscalItem> criarDocumentoFiscalItem() {
+		List<DocumentoFiscalItem> documentoFiscalItens = new LinkedList<>();
+
+		String[][] data = { {}, {}, {} };
+
+		return documentoFiscalItens;
 	}
 
 	public void cleanUp() {

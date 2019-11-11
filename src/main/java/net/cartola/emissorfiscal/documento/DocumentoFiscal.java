@@ -5,22 +5,40 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
+
+import net.cartola.emissorfiscal.estado.EstadoSigla;
 
 @Entity
 public class DocumentoFiscal implements Serializable {
 
 	private static final long serialVersionUID = 250495916716488531L;
 
+	private static final String ESTADO_EMITENTE_OBRIGATORIO = "Atenção!! A informação referente a estado emitente é obrigatória!";
+	private static final String ESTADO_DESTINATARIO_OBRIGATORIO = "Atenção!! A informação referente a estado destinatário é obrigatória!";
+	private static final String PESSOA_TIPO_DESTINATARIO_OBRIGATORIO = "Atenção!! A informação referente a ao tipo de pessoa (Física ou Jurídica) é obrigatória!";
+
 	private Long id;
 	private String tipo;
-	private String emitenteUf;
+
+	@NotNull(message = ESTADO_EMITENTE_OBRIGATORIO)
+	@Enumerated(EnumType.STRING)
+	private EstadoSigla emitenteUf = EstadoSigla.SP;
 	private String emitenteRegimeApuracao;
-	private String destinatarioUf;
-	private Pessoa destinatarioPessoa;
+
+	@NotNull(message = ESTADO_DESTINATARIO_OBRIGATORIO)
+	@Enumerated(EnumType.STRING)
+	private EstadoSigla destinatarioUf = EstadoSigla.SP;
+
+	@NotNull(message = PESSOA_TIPO_DESTINATARIO_OBRIGATORIO)
+	@Enumerated(EnumType.STRING)
+	private Pessoa destinatarioPessoa = Pessoa.FISICA;
 	private List<DocumentoFiscalItem> itens;
 	private BigDecimal icmsBase;
 	private BigDecimal icmsValor;
@@ -49,11 +67,11 @@ public class DocumentoFiscal implements Serializable {
 		this.tipo = tipo;
 	}
 
-	public String getEmitenteUf() {
+	public EstadoSigla getEmitenteUf() {
 		return emitenteUf;
 	}
 
-	public void setEmitenteUf(String emitenteUf) {
+	public void setEmitenteUf(EstadoSigla emitenteUf) {
 		this.emitenteUf = emitenteUf;
 	}
 
@@ -65,11 +83,11 @@ public class DocumentoFiscal implements Serializable {
 		this.emitenteRegimeApuracao = emitenteRegimeApuracao;
 	}
 
-	public String getDestinatarioUf() {
+	public EstadoSigla getDestinatarioUf() {
 		return destinatarioUf;
 	}
 
-	public void setDestinatarioUf(String destinatarioUf) {
+	public void setDestinatarioUf(EstadoSigla destinatarioUf) {
 		this.destinatarioUf = destinatarioUf;
 	}
 
