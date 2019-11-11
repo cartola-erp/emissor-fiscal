@@ -32,8 +32,8 @@ import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalRepository;
 @Component
 public class TestHelper {
 
-	private static final String NCM1 = "12345678";
-	private static final String NCM2 = "89101112";
+	private static final String NCM1 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
+	private static final String NCM2 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
 	private static final String NCM3 = "34561287";
 
 	@Autowired

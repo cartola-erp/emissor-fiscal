@@ -25,10 +25,6 @@ public class EstadoService {
 	}
 
 	public Optional<Estado> findBySigla(EstadoSigla siglaEstado) {
-		return repository.findEstadoBySigla(siglaEstado.name());
-	}
-	
-	public Optional<Estado> findBySiglaNome(String siglaEstado) {
 		return repository.findEstadoBySigla(siglaEstado);
 	}
 

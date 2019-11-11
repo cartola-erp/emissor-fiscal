@@ -25,8 +25,9 @@ public class EstadoServiceLogicTest {
 	
 //	ESTADO ORIGEM
 //	public static Long ESTADO_ID = 1L;
-	public static EstadoSigla ESTADO_SIGLA = EstadoSigla.SP;
-	public static String ESTADO_NOME = "São Paulo";
+	public static EstadoSigla ESTADO_SP_SIGLA = EstadoSigla.SP;
+	public static String ESTADO_NOME = EstadoSigla.SP.getNome();
+//	public static String ESTADO_NOME = "São Paulo";
 	
 	
 	@Test

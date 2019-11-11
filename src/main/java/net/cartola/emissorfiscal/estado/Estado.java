@@ -60,7 +60,6 @@ public class Estado implements Comparable<Estado>, Serializable {
 
 	@Column(name = "sigla", length = 2)
 	@NotNull(message = "sigla não pode ser vazia")
-	@Size(min = 2, max = 2, message = "tamanho da sigla deve conter entre 2 e 2")
 	@Enumerated(EnumType.STRING)
 	public EstadoSigla getSigla() {
 		return sigla;
