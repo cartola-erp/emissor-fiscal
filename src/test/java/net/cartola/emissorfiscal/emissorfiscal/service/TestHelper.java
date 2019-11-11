@@ -124,6 +124,7 @@ public class TestHelper {
 			documentosFiscais.add(docFiscal);
 		}
 		docFiscalRepository.saveAll(documentosFiscais);
+		documentosFiscais.stream().forEach(docFiscal -> docFiscalItemRepository.saveAll(docFiscal.getItens()));
 	}
 
 	public List<DocumentoFiscalItem> criarDocumentoFiscalItem() {
@@ -143,7 +144,6 @@ public class TestHelper {
 			documentoFiscalItens.add(docFiscalItem);
 		}
 
-		docFiscalItemRepository.saveAll(documentoFiscalItens);
 		return documentoFiscalItens;
 	}
 
