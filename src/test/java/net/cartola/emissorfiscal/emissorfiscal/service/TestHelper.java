@@ -36,6 +36,16 @@ public class TestHelper {
 	private static final String NCM2 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
 	private static final String NCM3 = "34561287";
 
+	public static String OPERACAO_VENDA = "Venda";	
+	public static String OPERACAO_VENDA_INTERESTADUAL = "Venda Interestadual";
+	public static String OPERACAO_COMPRA = "Compra";
+	public static String OPERACAO_DEVOLUÇAO = "Devolução";
+	public static String OPERACAO_DEVOLUCAO_FORNECEDOR = "Devolução para o fornecedor";
+	public static String OPERACAO_DEVOLUCAO_FORNECEDOR_FORA_ESTADO = "Devolução para o fornecedor fora do estado";
+	public static String OPERACAO_DEVOLUCAO_CLIENTE = "Devolução do cliente";
+	public static String OPERACAO_REMESSA = "Remessa";
+	public static String OPERACAO_REMESSA_CONSIGNADA = "Remessa consignada";
+	
 	@Autowired
 	private EstadoRepository estadoRepository;
 
@@ -74,8 +84,9 @@ public class TestHelper {
 
 	public void criarOperacoes() {
 		List<Operacao> operacoes = new LinkedList<>();
-		String[][] data = { { "Venda" }, { "Compra" }, { "Devolução" }, { "Exportação" }, { "Remessa" }, { "Retorno" },
-				{ "Venda Consignada" }, { "Venda para entrega futura" } };
+		String[][] data = { { OPERACAO_VENDA }, { OPERACAO_VENDA_INTERESTADUAL }, {OPERACAO_COMPRA}, {OPERACAO_DEVOLUÇAO },
+				{OPERACAO_DEVOLUCAO_FORNECEDOR},{ OPERACAO_DEVOLUCAO_FORNECEDOR_FORA_ESTADO  }, { OPERACAO_DEVOLUCAO_CLIENTE },
+				{ OPERACAO_REMESSA }, { OPERACAO_REMESSA_CONSIGNADA} };
 
 		for (String[] dados : data) {
 			int aux = 0;

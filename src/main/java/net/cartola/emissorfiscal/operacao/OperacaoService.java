@@ -27,7 +27,11 @@ public class OperacaoService {
 		return repository.findOperacaoByParteDaDescricao(descricaoOperacao);
 	}
 
-//	public List<Operacao> findByDescricao(String descricaoOperacao) {
+	public Optional<Operacao> findOperacaoByDescricao(String descricaoOperacao) {
+		return repository.findOperacaoByDescricao(descricaoOperacao);
+	}
+	
+	
 	public boolean isOperacaoExistente(String descricaoOperacao) {
 		return repository.findOperacaoByDescricao(descricaoOperacao).isPresent();
 	}

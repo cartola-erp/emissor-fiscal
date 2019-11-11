@@ -27,7 +27,7 @@ public class NcmService {
 		return Optional.ofNullable(repository.saveAndFlush(ncm));
 	}
 
-	public List<Ncm> findByNumero(int numeroNcm) {
+	public Optional<Ncm> findByNumero(int numeroNcm) {
 		return repository.findNcmByNumero(numeroNcm);
 	}
 
