@@ -10,10 +10,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import net.cartola.emissorfiscal.estado.EstadoSigla;
+import net.cartola.emissorfiscal.operacao.Operacao;
 
 @Entity
 public class DocumentoFiscal implements Serializable {
@@ -25,6 +28,7 @@ public class DocumentoFiscal implements Serializable {
 	private static final String PESSOA_TIPO_DESTINATARIO_OBRIGATORIO = "Atenção!! A informação referente a ao tipo de pessoa (Física ou Jurídica) é obrigatória!";
 
 	private Long id;
+	private Operacao operacao;
 	private String tipo;
 	private EstadoSigla emitenteUf = EstadoSigla.SP;
 	private String emitenteRegimeApuracao;
@@ -48,6 +52,16 @@ public class DocumentoFiscal implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="operacao_id", referencedColumnName = "oper_id")
+	public Operacao getOperacao() {
+		return operacao;
+	}
+
+	public void setOperacao(Operacao operacao) {
+		this.operacao = operacao;
 	}
 
 	public String getTipo() {

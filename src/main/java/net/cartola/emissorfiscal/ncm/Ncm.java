@@ -13,6 +13,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import org.hibernate.validator.constraints.Range;
+
 import net.cartola.emissorfiscal.ValidarNCM;
 
 /**
@@ -48,7 +50,7 @@ public class Ncm implements Serializable {
 
 	@Column(name = "nume", nullable = false)
 	@Positive(message="O NÚMERO tem que ser positivo e maior que ZERO")
-	@ValidarNCM(message = "")
+	@Range(min=1000000, max=99999999, message="O NÚMERO do NCM, está incorreto!")
 	public int getNumero() {
 		return numero;
 	}
