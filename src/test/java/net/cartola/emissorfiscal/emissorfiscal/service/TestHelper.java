@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.emissorfiscal.service;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.documento.Pessoa;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoRepository;
@@ -29,6 +31,10 @@ import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalRepository;
 
 @Component
 public class TestHelper {
+
+	private static final String NCM1 = "12345678";
+	private static final String NCM2 = "89101112";
+	private static final String NCM3 = "34561287";
 
 	@Autowired
 	private EstadoRepository estadoRepository;
@@ -80,11 +86,11 @@ public class TestHelper {
 		operacaoRepository.saveAll(operacoes);
 	}
 
-	public void criarNcm() {
+	public List<Ncm> defineNcms() {
 		List<Ncm> ncms = new LinkedList<>();
-		String[][] data = { { "12345678", "43", "Essa é uma DESCRIÇÃO do PRIMEIRO NCM para o teste" },
-				{ "89101112", "32", "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste" },
-				{ "34561287", "54", "Essa é uma DESCRIÇÃO do TERCEIRO NCM para o teste" } };
+		String[][] data = { { NCM1, "43", "Essa é uma DESCRIÇÃO do PRIMEIRO NCM para o teste" },
+				{ NCM2, "32", "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste" },
+				{ NCM3, "54", "Essa é uma DESCRIÇÃO do TERCEIRO NCM para o teste" } };
 
 		for (String[] dados : data) {
 			int aux = 0;
@@ -95,6 +101,7 @@ public class TestHelper {
 			ncms.add(ncm);
 		}
 		ncmRepository.saveAll(ncms);
+		return ncms;
 	}
 
 	public void criarDocumentoFiscal() {
@@ -103,7 +110,7 @@ public class TestHelper {
 		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA" },
 				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA" },
 				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA" },
-				{ "tipo4", "SP", "Emitente Regime Apuração 1", "MG", "JURIDICA" } };
+				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA" } };
 
 		int aux = 0;
 		for (String[] dados : data) {
@@ -121,9 +128,22 @@ public class TestHelper {
 
 	public List<DocumentoFiscalItem> criarDocumentoFiscalItem() {
 		List<DocumentoFiscalItem> documentoFiscalItens = new LinkedList<>();
+		List<Ncm> ncms = defineNcms();
+		String[][] data = { { "CONSUMO", "10", "5506", NCM1 }, { "CONSUMO", "5", "5506", NCM2 },
+				{ "REVENDA", "10", "5566", NCM3 } };
 
-		String[][] data = { {}, {}, {} };
+		int aux = 0;
+		for (String[] dados : data) {
+			DocumentoFiscalItem docFiscalItem = new DocumentoFiscalItem();
+			docFiscalItem.setFinalidade(Finalidade.valueOf(dados[aux++]));
+			docFiscalItem.setQuantidade(new BigDecimal(dados[aux++]));
+			docFiscalItem.setValorUnitario(new BigDecimal(dados[aux++]));
+			int ncmCodigo = Integer.parseInt(dados[aux++]);
+			docFiscalItem.setNcm(ncms.stream().filter(ncm -> ncm.getNumero() == ncmCodigo).findAny().get());
+			documentoFiscalItens.add(docFiscalItem);
+		}
 
+		docFiscalItemRepository.saveAll(documentoFiscalItens);
 		return documentoFiscalItens;
 	}
 

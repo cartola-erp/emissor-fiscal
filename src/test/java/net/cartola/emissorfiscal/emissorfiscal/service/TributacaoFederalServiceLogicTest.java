@@ -51,7 +51,7 @@ public class TributacaoFederalServiceLogicTest {
 		testHelper.cleanUp();
 		testHelper.criarEstados();
 		testHelper.criarOperacoes();
-		testHelper.criarNcm();
+		testHelper.criarDocumentoFiscal();
 	}
 
 	@Test
