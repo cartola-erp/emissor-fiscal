@@ -15,8 +15,6 @@ import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.Range;
 
-import net.cartola.emissorfiscal.ValidarNCM;
-
 /**
  * Ncm
  */
