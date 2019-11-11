@@ -13,6 +13,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import net.cartola.emissorfiscal.ValidarNCM;
+
 /**
  * Ncm
  */
@@ -46,6 +48,7 @@ public class Ncm implements Serializable {
 
 	@Column(name = "nume", nullable = false)
 	@Positive(message="O NÚMERO tem que ser positivo e maior que ZERO")
+	@ValidarNCM(message = "")
 	public int getNumero() {
 		return numero;
 	}

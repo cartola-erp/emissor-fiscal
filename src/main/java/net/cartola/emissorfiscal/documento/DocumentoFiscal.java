@@ -26,18 +26,9 @@ public class DocumentoFiscal implements Serializable {
 
 	private Long id;
 	private String tipo;
-
-	@NotNull(message = ESTADO_EMITENTE_OBRIGATORIO)
-	@Enumerated(EnumType.STRING)
 	private EstadoSigla emitenteUf = EstadoSigla.SP;
 	private String emitenteRegimeApuracao;
-
-	@NotNull(message = ESTADO_DESTINATARIO_OBRIGATORIO)
-	@Enumerated(EnumType.STRING)
 	private EstadoSigla destinatarioUf = EstadoSigla.SP;
-
-	@NotNull(message = PESSOA_TIPO_DESTINATARIO_OBRIGATORIO)
-	@Enumerated(EnumType.STRING)
 	private Pessoa destinatarioPessoa = Pessoa.FISICA;
 	private List<DocumentoFiscalItem> itens;
 	private BigDecimal icmsBase;
@@ -67,6 +58,8 @@ public class DocumentoFiscal implements Serializable {
 		this.tipo = tipo;
 	}
 
+	@NotNull(message = ESTADO_EMITENTE_OBRIGATORIO)
+	@Enumerated(EnumType.STRING)
 	public EstadoSigla getEmitenteUf() {
 		return emitenteUf;
 	}
@@ -83,6 +76,8 @@ public class DocumentoFiscal implements Serializable {
 		this.emitenteRegimeApuracao = emitenteRegimeApuracao;
 	}
 
+	@NotNull(message = ESTADO_DESTINATARIO_OBRIGATORIO)
+	@Enumerated(EnumType.STRING)
 	public EstadoSigla getDestinatarioUf() {
 		return destinatarioUf;
 	}
@@ -91,6 +86,8 @@ public class DocumentoFiscal implements Serializable {
 		this.destinatarioUf = destinatarioUf;
 	}
 
+	@NotNull(message = PESSOA_TIPO_DESTINATARIO_OBRIGATORIO)
+	@Enumerated(EnumType.STRING)
 	public Pessoa getDestinatarioPessoa() {
 		return destinatarioPessoa;
 	}
