@@ -31,17 +31,11 @@ public class TributacaoFederalServiceLogicTest {
 	public static final int COFINS_CST = 1;
 	public static final int IPI_CST = 1;
 
-	@Autowired
-	private CalculoFiscalFederal calculoFiscalFederal;
-
-	@Autowired
-	private TributacaoFederalService tributacaoFederalService;
-
-	@Autowired
-	private NcmService ncmService;
-
-	@Autowired
-	private OperacaoService operacaoService;
+//	@Autowired
+//	private CalculoFiscalFederal calculoFiscalFederal;
+//
+//	@Autowired
+//	private TributacaoFederalService tributacaoFederalService;
 
 	@Autowired
 	private TestHelper testHelper;
@@ -53,13 +47,13 @@ public class TributacaoFederalServiceLogicTest {
 		testHelper.criarDocumentoFiscal();
 	}
 
-	@Test
-	public void test01_CalcularPisCofinsIPI() {
-		TributacaoFederal tributacaoFederal = new TributacaoFederal();
-		tributacaoFederal.setPisCst(PIS_CST);
-		tributacaoFederal.setCofinsCst(COFINS_CST);
-		tributacaoFederal.setIpiCst(IPI_CST);
-		tributacaoFederal.setNcm(ncmService.findOne(1L).get());
-		tributacaoFederal.setOperacao(operacaoService.findOne(1L).get());
-	}
+//	@Test
+//	public void test01_CalcularPisCofinsIPI() {
+//		TributacaoFederal tributacaoFederal = new TributacaoFederal();
+//		tributacaoFederal.setPisCst(PIS_CST);
+//		tributacaoFederal.setCofinsCst(COFINS_CST);
+//		tributacaoFederal.setIpiCst(IPI_CST);
+//		tributacaoFederal.setNcm(ncmService.findOne(1L).get());
+//		tributacaoFederal.setOperacao(operacaoService.findOne(1L).get());
+//	}
 }

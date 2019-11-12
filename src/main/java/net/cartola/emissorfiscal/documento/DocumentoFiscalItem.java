@@ -19,7 +19,7 @@ import javax.validation.constraints.Positive;
 import net.cartola.emissorfiscal.ncm.Ncm;
 
 @Entity
-@Table(name = "docu_fisc")
+@Table(name = "docu_fisc_item")
 public class DocumentoFiscalItem implements Serializable {
 
 	private static final long serialVersionUID = -3885752189101767947L;
@@ -48,6 +48,8 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal ipiBase;
 	private BigDecimal ipiAliquota;
 	private BigDecimal ipiValor;
+	
+	private DocumentoFiscal documentoFiscal;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -201,5 +203,14 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setIpiValor(BigDecimal ipiValor) {
 		this.ipiValor = ipiValor;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public DocumentoFiscal getDocumentoFiscal() {
+		return documentoFiscal;
+	}
+
+	public void setDocumentoFiscal(DocumentoFiscal documentoFiscal) {
+		this.documentoFiscal = documentoFiscal;
 	}
 }

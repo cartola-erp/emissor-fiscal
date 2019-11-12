@@ -121,6 +121,7 @@ public class TestHelper {
 		List<DocumentoFiscal> documentosFiscais = new LinkedList<>();
 		List<Operacao> operacoes = defineOperacoes();
 		List<Ncm> ncms = defineNcms();
+		List<DocumentoFiscalItem> itens = criarDocumentoFiscalItem(ncms);
 
 		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA", OPERACAO_VENDA },
 				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
@@ -138,18 +139,20 @@ public class TestHelper {
 			String operacaoDescricao = dados[aux++];
 			docFiscal.setOperacao(operacoes.stream()
 					.filter(operacao -> operacao.getDescricao().equals(operacaoDescricao)).findAny().get());
-			docFiscal.setItens(criarDocumentoFiscalItem(ncms));
+			docFiscal.setItens(itens);
 			documentosFiscais.add(docFiscal);
 		}
 		docFiscalRepository.saveAll(documentosFiscais);
-		documentosFiscais.stream().forEach(docFiscal -> docFiscalItemRepository.saveAll(docFiscal.getItens()));
+//		documentosFiscais.stream().forEach(docFiscal -> {
+//			docFiscalItemRepository.saveAll(docFiscal.getItens());
+//		});
 	}
 
 	private List<DocumentoFiscalItem> criarDocumentoFiscalItem(List<Ncm> ncms) {
 		List<DocumentoFiscalItem> documentoFiscalItens = new LinkedList<>();
 
-		String[][] data = { { "CONSUMO", "10", "5506", NCM1 }, { "CONSUMO", "5", "5506", NCM2 },
-				{ "REVENDA", "10", "5566", NCM3 } };
+		String[][] data = { { "CONSUMO", "10", "5", "5506", NCM1 }, { "CONSUMO", "5", "5", "5506", NCM2 },
+				{ "REVENDA", "10", "5", "5566", NCM3 } };
 
 		for (String[] dados : data) {
 			int aux = 0;
@@ -157,6 +160,7 @@ public class TestHelper {
 			docFiscalItem.setFinalidade(Finalidade.valueOf(dados[aux++]));
 			docFiscalItem.setQuantidade(new BigDecimal(dados[aux++]));
 			docFiscalItem.setValorUnitario(new BigDecimal(dados[aux++]));
+			docFiscalItem.setCfop(Integer.parseInt(dados[aux++]));
 			int ncmCodigo = Integer.parseInt(dados[aux++]);
 			docFiscalItem.setNcm(ncms.stream().filter(ncm -> ncm.getNumero() == ncmCodigo).findAny().get());
 			documentoFiscalItens.add(docFiscalItem);

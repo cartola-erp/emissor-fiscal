@@ -4,22 +4,26 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.operacao.Operacao;
 
 @Entity
+@Table(name = "docu_fisc")
 public class DocumentoFiscal implements Serializable {
 
 	private static final long serialVersionUID = 250495916716488531L;
@@ -55,7 +59,7 @@ public class DocumentoFiscal implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "operacao_id", referencedColumnName = "oper_id")
 	public Operacao getOperacao() {
 		return operacao;
@@ -111,8 +115,8 @@ public class DocumentoFiscal implements Serializable {
 		this.destinatarioPessoa = destinatarioPessoa;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(unique = true)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "doc_fiscal_id", unique = false, foreignKey = @ForeignKey(name = "fnk_documento_fiscal_item"))
 	public List<DocumentoFiscalItem> getItens() {
 		return itens;
 	}
