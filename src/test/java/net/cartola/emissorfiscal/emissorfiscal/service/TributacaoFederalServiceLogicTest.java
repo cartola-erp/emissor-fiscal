@@ -61,6 +61,5 @@ public class TributacaoFederalServiceLogicTest {
 		tributacaoFederal.setIpiCst(IPI_CST);
 		tributacaoFederal.setNcm(ncmService.findOne(1L).get());
 		tributacaoFederal.setOperacao(operacaoService.findOne(1L).get());
-
 	}
 }

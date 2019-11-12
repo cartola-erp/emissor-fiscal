@@ -70,7 +70,7 @@ public class Estado implements Comparable<Estado>, Serializable {
 	}
 
 	@NotNull(message = "descrição não pode ser vazia")
-	@Size(min = 1, max = 19, message = "tamanho da descrição deve conter entre 1 e 19")
+	@Size(min = 4, max = 19, message = "tamanho da descrição deve conter entre 4 e 19")
 	@Column(name = "nome", length = 19)
 	public String getNome() {
 		return nome;

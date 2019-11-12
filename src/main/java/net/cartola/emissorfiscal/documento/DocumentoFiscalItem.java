@@ -6,12 +6,15 @@ import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import net.cartola.emissorfiscal.ncm.Ncm;
 
@@ -20,6 +23,12 @@ import net.cartola.emissorfiscal.ncm.Ncm;
 public class DocumentoFiscalItem implements Serializable {
 
 	private static final long serialVersionUID = -3885752189101767947L;
+
+	private static final String FINALIDADE_OBRIGATORIA = "Atenção! A finalidade do item é obrigatória!!";
+	private static final String QUANTIDADE_OBRIGATORIA = "Atenção! A quantidade do item é obrigatória!!";
+	private static final String QUANTIDADE_INVALIDA = "Atenção! A quantidade inserida é inválida!!";
+	private static final String VALOR_OBRIGATORIO = "Atenção! O valor do item é obrigatório!!";
+	private static final String VALOR_INVALIDO = "Atenção! O valor inserida é inválido!!";
 
 	private Long id;
 	private Finalidade finalidade = Finalidade.CONSUMO;
@@ -50,6 +59,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.id = id;
 	}
 
+	@NotNull(message = FINALIDADE_OBRIGATORIA)
 	@Enumerated(EnumType.STRING)
 	public Finalidade getFinalidade() {
 		return finalidade;
@@ -59,6 +69,8 @@ public class DocumentoFiscalItem implements Serializable {
 		this.finalidade = finalidade;
 	}
 
+	@NotNull(message = QUANTIDADE_OBRIGATORIA)
+	@Positive(message = QUANTIDADE_INVALIDA)
 	public BigDecimal getQuantidade() {
 		return quantidade;
 	}
@@ -67,6 +79,8 @@ public class DocumentoFiscalItem implements Serializable {
 		this.quantidade = quantidade;
 	}
 
+	@NotNull(message = VALOR_OBRIGATORIO)
+	@Positive(message = VALOR_INVALIDO)
 	public BigDecimal getValorUnitario() {
 		return valorUnitario;
 	}
@@ -75,7 +89,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.valorUnitario = valorUnitario;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id")
 	public Ncm getNcm() {
 		return ncm;
