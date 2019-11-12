@@ -126,8 +126,8 @@ public class TestHelper {
 				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA },
 				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA } };
 
-		int aux = 0;
 		for (String[] dados : data) {
+			int aux = 0;
 			DocumentoFiscal docFiscal = new DocumentoFiscal();
 			docFiscal.setTipo(dados[aux++]);
 			docFiscal.setEmitenteUf(EstadoSigla.valueOf(dados[aux++]));
@@ -151,8 +151,8 @@ public class TestHelper {
 		String[][] data = { { "CONSUMO", "10", "5506", NCM1 }, { "CONSUMO", "5", "5506", NCM2 },
 				{ "REVENDA", "10", "5566", NCM3 } };
 
-		int aux = 0;
 		for (String[] dados : data) {
+			int aux = 0;
 			DocumentoFiscalItem docFiscalItem = new DocumentoFiscalItem();
 			docFiscalItem.setFinalidade(Finalidade.valueOf(dados[aux++]));
 			docFiscalItem.setQuantidade(new BigDecimal(dados[aux++]));
