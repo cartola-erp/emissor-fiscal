@@ -50,7 +50,6 @@ public class TributacaoFederalServiceLogicTest {
 	public void test00_CleanUp() {
 		testHelper.cleanUp();
 		testHelper.criarEstados();
-		testHelper.criarOperacoes();
 		testHelper.criarDocumentoFiscal();
 	}
 
@@ -62,7 +61,6 @@ public class TributacaoFederalServiceLogicTest {
 		tributacaoFederal.setIpiCst(IPI_CST);
 		tributacaoFederal.setNcm(ncmService.findOne(1L).get());
 		tributacaoFederal.setOperacao(operacaoService.findOne(1L).get());
-		
-		
+
 	}
 }

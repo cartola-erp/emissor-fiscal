@@ -36,7 +36,7 @@ public class TestHelper {
 	private static final String NCM2 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
 	private static final String NCM3 = "34561287";
 
-	public static String OPERACAO_VENDA = "Venda";	
+	public static String OPERACAO_VENDA = "Venda";
 	public static String OPERACAO_VENDA_INTERESTADUAL = "Venda Interestadual";
 	public static String OPERACAO_COMPRA = "Compra";
 	public static String OPERACAO_DEVOLUÇAO = "Devolução";
@@ -45,7 +45,7 @@ public class TestHelper {
 	public static String OPERACAO_DEVOLUCAO_CLIENTE = "Devolução do cliente";
 	public static String OPERACAO_REMESSA = "Remessa";
 	public static String OPERACAO_REMESSA_CONSIGNADA = "Remessa consignada";
-	
+
 	@Autowired
 	private EstadoRepository estadoRepository;
 
@@ -82,11 +82,12 @@ public class TestHelper {
 		estadoRepository.saveAll(estados);
 	}
 
-	public void criarOperacoes() {
+	public List<Operacao> defineOperacoes() {
 		List<Operacao> operacoes = new LinkedList<>();
-		String[][] data = { { OPERACAO_VENDA }, { OPERACAO_VENDA_INTERESTADUAL }, {OPERACAO_COMPRA}, {OPERACAO_DEVOLUÇAO },
-				{OPERACAO_DEVOLUCAO_FORNECEDOR},{ OPERACAO_DEVOLUCAO_FORNECEDOR_FORA_ESTADO  }, { OPERACAO_DEVOLUCAO_CLIENTE },
-				{ OPERACAO_REMESSA }, { OPERACAO_REMESSA_CONSIGNADA} };
+		String[][] data = { { OPERACAO_VENDA }, { OPERACAO_VENDA_INTERESTADUAL }, { OPERACAO_COMPRA },
+				{ OPERACAO_DEVOLUÇAO }, { OPERACAO_DEVOLUCAO_FORNECEDOR },
+				{ OPERACAO_DEVOLUCAO_FORNECEDOR_FORA_ESTADO }, { OPERACAO_DEVOLUCAO_CLIENTE }, { OPERACAO_REMESSA },
+				{ OPERACAO_REMESSA_CONSIGNADA } };
 
 		for (String[] dados : data) {
 			int aux = 0;
@@ -95,6 +96,7 @@ public class TestHelper {
 			operacoes.add(operacao);
 		}
 		operacaoRepository.saveAll(operacoes);
+		return operacoes;
 	}
 
 	public List<Ncm> defineNcms() {
@@ -117,11 +119,12 @@ public class TestHelper {
 
 	public void criarDocumentoFiscal() {
 		List<DocumentoFiscal> documentosFiscais = new LinkedList<>();
+		List<Operacao> operacoes = defineOperacoes();
 
-		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA" },
-				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA" },
-				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA" },
-				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA" } };
+		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA", OPERACAO_VENDA },
+				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
+				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA },
+				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA } };
 
 		int aux = 0;
 		for (String[] dados : data) {
@@ -131,6 +134,9 @@ public class TestHelper {
 			docFiscal.setEmitenteRegimeApuracao(dados[aux++]);
 			docFiscal.setDestinatarioUf(EstadoSigla.valueOf(dados[aux++]));
 			docFiscal.setDestinatarioPessoa(Pessoa.valueOf(dados[aux++]));
+			String operacaoDescricao = dados[aux++];
+			docFiscal.setOperacao(operacoes.stream()
+					.filter(operacao -> operacao.getDescricao().equals(operacaoDescricao)).findAny().get());
 			docFiscal.setItens(criarDocumentoFiscalItem());
 			documentosFiscais.add(docFiscal);
 		}
@@ -141,6 +147,7 @@ public class TestHelper {
 	public List<DocumentoFiscalItem> criarDocumentoFiscalItem() {
 		List<DocumentoFiscalItem> documentoFiscalItens = new LinkedList<>();
 		List<Ncm> ncms = defineNcms();
+
 		String[][] data = { { "CONSUMO", "10", "5506", NCM1 }, { "CONSUMO", "5", "5506", NCM2 },
 				{ "REVENDA", "10", "5566", NCM3 } };
 
