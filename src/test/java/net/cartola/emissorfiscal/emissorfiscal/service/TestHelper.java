@@ -82,7 +82,7 @@ public class TestHelper {
 		estadoRepository.saveAll(estados);
 	}
 
-	public List<Operacao> defineOperacoes() {
+	private List<Operacao> defineOperacoes() {
 		List<Operacao> operacoes = new LinkedList<>();
 		String[][] data = { { OPERACAO_VENDA }, { OPERACAO_VENDA_INTERESTADUAL }, { OPERACAO_COMPRA },
 				{ OPERACAO_DEVOLUÇAO }, { OPERACAO_DEVOLUCAO_FORNECEDOR },
@@ -99,7 +99,7 @@ public class TestHelper {
 		return operacoes;
 	}
 
-	public List<Ncm> defineNcms() {
+	private List<Ncm> defineNcms() {
 		List<Ncm> ncms = new LinkedList<>();
 		String[][] data = { { NCM1, "43", "Essa é uma DESCRIÇÃO do PRIMEIRO NCM para o teste" },
 				{ NCM2, "32", "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste" },
@@ -120,6 +120,7 @@ public class TestHelper {
 	public void criarDocumentoFiscal() {
 		List<DocumentoFiscal> documentosFiscais = new LinkedList<>();
 		List<Operacao> operacoes = defineOperacoes();
+		List<Ncm> ncms = defineNcms();
 
 		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA", OPERACAO_VENDA },
 				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
@@ -137,16 +138,15 @@ public class TestHelper {
 			String operacaoDescricao = dados[aux++];
 			docFiscal.setOperacao(operacoes.stream()
 					.filter(operacao -> operacao.getDescricao().equals(operacaoDescricao)).findAny().get());
-			docFiscal.setItens(criarDocumentoFiscalItem());
+			docFiscal.setItens(criarDocumentoFiscalItem(ncms));
 			documentosFiscais.add(docFiscal);
 		}
 		docFiscalRepository.saveAll(documentosFiscais);
 		documentosFiscais.stream().forEach(docFiscal -> docFiscalItemRepository.saveAll(docFiscal.getItens()));
 	}
 
-	public List<DocumentoFiscalItem> criarDocumentoFiscalItem() {
+	private List<DocumentoFiscalItem> criarDocumentoFiscalItem(List<Ncm> ncms) {
 		List<DocumentoFiscalItem> documentoFiscalItens = new LinkedList<>();
-		List<Ncm> ncms = defineNcms();
 
 		String[][] data = { { "CONSUMO", "10", "5506", NCM1 }, { "CONSUMO", "5", "5506", NCM2 },
 				{ "REVENDA", "10", "5566", NCM3 } };
