@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
-import java.util.HashMap;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +14,8 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
+import net.cartola.emissorfiscal.tributacao.CalculoImposto;
+import net.cartola.emissorfiscal.tributacao.Imposto;
 
 @Service
 public class CalculoFiscalEstadual implements CalculoFiscal {
@@ -23,36 +26,45 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	@Autowired
 	CalculoIcms calculoIcms;
 
+	
+	/**
+	 * O calculo de imposto retornado aqui é do TOTAL DA NFE (aparentemente)
+	 */
 	@Override
-	public Map<String, String> calculaImposto(DocumentoFiscal documentoFiscal) {
-		Map<String, String> resultMap = new HashMap<>();
+	public void calculaImposto(DocumentoFiscal documentoFiscal) {
+		List<CalculoImposto> listImpostos = new ArrayList<>();
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+
+		Map<Ncm, TributacaoEstadual> mapaTributacoes = ncms.stream()
+				.collect(Collectors.toMap(ncm -> ncm, ncm -> tributacaoEstadualRepository.findByNcm(ncm).get(0)));
+
+		documentoFiscal.getItens().forEach(docItem -> {
+			TributacaoEstadual tributacao = mapaTributacoes.get(docItem.getNcm());
+			listImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
 		
-		Map<Ncm, TributacaoEstadual> mapaTributacoes = new HashMap<>();
-		for(Ncm ncm:ncms) {
-			List<TributacaoEstadual> tributacaoEstaduals = tributacaoEstadualRepository.findByNcm(ncm);
-			mapaTributacoes.put(ncm, tributacaoEstaduals.get(0));
-		}
-		
-		documentoFiscal.getItens().forEach(di -> {
-			TributacaoEstadual tributacao = mapaTributacoes.get(di.getNcm());
-			Map<String, String> rm = calculoIcms.calcula(di, tributacao);
 		});
 		
-		totaliza(documentoFiscal);
-
-		return resultMap;
+		setaIcmsBaseEValor(documentoFiscal, listImpostos);
 	}
-
+	
+	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listImpostos) {
+		documentoFiscal.setIcmsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getValorUnitario)
+				.reduce(BigDecimal.ZERO, BigDecimal::add));
+		documentoFiscal.setIcmsValor(totaliza(listImpostos.stream().filter(icms -> icms.getImposto().equals(Imposto.ICMS))
+				.collect(Collectors.toList())));
+	}
+	
 	/**
 	 * Calcula a soma do ICMS para os itens
 	 * @param documentoFiscal
 	 */
-	private void totaliza(DocumentoFiscal documentoFiscal) {
-		// TODO Auto-generated method stub
-		
+	private BigDecimal totaliza(List<CalculoImposto> listImpostos) {
+		BigDecimal[] icmsTotal = {BigDecimal.ZERO};
+		listImpostos.stream().forEach(icms -> {
+			icmsTotal[0] = icmsTotal[0].add(icms.getValorUnitario());
+		});
+		return icmsTotal[0];
 	}
-	
 	
 
 }

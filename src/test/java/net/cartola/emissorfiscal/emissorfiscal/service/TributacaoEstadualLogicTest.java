@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.FixMethodOrder;
@@ -17,12 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
+import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
@@ -52,6 +51,9 @@ public class TributacaoEstadualLogicTest {
 	@Autowired
 	private TributacaoEstadualService icmsService;
 	
+	@Autowired
+	private TestHelper testHelper;
+	
 	
 	// TRIBUTAÇÃO ESTADUAL (icms)
 	public static int TRIBUTACAO_ESTADUAL_ICMS_CST = 321;
@@ -68,39 +70,36 @@ public class TributacaoEstadualLogicTest {
 	private static Finalidade ITEM_FINALIDADE = Finalidade.CONSUMO;
 	private static BigDecimal ITEM_QUANTIDADE = new BigDecimal(2);
 	private static BigDecimal ITEM_VALOR_UNITARIO = new BigDecimal(5);
-	private static int ITEM_CFOP = 12345678;
+	private static int ITEM_CFOP = 1234;
 	private static BigDecimal ITEM_ICMS_BASE = new BigDecimal(2);
 	private static BigDecimal ITEM_ICMS_ALIQUOTA = new BigDecimal(5);
 	private static BigDecimal ITEM_ICMS_VALOR = new BigDecimal(10);
 	
-
+//	private static BigDecimal ITEM_VALOR_UNITARIO = new BigDecimal(100);
+//	private static BigDecimal ITEM_QUANTIDADE = new 
+	
 	
 	@Test
+	public void test00_CleanUp() {
+		testHelper.cleanUp();
+		testHelper.criarEstados();
+		testHelper.criarDocumentoFiscal();
+	}
+	
+	
+	// Venda ESTADUAL
+	@Test
 	public void test01_DeveCalcularOIcmsDeSPparaSP() {
-		Estado estadoOrigem = new Estado();
-		estadoOrigem.setSigla(EstadoServiceLogicTest.ESTADO_SIGLA);
-		estadoOrigem.setNome(EstadoServiceLogicTest.ESTADO_NOME);
-		Optional<Estado> opEstadoOrigem = estadoService.save(estadoOrigem);
+		// Buscando o Estado Origem inserido previamente
+		Optional<Estado> opEstadoOrigem = estadoService.findBySigla(EstadoSigla.SP);
 		assertTrue(opEstadoOrigem.isPresent());
-		
-////		Estado estadoDestino = new Estado();
-////		estadoDestino.setId(EstadoServiceLogicTest.ESTADO_ID);
-//		estadoDestino.setSigla(EstadoServiceLogicTest.ESTADO_SIGLA);
-//		estadoDestino.setNome(EstadoServiceLogicTest.ESTADO_NOME);
-		
-		Ncm ncm = new Ncm();
-		ncm.setNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
-		ncm.setExcecao(NcmServiceLogicTest.NCM_EXCECAO_REGISTRO_1);
-		ncm.setDescricao(NcmServiceLogicTest.NCM_DESCRICAO_REGISTRO_1);
-		Optional<Ncm> opNcm = ncmService.save(ncm);
+
+		Optional<Ncm> opNcm = ncmService.findByNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
 		assertTrue(opNcm.isPresent());
-		
-		Operacao operacao = new Operacao();
-		operacao.setId(OperacaoServiceLogicTest.OPERACAO_ID);
-		operacao.setDescricao(OperacaoServiceLogicTest.OPERACAO_DESCRICAO);
-		Optional<Operacao> opOperacao = operacaoService.save(operacao);
-		assertTrue(opNcm.isPresent());
-		
+
+		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA);
+		assertTrue(opOperacao.isPresent());
+
 		DocumentoFiscalItem item = new DocumentoFiscalItem();
 		item.setId(ITEM_ID);
 		item.setFinalidade(ITEM_FINALIDADE);
@@ -112,14 +111,13 @@ public class TributacaoEstadualLogicTest {
 		item.setIcmsValor(ITEM_ICMS_VALOR);
 		
 		item.setNcm(opNcm.get());
-		item.setValorUnitario(new BigDecimal(100));
-		item.setQuantidade(new BigDecimal(2));
+//		item.setValorUnitario(new BigDecimal(100));
+//		item.setQuantidade(new BigDecimal(2));
+		List<DocumentoFiscalItem> itens = Arrays.asList(item,item);
 		
 		DocumentoFiscal doc = new DocumentoFiscal();
-		doc.setDestinatarioUf(opEstadoOrigem.get().getSigla().name());
-		doc.setEmitenteUf(opEstadoOrigem.get().getSigla().name());
-		
-		List<DocumentoFiscalItem> itens = Arrays.asList(item);
+		doc.setDestinatarioUf(opEstadoOrigem.get().getSigla());
+		doc.setEmitenteUf(opEstadoOrigem.get().getSigla());
 		doc.setItens(itens);
 		
 		TributacaoEstadual icms = new TributacaoEstadual();
@@ -137,15 +135,28 @@ public class TributacaoEstadualLogicTest {
 		Optional<TributacaoEstadual> opIcms = icmsService.save(icms);
 		assertTrue(opIcms.isPresent());
 		
+		System.out.println("|ANTES DO CALCULO| doc.getIcmsValor() "+ doc.getIcmsValor());
+
 		
-		Map<String, String> calculo = calculoFiscalEstadual.calculaImposto(doc);
-		assertTrue(!calculo.isEmpty());
+		calculoFiscalEstadual.calculaImposto(doc);
+
+//		assertNotNull(calcIcms);
 		
+		System.out.println("doc.getIcmsBase() "+ doc.getIcmsBase());
+		System.out.println("doc.getIcmsValor() "+ doc.getIcmsValor());
 		
-		System.out.println(calculo);
-		System.out.println(calculo.get(0));
+		System.out.println("doc.getItens().get(0).getIcmsBase() "+ doc.getItens().get(0).getIcmsBase());
+		System.out.println("doc.getItens().get(0).getIcmsValor() "+ doc.getItens().get(0).getIcmsValor());
+		System.out.println("doc.getItens().get(0).getIcmsAliquota() "+ doc.getItens().get(0).getIcmsAliquota());
+
+		
+//		System.out.println(calcIcms);
+//		System.out.println(calcIcms.getValor());
 		
 		System.out.println(this.getClass().getName() + " test01_DeveCalcularOIcmsDeSPparaSP, Ok");
 
 	}
+	
+	
+	
 }
