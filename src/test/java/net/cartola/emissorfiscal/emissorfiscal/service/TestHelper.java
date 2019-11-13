@@ -121,7 +121,6 @@ public class TestHelper {
 		List<DocumentoFiscal> documentosFiscais = new LinkedList<>();
 		List<Operacao> operacoes = defineOperacoes();
 		List<Ncm> ncms = defineNcms();
-		List<DocumentoFiscalItem> itens = criarDocumentoFiscalItem(ncms);
 
 		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA", OPERACAO_VENDA },
 				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
@@ -139,7 +138,7 @@ public class TestHelper {
 			String operacaoDescricao = dados[aux++];
 			docFiscal.setOperacao(operacoes.stream()
 					.filter(operacao -> operacao.getDescricao().equals(operacaoDescricao)).findAny().get());
-			docFiscal.setItens(itens);
+			docFiscal.setItens(criarDocumentoFiscalItem(ncms));
 			documentosFiscais.add(docFiscal);
 		}
 		documentosFiscais.stream().forEach(docFiscal -> {

@@ -49,7 +49,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal ipiBase;
 	private BigDecimal ipiAliquota;
 	private BigDecimal ipiValor;
-	
+
 	private DocumentoFiscal documentoFiscal;
 
 	@Id
@@ -206,8 +206,8 @@ public class DocumentoFiscalItem implements Serializable {
 		this.ipiValor = ipiValor;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "doc_fiscal_id", unique = false, foreignKey = @ForeignKey(name = "fnk_documento_fiscal"))
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "docu_fisc_id", unique = false, foreignKey = @ForeignKey(name = "fnk_documento_fiscal"))
 	public DocumentoFiscal getDocumentoFiscal() {
 		return documentoFiscal;
 	}

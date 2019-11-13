@@ -60,7 +60,7 @@ public class DocumentoFiscal implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "operacao_id", referencedColumnName = "oper_id", foreignKey= @ForeignKey(name = "fnk_docu_fisc_operacao_id"))
+	@JoinColumn(name = "operacao_id", referencedColumnName = "oper_id", foreignKey = @ForeignKey(name = "fnk_docu_fisc_operacao_id"))
 	public Operacao getOperacao() {
 		return operacao;
 	}
@@ -115,7 +115,7 @@ public class DocumentoFiscal implements Serializable {
 		this.destinatarioPessoa = destinatarioPessoa;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="documentoFiscal")
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "documentoFiscal")
 	public List<DocumentoFiscalItem> getItens() {
 		return itens;
 	}
