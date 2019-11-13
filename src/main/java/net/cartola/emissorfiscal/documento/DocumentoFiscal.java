@@ -115,8 +115,7 @@ public class DocumentoFiscal implements Serializable {
 		this.destinatarioPessoa = destinatarioPessoa;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "doc_fiscal_id", unique = false, foreignKey = @ForeignKey(name = "fnk_documento_fiscal_item"))
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="documentoFiscal")
 	public List<DocumentoFiscalItem> getItens() {
 		return itens;
 	}

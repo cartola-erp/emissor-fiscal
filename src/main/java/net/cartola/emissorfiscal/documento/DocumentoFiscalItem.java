@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -206,6 +207,7 @@ public class DocumentoFiscalItem implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "doc_fiscal_id", unique = false, foreignKey = @ForeignKey(name = "fnk_documento_fiscal"))
 	public DocumentoFiscal getDocumentoFiscal() {
 		return documentoFiscal;
 	}
