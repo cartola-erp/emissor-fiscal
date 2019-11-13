@@ -81,7 +81,7 @@ public class TributacaoEstadualLogicTest {
 	
 	@Test
 	public void test00_CleanUp() {
-		testHelper.cleanUp();
+		testHelper.limpaBanco();
 		testHelper.criarEstados();
 		testHelper.criarDocumentoFiscal();
 	}

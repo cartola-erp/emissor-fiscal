@@ -142,10 +142,12 @@ public class TestHelper {
 			docFiscal.setItens(itens);
 			documentosFiscais.add(docFiscal);
 		}
+		documentosFiscais.stream().forEach(docFiscal -> {
+			docFiscal.getItens().stream().forEach(docItem -> {
+				docItem.setDocumentoFiscal(docFiscal);
+			});
+		});
 		docFiscalRepository.saveAll(documentosFiscais);
-//		documentosFiscais.stream().forEach(docFiscal -> {
-//			docFiscalItemRepository.saveAll(docFiscal.getItens());
-//		});
 	}
 
 	private List<DocumentoFiscalItem> criarDocumentoFiscalItem(List<Ncm> ncms) {
@@ -169,7 +171,7 @@ public class TestHelper {
 		return documentoFiscalItens;
 	}
 
-	public void cleanUp() {
+	public void limpaBanco() {
 		estadoRepository.deleteAll();
 		operacaoRepository.deleteAll();
 		ncmRepository.deleteAll();
