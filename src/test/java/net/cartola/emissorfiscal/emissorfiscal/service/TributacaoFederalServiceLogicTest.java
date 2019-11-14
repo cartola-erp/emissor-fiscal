@@ -1,5 +1,9 @@
 package net.cartola.emissorfiscal.emissorfiscal.service;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.Optional;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
+import net.cartola.emissorfiscal.emissorfiscal.model.TributacaoFederalBuilder;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
@@ -36,10 +43,14 @@ public class TributacaoFederalServiceLogicTest {
 
 	@Autowired
 	private TributacaoFederalService tributacaoFederalService;
-	
+
+	// temporário, até fazer a service
+	@Autowired
+	private DocumentoFiscalRepository documentoFiscalRepository;
+
 	@Autowired
 	private NcmService ncmService;
-	
+
 	@Autowired
 	private OperacaoService operacaoService;
 
@@ -55,11 +66,18 @@ public class TributacaoFederalServiceLogicTest {
 
 	@Test
 	public void test01_CalcularPisCofinsIPI() {
-		TributacaoFederal tributacaoFederal = new TributacaoFederal();
-		tributacaoFederal.setPisCst(PIS_CST);
-		tributacaoFederal.setCofinsCst(COFINS_CST);
-		tributacaoFederal.setIpiCst(IPI_CST);
-		tributacaoFederal.setNcm(ncmService.findOne(1L).get());
-		tributacaoFederal.setOperacao(operacaoService.findOne(1L).get());
+		TributacaoFederalBuilder tributFedBuilder = new TributacaoFederalBuilder().withNcm(ncmService.findOne(1L).get())
+				.withOperacao(operacaoService.findOne(1L).get()).withPisCst(PIS_CST).withCofinsCst(COFINS_CST)
+				.withIpiCst(IPI_CST);
+		TributacaoFederal tributacaoFederal = tributFedBuilder.build();
+		Optional<TributacaoFederal> opTribFed = tributacaoFederalService.save(tributacaoFederal);
+		assertTrue(opTribFed.isPresent());
+
+		DocumentoFiscal docFiscal = documentoFiscalRepository.findById(1L).get();
+		calculoFiscalFederal.calculaImposto(docFiscal);
+		System.out.println(docFiscal.getPisBase());
+		System.out.println(docFiscal.getCofinsBase());
+		System.out.println(docFiscal.getPisValor());
+		System.out.println(docFiscal.getCofinsValor());
 	}
 }
