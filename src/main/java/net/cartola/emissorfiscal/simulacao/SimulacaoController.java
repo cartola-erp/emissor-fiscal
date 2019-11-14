@@ -69,11 +69,18 @@ public class SimulacaoController {
 //			return mv;
 //		}
 		System.out.println("Documento Fiscal: " +documentoFiscal);
-		Map<String, String> resultMapCalculoIcms = new HashMap<>();
-
-		resultMapCalculoIcms = calcFiscalEstadual.calculaImposto(documentoFiscal);
 		
-		System.out.println("resultMapCalculoIcms: " +resultMapCalculoIcms);
+		calcFiscalEstadual.calculaImposto(documentoFiscal);
+		
+		System.out.println("ICMS Base: " + documentoFiscal.getIcmsBase());
+		
+		System.out.println("ICMS Valor: " + documentoFiscal.getIcmsValor());
+		
+//		Map<String, String> resultMapCalculoIcms = new HashMap<>();
+
+//		resultMapCalculoIcms = calcFiscalEstadual.calculaImposto(documentoFiscal);
+		
+//		System.out.println("resultMapCalculoIcms: " +resultMapCalculoIcms);
 
 		
 		ModelAndView mv = new ModelAndView("redirect:/");

@@ -58,7 +58,7 @@ public class EstadoController {
 	@PostMapping("/consulta")
 	public ModelAndView findBySigla(@RequestParam("siglaEstado") String siglaEstado, Model model) {
 		ModelAndView mv = new ModelAndView("estado/consulta");
-		mv.addObject("listEstado", estadoService.findBySiglaNome(siglaEstado));
+		mv.addObject("listEstado", estadoService.findBySigla(EstadoSigla.valueOf(siglaEstado)));
 
 		return mv;
 	}
