@@ -93,8 +93,8 @@ public class DocumentoFiscalItem implements Serializable {
 		this.valorUnitario = valorUnitario;
 	}
 
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id", unique = false, foreignKey = @ForeignKey(foreignKeyDefinition = "fnk_ncms"))
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id", foreignKey = @ForeignKey(foreignKeyDefinition = "fnk_ncms"))
 	public Ncm getNcm() {
 		return ncm;
 	}

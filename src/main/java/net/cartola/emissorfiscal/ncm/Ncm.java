@@ -38,7 +38,6 @@ public class Ncm implements Serializable {
 	private int numero;
 	private int excecao;
 	private String descricao;
-	private DocumentoFiscalItem documentoFiscalItem;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,15 +79,6 @@ public class Ncm implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
-	}
-
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "ncm")
-	public DocumentoFiscalItem getDocumentoFiscalItem() {
-		return documentoFiscalItem;
-	}
-
-	public void setDocumentoFiscalItem(DocumentoFiscalItem documentoFiscalItem) {
-		this.documentoFiscalItem = documentoFiscalItem;
 	}
 
 	@Override
