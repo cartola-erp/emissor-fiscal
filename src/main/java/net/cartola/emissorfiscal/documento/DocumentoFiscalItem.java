@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -92,8 +93,8 @@ public class DocumentoFiscalItem implements Serializable {
 		this.valorUnitario = valorUnitario;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id")
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id", unique = false, foreignKey = @ForeignKey(foreignKeyDefinition = "fnk_ncms"))
 	public Ncm getNcm() {
 		return ncm;
 	}

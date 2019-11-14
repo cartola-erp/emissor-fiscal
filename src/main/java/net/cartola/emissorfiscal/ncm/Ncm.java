@@ -4,9 +4,11 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
@@ -14,6 +16,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.Range;
+
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 
 /**
  * Ncm
@@ -34,6 +38,7 @@ public class Ncm implements Serializable {
 	private int numero;
 	private int excecao;
 	private String descricao;
+	private DocumentoFiscalItem documentoFiscalItem;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,8 +52,8 @@ public class Ncm implements Serializable {
 	}
 
 	@Column(name = "nume", nullable = false)
-	@Positive(message="O NÚMERO tem que ser positivo e maior que ZERO")
-	@Range(min=1000000, max=99999999, message="O NÚMERO do NCM, está incorreto!")
+	@Positive(message = "O NÚMERO tem que ser positivo e maior que ZERO")
+	@Range(min = 1000000, max = 99999999, message = "O NÚMERO do NCM, está incorreto!")
 	public int getNumero() {
 		return numero;
 	}
@@ -58,7 +63,7 @@ public class Ncm implements Serializable {
 	}
 
 	@Column(name = "exce", nullable = false)
-	@Positive(message="A EXCEÇÃO tem que ser positiva e maior que ZERO")
+	@Positive(message = "A EXCEÇÃO tem que ser positiva e maior que ZERO")
 	public int getExcecao() {
 		return excecao;
 	}
@@ -75,6 +80,15 @@ public class Ncm implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "ncm")
+	public DocumentoFiscalItem getDocumentoFiscalItem() {
+		return documentoFiscalItem;
+	}
+
+	public void setDocumentoFiscalItem(DocumentoFiscalItem documentoFiscalItem) {
+		this.documentoFiscalItem = documentoFiscalItem;
 	}
 
 	@Override
