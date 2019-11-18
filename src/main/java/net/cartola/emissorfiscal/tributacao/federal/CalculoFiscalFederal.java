@@ -35,9 +35,12 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm)
 				.collect(Collectors.toSet());
 
+		List<TributacaoFederal> tributacoesFederais = tributacaoFederalService
+				.findTributacaoFederalByVariosNcmsEOperacao(documentoFiscal.getOperacao(), ncms);
+		
 		Map<Ncm, TributacaoFederal> mapaTributacoesPorNcm = ncms.stream()
 				.collect(Collectors.toMap(ncm -> ncm,
-						ncm -> tributacaoFederalService.findTributacaoFederalByVariosNcms(ncms).stream()
+						ncm -> tributacoesFederais.stream()
 								.filter(tributacaoFederal -> tributacaoFederal.getNcm().getId().equals(ncm.getId()))
 								.findAny().get()));
 
@@ -52,14 +55,14 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	}
 
 	private void setaPisBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
-		documentoFiscal.setPisBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getValorUnitario)
+		documentoFiscal.setPisBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getPisBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setPisValor(totaliza(listaImpostos.stream().filter(ipi -> ipi.getImposto().equals(Imposto.PIS))
 				.collect(Collectors.toList())));
 	}
 
 	private void setaCofinsBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
-		documentoFiscal.setCofinsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getValorUnitario)
+		documentoFiscal.setCofinsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getCofinsBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setCofinsValor(totaliza(listaImpostos.stream()
 				.filter(ipi -> ipi.getImposto().equals(Imposto.COFINS)).collect(Collectors.toList())));

@@ -41,6 +41,10 @@ public class TributacaoFederalService {
 	public List<TributacaoFederal> findTributacaoFederalByVariosNcms(Collection<Ncm> ncms) {
 		return tributacaoFederalRepository.findByNcmIn(ncms);
 	}
+	
+	public List<TributacaoFederal> findTributacaoFederalByVariosNcmsEOperacao(Operacao operacao, Collection<Ncm> ncms) {
+		return tributacaoFederalRepository.findByOperacaoAndNcmIn(operacao, ncms);
+	}
 
 	public List<TributacaoFederal> findTributacaoFederalByOperacao(Operacao operacao) {
 		return tributacaoFederalRepository.findByOperacao(operacao);

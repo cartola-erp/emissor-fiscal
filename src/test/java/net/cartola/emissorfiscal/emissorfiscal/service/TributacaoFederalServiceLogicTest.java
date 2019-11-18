@@ -14,10 +14,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.emissorfiscal.model.TributacaoFederalBuilder;
-import net.cartola.emissorfiscal.ncm.NcmService;
-import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
@@ -40,6 +39,9 @@ public class TributacaoFederalServiceLogicTest {
 	public static final BigDecimal PIS_ALIQUOTA = new BigDecimal(1.65D);
 	public static final BigDecimal COFINS_ALIQUOTA = new BigDecimal(7.6D);
 	public static final BigDecimal IPI_ALIQUOTA = new BigDecimal(5D); // valor imaginário -> ver como definir esse valor
+	public static final BigDecimal PIS_BASE = new BigDecimal(0.3D);
+	public static final BigDecimal COFINS_BASE = new BigDecimal(0.2D);
+	public static final BigDecimal IPI_BASE = new BigDecimal(0.1D);
 
 	@Autowired
 	private CalculoFiscalFederal calculoFiscalFederal;
@@ -51,12 +53,6 @@ public class TributacaoFederalServiceLogicTest {
 	private DocumentoFiscalService documentoFiscalService;
 
 	@Autowired
-	private NcmService ncmService;
-
-	@Autowired
-	private OperacaoService operacaoService;
-
-	@Autowired
 	private TestHelper testHelper;
 
 	@Test
@@ -66,11 +62,40 @@ public class TributacaoFederalServiceLogicTest {
 		testHelper.criarDocumentoFiscal();
 	}
 
+	private List<TributacaoFederal> criaTributacaoFederal(List<DocumentoFiscal> documentosFiscais) {
+		List<TributacaoFederal> listTribFederal = new LinkedList<>();
+		documentosFiscais.stream().forEach(docFiscal -> {
+			docFiscal.getItens().stream().forEach(docFiscalItem -> {
+				boolean existeTribFedNcmOper = false;
+				if (listTribFederal != null && !listTribFederal.isEmpty()) {
+					existeTribFedNcmOper = verificaListaTribFederal(listTribFederal, docFiscal, docFiscalItem);
+				}
+				if (!existeTribFedNcmOper) {
+					TributacaoFederalBuilder tributFedBuilder = new TributacaoFederalBuilder()
+							.withNcm(docFiscalItem.getNcm()).withOperacao(docFiscal.getOperacao()).withPisCst(PIS_CST)
+							.withPisBase(PIS_BASE).withPisAliquota(PIS_ALIQUOTA).withCofinsCst(COFINS_CST)
+							.withCofinsBase(COFINS_BASE).withCofinsAliquota(COFINS_ALIQUOTA).withIpiCst(IPI_CST)
+							.withIpiBase(IPI_BASE).withIpiAliquota(IPI_ALIQUOTA);
+					listTribFederal.add(tributFedBuilder.build());
+				}
+			});
+		});
+		return listTribFederal;
+	}
+
+	private boolean verificaListaTribFederal(List<TributacaoFederal> listTribFederal, DocumentoFiscal docFiscal,
+			DocumentoFiscalItem docFiscalItem) {
+		return listTribFederal.stream()
+				.filter(tribFed -> tribFed.getNcm().getId().equals(docFiscalItem.getNcm().getId())
+						&& tribFed.getOperacao().getId().equals(docFiscal.getOperacao().getId()))
+				.findAny().isPresent();
+	}
+
 	@Test
 	public void test01_CalcularPisCofinsIPI() {
 		List<TributacaoFederal> tributacoesFederais = new LinkedList<>();
 		List<DocumentoFiscal> documentosFiscais = documentoFiscalService.findAll();
-		documentosFiscais.stream().forEach(docFiscal -> tributacoesFederais.add(criaTributacaoFederal(docFiscal)));
+		tributacoesFederais.addAll(criaTributacaoFederal(documentosFiscais));
 		tributacaoFederalService.saveAll(tributacoesFederais);
 
 		documentosFiscais.stream().forEach(docFiscal -> {
@@ -80,13 +105,5 @@ public class TributacaoFederalServiceLogicTest {
 			System.out.println(docFiscal.getPisValor());
 			System.out.println(docFiscal.getCofinsValor());
 		});
-	}
-
-	private TributacaoFederal criaTributacaoFederal(DocumentoFiscal docFiscal) {
-		TributacaoFederalBuilder tributFedBuilder = new TributacaoFederalBuilder().withNcm(ncmService.findOne(1L).get())
-				.withOperacao(operacaoService.findOne(1L).get()).withPisCst(PIS_CST).withPisBase()
-				.withPisAliquota(PIS_ALIQUOTA).withCofinsCst(COFINS_CST).withCofinsBase()
-				.withCofinsAliquota(COFINS_ALIQUOTA).withIpiCst(IPI_CST).withIpiBase().withIpiAliquota(IPI_ALIQUOTA);
-		TributacaoFederal tributacaoFederal = tributFedBuilder.build();
 	}
 }

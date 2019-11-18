@@ -22,4 +22,6 @@ public interface TributacaoFederalRepository extends JpaRepository<TributacaoFed
 	List<TributacaoFederal> findByOperacao(Operacao operacao);
 
 	List<TributacaoFederal> findByOperacaoIn(Collection<Operacao> operacoes);
+
+	List<TributacaoFederal> findByOperacaoAndNcmIn(Operacao operacao, Collection<Ncm> ncms);
 }
