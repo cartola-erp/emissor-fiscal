@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.emissorfiscal.model;
 
+import java.math.BigDecimal;
+
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
@@ -37,13 +39,48 @@ public class TributacaoFederalBuilder {
 		return this;
 	}
 
+	public TributacaoFederalBuilder withPisBase(BigDecimal pisBase) {
+		tributacaoFederal.setPisBase(pisBase);
+		return this;
+	}
+
+	public TributacaoFederalBuilder withPisAliquota(BigDecimal pisAliquota) {
+		tributacaoFederal.setPisAliquota(pisAliquota);
+		return this;
+	}
+
 	public TributacaoFederalBuilder withCofinsCst(int cofinsCst) {
 		tributacaoFederal.setCofinsCst(cofinsCst);
 		return this;
 	}
 
+	public TributacaoFederalBuilder withCofinsBase(BigDecimal cofinsBase) {
+		tributacaoFederal.setCofinsBase(cofinsBase);
+		return this;
+	}
+
+	public TributacaoFederalBuilder withCofinsAliquota(BigDecimal cofinsAliquota) {
+		tributacaoFederal.setCofinsAliquota(cofinsAliquota);
+		return this;
+	}
+
 	public TributacaoFederalBuilder withIpiCst(int ipiCst) {
 		tributacaoFederal.setIpiCst(ipiCst);
+		return this;
+	}
+
+	public TributacaoFederalBuilder withIpiBase(BigDecimal ipiBase) {
+		tributacaoFederal.setIpiBase(ipiBase);
+		return this;
+	}
+
+	public TributacaoFederalBuilder withIpiAliquota(BigDecimal ipiAliquota) {
+		tributacaoFederal.setIpiAliquota(ipiAliquota);
+		return this;
+	}
+
+	public TributacaoFederalBuilder withMensagem(String mensagem) {
+		tributacaoFederal.setMensagem(mensagem);
 		return this;
 	}
 }
