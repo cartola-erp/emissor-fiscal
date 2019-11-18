@@ -11,44 +11,41 @@ import org.springframework.validation.ObjectError;
 
 @Service
 public class OperacaoService {
-	
+
 	@Autowired
-	OperacaoRepository repository;
-	
+	private OperacaoRepository operacaoRepository;
+
 	public List<Operacao> findAll() {
-		return repository.findAll();
+		return operacaoRepository.findAll();
 	}
-	
+
 	public Optional<Operacao> save(Operacao operacao) {
-		return Optional.ofNullable(repository.saveAndFlush(operacao));
+		return Optional.ofNullable(operacaoRepository.saveAndFlush(operacao));
 	}
 
 	public List<Operacao> findByParteDaDescricao(String descricaoOperacao) {
-		return repository.findOperacaoByParteDaDescricao(descricaoOperacao);
+		return operacaoRepository.findOperacaoByParteDaDescricao(descricaoOperacao);
 	}
 
 	public Optional<Operacao> findOperacaoByDescricao(String descricaoOperacao) {
-		return repository.findOperacaoByDescricao(descricaoOperacao);
+		return operacaoRepository.findOperacaoByDescricao(descricaoOperacao);
 	}
-	
-	
+
 	public boolean isOperacaoExistente(String descricaoOperacao) {
-		return repository.findOperacaoByDescricao(descricaoOperacao).isPresent();
+		return operacaoRepository.findOperacaoByDescricao(descricaoOperacao).isPresent();
 	}
-	
+
 	public Optional<Operacao> findOne(Long id) {
-		return repository.findById(id); 
+		return operacaoRepository.findById(id);
 	}
 
 	public void deleteById(long id) {
-		repository.deleteById(id);
+		operacaoRepository.deleteById(id);
 	}
-	
 
 	public List<String> getMensagensErros(BindingResult bindResult, boolean isOperacaoExistente) {
-//	public List<String> getMensagensErros(BindingResult bindResult) {
 		List<String> msg = new ArrayList<>();
-		for(ObjectError objError : bindResult.getAllErrors()) {
+		for (ObjectError objError : bindResult.getAllErrors()) {
 			msg.add(objError.getDefaultMessage());
 		}
 		if (isOperacaoExistente) {
@@ -56,5 +53,5 @@ public class OperacaoService {
 		}
 		return msg;
 	}
-	
+
 }

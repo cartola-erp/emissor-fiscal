@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,12 +30,24 @@ public class TributacaoFederalService {
 		return Optional.ofNullable(tributacaoFederalRepository.saveAndFlush(tributacaoFederal));
 	}
 
+	public List<TributacaoFederal> saveAll(List<TributacaoFederal> tributacoesFederais) {
+		return tributacaoFederalRepository.saveAll(tributacoesFederais);
+	}
+
 	public List<TributacaoFederal> findTributacaoFederalByNcm(Ncm ncm) {
 		return tributacaoFederalRepository.findByNcm(ncm);
 	}
 
+	public List<TributacaoFederal> findTributacaoFederalByVariosNcms(Collection<Ncm> ncms) {
+		return tributacaoFederalRepository.findByNcmIn(ncms);
+	}
+
 	public List<TributacaoFederal> findTributacaoFederalByOperacao(Operacao operacao) {
 		return tributacaoFederalRepository.findByOperacao(operacao);
+	}
+
+	public List<TributacaoFederal> findTributacaoFederalByVariasOperacoes(List<Operacao> operacoes) {
+		return tributacaoFederalRepository.findByOperacaoIn(operacoes);
 	}
 
 	public Optional<TributacaoFederal> findOne(Long id) {

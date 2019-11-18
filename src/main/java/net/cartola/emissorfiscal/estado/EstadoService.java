@@ -11,34 +11,33 @@ import org.springframework.validation.ObjectError;
 
 @Service
 public class EstadoService {
-	
+
 	@Autowired
-	EstadoRepository repository;
-	
+	private EstadoRepository estadoRepository;
+
 	public List<Estado> findAll() {
-		return repository.findAll();
+		return estadoRepository.findAll();
 	}
-	
+
 	public Optional<Estado> save(Estado estado) {
-//		estado.setSigla(estado.getSigla().toUpperCase());
-		return Optional.ofNullable(repository.saveAndFlush(estado));
+		return Optional.ofNullable(estadoRepository.saveAndFlush(estado));
 	}
 
 	public Optional<Estado> findBySigla(EstadoSigla siglaEstado) {
-		return repository.findEstadoBySigla(siglaEstado);
+		return estadoRepository.findEstadoBySigla(siglaEstado);
 	}
 
 	public Optional<Estado> findOne(Long id) {
-		return repository.findById(id); 
+		return estadoRepository.findById(id);
 	}
 
 	public void deleteById(long id) {
-		repository.deleteById(id);
+		estadoRepository.deleteById(id);
 	}
-	
+
 	public List<String> getMensagensErros(BindingResult bindResult, boolean existeEsseEstado) {
 		List<String> msg = new ArrayList<>();
-		for(ObjectError objError : bindResult.getAllErrors()) {
+		for (ObjectError objError : bindResult.getAllErrors()) {
 			msg.add(objError.getDefaultMessage());
 		}
 		if (existeEsseEstado) {

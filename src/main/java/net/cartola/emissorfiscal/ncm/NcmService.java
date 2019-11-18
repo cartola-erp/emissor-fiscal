@@ -11,48 +11,47 @@ import org.springframework.validation.ObjectError;
 
 @Service
 public class NcmService {
-	
+
 	@Autowired
-	NcmRepository repository;
-	
+	private NcmRepository ncmRepository;
+
 	public List<Ncm> findAll() {
-		return repository.findAll();
+		return ncmRepository.findAll();
 	}
-	
+
 	public Optional<Ncm> save(Ncm ncm) {
 		boolean isNumeroCorreto = isNumeroNcmCorreto(ncm.getNumero());
 		if (!isNumeroCorreto) {
 			return Optional.empty();
 		}
-		return Optional.ofNullable(repository.saveAndFlush(ncm));
+		return Optional.ofNullable(ncmRepository.saveAndFlush(ncm));
 	}
 
 	public Optional<Ncm> findByNumero(int numeroNcm) {
-		return repository.findNcmByNumero(numeroNcm);
+		return ncmRepository.findNcmByNumero(numeroNcm);
 	}
 
 	public Optional<Ncm> findOne(Long id) {
-		return repository.findById(id); 
+		return ncmRepository.findById(id);
 	}
 
 	public void deleteById(long id) {
-		repository.deleteById(id);
-	}
-	
-	
-	// ====================  "VALIDAÇÕES" =================== 
-	public boolean existeNumeroEExcecao(Ncm ncm) {
-		return repository.findNumeroAndExcecao(ncm.getNumero(), ncm.getExcecao()).isPresent();
+		ncmRepository.deleteById(id);
 	}
 
-	public boolean isNumeroNcmCorreto(int numero)  {
+	// ==================== "VALIDAÇÕES" ===================
+	public boolean existeNumeroEExcecao(Ncm ncm) {
+		return ncmRepository.findNumeroAndExcecao(ncm.getNumero(), ncm.getExcecao()).isPresent();
+	}
+
+	public boolean isNumeroNcmCorreto(int numero) {
 		String numeroNcm = Integer.toString(numero);
 		if (numeroNcm.length() <= 7 || numeroNcm.length() >= 9) {
-			return  false;
-		} 
+			return false;
+		}
 		return true;
 	}
-	
+
 	public boolean isExcecaoCorreto(int excecao) {
 		String excecaoNcm = Integer.toString(excecao);
 		if (excecaoNcm.length() >= 3 || excecaoNcm.length() == 1) {
@@ -60,11 +59,10 @@ public class NcmService {
 		}
 		return true;
 	}
-	
 
 	public List<String> getMensagensErros(BindingResult bindResult, boolean existeNumeroEExecao) {
 		List<String> msg = new ArrayList<>();
-		for(ObjectError objError : bindResult.getAllErrors()) {
+		for (ObjectError objError : bindResult.getAllErrors()) {
 			msg.add(objError.getDefaultMessage());
 		}
 		if (existeNumeroEExecao) {

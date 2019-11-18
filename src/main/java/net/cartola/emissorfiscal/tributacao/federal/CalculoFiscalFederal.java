@@ -21,7 +21,7 @@ import net.cartola.emissorfiscal.tributacao.Imposto;
 public class CalculoFiscalFederal implements CalculoFiscal {
 
 	@Autowired
-	private TributacaoFederalRepository tributacaoFederalRepository;
+	private TributacaoFederalService tributacaoFederalService;
 
 	@Autowired
 	private CalculoPisCofins calculoPisCofins;
@@ -36,7 +36,10 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 				.collect(Collectors.toSet());
 
 		Map<Ncm, TributacaoFederal> mapaTributacoesPorNcm = ncms.stream()
-				.collect(Collectors.toMap(ncm -> ncm, ncm -> tributacaoFederalRepository.findByNcm(ncm).get(0)));
+				.collect(Collectors.toMap(ncm -> ncm,
+						ncm -> tributacaoFederalService.findTributacaoFederalByVariosNcms(ncms).stream()
+								.filter(tributacaoFederal -> tributacaoFederal.getNcm().getId().equals(ncm.getId()))
+								.findAny().get()));
 
 		documentoFiscal.getItens().stream().forEach(di -> {
 			TributacaoFederal tributacao = mapaTributacoesPorNcm.get(di.getNcm());
