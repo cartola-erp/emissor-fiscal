@@ -34,9 +34,11 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
 		List<CalculoImposto> listImpostos = new ArrayList<>();
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
-
+//		List<TributacaoEstadual> listTributacoes = tributacaoEstadualRepository.findByNcmIn(ncms);
+		
 		Map<Ncm, TributacaoEstadual> mapaTributacoes = ncms.stream()
 				.collect(Collectors.toMap(ncm -> ncm, ncm -> tributacaoEstadualRepository.findByNcm(ncm).get(0)));
+//		.collect(Collectors.toMap(ncm -> ncm, ncm -> listTributacoes.stream().filter(icms -> icms.getNcm().getId().equals(ncm.)));
 
 		documentoFiscal.getItens().forEach(docItem -> {
 			TributacaoEstadual tributacao = mapaTributacoes.get(docItem.getNcm());

@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,6 @@ public interface TributacaoEstadualRepository extends JpaRepository<TributacaoEs
 //	List<TributacaoEstadual> findByNcm(List<Ncm> ncms);
 	List<TributacaoEstadual> findByNcm(Ncm ncm);
 	
+	List<TributacaoEstadual> findByNcmIn(Collection<Ncm> ncm);
 
 }

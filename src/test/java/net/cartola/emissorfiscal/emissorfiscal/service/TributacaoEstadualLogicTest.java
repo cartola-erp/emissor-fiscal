@@ -1,9 +1,10 @@
 package net.cartola.emissorfiscal.emissorfiscal.service;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
-import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
@@ -50,6 +51,9 @@ public class TributacaoEstadualLogicTest {
 	
 	@Autowired
 	private TributacaoEstadualService icmsService;
+	
+	@Autowired
+	private DocumentoFiscalRepository docFiscalRepository;
 	
 	@Autowired
 	private TestHelper testHelper;
@@ -93,61 +97,74 @@ public class TributacaoEstadualLogicTest {
 		// Buscando o Estado Origem inserido previamente
 		Optional<Estado> opEstadoOrigem = estadoService.findBySigla(EstadoSigla.SP);
 		assertTrue(opEstadoOrigem.isPresent());
-
-		Optional<Ncm> opNcm = ncmService.findByNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
-		assertTrue(opNcm.isPresent());
-
+		
+		List<Ncm> todosNcms = new ArrayList<Ncm>();
+		todosNcms.add(ncmService.findByNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1).get());
+		todosNcms.add(ncmService.findByNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2).get());
+		todosNcms.add(ncmService.findByNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3).get());
+		
+		assertNotNull(todosNcms);
+		assertTrue(todosNcms.size() == 3);
+		
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA);
 		assertTrue(opOperacao.isPresent());
+		
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalRepository.findById(1L);
+		assertTrue(opDocFiscal.isPresent());
 
-		DocumentoFiscalItem item = new DocumentoFiscalItem();
-		item.setId(ITEM_ID);
-		item.setFinalidade(ITEM_FINALIDADE);
-		item.setQuantidade(ITEM_QUANTIDADE);
-		item.setValorUnitario(ITEM_VALOR_UNITARIO);
-		item.setCfop(ITEM_CFOP);
-		item.setIcmsBase(ITEM_ICMS_BASE);
-		item.setIcmsAliquota(ITEM_ICMS_ALIQUOTA);
-		item.setIcmsValor(ITEM_ICMS_VALOR);
+//		DocumentoFiscalItem item = new DocumentoFiscalItem();
+//		item.setId(ITEM_ID);
+//		item.setFinalidade(ITEM_FINALIDADE);
+//		item.setQuantidade(ITEM_QUANTIDADE);
+//		item.setValorUnitario(ITEM_VALOR_UNITARIO);
+//		item.setCfop(ITEM_CFOP);
+//		item.setIcmsBase(ITEM_ICMS_BASE);
+//		item.setIcmsAliquota(ITEM_ICMS_ALIQUOTA);
+//		item.setIcmsValor(ITEM_ICMS_VALOR);
+//		
+//		item.setNcm(opNcm.get());
+////		item.setValorUnitario(new BigDecimal(100));
+////		item.setQuantidade(new BigDecimal(2));
+//		List<DocumentoFiscalItem> itens = Arrays.asList(item,item);
+//		
+//		DocumentoFiscal doc = new DocumentoFiscal();
+//		doc.setDestinatarioUf(opEstadoOrigem.get().getSigla());
+//		doc.setEmitenteUf(opEstadoOrigem.get().getSigla());
+//		doc.setItens(itens);
 		
-		item.setNcm(opNcm.get());
-//		item.setValorUnitario(new BigDecimal(100));
-//		item.setQuantidade(new BigDecimal(2));
-		List<DocumentoFiscalItem> itens = Arrays.asList(item,item);
+		List<TributacaoEstadual> listTributacoes = new ArrayList<>();
+		todosNcms.stream().forEach(ncm -> {
 		
-		DocumentoFiscal doc = new DocumentoFiscal();
-		doc.setDestinatarioUf(opEstadoOrigem.get().getSigla());
-		doc.setEmitenteUf(opEstadoOrigem.get().getSigla());
-		doc.setItens(itens);
+			TributacaoEstadual icms = new TributacaoEstadual();
+			icms.setEstadoOrigem(opEstadoOrigem.get());
+			icms.setEstadoDestino(opEstadoOrigem.get());
+			icms.setOperacao(opOperacao.get());
+			icms.setNcm(ncm);
+			icms.setIcmsCst(TRIBUTACAO_ESTADUAL_ICMS_CST);
+			icms.setIcmsBase(TRIBUTACAO_ESTADUAL_ICMS_BASE);
+			icms.setIcmsAliquota(TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA);
+			icms.setIcmsIva(TRIBUTACAO_ESTADUAL_ICMS_IVA);
+			icms.setIcmsAliquotaDestino(TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO);
+			icms.setCest(TRIBUTACAO_ESTADUAL_ICMS_CEST);
+			icms.setMensagem(TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM);
+			listTributacoes.add(icms);
+		});
 		
-		TributacaoEstadual icms = new TributacaoEstadual();
-		icms.setEstadoOrigem(opEstadoOrigem.get());
-		icms.setEstadoDestino(opEstadoOrigem.get());
-		icms.setOperacao(opOperacao.get());
-		icms.setNcm(opNcm.get());
-		icms.setIcmsCst(TRIBUTACAO_ESTADUAL_ICMS_CST);
-		icms.setIcmsBase(TRIBUTACAO_ESTADUAL_ICMS_BASE);
-		icms.setIcmsAliquota(TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA);
-		icms.setIcmsIva(TRIBUTACAO_ESTADUAL_ICMS_IVA);
-		icms.setIcmsAliquotaDestino(TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO);
-		icms.setCest(TRIBUTACAO_ESTADUAL_ICMS_CEST);
-		icms.setMensagem(TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM);
-		Optional<TributacaoEstadual> opIcms = icmsService.save(icms);
-		assertTrue(opIcms.isPresent());
+		List<TributacaoEstadual> listIcms = icmsService.saveAll(listTributacoes);
+		assertTrue(listIcms.size() == 3);
 		
-		System.out.println("|ANTES DO CALCULO| doc.getIcmsValor() "+ doc.getIcmsValor());
-
+//		System.out.println("|ANTES DO CALCULO| doc.getIcmsValor() "+ doc.getIcmsValor());
 		
-		calculoFiscalEstadual.calculaImposto(doc);
+		calculoFiscalEstadual.calculaImposto(opDocFiscal.get());
 
 //		assertNotNull(calcIcms);
 		
-		System.out.println("doc.getIcmsBase() "+ doc.getIcmsBase());
-		System.out.println("doc.getIcmsValor() "+ doc.getIcmsValor());
-		
-		System.out.println("doc.getItens().get(0).getIcmsBase() "+ doc.getItens().get(0).getIcmsBase());
-		System.out.println("doc.getItens().get(0).getIcmsValor() "+ doc.getItens().get(0).getIcmsValor());
-		System.out.println("doc.getItens().get(0).getIcmsAliquota() "+ doc.getItens().get(0).getIcmsAliquota());
+//		System.out.println("doc.getIcmsBase() "+ doc.getIcmsBase());
+//		System.out.println("doc.getIcmsValor() "+ doc.getIcmsValor());
+//		
+//		System.out.println("doc.getItens().get(0).getIcmsBase() "+ doc.getItens().get(0).getIcmsBase());
+//		System.out.println("doc.getItens().get(0).getIcmsValor() "+ doc.getItens().get(0).getIcmsValor());
+//		System.out.println("doc.getItens().get(0).getIcmsAliquota() "+ doc.getItens().get(0).getIcmsAliquota());
 
 		
 //		System.out.println(calcIcms);

@@ -24,6 +24,11 @@ public class TributacaoEstadualService {
 	public Optional<TributacaoEstadual> save(TributacaoEstadual TributacaoEstadual) {
 		return Optional.ofNullable(repository.saveAndFlush(TributacaoEstadual));
 	}
+	
+	public List<TributacaoEstadual> saveAll(List<TributacaoEstadual> tributacaoEstadual) {
+		return repository.saveAll(tributacaoEstadual);
+	}
+	
 
 	public List<TributacaoEstadual> findTributacaoEstadualByNcm(Ncm ncm) {
 		return repository.findByNcm(ncm);

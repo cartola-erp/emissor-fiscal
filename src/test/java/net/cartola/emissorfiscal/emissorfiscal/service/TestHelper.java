@@ -34,7 +34,7 @@ public class TestHelper {
 
 	private static final String NCM1 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
 	private static final String NCM2 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
-	private static final String NCM3 = "34561287";
+	private static final String NCM3 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3); 
 
 	public static String OPERACAO_VENDA = "Venda";
 	public static String OPERACAO_VENDA_INTERESTADUAL = "Venda Interestadual";
@@ -124,8 +124,8 @@ public class TestHelper {
 
 		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA", OPERACAO_VENDA },
 				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
-				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA },
-				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA } };
+				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA_INTERESTADUAL },
+				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA_INTERESTADUAL } };
 
 		for (String[] dados : data) {
 			int aux = 0;

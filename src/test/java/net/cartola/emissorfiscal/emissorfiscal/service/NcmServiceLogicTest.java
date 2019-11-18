@@ -29,13 +29,16 @@ public class NcmServiceLogicTest {
 	@Autowired
 	private NcmService ncmService;
 	
-	public static int NCM_NUMERO_REGISTRO_1 = 12345678;
+	public static int NCM_NUMERO_REGISTRO_1 = 87089990;
 	public static int NCM_EXCECAO_REGISTRO_1 = 43;
 	public static String NCM_DESCRICAO_REGISTRO_1 = "Essa é uma DESCRIÇÃO do PRIMEIRO NCM para o teste";
 	
 	public static int NCM_NUMERO_REGISTRO_2 = 89101112;
 	public static int NCM_EXCECAO_REGISTRO_2 = 32;
 	public static String NCM_DESCRICAO_REGISTRO_2 = "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste";
+	
+	public static int NCM_NUMERO_REGISTRO_3 = 34561287;
+
 	
 	public static int NCM_NUMERO_ERRADO = 1234;
 	public static String NCM_DESCRICAO_REGISTRO_2_ALTERADA = "A descrição desse NCM foi ALTERADA";
