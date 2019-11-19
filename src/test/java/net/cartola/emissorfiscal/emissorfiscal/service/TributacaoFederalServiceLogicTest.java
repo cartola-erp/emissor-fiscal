@@ -1,5 +1,8 @@
 package net.cartola.emissorfiscal.emissorfiscal.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,12 +39,12 @@ public class TributacaoFederalServiceLogicTest {
 	public static final int PIS_CST = 1;
 	public static final int COFINS_CST = 1;
 	public static final int IPI_CST = 1;
-	public static final BigDecimal PIS_ALIQUOTA = new BigDecimal(1.65D);
-	public static final BigDecimal COFINS_ALIQUOTA = new BigDecimal(7.6D);
-	public static final BigDecimal IPI_ALIQUOTA = new BigDecimal(5D); // valor imaginário -> ver como definir esse valor
-	public static final BigDecimal PIS_BASE = new BigDecimal(0.3D);
-	public static final BigDecimal COFINS_BASE = new BigDecimal(0.2D);
-	public static final BigDecimal IPI_BASE = new BigDecimal(0.1D);
+	public static final BigDecimal PIS_ALIQUOTA = new BigDecimal(0.0165D);
+	public static final BigDecimal COFINS_ALIQUOTA = new BigDecimal(0.076D);
+	public static final BigDecimal IPI_ALIQUOTA = new BigDecimal(0.05D); // valor arbitrário
+	public static final BigDecimal PIS_BASE = new BigDecimal(0.7D);
+	public static final BigDecimal COFINS_BASE = new BigDecimal(0.8D);
+	public static final BigDecimal IPI_BASE = new BigDecimal(0.9D);
 
 	@Autowired
 	private CalculoFiscalFederal calculoFiscalFederal;
@@ -100,10 +103,21 @@ public class TributacaoFederalServiceLogicTest {
 
 		documentosFiscais.stream().forEach(docFiscal -> {
 			calculoFiscalFederal.calculaImposto(docFiscal);
-			System.out.println(docFiscal.getPisBase());
-			System.out.println(docFiscal.getCofinsBase());
-			System.out.println(docFiscal.getPisValor());
-			System.out.println(docFiscal.getCofinsValor());
 		});
+
+		DocumentoFiscal documentoFiscal = documentosFiscais.get(0);
+		assertNotNull(documentoFiscal);
+		assertEquals(documentoFiscal.getPisBase(), new BigDecimal("87.5000000000"));
+		assertEquals(documentoFiscal.getCofinsBase(), new BigDecimal("100.0000000000"));
+		assertEquals(documentoFiscal.getPisValor(), new BigDecimal("1.4437500000000000"));
+		assertEquals(documentoFiscal.getCofinsValor(), new BigDecimal("7.6000000000000000"));
+
+//		System.out.println("\n\n");
+//		documentosFiscais.stream().forEach(docFiscal -> {
+//			System.out.println(docFiscal.getPisBase());
+//			System.out.println(docFiscal.getCofinsBase());
+//			System.out.println(docFiscal.getPisValor());
+//			System.out.println(docFiscal.getCofinsValor() + "\n\n");
+//		});
 	}
 }
