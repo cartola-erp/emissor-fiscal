@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,12 +11,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
 import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.operacao.Operacao;
 
 @Service
 public class TributacaoEstadualService {
 	
 	@Autowired
-	TributacaoEstadualRepository repository;
+	private TributacaoEstadualRepository repository;
 	
 	public List<TributacaoEstadual> findAll() {
 		return repository.findAll();
@@ -36,6 +38,10 @@ public class TributacaoEstadualService {
 
 	public Optional<TributacaoEstadual> findOne(Long id) {
 		return repository.findById(id); 
+	}
+	
+	public List<TributacaoEstadual> findTributacaoEstadualByOperacaoENcms(Operacao operacao, Collection<Ncm> ncms) {
+		return repository.findByOperacaoAndNcmIn(operacao, ncms);
 	}
 
 	public void deleteById(long id) {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.operacao.Operacao;
 
 public interface TributacaoEstadualRepository extends JpaRepository<TributacaoEstadual, Long> {
 	
@@ -13,5 +14,7 @@ public interface TributacaoEstadualRepository extends JpaRepository<TributacaoEs
 	List<TributacaoEstadual> findByNcm(Ncm ncm);
 	
 	List<TributacaoEstadual> findByNcmIn(Collection<Ncm> ncm);
+
+	List<TributacaoEstadual> findByOperacaoAndNcmIn(Operacao operacao, Collection<Ncm> ncms);
 
 }

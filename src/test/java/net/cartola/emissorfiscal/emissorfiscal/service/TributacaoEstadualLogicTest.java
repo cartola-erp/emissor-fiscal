@@ -98,13 +98,11 @@ public class TributacaoEstadualLogicTest {
 		Optional<Estado> opEstadoOrigem = estadoService.findBySigla(EstadoSigla.SP);
 		assertTrue(opEstadoOrigem.isPresent());
 		
-		List<Ncm> todosNcms = new ArrayList<Ncm>();
-		todosNcms.add(ncmService.findByNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1).get());
-		todosNcms.add(ncmService.findByNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2).get());
-		todosNcms.add(ncmService.findByNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3).get());
+		List<Ncm> listNcms = new ArrayList<Ncm>();
+		listNcms.addAll(ncmService.findAll());
 		
-		assertNotNull(todosNcms);
-		assertTrue(todosNcms.size() == 3);
+		assertNotNull(listNcms);
+		assertTrue(listNcms.size() == 3);
 		
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA);
 		assertTrue(opOperacao.isPresent());
@@ -133,7 +131,7 @@ public class TributacaoEstadualLogicTest {
 //		doc.setItens(itens);
 		
 		List<TributacaoEstadual> listTributacoes = new ArrayList<>();
-		todosNcms.stream().forEach(ncm -> {
+		listNcms.stream().forEach(ncm -> {
 		
 			TributacaoEstadual icms = new TributacaoEstadual();
 			icms.setEstadoOrigem(opEstadoOrigem.get());
