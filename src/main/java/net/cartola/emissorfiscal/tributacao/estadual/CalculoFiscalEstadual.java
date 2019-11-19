@@ -21,10 +21,10 @@ import net.cartola.emissorfiscal.tributacao.Imposto;
 public class CalculoFiscalEstadual implements CalculoFiscal {
 
 	@Autowired
-	TributacaoEstadualRepository tributacaoEstadualRepository;
+	private TributacaoEstadualService icmsService;
 
 	@Autowired
-	CalculoIcms calculoIcms;
+	private CalculoIcms calculoIcms;
 
 	/**
 	 * O calculo de imposto retornado aqui é do TOTAL DA NFE (aparentemente)
@@ -33,7 +33,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
 		List<CalculoImposto> listImpostos = new ArrayList<>();
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
-		List<TributacaoEstadual> listTributacoes = tributacaoEstadualRepository.findByNcmIn(ncms);
+		List<TributacaoEstadual> listTributacoes = icmsService.findTributacaoEstadualByOperacaoENcms(documentoFiscal.getOperacao(), ncms);
 
 		Map<Ncm, TributacaoEstadual> mapaTributacoes = ncms.stream()
 				.collect(Collectors.toMap(ncm -> ncm, ncm -> listTributacoes.stream()
@@ -49,7 +49,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	}
 
 	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listImpostos) {
-		documentoFiscal.setIcmsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getValorUnitario)
+		documentoFiscal.setIcmsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setIcmsValor(totaliza(listImpostos.stream()
 				.filter(icms -> icms.getImposto().equals(Imposto.ICMS)).collect(Collectors.toList())));
