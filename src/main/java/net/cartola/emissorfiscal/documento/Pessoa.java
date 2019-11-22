@@ -21,8 +21,8 @@ public class Pessoa {
 	
 	private Long id;
 	private Long cnpj;
-	private String regimeApuracao;
 	private EstadoSigla uf = EstadoSigla.SP;
+	private String regimeApuracao;
 	private PessoaTipo pessoaTipo = PessoaTipo.FISICA;
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)

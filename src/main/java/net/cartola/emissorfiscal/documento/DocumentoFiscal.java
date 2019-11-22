@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -17,9 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
-import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.operacao.Operacao;
 
 @Entity
@@ -35,10 +31,8 @@ public class DocumentoFiscal implements Serializable {
 	private Long id;
 	private Operacao operacao;
 	private String tipo;
-	private EstadoSigla emitenteUf = EstadoSigla.SP;
-	private String emitenteRegimeApuracao;
-	private EstadoSigla destinatarioUf = EstadoSigla.SP;
-	private Pessoa destinatarioPessoa = Pessoa.FISICA;
+	private Pessoa emitente;
+	private Pessoa destinatario;
 	private List<DocumentoFiscalItem> itens;
 	private BigDecimal icmsBase;
 	private BigDecimal icmsValor;
@@ -76,43 +70,25 @@ public class DocumentoFiscal implements Serializable {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-
-	@NotNull(message = ESTADO_EMITENTE_OBRIGATORIO)
-	@Enumerated(EnumType.STRING)
-	public EstadoSigla getEmitenteUf() {
-		return emitenteUf;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "emitente", referencedColumnName = "emitente_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_emitente_id"))
+	public Pessoa getEmitente() {
+		return emitente;
 	}
 
-	public void setEmitenteUf(EstadoSigla emitenteUf) {
-		this.emitenteUf = emitenteUf;
+	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "destinatario", referencedColumnName = "destinatario_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_destinatario_id"))
+	public Pessoa getDestinatario() {
+		return destinatario;
 	}
 
-	public String getEmitenteRegimeApuracao() {
-		return emitenteRegimeApuracao;
+	public void setEmitente(Pessoa emitente) {
+		this.emitente = emitente;
 	}
 
-	public void setEmitenteRegimeApuracao(String emitenteRegimeApuracao) {
-		this.emitenteRegimeApuracao = emitenteRegimeApuracao;
-	}
-
-	@NotNull(message = ESTADO_DESTINATARIO_OBRIGATORIO)
-	@Enumerated(EnumType.STRING)
-	public EstadoSigla getDestinatarioUf() {
-		return destinatarioUf;
-	}
-
-	public void setDestinatarioUf(EstadoSigla destinatarioUf) {
-		this.destinatarioUf = destinatarioUf;
-	}
-
-	@NotNull(message = PESSOA_TIPO_DESTINATARIO_OBRIGATORIO)
-	@Enumerated(EnumType.STRING)
-	public Pessoa getDestinatarioPessoa() {
-		return destinatarioPessoa;
-	}
-
-	public void setDestinatarioPessoa(Pessoa destinatarioPessoa) {
-		this.destinatarioPessoa = destinatarioPessoa;
+	public void setDestinatario(Pessoa destinatario) {
+		this.destinatario = destinatario;
 	}
 
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "documentoFiscal")
