@@ -72,13 +72,13 @@ public class DocumentoFiscal implements Serializable {
 	}
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-//	@JoinColumn(name = "emitente", referencedColumnName = "emitente_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_emitente_id"))
+	@JoinColumn(name = "emitente_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_emitente_id"))
 	public Pessoa getEmitente() {
 		return emitente;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-//	@JoinColumn(name = "destinatario", referencedColumnName = "destinatario_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_destinatario_id"))
+	@JoinColumn(name = "destinatario_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_destinatario_id"))
 	public Pessoa getDestinatario() {
 		return destinatario;
 	}

@@ -44,20 +44,12 @@ public class Pessoa {
 
 	//	@NotNull(message = ESTADO_EMITENTE_OBRIGATORIO)
 	@Enumerated(EnumType.STRING)
-	public EstadoSigla getEmitenteUf() {
+	public EstadoSigla getUf() {
 		return uf;
 	}
 
-	public void setEmitenteUf(EstadoSigla emitenteUf) {
-		this.uf = emitenteUf;
-	}
-
-	public String getEmitenteRegimeApuracao() {
-		return regimeApuracao;
-	}
-
-	public void setEmitenteRegimeApuracao(String regimeApuracao) {
-		this.regimeApuracao = regimeApuracao;
+	public void setUf(EstadoSigla uf) {
+		this.uf = uf;
 	}
 
 	public String getRegimeApuracao() {
@@ -67,15 +59,8 @@ public class Pessoa {
 	public void setRegimeApuracao(String regimeApuracao) {
 		this.regimeApuracao = regimeApuracao;
 	}
-
-	public EstadoSigla getUf() {
-		return uf;
-	}
-
-	public void setUf(EstadoSigla uf) {
-		this.uf = uf;
-	}
-
+	
+	@Enumerated(EnumType.STRING)
 	public PessoaTipo getPessoaTipo() {
 		return pessoaTipo;
 	}
