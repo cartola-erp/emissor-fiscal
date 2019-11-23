@@ -88,7 +88,23 @@
 								<option th:each="finalidade : ${finalidades}" th:value="${finalidade}" th:text="${finalidade}" ></option>
 							</select>
 						</div>
+
+						<div class="form-group col-md-6">
+							<label for="cmbNcm"><strong>NCM</strong></label>
+							<select class="custom-select" name="itens[0].ncm" >
+								<option selected id="opNcm"> </option>
+								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
+								<!-- <option th:each="ncm : ${ncms}" th:value="${ncm}" th:text="NÚMERO = ${ncm.numero} --- EXECEÇÃO = ${ncm.exececao}" ></option> -->
+								<option th:each="ncm : ${ncms}" th:value="${ncm}" th:text="${ncm.numero}" ></option>
+							</select>
+						</div>
 	
+						<div class="form-group col-md-6">
+							<label for="txtCfopItem"><strong>CFOP</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control somenteNumeros" id="txtCfopItem" name="itens[0].cfop" placeholder="Informe o CFOP do ITEM..." minlength="2" maxlength="10" required>
+						</div> 
+
 							<!-- <div class="form-group col-md-6"> -->
 							<!-- <label for="txtExcecao"><strong>Exceção</strong></label>
 							<input type="text" class="form-control somenteNumeros" id="txtExcecao" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Cadastro de tributação estadual - (ICMS) </title>
+	</head>
+
+	<body>
+		<section id="tributacao-estadual-container container">
+
+			<!-- BREADCRUMB -->
+			<div class="container">
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
+								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Home</a></li>
+								<li class="breadcrumb-item"><a href="/Tributação Estadual/cadastro" style="color: #1b8140; font-weight: 500">Cadastrar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">Tributação Estadual - (ICMS)</li>
+							</ol>
+						</nav>
+					<div>
+				<div>
+			<div>
+
+			<div class="container">
+
+				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
+				<form th:action="@{/tributacaoEstadual/cadastro}" th:object="${icms}" method="POST">
+					<!-- ESTADOS -->
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="cmbEstadoOrigem"><strong>Estado ORIGEM</strong></label>
+							<!-- <select class="custom-select" name="estadoOrigem"> -->
+							<select class="custom-select" name="ufOrigem">
+								<option selected id="opEstadoOrigem"> </option>
+								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
+								<!-- <option th:field="*{estadoOrigem}" th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado.sigla}" ></option> -->
+								<option th:each="estado : ${listEstado}" th:value="${estado.sigla}" th:text="${estado.sigla}" ></option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label for="cmbEstadoDestino"><strong>Estado DESTINO</strong></label>
+							<!-- <select class="custom-select" name="estadoDestino"> -->
+							<select class="custom-select" name="ufDestino">
+								<option selected id="opEstadoDestino"> </option>
+								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
+								<option th:each="estado : ${listEstado}" th:value="${estado.sigla}" th:text="${estado.sigla}" ></option>
+							</select>
+						</div>
+					</div>
+
+					<!-- OPERAÇÃO e NCM -->
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="cmbOperacao"><strong>Operação</strong></label>
+							<select class="custom-select" name="*{operacao}">
+							<option selected id="opOperacao"> </option>
+								<!-- <option th:field="{operacao.descricao}"  th:each="operacao : ${listOperacao}" th:value="${operacao}" th:text="${operacao.descricao}" ></option> -->
+								<option th:each="operacao : ${listOperacao}" th:value="${operacao}" th:text="${operacao.descricao}" ></option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label for="cmbNcm"><strong>NCM</strong></label>
+							<select class="custom-select" name="*{ncm}" >
+								<option selected id="opNcm"> </option>
+								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
+								<!-- <option th:each="ncm : ${ncms}" th:value="${ncm}" th:text="NÚMERO = ${ncm.numero} --- EXECEÇÃO = ${ncm.exececao}" ></option> -->
+								<option th:each="ncm : ${listNcms}" th:value="${ncm}" th:text="${ncm.numero}" ></option>
+							</select>
+						</div>
+					</div>
+
+					<!-- th:field="*{sigla}" name="numero"  -->
+					<!-- ALIQ DO IMPOSTO -->
+					<div class="form-row">
+
+						<div class="form-group col-md-1">
+							<label for="txtCfopItem"><strong>ICMS CST</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control somenteNumeros" id="txtCfopItem" name="icmsCst" placeholder="ICMS CST..." minlength="1" maxlength="3" required />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtIcmsBase"><strong>ICMS Base</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control somenteNumeros" id="txtIcmsBase" name="icmsBase" placeholder="ICMS Base..." minlength="1" maxlength="5" required />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtIcmsAliquota"><strong>ICMS Aliquota</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control somenteNumeros" id="txtIcmsAliquota" name="icmsAliquota" placeholder="ICMS ALIQ." minlength="1" maxlength="3" required />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtIcmsIva"><strong>ICMS IVA/MVA</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control somenteNumeros" id="txtIcmsIva" name="icmsIva" placeholder="ICMS IVA/MVA." minlength="0" maxlength="5" />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtIcmsAliquotaDestino"><strong>ICMS aliquota destino</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control somenteNumeros" id="txtIcmsAliquotaDestino" name="icmsAliquotaDestino" placeholder="ICMS ALIQ." minlength="1" maxlength="3" required />
+						</div> 
+
+						<div class="form-group col-md-3">
+							<label for="txtCest"><strong>CEST</strong></label>
+							<!-- <input type="text" class="form-control somenteNumeros" id="txtValorItem" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." minlength="2" maxlength="2" required> -->
+							<input type="text" class="form-control somenteNumeros" id="txtCest" name="cest" placeholder="Cest..." minlength="1" maxlength="10" required>
+						</div> 
+
+					</div>
+
+					<!-- Mensagem -->
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="txtDescricao">Mensagem</label>
+							<i class="fas fa-pencil-alt prefix"></i>
+							<!-- <textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea> -->
+							<textarea id="txtMensagem" name="mensagem" class="md-textarea form-control " rows="2" ></textarea>
+						</div>
+					</div>	
+
+					<!-- BTN ALTERAR/CADASTRAR -->
+					<div class="form-row">
+						<!-- <input type="text" th:field="*{id}" class="form-control" id="txtId" name="id" hidden> -->
+
+						<div class = "form-group col-md-12">
+							<button type="submit" class="btn btn-outline-primary col-md-12"><strong>Alterar/Cadastrar</strong></button>
+							<!-- <button type="submit" class="btn btn-outline-primary col-md-12" th:text="${textBtnCadastrarEditar}"><strong> </strong></button> -->
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+   		<section>
+
+	</body>
+
+</html>
