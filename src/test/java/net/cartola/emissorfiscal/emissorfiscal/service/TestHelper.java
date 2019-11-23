@@ -12,7 +12,6 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
 import net.cartola.emissorfiscal.documento.Finalidade;
-import net.cartola.emissorfiscal.documento.Pessoa;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoRepository;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
@@ -20,6 +19,10 @@ import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmRepository;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoRepository;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.PessoaRepository;
+import net.cartola.emissorfiscal.pessoa.PessoaService;
+import net.cartola.emissorfiscal.pessoa.PessoaTipo;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualRepository;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalRepository;
 
@@ -46,6 +49,15 @@ public class TestHelper {
 	public static String OPERACAO_REMESSA = "Remessa";
 	public static String OPERACAO_REMESSA_CONSIGNADA = "Remessa consignada";
 
+	private static String PESSOA_CNPJ = "12345678901234";
+	private static String PESSOA_UF_SP = EstadoSigla.SP.toString();
+	private static String PESSOA_REGIME_APURACAO = "Regime de apuração 1";
+	private static String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
+	
+	private static String PESSOA_CNPJ_2 = "02329838429395";
+	private static String PESSOA_UF_MG = EstadoSigla.MG.toString();
+	private static String PESSOA_TIPO_JURIDICA = PessoaTipo.JURIDICA.toString();
+	
 	@Autowired
 	private EstadoRepository estadoRepository;
 
@@ -55,6 +67,9 @@ public class TestHelper {
 	@Autowired
 	private NcmRepository ncmRepository;
 
+	@Autowired
+	private PessoaRepository pessoaRepository;
+	
 	@Autowired
 	private DocumentoFiscalRepository docFiscalRepository;
 
@@ -116,25 +131,54 @@ public class TestHelper {
 		ncmRepository.saveAll(ncms);
 		return ncms;
 	}
+	
+	private List<Pessoa> criarPessoa() {
+		List<Pessoa> pessoas = new LinkedList<>();
+		String[][] data = { {PESSOA_CNPJ, PESSOA_UF_SP, PESSOA_REGIME_APURACAO, PESSOA_TIPO_JURIDICA},
+							{PESSOA_CNPJ_2, PESSOA_UF_SP, PESSOA_REGIME_APURACAO, PESSOA_TIPO_FISICA},
+							{PESSOA_CNPJ, PESSOA_UF_MG, PESSOA_REGIME_APURACAO, PESSOA_TIPO_FISICA},
+							{PESSOA_CNPJ_2, PESSOA_UF_MG, PESSOA_REGIME_APURACAO, PESSOA_TIPO_JURIDICA} };
+		
+		for (String[] dados : data) {
+			int aux = 0;
+			Pessoa pessoa = new Pessoa();
+			pessoa.setCnpj(dados[aux++]);
+			pessoa.setUf(EstadoSigla.valueOf(dados[aux++]));
+			pessoa.setRegimeApuracao(dados[aux++]);
+			pessoa.setPessoaTipo(PessoaTipo.valueOf(dados[aux++]));
+			pessoas.add(pessoa);
+		}
+		return pessoaRepository.saveAll(pessoas);
+	}
 
 	public void criarDocumentoFiscal() {
 		List<DocumentoFiscal> documentosFiscais = new LinkedList<>();
 		List<Operacao> operacoes = defineOperacoes();
 		List<Ncm> ncms = defineNcms();
+		List<Pessoa> pessoas = criarPessoa();
+		
+//		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA", OPERACAO_VENDA },
+//				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
+//				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA_INTERESTADUAL },
+//				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA_INTERESTADUAL } };
+		String[][] data = { { "tipo1", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_SP, OPERACAO_VENDA },
+				{ "tipo2", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_SP, OPERACAO_VENDA },
+				{ "tipo3", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL },
+				{ "tipo4", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL } };
 
-		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA", OPERACAO_VENDA },
-				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
-				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA_INTERESTADUAL },
-				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA_INTERESTADUAL } };
-
+		
 		for (String[] dados : data) {
 			int aux = 0;
 			DocumentoFiscal docFiscal = new DocumentoFiscal();
 			docFiscal.setTipo(dados[aux++]);
-			docFiscal.setEmitenteUf(EstadoSigla.valueOf(dados[aux++]));
-			docFiscal.setEmitenteRegimeApuracao(dados[aux++]);
-			docFiscal.setDestinatarioUf(EstadoSigla.valueOf(dados[aux++]));
-			docFiscal.setDestinatarioPessoa(Pessoa.valueOf(dados[aux++]));
+			String emitenteTipo = dados[aux++];
+			docFiscal.setEmitente(pessoas.stream().filter(p -> p.getPessoaTipo().toString().equals(emitenteTipo)).findAny().get());
+			
+			String destinatarioTipo = dados[aux++];
+			String destinatarioUf = dados[aux++];
+			docFiscal.setDestinatario(pessoas.stream()
+					.filter(p -> p.getPessoaTipo().toString().equals(destinatarioTipo))
+					.filter(p -> p.getUf().toString().equals(destinatarioUf)).findAny().get());
 			String operacaoDescricao = dados[aux++];
 			docFiscal.setOperacao(operacoes.stream()
 					.filter(operacao -> operacao.getDescricao().equals(operacaoDescricao)).findAny().get());
