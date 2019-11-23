@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,7 +51,7 @@ public class TributacaoEstadual implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "esta_orig_id", nullable = false)
+    @JoinColumn(name = "esta_orig_id", referencedColumnName = "esta_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_trib_esta_orig_id"))
     public Estado getEstadoOrigem() {
         return estadoOrigem;
     }
@@ -60,7 +61,7 @@ public class TributacaoEstadual implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "esta_dest_id", nullable = false)
+    @JoinColumn(name = "esta_dest_id", referencedColumnName = "esta_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_trib_esta_dest_id"))
     public Estado getEstadoDestino() {
         return estadoDestino;
     }
@@ -70,7 +71,7 @@ public class TributacaoEstadual implements Serializable {
     }
     
     @ManyToOne
-    @JoinColumn(name = "oper_id", nullable = false)
+    @JoinColumn(name = "oper_id", referencedColumnName = "oper_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_trib_esta_oper_id"))
     public Operacao getOperacao() {
         return operacao;
     }
@@ -80,7 +81,7 @@ public class TributacaoEstadual implements Serializable {
     }
     
     @ManyToOne
-    @JoinColumn(name = "ncm_id")
+    @JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_trib_esta_ncm_id"))
     public Ncm getNcm() {
         return ncm;
     }
