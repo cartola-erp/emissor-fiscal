@@ -17,10 +17,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import net.cartola.emissorfiscal.ncm.Ncm;
 
 @Entity
 @Table(name = "docu_fisc_item")
+@JsonIgnoreProperties(value = { "documentoFiscal" })
 public class DocumentoFiscalItem implements Serializable {
 
 	private static final long serialVersionUID = -3885752189101767947L;
