@@ -32,6 +32,8 @@ public class DocumentoFiscal implements Serializable {
 	private Long id;
 	private Operacao operacao;
 	private String tipo;
+	private Long serie;
+	private Long numero;
 	private Pessoa emitente;
 	private Pessoa destinatario;
 	private List<DocumentoFiscalItem> itens;
@@ -43,7 +45,7 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal cofinsValor;
 	private BigDecimal ipiBase;
 	private BigDecimal ipiValor;
-
+	 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -72,6 +74,22 @@ public class DocumentoFiscal implements Serializable {
 		this.tipo = tipo;
 	}
 	
+	public void setSerie(Long serie) {
+		this.serie = serie;
+	}
+	
+	public Long getSerie() {
+		return serie;
+	}
+
+	public void setNumero(Long numero) {
+		this.numero = numero;
+	}
+	
+	public Long getNumero() {
+		return numero;
+	}
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "emitente_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_emitente_id"))
 	public Pessoa getEmitente() {
@@ -164,4 +182,5 @@ public class DocumentoFiscal implements Serializable {
 	public void setIpiValor(BigDecimal ipiValor) {
 		this.ipiValor = ipiValor;
 	}
+	
 }

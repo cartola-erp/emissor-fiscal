@@ -58,6 +58,17 @@ public class TestHelper {
 	private static String PESSOA_UF_MG = EstadoSigla.MG.toString();
 	private static String PESSOA_TIPO_JURIDICA = PessoaTipo.JURIDICA.toString();
 	
+	private static String DOC_FISCAL_SERIE_1 = "262265758";
+	private static String DOC_FISCAL_SERIE_2 = "883591913";
+	private static String DOC_FISCAL_SERIE_3 = "283871141";
+	private static String DOC_FISCAL_SERIE_4 = "357115603";
+
+	private static String DOC_FISCAL_NUMERO_1 = "82211429431055";
+	private static String DOC_FISCAL_NUMERO_2 = "45436809221754";
+	private static String DOC_FISCAL_NUMERO_3 = "65791541873496";
+	private static String DOC_FISCAL_NUMERO_4 = "30802553106899";
+	
+	
 	@Autowired
 	private EstadoRepository estadoRepository;
 
@@ -142,7 +153,7 @@ public class TestHelper {
 		for (String[] dados : data) {
 			int aux = 0;
 			Pessoa pessoa = new Pessoa();
-			pessoa.setCnpj(dados[aux++]);
+			pessoa.setCnpj(Long.valueOf(dados[aux++]));
 			pessoa.setUf(EstadoSigla.valueOf(dados[aux++]));
 			pessoa.setRegimeApuracao(dados[aux++]);
 			pessoa.setPessoaTipo(PessoaTipo.valueOf(dados[aux++]));
@@ -161,10 +172,10 @@ public class TestHelper {
 //				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
 //				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA_INTERESTADUAL },
 //				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA_INTERESTADUAL } };
-		String[][] data = { { "tipo1", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_SP, OPERACAO_VENDA },
-				{ "tipo2", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_SP, OPERACAO_VENDA },
-				{ "tipo3", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL },
-				{ "tipo4", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL } };
+		String[][] data = { { "NFE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_1, DOC_FISCAL_NUMERO_1 },
+				{ "SAT", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_2, DOC_FISCAL_NUMERO_2 },
+				{ "CTE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_3, DOC_FISCAL_NUMERO_3 },
+				{ "ECF", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_4, DOC_FISCAL_NUMERO_4 } };
 
 		
 		for (String[] dados : data) {
@@ -182,6 +193,8 @@ public class TestHelper {
 			String operacaoDescricao = dados[aux++];
 			docFiscal.setOperacao(operacoes.stream()
 					.filter(operacao -> operacao.getDescricao().equals(operacaoDescricao)).findAny().get());
+			docFiscal.setSerie(Long.valueOf(dados[aux++]));
+			docFiscal.setNumero(Long.valueOf(dados[aux++]));
 			docFiscal.setItens(criarDocumentoFiscalItem(ncms));
 			documentosFiscais.add(docFiscal);
 		}
