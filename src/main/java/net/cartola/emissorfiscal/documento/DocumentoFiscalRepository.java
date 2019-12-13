@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import net.cartola.emissorfiscal.operacao.Operacao;
@@ -16,8 +15,10 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 
 	List<DocumentoFiscal> findByOperacaoIn(Collection<Operacao> operacoes);
 
-//	@Query("SELECT * FROM DocumentoFiscal WHERE DocumentoFiscal ")
-//	DocumentoFiscal findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(String cnpjEmitente, String tipoDocumento, String serie,
-//			String numero);
+//	@Query("SELECT doc, e FROM DocumentoFiscal doc INNER JOIN doc.emitente e WHERE e.id = :idEmitente")
+//	List <DocumentoFiscal> findDocFiscalByEmitenteId(@Param("idEmitente") Long idEmitente);
+	
+	List<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(Long cnpj, String tipo, Long serie, Long numero);
+	
 
 }
