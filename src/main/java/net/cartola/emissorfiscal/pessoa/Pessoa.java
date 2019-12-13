@@ -20,7 +20,7 @@ import net.cartola.emissorfiscal.estado.EstadoSigla;
 public class Pessoa {
 	
 	private Long id;
-	private String cnpj;
+	private Long cnpj;
 	private EstadoSigla uf = EstadoSigla.SP;
 	private String regimeApuracao;
 	private PessoaTipo pessoaTipo = PessoaTipo.FISICA;
@@ -34,11 +34,11 @@ public class Pessoa {
 		this.id = id;
 	}
 
-	public String getCnpj() {
+	public Long getCnpj() {
 		return cnpj;
 	}
 
-	public void setCnpj(String cnpj) {
+	public void setCnpj(Long cnpj) {
 		this.cnpj = cnpj;
 	}
 
