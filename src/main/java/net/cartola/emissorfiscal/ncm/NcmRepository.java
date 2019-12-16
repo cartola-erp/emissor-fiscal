@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.ncm;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ public interface NcmRepository extends JpaRepository<Ncm, Long> {
 
 //	@Query("SELECT n FROM Ncm n WHERE n.numero LIKE %:numero%")
 	@Query("SELECT n FROM Ncm n WHERE n.numero = :numero")
-	Optional<Ncm> findNcmByNumero(int numero);
+	List<Ncm> findNcmByNumero(int numero);
 	
 	
 	/**

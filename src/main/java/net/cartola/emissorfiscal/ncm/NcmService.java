@@ -27,10 +27,14 @@ public class NcmService {
 		return Optional.ofNullable(ncmRepository.saveAndFlush(ncm));
 	}
 
-	public Optional<Ncm> findByNumero(int numeroNcm) {
+	public List<Ncm> findByNumero(int numeroNcm) {
 		return ncmRepository.findNcmByNumero(numeroNcm);
 	}
-
+	
+	public Optional<Ncm> findNcmByNumeroAndExcecao(int numero, int excecao) {
+		return ncmRepository.findNumeroAndExcecao(numero, excecao);
+	}
+	
 	public Optional<Ncm> findOne(Long id) {
 		return ncmRepository.findById(id);
 	}
