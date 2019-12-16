@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.estado;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +21,12 @@ public class EstadoApiController {
 	private EstadoService estadoService;
 	
 	@GetMapping
-	public List<Estado> list() {
-		return estadoService.findAll();
+	public ResponseEntity<List<Estado>> list() {
+		List<Estado> list = estadoService.findAll();
+		if(list.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(list);
 	}
 
 }
