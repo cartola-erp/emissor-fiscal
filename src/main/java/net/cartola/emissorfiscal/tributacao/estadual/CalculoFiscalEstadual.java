@@ -68,7 +68,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	private BigDecimal totaliza(List<CalculoImposto> listCalculoImpostos) {
 		BigDecimal[] icmsTotal = { BigDecimal.ZERO };
 		listCalculoImpostos.stream().forEach(icms -> {
-			icmsTotal[0] = icmsTotal[0].add(icms.getValorUnitario());
+			icmsTotal[0] = icmsTotal[0].add(icms.getValor());
 		});
 		return icmsTotal[0];
 	}
