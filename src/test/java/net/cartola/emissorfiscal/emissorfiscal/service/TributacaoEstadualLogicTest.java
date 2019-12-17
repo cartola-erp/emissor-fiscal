@@ -61,7 +61,7 @@ public class TributacaoEstadualLogicTest {
 	// TRIBUTAÇÃO ESTADUAL (icms)
 	public static int TRIBUTACAO_ESTADUAL_ICMS_CST = 00;
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_BASE = new BigDecimal(0.09);
-	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA = new BigDecimal(0.12D);
+	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA = new BigDecimal(0.18D);
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_IVA = new BigDecimal(2);
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO = new BigDecimal(0.18D);
 	public static int TRIBUTACAO_ESTADUAL_ICMS_CEST = 100100;
@@ -78,7 +78,7 @@ public class TributacaoEstadualLogicTest {
 	
 	// Venda ESTADUAL
 	@Test
-	public void test01_DeveCalcularOIcmsDeSPparaSP() {
+	public void test01_DeveCalcularOIcmsDeSPparaSPVendaJuridicaParaFisica() {
 		// Buscando o Estado Origem inserido previamente
 		Optional<Estado> opEstadoOrigem = estadoService.findBySigla(EstadoSigla.SP);
 		assertTrue(opEstadoOrigem.isPresent());
@@ -114,20 +114,19 @@ public class TributacaoEstadualLogicTest {
 		
 		List<TributacaoEstadual> listIcms = icmsService.saveAll(listTributacoes);
 		assertTrue(listIcms.size() == 3);
-		
-//		System.out.println("|ANTES DO CALCULO| doc.getIcmsValor() "+ doc.getIcmsValor());
-		
+
+		// CALCULANDO O  ICMS do DOCUMENTO FISCAL DE ID =  1
 		calculoFiscalEstadual.calculaImposto(opDocFiscal.get());
-		
+
+		// VERIFICANDO SE ESTÁ CERTO O CALCULO
 		System.out.println("opDocFiscal.get().getIcmsBase() = " + opDocFiscal.get().getIcmsBase());
 		System.out.println("opDocFiscal.get().getIcmsValor() = " + opDocFiscal.get().getIcmsValor());
 //		
-		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsBase() = " + opDocFiscal.get().getItens().get(0).getIcmsBase());
-		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsValor() = " + opDocFiscal.get().getItens().get(0).getIcmsValor());
-		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsAliquota() = " + opDocFiscal.get().getItens().get(0).getIcmsAliquota());
-
+//		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsBase() = " + opDocFiscal.get().getItens().get(0).getIcmsBase());
+//		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsValor() = " + opDocFiscal.get().getItens().get(0).getIcmsValor());
+//		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsAliquota() = " + opDocFiscal.get().getItens().get(0).getIcmsAliquota());
 		
-		System.out.println(this.getClass().getName() + " test01_DeveCalcularOIcmsDeSPparaSP, Ok");
+		System.out.println("\n"+ this.getClass().getName() + " test01_DeveCalcularOIcmsDeSPparaSP, Ok");
 
 	}
 	

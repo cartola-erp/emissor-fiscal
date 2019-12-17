@@ -39,34 +39,34 @@ public class TestHelper {
 	private static final String NCM2 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
 	private static final String NCM3 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3); 
 
-	public static String OPERACAO_VENDA = "Venda";
-	public static String OPERACAO_VENDA_INTERESTADUAL = "Venda Interestadual";
-	public static String OPERACAO_COMPRA = "Compra";
-	public static String OPERACAO_DEVOLUÇAO = "Devolução";
-	public static String OPERACAO_DEVOLUCAO_FORNECEDOR = "Devolução para o fornecedor";
-	public static String OPERACAO_DEVOLUCAO_FORNECEDOR_FORA_ESTADO = "Devolução para o fornecedor fora do estado";
-	public static String OPERACAO_DEVOLUCAO_CLIENTE = "Devolução do cliente";
-	public static String OPERACAO_REMESSA = "Remessa";
-	public static String OPERACAO_REMESSA_CONSIGNADA = "Remessa consignada";
+	public static final String OPERACAO_VENDA = "Venda";
+	public static final String OPERACAO_VENDA_INTERESTADUAL = "Venda Interestadual";
+	public static final String OPERACAO_COMPRA = "Compra";
+	public static final String OPERACAO_DEVOLUÇAO = "Devolução";
+	public static final String OPERACAO_DEVOLUCAO_FORNECEDOR = "Devolução para o fornecedor";
+	public static final String OPERACAO_DEVOLUCAO_FORNECEDOR_FORA_ESTADO = "Devolução para o fornecedor fora do estado";
+	public static final String OPERACAO_DEVOLUCAO_CLIENTE = "Devolução do cliente";
+	public static final String OPERACAO_REMESSA = "Remessa";
+	public static final String OPERACAO_REMESSA_CONSIGNADA = "Remessa consignada";
 
-	private static String PESSOA_CNPJ = "12345678901234";
-	private static String PESSOA_UF_SP = EstadoSigla.SP.toString();
-	private static String PESSOA_REGIME_APURACAO = "Regime de apuração 1";
-	private static String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
-	
-	private static String PESSOA_CNPJ_2 = "02329838429395";
-	private static String PESSOA_UF_MG = EstadoSigla.MG.toString();
-	private static String PESSOA_TIPO_JURIDICA = PessoaTipo.JURIDICA.toString();
-	
-	private static String DOC_FISCAL_SERIE_1 = "262265758";
-	private static String DOC_FISCAL_SERIE_2 = "883591913";
-	private static String DOC_FISCAL_SERIE_3 = "283871141";
-	private static String DOC_FISCAL_SERIE_4 = "357115603";
-
-	private static String DOC_FISCAL_NUMERO_1 = "82211429431055";
-	private static String DOC_FISCAL_NUMERO_2 = "45436809221754";
-	private static String DOC_FISCAL_NUMERO_3 = "65791541873496";
-	private static String DOC_FISCAL_NUMERO_4 = "30802553106899";
+	private static final String PESSOA_CNPJ = "12345678901234";
+	private static final String PESSOA_UF_SP = EstadoSigla.SP.toString();
+	private static final String PESSOA_REGIME_APURACAO = "Regime de apuração 1";
+	private static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
+	                
+	private static final String PESSOA_CNPJ_2 = "02329838429395";
+	private static final String PESSOA_UF_MG = EstadoSigla.MG.toString();
+	private static final String PESSOA_TIPO_JURIDICA = PessoaTipo.JURIDICA.toString();
+	                
+	private static final String DOC_FISCAL_SERIE_1 = "262265758";
+	private static final String DOC_FISCAL_SERIE_2 = "883591913";
+	private static final String DOC_FISCAL_SERIE_3 = "283871141";
+	private static final String DOC_FISCAL_SERIE_4 = "357115603";
+                    
+	private static final String DOC_FISCAL_NUMERO_1 = "82211429431055";
+	private static final String DOC_FISCAL_NUMERO_2 = "45436809221754";
+	private static final String DOC_FISCAL_NUMERO_3 = "65791541873496";
+	private static final String DOC_FISCAL_NUMERO_4 = "30802553106899";
 	
 	
 	@Autowired
@@ -172,8 +172,8 @@ public class TestHelper {
 //				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
 //				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA_INTERESTADUAL },
 //				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA_INTERESTADUAL } };
-		String[][] data = { { "NFE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_1, DOC_FISCAL_NUMERO_1 },
-				{ "SAT", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_2, DOC_FISCAL_NUMERO_2 },
+		String[][] data = { { "NFE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_1, DOC_FISCAL_NUMERO_1 },
+				{ "SAT", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_2, DOC_FISCAL_NUMERO_2 },
 				{ "CTE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_3, DOC_FISCAL_NUMERO_3 },
 				{ "ECF", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_4, DOC_FISCAL_NUMERO_4 } };
 
@@ -209,8 +209,8 @@ public class TestHelper {
 	private List<DocumentoFiscalItem> criarDocumentoFiscalItem(List<Ncm> ncms) {
 		List<DocumentoFiscalItem> documentoFiscalItens = new LinkedList<>();
 
-		String[][] data = { { "CONSUMO", "10", "5", "5506", NCM1 }, { "CONSUMO", "5", "5", "5506", NCM2 },
-				{ "REVENDA", "10", "5", "5566", NCM3 } };
+		String[][] data = { { "CONSUMO", "10", "5", "5102", NCM1 }, { "CONSUMO", "5", "5", "5105", NCM2 },
+				{ "CONSUMO", "10", "5", "5102", NCM3 } };
 
 		for (String[] dados : data) {
 			int aux = 0;

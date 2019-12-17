@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
@@ -25,13 +26,16 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 
 	@Autowired
 	private CalculoIcms calculoIcms;
+	
+	@Autowired
+	private DocumentoFiscalService docFiscalService;
 
 	/**
 	 * O calculo de imposto retornado aqui é do TOTAL DA NFE (aparentemente)
 	 */
 	@Override
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
-		List<CalculoImposto> listImpostos = new ArrayList<>();
+		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
 		List<TributacaoEstadual> listTributacoes = icmsService.findTributacaoEstadualByOperacaoENcms(documentoFiscal.getOperacao(), ncms);
 
@@ -41,17 +45,18 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 
 		documentoFiscal.getItens().forEach(docItem -> {
 			TributacaoEstadual tributacao = mapaTributacoes.get(docItem.getNcm());
-			listImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
+			listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
 
 		});
 
-		setaIcmsBaseEValor(documentoFiscal, listImpostos);
+		setaIcmsBaseEValor(documentoFiscal, listCalculoImpostos);
+		docFiscalService.save(documentoFiscal);
 	}
 
-	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listImpostos) {
+	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
 		documentoFiscal.setIcmsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
-		documentoFiscal.setIcmsValor(totaliza(listImpostos.stream()
+		documentoFiscal.setIcmsValor(totaliza(listCalculoImpostos.stream()
 				.filter(icms -> icms.getImposto().equals(Imposto.ICMS)).collect(Collectors.toList())));
 	}
 
@@ -60,9 +65,9 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	 * 
 	 * @param documentoFiscal
 	 */
-	private BigDecimal totaliza(List<CalculoImposto> listImpostos) {
+	private BigDecimal totaliza(List<CalculoImposto> listCalculoImpostos) {
 		BigDecimal[] icmsTotal = { BigDecimal.ZERO };
-		listImpostos.stream().forEach(icms -> {
+		listCalculoImpostos.stream().forEach(icms -> {
 			icmsTotal[0] = icmsTotal[0].add(icms.getValorUnitario());
 		});
 		return icmsTotal[0];
