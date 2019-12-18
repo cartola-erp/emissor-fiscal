@@ -29,6 +29,7 @@ public class CalculoIcms {
 
 		icms.setValor(valorIcms); // valor total
 		
+		docItem.setIcmsCest(tributacao.getCest());
 		docItem.setIcmsAliquota(tributacao.getIcmsAliquota());
 		docItem.setIcmsBase(valorIcmsBase);
 		docItem.setIcmsValor(valorIcms);

@@ -60,7 +60,7 @@ public class TributacaoEstadualLogicTest {
 	
 	// TRIBUTAÇÃO ESTADUAL (icms)
 	public static int TRIBUTACAO_ESTADUAL_ICMS_CST = 00;
-	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_BASE = new BigDecimal(0.09);
+	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_BASE = new BigDecimal(1);			// 1, pois é "TRIBUTADA INTEGRALMENTE". (100/100 = 1)
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA = new BigDecimal(0.18D);
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_IVA = new BigDecimal(2);
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO = new BigDecimal(0.18D);
@@ -111,7 +111,7 @@ public class TributacaoEstadualLogicTest {
 			icms.setMensagem(TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM);
 			listTributacoes.add(icms);
 		});
-		
+		// Salvando as TRIBUTAÇÕES ESTADUAIS, para CADA NCM 
 		List<TributacaoEstadual> listIcms = icmsService.saveAll(listTributacoes);
 		assertTrue(listIcms.size() == 3);
 

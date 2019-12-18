@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.documento;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -40,6 +41,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal valorUnitario;
 	private Ncm ncm;
 	private int cfop;
+	private Integer icmsCest;
 	private BigDecimal icmsBase;
 	private BigDecimal icmsAliquota;
 	private BigDecimal icmsValor;
@@ -111,6 +113,15 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setCfop(int cfop) {
 		this.cfop = cfop;
+	}
+
+    @Column(name = "icms_cest", scale = 7)
+	public Integer getIcmsCest() {
+		return icmsCest;
+	}
+
+	public void setIcmsCest(Integer icmsCest) {
+		this.icmsCest = icmsCest;
 	}
 
 	public BigDecimal getIcmsBase() {
