@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
@@ -29,6 +30,9 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	@Autowired
 	private CalculoIpi calculoIpi;
 
+	@Autowired
+	private DocumentoFiscalService docFiscalService;
+	
 	@Override
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
 		List<CalculoImposto> listaImpostos = new LinkedList<>();
@@ -52,6 +56,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 
 		setaPisBaseValor(documentoFiscal, listaImpostos);
 		setaCofinsBaseValor(documentoFiscal, listaImpostos);
+		docFiscalService.save(documentoFiscal);
 	}
 
 	private void setaPisBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {

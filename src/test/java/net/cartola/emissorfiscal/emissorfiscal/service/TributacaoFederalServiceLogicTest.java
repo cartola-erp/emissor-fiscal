@@ -42,8 +42,8 @@ public class TributacaoFederalServiceLogicTest {
 	public static final BigDecimal PIS_ALIQUOTA = new BigDecimal(0.0165D);
 	public static final BigDecimal COFINS_ALIQUOTA = new BigDecimal(0.076D);
 	public static final BigDecimal IPI_ALIQUOTA = new BigDecimal(0.05D); // valor arbitrário
-	public static final BigDecimal PIS_BASE = new BigDecimal(0.7D);
-	public static final BigDecimal COFINS_BASE = new BigDecimal(0.8D);
+	public static final BigDecimal PIS_BASE = new BigDecimal(1D);		// 1, pois é "TRIBUTADA COM ALIQ. BÁSICA". (100/100 = 1)
+	public static final BigDecimal COFINS_BASE = new BigDecimal(1D);	// 1, pois é "TRIBUTADA COM ALIQ. BÁSICA". (100/100 = 1)
 	public static final BigDecimal IPI_BASE = new BigDecimal(0.9D);
 
 	@Autowired
@@ -107,17 +107,17 @@ public class TributacaoFederalServiceLogicTest {
 
 		DocumentoFiscal documentoFiscal = documentosFiscais.get(0);
 		assertNotNull(documentoFiscal);
-		assertEquals(documentoFiscal.getPisBase(), new BigDecimal("87.5000000000"));
-		assertEquals(documentoFiscal.getCofinsBase(), new BigDecimal("100.0000000000"));
-		assertEquals(documentoFiscal.getPisValor(), new BigDecimal("1.4437500000000000"));
-		assertEquals(documentoFiscal.getCofinsValor(), new BigDecimal("7.6000000000000000"));
+		assertEquals(documentoFiscal.getPisBase(), new BigDecimal("125.0000000000"));
+		assertEquals(documentoFiscal.getCofinsBase(), new BigDecimal("125.0000000000"));
+		assertEquals(documentoFiscal.getPisValor(), new BigDecimal("2.0625000000000000"));
+		assertEquals(documentoFiscal.getCofinsValor(), new BigDecimal("9.5000000000000000"));
 
 //		System.out.println("\n\n");
-//		documentosFiscais.stream().forEach(docFiscal -> {
-//			System.out.println(docFiscal.getPisBase());
-//			System.out.println(docFiscal.getCofinsBase());
-//			System.out.println(docFiscal.getPisValor());
-//			System.out.println(docFiscal.getCofinsValor() + "\n\n");
-//		});
+		
+//		System.out.println("documentoFiscal.getPisBase() == " +documentoFiscal.getPisBase());
+//		System.out.println("documentoFiscal.getCofinsBase() == " + documentoFiscal.getCofinsBase());
+//		System.out.println("documentoFiscal.getPisValor() == " +documentoFiscal.getPisValor());
+//		System.out.println("documentoFiscal.getCofinsValor() == " +documentoFiscal.getCofinsValor());	
+		
 	}
 }
