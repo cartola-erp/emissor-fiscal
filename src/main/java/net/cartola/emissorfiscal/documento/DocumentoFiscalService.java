@@ -1,9 +1,11 @@
 package net.cartola.emissorfiscal.documento;
 
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,25 @@ public class DocumentoFiscalService {
 
 	@Autowired
 	private DocumentoFiscalRepository documentoFiscalRepository;
-
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	public DocumentoFiscalDto convertToDto(DocumentoFiscal docFiscal) {
+		DocumentoFiscalDto docFiscalDto = modelMapper.map(docFiscal, DocumentoFiscalDto.class);
+		return docFiscalDto;
+	}
+	
+	public DocumentoFiscal convertToEntity(DocumentoFiscalDto docFiscalDto) throws ParseException {
+		DocumentoFiscal docFiscal = modelMapper.map(docFiscalDto, DocumentoFiscal.class);
+		if (docFiscalDto.getId() != null) {
+			DocumentoFiscal oldDocFiscal = findOne(docFiscalDto.getId()).get();
+			docFiscal.setId(oldDocFiscal.getId());
+//			docFiscal.
+		}
+		return docFiscal;
+	}
+	
 	public List<DocumentoFiscal> findAll() {
 		return documentoFiscalRepository.findAll();
 	}
