@@ -34,7 +34,7 @@ public class NcmController {
 	@PostMapping("/cadastro")
 	public ModelAndView save(@Valid Ncm ncm, BindingResult result, RedirectAttributes attributes) {
 		boolean existeNumeroEExecao = ncmService.existeNumeroEExcecao(ncm);
-		if (result.hasErrors() || existeNumeroEExecao ){
+		if (result.hasErrors() || existeNumeroEExecao && ncm.getId() == null){
 			ModelAndView mv = new ModelAndView("ncm/cadastro");
 			mv.addObject("ncm", ncm);
 			mv.addObject("mensagemErro", ncmService.getMensagensErros(result, existeNumeroEExecao));

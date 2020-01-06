@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import java.math.BigDecimal;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,13 +9,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
+import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
+import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 
 @RequestMapping("/tributacaoEstadual")
@@ -49,13 +53,7 @@ public class TributacaoEstadualController {
 	}
 	
 	@PostMapping("/cadastro")
-	public ModelAndView save(@Valid TributacaoEstadual icms, @RequestParam("ufOrigem") String ufOrigem, @RequestParam("ufDestino") String ufDestino, BindingResult result, RedirectAttributes attributes) {
-	/*	"Receber" a ufOrigem e Destino do form, passar essa "lista" de sigla, para consultar os estados,
-	 * setando assim dentro do obj icms, para depois salvar
-	 * 
-	 */
-//		Set<Estado> estados = estadoService.findEstadoBySiglasIn( estados);
-		
+	public ModelAndView save(@Valid TributacaoEstadual icms, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, BindingResult result, RedirectAttributes attributes) {
 		if (result.hasErrors() ){
 			ModelAndView mv = new ModelAndView("tributacao-estadual/cadastro");
 			mv.addObject("icms ", icms);
@@ -63,8 +61,24 @@ public class TributacaoEstadualController {
 			return mv;
 		}
 		ModelAndView mv = new ModelAndView("redirect:/tributacaoEstadual/cadastro");
-	
+		
+		Estado estadoOrigem = estadoService.findOne(ufOrigemId).get();
+		Estado estadoDestino = estadoService.findOne(ufDestinoId).get();
+		Operacao operacao = operacaoService.findOne(operacaoId).get();
+		Ncm ncm = ncmService.findOne(ncmId).get();
+		
+		icms.setEstadoOrigem(estadoOrigem);
+		icms.setEstadoDestino(estadoDestino);
+		icms.setOperacao(operacao);
+		icms.setNcm(ncm);
+		// Ver com o Murilo, se esses valores serão salvos já divididos por cem, ou será salvo o número "inteiro" e nos calculos que usam tais valores divide por 100
+		icms.setIcmsAliquota(icms.getIcmsAliquota().divide(new BigDecimal(100D)));
+		icms.setIcmsAliquotaDestino(icms.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
+		icms.setIcmsBase(icms.getIcmsBase().divide(new BigDecimal(100D)));
+		icms.setIcmsIva(icms.getIcmsIva().divide(new BigDecimal(100D)));
+		
 		icmsService.save(icms);
+		
 		attributes.addFlashAttribute("mensagemSucesso", "ICMS alterado/cadastrado com sucesso!");
 		return mv;
 	}

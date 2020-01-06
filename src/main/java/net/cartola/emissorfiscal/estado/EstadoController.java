@@ -32,8 +32,8 @@ public class EstadoController {
 
 	@PostMapping("/cadastro")
 	public ModelAndView save(@Valid Estado estado, BindingResult result, RedirectAttributes attributes) {
-		boolean existeEsseEstado = !estadoService.findBySigla(estado.getSigla()).isPresent();
-		if (result.hasErrors() || !existeEsseEstado) {
+		boolean existeEsseEstado = estadoService.findBySigla(estado.getSigla()).isPresent();
+		if (result.hasErrors() || existeEsseEstado && estado.getId() == null) {
 			ModelAndView mv = new ModelAndView("estado/cadastro");
 			mv.addObject("estado", estado);
 			mv.addObject("mensagemErro", estadoService.getMensagensErros(result, existeEsseEstado));
