@@ -17,8 +17,8 @@
 						<nav aria-label="breadcrumb">
 							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
 								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Home</a></li>
-								<li class="breadcrumb-item"><a href="/operacao/consulta" style="color: #1b8140; font-weight: 500">Consultar</a></li>			
-								<li class="breadcrumb-item active" aria-current="page">Operação</li>
+								<li class="breadcrumb-item"><a href="/tributacao-estadual/consulta" style="color: #1b8140; font-weight: 500">Consultar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">Tributação Estadual</li>
 							</ol>
 						</nav>
 					<div>
@@ -27,12 +27,12 @@
 
 			<div class="container">
 
-				<!-- FORMULÁRIO para CONSULTAR OS NCMS -->
-				<form action="/operacao/consulta" method="POST" >
+				<!-- FORMULÁRIO para CONSULTAR a TRIBUTAÇÃO ESTADUAL, por NCM -->
+				<form action="/tributacao-estadual/consulta" method="POST" >
                     <div class="form-group form-row col-md-12">
                         <div class="form-group col-md-8">
-                            <label><b>Pesquisar Operação pela descrição: </b></label>
-                            <input type="text" class="form-control " id="txtDescricaoOperacao" name="descricaoOperacao" placeholder="Informe uma parte da descrição da operação..." minlength="3">
+                            <label><b>Pesquisar tributação estadual por NCM: </b></label>
+                            <input type="text" class="form-control " id="txtNcmTributacaoEstadual" name="ncm" placeholder="Informe o número do NCM..." minlength="3">
                         </div>
 
                         <div class="form-group col-md-4" style="padding-top: 25px;">
@@ -44,13 +44,22 @@
 				</form>
 
 
-				<!-- TABELA COM AS OPERAÇÕES CONSULTADAS-->
+				<!-- TABELA COM AS TRIBUTAÇÕES CONSULTADAS-->
 				<table class="table  table-hover table-responsive container ">
 					<thead>
 						<tr>
 							<!-- <th scope="col"> <b> ID </b> </th> -->	
 							<th scope="col"> <b> ID </b> </th>
-							<th scope="col"> <b> Descrição </b> </th>	
+							<th scope="col"> <b> UF Origem </b> </th>	
+							<th scope="col"> <b> UF Destino </b> </th>	
+							<th scope="col"> <b> Operação </b> </th>	
+							<th scope="col"> <b> NCM </b> </th>	
+							<th scope="col"> <b> CST </b> </th>	
+							<th scope="col"> <b> Icms Base </b> </th>	
+							<th scope="col"> <b> Icms Aliq. </b> </th>	
+							<th scope="col"> <b> IVA/MVA </b> </th>	
+							<th scope="col"> <b> Icms Aliq. Destino </b> </th>	
+							<th scope="col"> <b> Cest </b> </th>	
 					
                             <th scope="col"> <b> Editar </b> </th>	
                             <th scope="col"> <b> Deletar </b> </th>
@@ -58,14 +67,23 @@
 					</thead>
 									
 					<tbody>
-						<tr th:each="operacao : ${listOperacao}">
-							<!-- <th scope="row" th:text="${consultorio.id}"> 2</th> -->
-							<td scope="row" th:text="${operacao.id}"> 12.000.021-90 </td>	
-							<td scope="row" th:text="${operacao.descricao}"> 123.321.901-99 </td>	
+						<tr th:each="icms: ${listTributacaoEstadual}">
+							<td scope="row" th:text="${icms.id}"> 1 </td>	
+							<td scope="row" th:text="${icms.estadoOrigem.sigla}"> SP </td>	
+							<td scope="row" th:text="${icms.estadoDestino.sigla}"> MG </td>	
+
+							<td scope="row" th:text="${icms.operacao.descricao}"> Venda Interestadual </td>	
+							<td scope="row" th:text="${icms.ncm.numero}"> 12345678 </td>	
+							<td scope="row" th:text="${icms.icmsCst}"> 12345678 </td>	
+							<td scope="row" th:text="${icms.icmsBase}"> 12345678 </td>	
+							<td scope="row" th:text="${icms.icmsAliquota}"> 12345678 </td>	
+							<td scope="row" th:text="${icms.icmsIva}"> 12345678 </td>	
+							<td scope="row" th:text="${icms.icmsAliquotaDestino}"> 12345678 </td>	
+							<td scope="row" th:text="${icms.cest}"> 12345678 </td>	
 											
 					      <!-- 			EDITAR -->
                             <td scope="row">
-                                <a th:href="@{'/operacao/editar/' + ${operacao.id}}">
+                                <a th:href="@{'/tributacao-estadual/editar/' + ${icms.id}}">
                                     <button type="button" class="btn btn-outline-primary ajusta-botao-tbl">
                                         <span data-feather="edit-3">Editar</span>
                                     </button>
@@ -75,7 +93,7 @@
                             <!-- DELETAR -->
                             <td scope="row">
                                 <!-- <form th:method="DELETE" th:action="${(#mvc.url('NC#delete').arg(0, ncm.id)).build()}"> -->
-                                <form th:method="POST" method="DELETE" th:action="@{'/operacao/deletar/' + ${operacao.id}}">
+                                <form th:method="POST" method="DELETE" th:action="@{'/tributacao-estadual/deletar/' + ${icms.id}}">
                                     <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl">
 <!--                                     <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl" data-toggle="modal" data-target="#modalDeletarOperacao" > -->
                                         <span data-feather="trash-2">Deletar</span>
@@ -109,9 +127,9 @@
 
 
 
-			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDeletarOperacao">
+			<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDeletarOperacao">
 					Launch demo modal
-    	    </button>
+    	    </button> -->
 			
 			<!-- INSERINDO O MODAL PARA A CONFIRMAÇÃO DE DELETE-->
 			<!-- <div th:replace="/operacao/modal-deletar :: modal-deletar"></div> -->
