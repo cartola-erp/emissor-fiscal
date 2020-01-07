@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Cadastro de tributação federal </title>
+	</head>
+
+	<body>
+		<section id="tributacao-estadual-container container">
+
+			<!-- BREADCRUMB -->
+			<div class="container">
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
+								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Home</a></li>
+								<li class="breadcrumb-item"><a href="/tributacao-federal/cadastro" style="color: #1b8140; font-weight: 500">Cadastrar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">Tributação Federal </li>
+							</ol>
+						</nav>
+					<div>
+				<div>
+			<div>
+
+			<div class="container">
+
+				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
+				<form th:action="@{/tributacao-federal/cadastro}" th:object="${tributacaoFederal}" method="POST">
+					<!-- OPERAÇÃO e NCM -->
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="cmbOperacao"><strong>Operação</strong></label>
+							<select class="custom-select" name="operacaoId">
+							<option selected id="opOperacao"> </option>
+								<option th:each="operacao : ${listOperacao}" th:value="${operacao.id}" th:selected="${operacao.id == operacaoIdSelecionado}" th:text="${operacao.descricao}" ></option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label for="cmbNcm"><strong>NCM</strong></label>
+							<select class="custom-select" id="ncmId" name="ncmId" >
+								<option selected id="opNcm"> </option>
+								<option th:each="ncm : ${listNcms}" th:value="${ncm.id}" th:selected="${ncm.id == ncmdIdSelecionado}" th:text="${ncm.numero}" ></option>
+							</select>
+						</div>
+					</div>
+
+					<!-- ALIQ DO IMPOSTO -->
+					<div class="form-row">
+
+						<div class="form-group col-md-1">
+							<label for="txtPisCst"><strong>PIS CST</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtPisCst" th:field="*{pisCst}" name="pisCst" placeholder="PIS CST..." minlength="1" maxlength="3" required />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtPisBase"><strong>PIS Base</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtPisBase" th:field="*{pisBase}" name="pisBase" placeholder="PIS Base..." minlength="1" maxlength="5" required />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtPisAliquota"><strong>PIS Aliquota</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtPisAliquota" th:field="*{pisAliquota}"  name="pisAliquota" placeholder="PIS ALIQ." minlength="1" maxlength="3" required />
+						</div> 
+
+						<!-- COFINS  -->
+						<div class="form-group col-md-2">
+							<label for="txtCofinsCst"><strong>COFINS Cst</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtCofinsCst" th:field="*{cofinsCst}" name="cofinsCst" placeholder="COFINS Cst." minlength="0" maxlength="5" />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtCofinsBase"><strong>COFINS Base</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtCofinsBase" th:field="*{cofinsBase}" name="cofinsBase" placeholder="COFINS Base" minlength="1" maxlength="3" required />
+						</div> 
+
+						<div class="form-group col-md-3">
+							<label for="txtCofinsAliq"><strong>COFINS Aliq.</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtCofinsAliq" th:field="*{cofinsAliquota}" name="cofinsAliquota" placeholder="COFINS Aliq." minlength="1" maxlength="3" required>
+						</div> 
+
+					</div>
+
+					<!-- ALIQ DO IPI -->
+					<div class="form-row">
+						<!-- IPI  -->
+						<div class="form-group col-md-1">
+							<label for="txtIpiCst"><strong>IPI Cst</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtIpiCst" th:field="*{ipiCst}" name="ipiCst" placeholder="IPI Cst." minlength="0" maxlength="5" />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtIpiBase"><strong>IPI Base</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtCofinsBase" th:field="*{ipiBase}" name="ipiBase" placeholder="IPI Base" minlength="1" maxlength="3" required />
+						</div> 
+
+						<div class="form-group col-md-2">
+							<label for="txtIpiAliq"><strong>IPI Aliq.</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtIpiAliq" th:field="*{ipiAliquota}" name="ipiAliquota" placeholder="IPI Aliq." minlength="1" maxlength="3" required>
+						</div> 
+
+						<!-- Mensagem -->
+						<div class="form-group col-md-7">
+							<label for="txtDescricao">Mensagem</label>
+							<i class="fas fa-pencil-alt prefix"></i>
+							<textarea id="txtMensagem" th:field="*{mensagem}" name="mensagem" class="md-textarea form-control " rows="1" ></textarea>
+						</div>
+					</div>
+
+					<!-- Mensagem -->
+					<!-- <div class="form-row">
+						<div class="form-group col-md-12">
+							<label for="txtDescricao">Mensagem</label>
+							<i class="fas fa-pencil-alt prefix"></i>
+							<textarea id="txtMensagem" th:field="*{mensagem}" name="mensagem" class="md-textarea form-control " rows="2" ></textarea>
+						</div>
+					</div>	 -->
+
+					<!-- BTN ALTERAR/CADASTRAR -->
+					<div class="form-row">
+						<!-- <input type="text" th:field="*{id}" class="form-control" id="txtId" name="id" hidden> -->
+						<input type="text" class="form-control" id="txtId" th:field="*{id}" name="id" hidden="true" >
+
+						<div class = "form-group col-md-12">
+							<button type="submit" class="btn btn-outline-primary col-md-12"><strong>Alterar/Cadastrar</strong></button>
+							<!-- <button type="submit" class="btn btn-outline-primary col-md-12" th:text="${textBtnCadastrarEditar}"><strong> </strong></button> -->
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+   		<section>
+
+	</body>
+
+</html>
