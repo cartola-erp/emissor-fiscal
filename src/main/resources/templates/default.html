@@ -92,14 +92,14 @@
 
             <div class="alert alert-danger alert-dismissible" role="alert" th:if="${not #strings.isEmpty(mensagemErro)}">
                 <div  th:each= "msg : ${mensagemErro}" >
-                    <span th:text="${msg}"></span>
+                    <span id="spanMensagemErro" th:text="${msg}"></span>
                 </div>
             </div>
                     
             <div class="alert alert-success alert-dismissible" role="alert"  th:if="${not #strings.isEmpty(mensagemSucesso)}">
                 <!-- <div th:each= "msg : ${mensagemSucesso}"  > 	 -->
                     <!-- <span th:text="${msg}"></span> -->
-                    <span th:text="${mensagemSucesso}"></span>
+                    <span id="spanMensagemSucesso"  th:text="${mensagemSucesso}"></span>
                 <!-- </div> -->
             </div>
         </div>
