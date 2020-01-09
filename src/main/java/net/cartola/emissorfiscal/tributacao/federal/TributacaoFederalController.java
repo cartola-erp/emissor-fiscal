@@ -61,17 +61,18 @@ public class TributacaoFederalController {
 		tributacaoFederal.setOperacao(operacao);
 		tributacaoFederal.setNcm(ncm);
 		
-		// Ver com o Murilo, se esses valores serão salvos já divididos por cem, ou será salvo o número "inteiro" e nos calculos que usam tais valores divide por 100
-		// Se for dividir aqui, vai dar errado quando tentar editar, pois os valores q não mudarem SERAM DIVIDIOS NOVAMENTE
-		tributacaoFederal.setPisAliquota(tributacaoFederal.getPisAliquota().divide(new BigDecimal(100D)));
-		tributacaoFederal.setPisBase(tributacaoFederal.getPisBase().divide(new BigDecimal(100D)));
-		tributacaoFederal.setCofinsAliquota(tributacaoFederal.getCofinsAliquota().divide(new BigDecimal(100D)));
-		tributacaoFederal.setCofinsBase(tributacaoFederal.getCofinsBase().divide(new BigDecimal(100D)));
-		tributacaoFederal.setIpiAliquota(tributacaoFederal.getIpiAliquota().divide(new BigDecimal(100D)));
-		tributacaoFederal.setIpiBase(tributacaoFederal.getIpiBase().divide(new BigDecimal(100D)));
-		
 		try {
 			tributacaoFederalService.save(tributacaoFederal);
+			// Ver com o Murilo, se esses valores serão salvos já divididos por cem, ou será
+			// salvo o número "inteiro" e nos calculos que usam tais valores divide por 100
+			// Se for dividir aqui, vai dar errado quando tentar editar, pois os valores q
+			// não mudarem SERAM DIVIDIOS NOVAMENTE
+			tributacaoFederal.setPisAliquota(tributacaoFederal.getPisAliquota().divide(new BigDecimal(100D)));
+			tributacaoFederal.setPisBase(tributacaoFederal.getPisBase().divide(new BigDecimal(100D)));
+			tributacaoFederal.setCofinsAliquota(tributacaoFederal.getCofinsAliquota().divide(new BigDecimal(100D)));
+			tributacaoFederal.setCofinsBase(tributacaoFederal.getCofinsBase().divide(new BigDecimal(100D)));
+			tributacaoFederal.setIpiAliquota(tributacaoFederal.getIpiAliquota().divide(new BigDecimal(100D)));
+			tributacaoFederal.setIpiBase(tributacaoFederal.getIpiBase().divide(new BigDecimal(100D)));
 		} catch (Exception ex) {
 			mv.setViewName("tributacao-federal/cadastro");
 //			mv.addObject("tributacaoFederal", tributacaoFederal);
@@ -95,8 +96,12 @@ public class TributacaoFederalController {
 //	@PostMapping("/consulta")
 //	public ModelAndView findByNumero(@RequestParam("numeroNcm") String numeroNcm, Model model) {
 //		ModelAndView mv = new ModelAndView("tributacaoEstadual/consulta");
-//		mv.addObject("listNcm", tributacaoFederalService.findByNumero(Integer.parseInt(numeroNcm)));
+//		try {
 //
+//			mv.addObject("listNcm", tributacaoFederalService.findByNumero(Integer.parseInt(numeroNcm)));
+//		} catch (Exception ex) {
+//			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação informada");
+//		}
 //		return mv;
 //	}
 //
@@ -119,8 +124,13 @@ public class TributacaoFederalController {
 	}
 
 //	@PostMapping("/deletar/{id}")
-//	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes) {
-//		tributacaoFederalService.deleteById(id);
+//	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes, Model model) {
+//		try {
+//
+//			tributacaoFederalService.deleteById(id);
+//		} catch (Exception ex) {
+//			model.addAttribute("mensagemErro", "Erro ao tentar deletar a tributação estadual de ID: " + id);
+//		}
 //		attributes.addFlashAttribute("mensagemSucesso", "Tributação Estadual deletado com sucesso!");
 //		return new ModelAndView("redirect:/tributacaoEstadual/consulta");
 //	}

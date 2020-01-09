@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.ncm;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,15 @@ public class NcmController {
 			return mv;
 		}
 		ModelAndView mv = new ModelAndView("redirect:/ncm/cadastro");
-	
-		ncmService.save(ncm);
+		
+		try {
+			ncmService.save(ncm);
+		} catch (ConstraintViolationException ex) {
+			mv.addObject("mensagemErro", "Essa combinação de NCM e EXCEÇÃO, já EXISTE!");
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Erro ao tentar salvar/editar o NCM! " +ncm.getNumero());
+		}
+		
 		attributes.addFlashAttribute("mensagemSucesso", "NCM alterado/cadastrado com sucesso!");
 		return mv;
 	}
@@ -59,7 +67,11 @@ public class NcmController {
 	@PostMapping("/consulta")
 	public ModelAndView findByNumero(@RequestParam("numeroNcm") String numeroNcm, Model model) {
 		ModelAndView mv = new ModelAndView("ncm/consulta");
-		mv.addObject("listNcm", ncmService.findByNumero(Integer.parseInt(numeroNcm)));
+		try {
+			mv.addObject("listNcm", ncmService.findByNumero(Integer.parseInt(numeroNcm)));
+		} catch (NumberFormatException ex) {
+			mv.addObject("mensagemErro", "Erro ao tentar buscar o NCM com o número informado ");
+		}
 
 		return mv;
 	}
@@ -76,8 +88,12 @@ public class NcmController {
 	}
 
 	@PostMapping("/deletar/{id}")
-	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes) {
-		ncmService.deleteById(id);
+	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes, Model model) {
+		try {
+			ncmService.deleteById(id);
+		} catch (Exception ex) {
+			model.addAttribute("mensagemErro", "Houve um erro ao tentar deletar o NCM de ID = " +id);
+		}
 		attributes.addFlashAttribute("mensagemSucesso", "Ncm deletado com sucesso!");
 		return new ModelAndView("redirect:/ncm/consulta");
 	}

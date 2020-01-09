@@ -61,23 +61,29 @@ public class TributacaoEstadualController {
 		}
 		ModelAndView mv = new ModelAndView("redirect:/tributacao-estadual/cadastro");
 		
-		Estado estadoOrigem = estadoService.findOne(ufOrigemId).get();
-		Estado estadoDestino = estadoService.findOne(ufDestinoId).get();
-		Operacao operacao = operacaoService.findOne(operacaoId).get();
-		Ncm ncm = ncmService.findOne(ncmId).get();
-		
-		icms.setEstadoOrigem(estadoOrigem);
-		icms.setEstadoDestino(estadoDestino);
-		icms.setOperacao(operacao);
-		icms.setNcm(ncm);
-		// Ver com o Murilo, se esses valores serão salvos já divididos por cem, ou será salvo o número "inteiro" e nos calculos que usam tais valores divide por 100
-		// Se for dividir aqui, vai dar errado quando tentar editar, pois os valores q não mudarem SERAM DIVIDIOS NOVAMENTE
-		icms.setIcmsAliquota(icms.getIcmsAliquota().divide(new BigDecimal(100D)));
-		icms.setIcmsAliquotaDestino(icms.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
-		icms.setIcmsBase(icms.getIcmsBase().divide(new BigDecimal(100D)));
-		icms.setIcmsIva(icms.getIcmsIva().divide(new BigDecimal(100D)));
-		
-		icmsService.save(icms);
+		try {
+			Estado estadoOrigem = estadoService.findOne(ufOrigemId).get();
+			Estado estadoDestino = estadoService.findOne(ufDestinoId).get();
+			Operacao operacao = operacaoService.findOne(operacaoId).get();
+			Ncm ncm = ncmService.findOne(ncmId).get();
+
+			icms.setEstadoOrigem(estadoOrigem);
+			icms.setEstadoDestino(estadoDestino);
+			icms.setOperacao(operacao);
+			icms.setNcm(ncm);
+			// Ver com o Murilo, se esses valores serão salvos já divididos por cem, ou será
+			// salvo o número "inteiro" e nos calculos que usam tais valores divide por 100
+			// Se for dividir aqui, vai dar errado quando tentar editar, pois os valores q
+			// não mudarem SERAM DIVIDIOS NOVAMENTE
+			icms.setIcmsAliquota(icms.getIcmsAliquota().divide(new BigDecimal(100D)));
+			icms.setIcmsAliquotaDestino(icms.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
+			icms.setIcmsBase(icms.getIcmsBase().divide(new BigDecimal(100D)));
+			icms.setIcmsIva(icms.getIcmsIva().divide(new BigDecimal(100D)));
+
+			icmsService.save(icms);
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
+		}
 		
 		attributes.addFlashAttribute("mensagemSucesso", "ICMS alterado/cadastrado com sucesso!");
 		return mv;
@@ -94,11 +100,15 @@ public class TributacaoEstadualController {
 //	@PostMapping("/consulta")
 //	public ModelAndView findByNumero(@RequestParam("numeroNcm") String numeroNcm, Model model) {
 //		ModelAndView mv = new ModelAndView("tributacaoEstadual/consulta");
-//		mv.addObject("listNcm", icmsService.findByNumero(Integer.parseInt(numeroNcm)));
-//
+//		try {
+//			mv.addObject("listNcm", icmsService.findByNumero(Integer.parseInt(numeroNcm)));
+//		} catch (Exception ex) {
+//			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação informada");
+//		} 
 //		return mv;
 //	}
 //
+	
 	// Método que irá carregar na tela de cadastro, os valores cadastrados de uma tributação estadual(para poder editar)
 	@GetMapping("/editar/{id}")
 	public ModelAndView edit(@PathVariable long id, Model model) {
@@ -121,8 +131,12 @@ public class TributacaoEstadualController {
 	}
 
 //	@PostMapping("/deletar/{id}")
-//	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes) {
-//		icmsService.deleteById(id);
+//	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes, Model model) {
+//		try {
+//			icmsService.deleteById(id);
+//		} catch (Exception ex) {
+//			model.addAttribute("mensagemErro", "Erro ao tentar deletar a tributação estadual de ID: " +id);
+//		}
 //		attributes.addFlashAttribute("mensagemSucesso", "Tributação Estadual deletado com sucesso!");
 //		return new ModelAndView("redirect:/tributacaoEstadual/consulta");
 //	}

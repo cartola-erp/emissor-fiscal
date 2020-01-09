@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.estado;
 
+import java.util.NoSuchElementException;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +43,12 @@ public class EstadoController {
 			return mv;
 		}
 		ModelAndView mv = new ModelAndView("redirect:/estado/cadastro");
-
-		estadoService.save(estado);
+		
+		try {
+			estadoService.save(estado);	
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Não foi possível salvar/editar esse ESTADO! ");
+		}
 		attributes.addFlashAttribute("mensagemSucesso", "ESTADO alterado/cadastrado com sucesso!");
 		return mv;
 	}
@@ -58,8 +64,13 @@ public class EstadoController {
 	@PostMapping("/consulta")
 	public ModelAndView findBySigla(@RequestParam("siglaEstado") String siglaEstado, Model model) {
 		ModelAndView mv = new ModelAndView("estado/consulta");
-		mv.addObject("listEstado", estadoService.findBySigla(EstadoSigla.valueOf(siglaEstado)));
-
+		try {
+			mv.addObject("listEstado", estadoService.findBySigla(EstadoSigla.valueOf(siglaEstado.toUpperCase())).get());
+		} catch (IllegalArgumentException ex) {
+			mv.addObject("mensagemErro", "A sigla informada é de um estado que NÃO existe");	
+		} catch (NoSuchElementException ex) {
+			mv.addObject("mensagemErro", "A sigla informada é de um estado que ainda NÃO foi cadastrados");	
+		}
 		return mv;
 	}
 
@@ -76,9 +87,14 @@ public class EstadoController {
 	}
 
 	@PostMapping("/deletar/{id}")
-	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes) {
-		estadoService.deleteById(id);
+	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes, Model model) {
+		try {
+			estadoService.deleteById(id);	
+		} catch (Exception ex) {
+			model.addAttribute("mensagemErro", "Houve algum erro ao tentar deletar o ESTADO de ID: "+id);
+		}
 		attributes.addFlashAttribute("mensagemSucesso", "Estado deletado com sucesso!");
 		return new ModelAndView("redirect:/estado/consulta");
 	}
+	
 }

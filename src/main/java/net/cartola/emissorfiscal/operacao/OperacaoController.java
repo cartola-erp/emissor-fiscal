@@ -43,7 +43,11 @@ public class OperacaoController {
 		}
 		ModelAndView mv = new ModelAndView("redirect:/operacao/cadastro");
 	
-		operacaoService.save(operacao);
+		try {
+			operacaoService.save(operacao);
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Houve um erro ao tentar salvar/editar a OPERAÇÃO: " +operacao.getDescricao());
+		}
 		attributes.addFlashAttribute("mensagemSucesso", "OPERAÇÃO alterado/cadastrado com sucesso!");
 		return mv;
 	}
@@ -59,8 +63,11 @@ public class OperacaoController {
 	@PostMapping("/consulta")
 	public ModelAndView findByDescricao(@RequestParam("descricaoOperacao") String descricaoOperacao, Model model) {
 		ModelAndView mv = new ModelAndView("operacao/consulta");
-		mv.addObject("listOperacao", operacaoService.findByParteDaDescricao(descricaoOperacao));
-
+		try {
+			mv.addObject("listOperacao", operacaoService.findByParteDaDescricao(descricaoOperacao));
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Nenhuma OPERAÇÃO encontrada pela descrição (" +descricaoOperacao.toUpperCase()+ ") informada!");
+		}
 		return mv;
 	}
 
@@ -76,9 +83,13 @@ public class OperacaoController {
 	}
 
 	@PostMapping("/deletar/{id}")
-	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes) {
-		operacaoService.deleteById(id);
-		attributes.addFlashAttribute("mensagemSucesso", "Operacao deletado com sucesso!");
+	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes, Model model) {
+		try {
+			operacaoService.deleteById(id);
+		} catch (Exception ex) {
+			model.addAttribute("mensagemErro", "Houve um erro inesperado ao tentar deletar a operação de ID: " +id);
+		}
+		attributes.addFlashAttribute("mensagemSucesso", "Operação deletada com sucesso!");
 		return new ModelAndView("redirect:/operacao/consulta");
 	}
 }
