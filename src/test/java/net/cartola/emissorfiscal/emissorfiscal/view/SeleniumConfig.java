@@ -3,7 +3,9 @@ package net.cartola.emissorfiscal.emissorfiscal.view;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -40,9 +42,27 @@ public class SeleniumConfig {
 		}
 	}
 	
+	// Métodos Auxiliares
+	
 	protected void goToHome() {
 		driver.get(PATH);
-		System.out.println("Abrindo o link (home): " +PATH);
+		System.out.println("Entrando no link (home): " +PATH);
+	}
+	
+	protected void goToTelaDeCadastro(String nomeEntidade) {
+		WebElement element = driver.findElement(By.id("navbarDropdownCadastro"));
+		element.click();
+		element = driver.findElement(By.id("dropDownCadastro" +nomeEntidade));
+		element.click();
+		System.out.println("Entrando na tela de CADASTRO DE: " +nomeEntidade);
+	}
+	
+	protected void goToTelaDeConsulta(String nomeEntidade) {
+		WebElement element = driver.findElement(By.id("navbarDropdownConsulta"));
+		element.click();
+		element = driver.findElement(By.id("dropDownConsulta" +nomeEntidade));
+		element.click();
+		System.out.println("Entrando na tela de CONSULTA DE: " +nomeEntidade);
 	}
 	
 }
