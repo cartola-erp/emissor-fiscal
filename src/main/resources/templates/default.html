@@ -39,33 +39,33 @@
 
         <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
             <div class="nav-item dropdown ml-5">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCadastro" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     Cadastrar
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownCadastro">
                     <!-- TODO: templates -->
-                    <a class="dropdown-item" th:href="@{/ncm/cadastro}">NCM</a>
-                    <a class="dropdown-item" th:href="@{/estado/cadastro}">Estado</a>
-                    <a class="dropdown-item" th:href="@{/operacao/cadastro}">Operação</a>
-                    <a class="dropdown-item" th:href="@{/tributacao-estadual/cadastro}">Tributacao estadual (ICMS) </a>
-                    <a class="dropdown-item" th:href="@{/tributacao-federal/cadastro}">Tributacao federal </a>
+                    <a class="dropdown-item" id="dropDownCadastroNcm" th:href="@{/ncm/cadastro}">NCM</a>
+                    <a class="dropdown-item" id="dropDownCadastroEstado" th:href="@{/estado/cadastro}">Estado</a>
+                    <a class="dropdown-item" id="dropDownCadastroOperacao" th:href="@{/operacao/cadastro}">Operação</a>
+                    <a class="dropdown-item" id="dropDownCadastroTributacaoEstadual" th:href="@{/tributacao-estadual/cadastro}">Tributacao estadual (ICMS) </a>
+                    <a class="dropdown-item" id="dropDownCadastroTributacaoFederal" th:href="@{/tributacao-federal/cadastro}">Tributacao federal </a>
                    <!--  <a class="dropdown-item" th:href="@{/equipe}">Equipe</a> -->
                 </div>
             </div>
 
             <div class="nav-item dropdown ml-5">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownConsulta" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     Consultar
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownConsulta">
                 <!-- TODO: templates -->
-                    <a class="dropdown-item" th:href="@{/ncm/consulta}">NCM</a>
-                    <a class="dropdown-item" th:href="@{/estado/consulta}">Estado</a>
-                    <a class="dropdown-item" th:href="@{/operacao/consulta}">Operação</a>
-                    <a class="dropdown-item" th:href="@{/tributacao-estadual/consulta}">Tributacao estadual - (ICMS)</a>
-                    <a class="dropdown-item" th:href="@{/tributacao-federal/consulta}">Tributacao federal</a>
+                    <a class="dropdown-item" id="dropDownConsultaNcm" th:href="@{/ncm/consulta}">NCM</a>
+                    <a class="dropdown-item" id="dropDownConsultaEstado" th:href="@{/estado/consulta}">Estado</a>
+                    <a class="dropdown-item" id="dropDownConsultaOperacao" th:href="@{/operacao/consulta}">Operação</a>
+                    <a class="dropdown-item" id="dropDownConsultaTributacaoEstadual" th:href="@{/tributacao-estadual/consulta}">Tributacao estadual - (ICMS)</a>
+                    <a class="dropdown-item" id="dropDownConsultaTributacaoFederal" th:href="@{/tributacao-federal/consulta}">Tributacao federal</a>
                     <!--  <a class="dropdown-item" th:href="@{/equipe}">Equipe</a> -->
             
                </div>
