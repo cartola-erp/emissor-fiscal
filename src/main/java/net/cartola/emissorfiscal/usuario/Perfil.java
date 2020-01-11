@@ -6,17 +6,7 @@ package net.cartola.emissorfiscal.usuario;
  */
 public enum Perfil {
 	
-	ROLE_ADMIN,
-	ROLE_COMPRAS,
-	ROLE_ECOMMERCE,
-	ROLE_ESTOQUE,
-	ROLE_FINANCEIRO,
-	ROLE_POS_VENDA,
-	ROLE_PRODUCAO,
-	ROLE_RH,
-	ROLE_SAC,
-	ROLE_USUARIO,
-	ROLE_VENDAS
+	ROLE_CONTADOR,
 	;
 }
 

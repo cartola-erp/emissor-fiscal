@@ -73,6 +73,7 @@ public class TributacaoEstadualLogicTest {
 		testHelper.limpaBanco();
 		testHelper.criarEstados();
 		testHelper.criarDocumentoFiscal();
+		testHelper.criarUsuarioRoot();
 	}
 	
 	

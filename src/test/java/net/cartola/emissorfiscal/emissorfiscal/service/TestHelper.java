@@ -1,10 +1,13 @@
 package net.cartola.emissorfiscal.emissorfiscal.service;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
@@ -21,10 +24,13 @@ import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoRepository;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaRepository;
-import net.cartola.emissorfiscal.pessoa.PessoaService;
 import net.cartola.emissorfiscal.pessoa.PessoaTipo;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualRepository;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalRepository;
+import net.cartola.emissorfiscal.usuario.Perfil;
+import net.cartola.emissorfiscal.usuario.Usuario;
+import net.cartola.emissorfiscal.usuario.UsuarioPerfil;
+import net.cartola.emissorfiscal.usuario.UsuarioService;
 
 /**
  * 8 de nov de 2019
@@ -92,7 +98,13 @@ public class TestHelper {
 
 	@Autowired
 	private TributacaoFederalRepository tributacaoFederalRepository;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	public void criarEstados() {
 		List<Estado> estados = new LinkedList<>();
 		String[][] data = { { "SP", "São Paulo" }, { "MG", "Minas Gerais" }, { "RS", "Rio Grande do Sul" },
@@ -227,6 +239,26 @@ public class TestHelper {
 		return documentoFiscalItens;
 	}
 
+	public void criarUsuarioRoot() {
+		Optional<Usuario> opUsuario = usuarioService.findByLogin("root");
+		if (!opUsuario.isPresent()) {
+			Usuario u = new Usuario();
+			u.setLogin("root");
+			u.setNome("FengHuang");
+			u.setEmail("ningYi@riseofphoenix.cn");
+			u.setSenha(bCryptPasswordEncoder.encode("root"));
+			
+			UsuarioPerfil perfilUm = new UsuarioPerfil();
+			perfilUm.setPerfil(Perfil.ROLE_CONTADOR);
+			
+			UsuarioPerfil perfilDois = new UsuarioPerfil();
+			perfilDois.setPerfil(Perfil.ROLE_CONTADOR);
+			
+			u.setPerfis(Arrays.asList(perfilUm, perfilDois));
+			usuarioService.save(u);
+		}
+	}
+	
 	public void limpaBanco() {
 		estadoRepository.deleteAll();
 		operacaoRepository.deleteAll();
