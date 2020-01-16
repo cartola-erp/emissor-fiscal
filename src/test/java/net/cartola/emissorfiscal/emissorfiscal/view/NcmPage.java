@@ -75,10 +75,9 @@ public class NcmPage extends PageUtil {
 			txtNumero.sendKeys(letra.toString());
 		}
 		
-		WebElement elementTxtNumero = driver.findElement(By.id("txtNumero"));
-		String valueTxtNumero = elementTxtNumero.getAttribute("value");
+		String valueTxtNumero = txtNumero.getAttribute("value");
 		System.out.println("ASSERT do NUMERO: " +valueTxtNumero );
-		assertTrue(valueTxtNumero.equalsIgnoreCase(numeroText.toString()));
+		assertTrue(valueTxtNumero.equalsIgnoreCase("12345678"));
 		
 	   	ExpectedCondition<Boolean> txtExcecaoIsDisplayed = displayed -> txtExcecao.isDisplayed();
 	   	wait.until(txtExcecaoIsDisplayed);
@@ -93,7 +92,7 @@ public class NcmPage extends PageUtil {
 //			txtExcecao.sendKeys("11");
 	   		txtExcecao.sendKeys(letra.toString());
 		}
-		
+	   	assertTrue(txtExcecao.getAttribute("value").equalsIgnoreCase("11"));
 //		System.out.println("ASSERT da EXCECAO" );
 //		btnCadastrarAlterar.click();
 	}
