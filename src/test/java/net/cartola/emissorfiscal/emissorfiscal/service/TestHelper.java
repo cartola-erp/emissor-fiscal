@@ -260,12 +260,12 @@ public class TestHelper {
 	}
 	
 	public void limpaBanco() {
-		estadoRepository.deleteAll();
-		operacaoRepository.deleteAll();
-		ncmRepository.deleteAll();
 		tributacaoEstadualRepository.deleteAll();
 		tributacaoFederalRepository.deleteAll();
+		estadoRepository.deleteAll();
 		docFiscalItemRepository.deleteAll();
 		docFiscalRepository.deleteAll();
+		operacaoRepository.deleteAll();
+		ncmRepository.deleteAll();
 	}
 }

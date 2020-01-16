@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -17,7 +18,6 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class SeleniumConfig {
 	
 	protected WebDriver driver;
-	protected static String PATH = "localhost:8080/";
 	
 	/**
 	 * Configurando o <b> "WEB DRIVER" </b> do navegador (no caso o CHROME) usando a lib "WEB DRIVER MANAGER"
@@ -32,7 +32,11 @@ public class SeleniumConfig {
 	
 	@Before
 	public void setupChromeTest() {
+//		ChromeOptions options = new ChromeOptions();
+//        options.addArguments("--headless");
+//        driver = new ChromeDriver(options);
 		driver = new ChromeDriver();
+		driver.manage().window().maximize();
 	}
 	
 	@After
@@ -42,28 +46,10 @@ public class SeleniumConfig {
 		}
 	}
 	
-	// Métodos Auxiliares
-	
-	protected void goToHome() {
-		driver.get(PATH);
-		System.out.println("Entrando no link (home): " +PATH);
+	public WebDriver getDriver() {
+		return driver;
 	}
 	
-	protected void goToTelaDeCadastro(String nomeEntidade) {
-		WebElement element = driver.findElement(By.id("navbarDropdownCadastro"));
-		element.click();
-		element = driver.findElement(By.id("dropDownCadastro" +nomeEntidade));
-		element.click();
-		System.out.println("Entrando na tela de CADASTRO DE: " +nomeEntidade);
-	}
-	
-	protected void goToTelaDeConsulta(String nomeEntidade) {
-		WebElement element = driver.findElement(By.id("navbarDropdownConsulta"));
-		element.click();
-		element = driver.findElement(By.id("dropDownConsulta" +nomeEntidade));
-		element.click();
-		System.out.println("Entrando na tela de CONSULTA DE: " +nomeEntidade);
-	}
 	
 }
 
