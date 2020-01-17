@@ -1,7 +1,7 @@
 package net.cartola.emissorfiscal.emissorfiscal.view;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,13 +19,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  *	@author robson.costa
  */
 
-//@ActiveProfiles("test")
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-//@PageObject
-public class NcmPage extends PageUtil {
-
+public class NcmPage {
+		
 	@FindBy(id = "txtNumero")
 	private WebElement txtNumero;
 
@@ -47,6 +42,9 @@ public class NcmPage extends PageUtil {
 	@FindBy(id = "btnCadastrarAlterar")
 	private WebElement btnCadastrarAlterar;
 	
+	@FindBy(xpath = "//*[@id=\"consulta-ncm-container\"]/div/div/div/div/div/div/div/table/tbody/tr/td[4]")
+	private WebElement btnEditarPrimeiroRegistro;
+	
 	private WebDriver driver;
 
 	public NcmPage(WebDriver driver) {
@@ -54,61 +52,33 @@ public class NcmPage extends PageUtil {
 		PageFactory.initElements(driver, this);
 	}
 	
-	private void preencheOCadastroDeUmNCMIncompleto() {
-		goToHome(driver);
-		goToTelaDeCadastro(driver, "Ncm");
+	private void preencheOCadastroDeUmNCMSemADescricao() {
+		PageUtil.goToHome(driver);
+		PageUtil.goToTelaDeCadastro(driver, "Ncm");
 
-		WebDriverWait wait = new WebDriverWait(driver, 5);
+		WebDriverWait wait = new WebDriverWait(driver, 3);
 	   	ExpectedCondition<Boolean> txtNumeroIsDisplayed = displayed -> txtNumero.isDisplayed();
 	   	wait.until(txtNumeroIsDisplayed);
 	   	
 	   	txtNumero.clear();
-	   	char[] numeroText = "12345678".toCharArray();
-	   	// Quando estou mandando uma STRING direto para o campo, as vezes falta alguns números (por que vai muito rápido) e a solução no momento é essa abaixo
-	   	for (Character letra : numeroText) {
-	   		try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-//			txtNumero.sendKeys("12345678");
-			txtNumero.sendKeys(letra.toString());
-		}
-		
-		String valueTxtNumero = txtNumero.getAttribute("value");
-		System.out.println("ASSERT do NUMERO: " +valueTxtNumero );
-		assertTrue(valueTxtNumero.equalsIgnoreCase("12345678"));
+	   	PageUtil.preencheTxt(txtNumero, "12345678", 1000L);
+		assertEquals("12345678", txtNumero.getAttribute("value"));
 		
 	   	ExpectedCondition<Boolean> txtExcecaoIsDisplayed = displayed -> txtExcecao.isDisplayed();
 	   	wait.until(txtExcecaoIsDisplayed);
 		txtExcecao.clear();
-	   	char[] excecaoText = "11".toCharArray();
-	   	for (Character letra : excecaoText ) {
-	   		try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-//			txtExcecao.sendKeys("11");
-	   		txtExcecao.sendKeys(letra.toString());
-		}
-	   	assertTrue(txtExcecao.getAttribute("value").equalsIgnoreCase("11"));
-//		System.out.println("ASSERT da EXCECAO" );
-//		btnCadastrarAlterar.click();
+	   	PageUtil.preencheTxt(txtExcecao, "11", 100L);
+	   	assertEquals("11", txtExcecao.getAttribute("value"));
 	}
 	
 	
-	public void preencheOCadastroDeUmNCMSemADescricao() {
-//		goToHome(driver);
-//		goToTelaDeCadastro(driver, "Ncm");
-		preencheOCadastroDeUmNCMIncompleto();
+	public void tentaCadastrarUmNcmIncompleto() {
+		preencheOCadastroDeUmNCMSemADescricao();
 		
-		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebDriverWait wait = new WebDriverWait(driver, 3);
 		ExpectedCondition<Boolean> btnCadastrarAlterarIsDisplayed = displayed -> btnCadastrarAlterar.isDisplayed();
 		wait.until(btnCadastrarAlterarIsDisplayed);
 		btnCadastrarAlterar.click();
-		
-		System.out.println("\nCliquei no BOTÃO DE CADASTRAR/ALTERAR" );
 		
 		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
 			assertThat(this.driver.getTitle()).isEqualTo("Cadastro de NCM");
@@ -118,27 +88,29 @@ public class NcmPage extends PageUtil {
 		System.out.println("\n"+ this.getClass().getName() + " test01_TentaCadastrarUmNCMVazio, Ok");
 	}
 	
+	public void tentaCadastrarUmNcmCorretamente() {
+		preencheOCadastroDeUmNCMSemADescricao();
+		PageUtil.preencheTxt(txtDescricao, "Produtos para as empresas de Auto Peças", 500L);
+		assertEquals( "Produtos para as empresas de Auto Peças", txtDescricao.getAttribute("value"));
+		btnCadastrarAlterar.click();
+		
+		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(this.driver.getTitle()).isEqualTo("Cadastro de NCM");
+			assertThat(this.driver.findElement(By.id("spanMensagemSucesso")).getText().contains("alterado/cadastrado"));
+		});
+		
+		System.out.println("\n"+ this.getClass().getName() + " test02_TentaCadastrarUmNCMCorretamente, Ok");
+	}
 	
-	
-//	@Test
-//	public void test02_DeveCadastrarUmNCMCorretamente() {
-//		goToHome();
-//		preencheOCadastroDeUmNCM();
+	public void tentaEditarUmNcm() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
+//		preencheOCadastroDeUmNCM(this.driver);
 //		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 //		WebElement element = driver.findElement(By.id("spanMensagemSucesso"));
-//		
-//		System.out.println("\n"+ this.getClass().getName() + " test02_TentaCadastrarUmNCMCorretamente, Ok");
-//	}
-//	
-//	@Test
-//	public void test03_DeveFalharAoTentarCadastrarUmNCMRepetido() {
-//		goToHome();
-//		preencheOCadastroDeUmNCM();
-////		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-//		WebElement element = driver.findElement(By.id("spanMensagemSucesso"));
-//		
-//		System.out.println("\n"+ this.getClass().getName() + " test02_DeveFalharAoTentarCadastrarONCMAnterior, Ok");
-//	}
+		
+		System.out.println("\n"+ this.getClass().getName() + " test02_DeveFalharAoTentarCadastrarONCMAnterior, Ok");
+	}
 	
 
 	// CONSULTAS 
