@@ -1,5 +1,10 @@
 package net.cartola.emissorfiscal.emissorfiscal.view;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.concurrent.TimeUnit;
+
+import org.awaitility.Awaitility;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -70,6 +75,13 @@ public class PageUtil {
 		
 		txtName.sendKeys(txtValue);
 //		txtName.sendKeys(letra.toString());
+	}
+	
+	public static void verificaSeApareceuMsgDeSucesso(String pageTitle, WebDriver driver ) {
+		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(driver.getTitle()).isEqualTo(pageTitle);
+			assertThat(driver.findElement(By.id("spanMensagemSucesso")).getText().contains("alterado/cadastrado"));
+		});
 	}
 	
 }

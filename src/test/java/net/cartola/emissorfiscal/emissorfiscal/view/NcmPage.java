@@ -45,8 +45,20 @@ public class NcmPage {
 	@FindBy(xpath = "//*[@id=\"consulta-ncm-container\"]/div/div/div/div/div/div/div/table/tbody/tr/td[4]")
 	private WebElement btnEditarPrimeiroRegistro;
 	
+	@FindBy(xpath = "")
+	private WebElement btnDeletarPrimeiroRegistro;
+	
+	public static String NCM_TITLE_PAGE_CADASTRO = "Cadastro de NCM";
+	public static String NCM_MSG_ALTERADA_CADASTRADA = "alterado/cadastrado";
+	
+	public static String NCM_NUMERO_01 = "12345678";
+	public static String NCM_EXCECAO_01 = "11";
+	public static String NCM_DESCRICAO_01 = "Produtos para as empresas de Auto Peças";
+	public static String NCM_DESCRICAO_01_EDITADA = "A descrição desse NCM foi ALTERADA";
+	
 	private WebDriver driver;
 
+	
 	public NcmPage(WebDriver driver) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
@@ -61,14 +73,14 @@ public class NcmPage {
 	   	wait.until(txtNumeroIsDisplayed);
 	   	
 	   	txtNumero.clear();
-	   	PageUtil.preencheTxt(txtNumero, "12345678", 1000L);
-		assertEquals("12345678", txtNumero.getAttribute("value"));
+	   	PageUtil.preencheTxt(txtNumero, NCM_NUMERO_01, 1000L);
+		assertEquals(NCM_NUMERO_01, txtNumero.getAttribute("value"));
 		
 	   	ExpectedCondition<Boolean> txtExcecaoIsDisplayed = displayed -> txtExcecao.isDisplayed();
 	   	wait.until(txtExcecaoIsDisplayed);
 		txtExcecao.clear();
-	   	PageUtil.preencheTxt(txtExcecao, "11", 100L);
-	   	assertEquals("11", txtExcecao.getAttribute("value"));
+	   	PageUtil.preencheTxt(txtExcecao, NCM_EXCECAO_01, 100L);
+	   	assertEquals(NCM_EXCECAO_01, txtExcecao.getAttribute("value"));
 	}
 	
 	
@@ -81,7 +93,7 @@ public class NcmPage {
 		btnCadastrarAlterar.click();
 		
 		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
-			assertThat(this.driver.getTitle()).isEqualTo("Cadastro de NCM");
+			assertThat(this.driver.getTitle()).isEqualTo(NCM_TITLE_PAGE_CADASTRO);
 			assertThat(this.driver.findElement(By.xpath("//*[@id=\"spanMensagemErro\"]/div[1]"))
 					.getText()).contains("É obrigatória uma DESCRIÇÃO");
 		});
@@ -90,21 +102,27 @@ public class NcmPage {
 	
 	public void tentaCadastrarUmNcmCorretamente() {
 		preencheOCadastroDeUmNCMSemADescricao();
-		PageUtil.preencheTxt(txtDescricao, "Produtos para as empresas de Auto Peças", 500L);
-		assertEquals( "Produtos para as empresas de Auto Peças", txtDescricao.getAttribute("value"));
+		PageUtil.preencheTxt(txtDescricao, NCM_DESCRICAO_01, 500L);
+		assertEquals(NCM_DESCRICAO_01, txtDescricao.getAttribute("value"));
 		btnCadastrarAlterar.click();
-		
-		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
-			assertThat(this.driver.getTitle()).isEqualTo("Cadastro de NCM");
-			assertThat(this.driver.findElement(By.id("spanMensagemSucesso")).getText().contains("alterado/cadastrado"));
-		});
-		
+		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CADASTRO, driver);
 		System.out.println("\n"+ this.getClass().getName() + " test02_TentaCadastrarUmNCMCorretamente, Ok");
 	}
 	
 	public void tentaEditarUmNcm() {
 		PageUtil.goToHome(this.driver);
 		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
+		
+		// USar o awailtility
+		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CADASTRO, driver);
+//		WebDriverWait wait = new WebDriverWait(driver, 3);
+//		ExpectedCondition<Boolean> btnEditarPrimeiroRegistroIsDisplayed = displayed -> btnEditarPrimeiroRegistro.isDisplayed();
+//		wait.until(btnEditarPrimeiroRegistroIsDisplayed);
+		btnEditarPrimeiroRegistro.click();
+		txtDescricao.clear();
+		PageUtil.preencheTxt(txtDescricao, NCM_DESCRICAO_01_EDITADA, 350L);
+		
+		
 //		preencheOCadastroDeUmNCM(this.driver);
 //		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 //		WebElement element = driver.findElement(By.id("spanMensagemSucesso"));
