@@ -12,14 +12,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class PageUtil {
 	
-protected static String PATH = "localhost:8080/";
+	private static String PATH = "localhost:8080/";
 
-	protected void goToHome(WebDriver driver) {
+	public static void goToHome(WebDriver driver) {
 		driver.get(PATH);
 		System.out.println("Entrando no link (home): " +PATH);
 	}
 	
-	protected void goToTelaDeCadastro(WebDriver driver, String nomeEntidade) {
+	public static void goToTelaDeCadastro(WebDriver driver, String nomeEntidade) {
 		WebElement navBarDropDownCadastro = driver.findElement(By.id("navbarDropdownCadastro"));
 		WebElement itemNavBarDropDown = driver.findElement(By.id("dropDownCadastro" +nomeEntidade));
 
@@ -35,7 +35,7 @@ protected static String PATH = "localhost:8080/";
 		System.out.println("Entrando na tela de CADASTRO DE: " +nomeEntidade);
 	}
 	
-	protected void goToTelaDeConsulta(WebDriver driver, String nomeEntidade) {
+	public static void goToTelaDeConsulta(WebDriver driver, String nomeEntidade) {
 		WebElement navBarDropDownConsulta = driver.findElement(By.id("navbarDropdownConsulta"));
 		WebElement itemNavBarDropDown = driver.findElement(By.id("dropDownConsulta" +nomeEntidade));
 
@@ -48,6 +48,28 @@ protected static String PATH = "localhost:8080/";
 		wait.until(itemNavBarDropDownIsDisplayed);
 		itemNavBarDropDown.click();
 		System.out.println("Entrando na tela de CONSULTA DE: " +nomeEntidade);
+	}
+	
+	/**
+	 * Método criado para esperar sempre um tempo, antes de começar a preencher o txt, pois assim irá preencher
+	 * corretamente o campo (ao invés de preencher apenas uma parte da STRING, "mandada".
+	 * 
+	 * @param txtName
+	 * @param txtValue
+	 * @param timeInMillis
+	 */
+	public static void preencheTxt(WebElement txtName, String txtValue, Long timeInMillis) {
+//	   	char[] numeroText = "12345678".toCharArray();
+	   	// Quando estou mandando uma STRING direto para o campo, as vezes falta alguns números (por que vai muito rápido) e a solução no momento é essa abaixo
+//	   	for (Character letra : numeroText) {
+		try {
+			Thread.sleep(timeInMillis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		txtName.sendKeys(txtValue);
+//		txtName.sendKeys(letra.toString());
 	}
 	
 }

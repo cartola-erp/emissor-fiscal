@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 /**
  * 08/08/2017 17:44:37
  *
@@ -38,6 +40,7 @@ public class Operacao implements Serializable {
 	@Column(name = "dscr", nullable = false)
 	@NotNull(message="A DESCRIÇÃO não pode ser NULA")
 	@NotBlank(message="A DESCRIÇÃO tem que ser preenchida")
+	@Length(message= "A descrição deve ter entre 3 á 50 caracteres", min=3, max=50)
 	public String getDescricao() {
 		return descricao;
 	}
