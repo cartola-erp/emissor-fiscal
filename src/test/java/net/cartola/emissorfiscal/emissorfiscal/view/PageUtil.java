@@ -59,29 +59,43 @@ public class PageUtil {
 	 * Método criado para esperar sempre um tempo, antes de começar a preencher o txt, pois assim irá preencher
 	 * corretamente o campo (ao invés de preencher apenas uma parte da STRING, "mandada".
 	 * 
+	 * @see https://stackoverflow.com/questions/42891515/how-to-slow-down-the-speed-of-send-keys-action-in-a-selenium-script-using-python
 	 * @param txtName
 	 * @param txtValue
 	 * @param timeInMillis
+	 * 
 	 */
 	public static void preencheTxt(WebElement txtName, String txtValue, Long timeInMillis) {
-//	   	char[] numeroText = "12345678".toCharArray();
 	   	// Quando estou mandando uma STRING direto para o campo, as vezes falta alguns números (por que vai muito rápido) e a solução no momento é essa abaixo
-//	   	for (Character letra : numeroText) {
+		espereUmTempo(timeInMillis);
+		txtName.sendKeys(txtValue);
+	}
+	
+	/**
+	 * @param timeInMillis - the length of time to sleep in milliseconds
+	 */
+	public static void espereUmTempo(Long timeInMillis) {
+		if (timeInMillis == null || timeInMillis == 0) {
+			timeInMillis = 1000L;
+		}
 		try {
 			Thread.sleep(timeInMillis);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-		txtName.sendKeys(txtValue);
-//		txtName.sendKeys(letra.toString());
 	}
-	
+
 	public static void verificaSeApareceuMsgDeSucesso(String pageTitle, WebDriver driver ) {
 		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
 			assertThat(driver.getTitle()).isEqualTo(pageTitle);
 			assertThat(driver.findElement(By.id("spanMensagemSucesso")).getText().contains("alterado/cadastrado"));
 		});
+	}
+	
+	public static void espereOWebElementAparecer(WebElement element, WebDriver driver, Long timeOutInSeconds) {
+		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
+		ExpectedCondition<Boolean> elementIsDisplayed = displayed -> element.isDisplayed();
+		wait.until(elementIsDisplayed);
 	}
 	
 }
