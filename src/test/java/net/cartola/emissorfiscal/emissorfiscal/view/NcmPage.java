@@ -42,13 +42,17 @@ public class NcmPage {
 	@FindBy(id = "btnCadastrarAlterar")
 	private WebElement btnCadastrarAlterar;
 	
-	@FindBy(xpath = "//*[@id=\"consulta-ncm-container\"]/div/div/div/div/div/div/div/table/tbody/tr/td[4]")
+	@FindBy(id = "btnPesquisar")
+	private WebElement btnPesquisar;
+	
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[4]/a/button")
 	private WebElement btnEditarPrimeiroRegistro;
 	
 	@FindBy(xpath = "")
 	private WebElement btnDeletarPrimeiroRegistro;
 	
 	public static String NCM_TITLE_PAGE_CADASTRO = "Cadastro de NCM";
+	public static String NCM_TITLE_PAGE_CONSULTA = "Consulta de NCM";
 	public static String NCM_MSG_ALTERADA_CADASTRADA = "alterado/cadastrado";
 	
 	public static String NCM_NUMERO_01 = "12345678";
@@ -109,46 +113,68 @@ public class NcmPage {
 		System.out.println("\n"+ this.getClass().getName() + " test02_TentaCadastrarUmNCMCorretamente, Ok");
 	}
 	
-	public void tentaEditarUmNcm() {
+	
+	// CONSULTAS 
+	public void tentaConsultarUmNcmVazio() {
 		PageUtil.goToHome(this.driver);
 		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
-		
-		// USar o awailtility
-		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CADASTRO, driver);
-//		WebDriverWait wait = new WebDriverWait(driver, 3);
-//		ExpectedCondition<Boolean> btnEditarPrimeiroRegistroIsDisplayed = displayed -> btnEditarPrimeiroRegistro.isDisplayed();
-//		wait.until(btnEditarPrimeiroRegistroIsDisplayed);
+		btnPesquisar.click();
+		PageUtil.verificaSeApareceuMsgDeErro(NCM_TITLE_PAGE_CONSULTA, this.driver);
+//		element = driver.findElement(By.id("spanMensagemErro"));
+	}
+	
+	public void tentaConsultarUmNcmExistente() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
+		PageUtil.espereOWebElementAparecer(txtNumero, this.driver, 3L);
+		PageUtil.espereUmTempo(600L);
+		txtNumero.sendKeys(NCM_NUMERO_01);
+//		PageUtil.espereUmTempo(600L);
+		btnPesquisar.click();
+		PageUtil.espereUmTempo(600L);
 		btnEditarPrimeiroRegistro.click();
+		assertEquals(NCM_NUMERO_01, txtNumero.getAttribute("value"));
+	}
+	
+	public void tentaConsultaUmNcmInexistente() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
+		PageUtil.espereOWebElementAparecer(txtNumero, this.driver, 3L);
+		PageUtil.espereUmTempo(600L);
+		txtNumero.sendKeys("87654321");
+		WebElement element = driver.findElement(By.id("txtNumero"));
+		assertThat(element.isDisplayed());
+		assertThat(element.isEnabled());
+	}
+	
+	public void tentaEditarOPrimeiroRegistroDeUmNcm() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
+		// USar o awailtility
+//		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CONSULTA, driver);
+		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
+		PageUtil.espereUmTempo(700L);
+		btnEditarPrimeiroRegistro.click();
+		
 		txtDescricao.clear();
-		PageUtil.preencheTxt(txtDescricao, NCM_DESCRICAO_01_EDITADA, 350L);
+		PageUtil.preencheTxt(txtDescricao, NCM_DESCRICAO_01_EDITADA, 500L);
+		btnCadastrarAlterar.click();
+		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CADASTRO, driver);
 		
+		PageUtil.espereUmTempo(500L);
+		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
+		PageUtil.espereUmTempo(1000L);
+		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
+		btnEditarPrimeiroRegistro.click();
+		PageUtil.espereUmTempo(500L);
+
+		assertEquals(NCM_DESCRICAO_01_EDITADA, txtDescricao.getAttribute("value"));
 		
-//		preencheOCadastroDeUmNCM(this.driver);
-//		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-//		WebElement element = driver.findElement(By.id("spanMensagemSucesso"));
-		
-		System.out.println("\n"+ this.getClass().getName() + " test02_DeveFalharAoTentarCadastrarONCMAnterior, Ok");
+		System.out.println("\n"+ this.getClass().getName() + " test03_TentaEditarUmNCM, Ok");
 	}
 	
 
-	// CONSULTAS 
-//	@Test
-//	public void test02_TentaConsultarUmNCMVazio() {
-//		driver.get(PATH + "ncm/consulta");
-//		
-////		WebElement element = driver.findElement(By.xpath("/html/body/nav/div/div[2]/a"));
-////		element.click();
-////		
-////		element = driver.findElement(By.xpath("/html/body/nav/div/div[2]/div/a[1]"));
-////		element.click();
-//
-//		WebElement element = driver.findElement(By.id("btnPesquisar"));
-//		element.click();
-//		
-//		element = driver.findElement(By.id("spanMensagemErro"));
-//		
-//		System.out.println("cheguei aqui manolo");
-//	}
+
 
 }
 

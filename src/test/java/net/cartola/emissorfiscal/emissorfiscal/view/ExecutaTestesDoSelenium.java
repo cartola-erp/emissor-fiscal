@@ -27,17 +27,11 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	private TestHelper testHelper;
 	
 	@Test
-	public void test01_TentaCadastrarUmNCMIncompleto() {
+	public void test01_TentaCadastrarUmNcmIncompleto() {
 		NcmPage ncm = new NcmPage(driver);
-		int i = 0;
-		
-		while (i < 1) {
-			testHelper.limpaBanco();
-			ncm.tentaCadastrarUmNcmIncompleto();
-			i++;
-			System.out.println("test01_TentaCadastrarUmNCMVazio: De NÚMERO == " +i);
-		}
-		System.out.println("\n"+ this.getClass().getName() + " test01_TentaCadastrarUmNCMIncompleto, Ok");
+		testHelper.limpaBanco();
+		ncm.tentaCadastrarUmNcmIncompleto();
+		System.out.println("\n" + this.getClass().getName() + " test01_TentaCadastrarUmNCMIncompleto, Ok");
 	}
 	
 	@Test
@@ -49,12 +43,62 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	}
 	
 	@Test
-	public void test03_TentaEditarUmNCM() {
+	public void test03_TentaConsultarUmNcmVazio() {
+		NcmPage ncm = new NcmPage(driver);
+//		testHelper.limpaBanco();
+		ncm.tentaConsultarUmNcmVazio();
+		System.out.println("\n" + this.getClass().getName() + " test03_TentaConsultarUmNCMVazio, Ok");
+	}
+
+	@Test
+	public void test04_TentaConsultarUmNcmExistente() {
+		NcmPage ncm = new NcmPage(driver);
+		testHelper.limpaBanco();
+		ncm.tentaCadastrarUmNcmCorretamente();
+		ncm.tentaConsultarUmNcmExistente();
+		System.out.println("\n" + this.getClass().getName() + " test04_TentaConsultarUmNcmExistente, Ok");
+	}
+
+	@Test
+	public void test05_TentaConsultarUmNcmInexistente() {
+		NcmPage ncm = new NcmPage(driver);
+		testHelper.limpaBanco();
+		ncm.tentaConsultaUmNcmInexistente();
+		System.out.println("\n" + this.getClass().getName() + " test05_TentaConsultarUmNcmInexistente, Ok");
+	}
+	
+	
+	@Test
+	public void test06_TentaEditarUmNCM() {
 		NcmPage ncmPage = new NcmPage(this.driver);
+		int i = 0;
+
+//		while (i < 30) {
 		testHelper.limpaBanco();
 		ncmPage.tentaCadastrarUmNcmCorretamente();
-		ncmPage.tentaEditarUmNcm();
+		ncmPage.tentaEditarOPrimeiroRegistroDeUmNcm();
+//			i++;
+//			System.out.println("test03_TentaEditarUmNCM: De NÚMERO == " + i);
+//		}
+		System.out.println("\n"+ this.getClass().getName() + " test06_TentaEditarUmNCM, Ok");
 	}
+	
+	
+//	@Test 
+//	public void test07_TentaEditarUmNcmSemMudarNada() {
+//		NcmPage ncm = new NcmPage(driver);
+//		testHelper.limpaBanco();
+//		
+//		
+//		System.out.println("\n"+ this.getClass().getName() + " test07_TentaEditarUmNcmSemMudarNada, Ok");
+//	}
+	
+	@Test
+	public void test08_TentaDeletarUmNcm() {
+		
+	}
+	
+	
 	
 }
 
