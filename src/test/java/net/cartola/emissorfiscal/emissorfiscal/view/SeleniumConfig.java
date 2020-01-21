@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.emissorfiscal.view;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,6 +38,7 @@ public class SeleniumConfig {
 //        options.addArguments("--headless");
 //        driver = new ChromeDriver(options);
 		driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 	}
 	

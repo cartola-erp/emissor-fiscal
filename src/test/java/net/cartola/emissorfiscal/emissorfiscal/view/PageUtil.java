@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.emissorfiscal.view;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,14 +28,11 @@ public class PageUtil {
 	public static void goToTelaDeCadastro(WebDriver driver, String nomeEntidade) {
 		WebElement navBarDropDownCadastro = driver.findElement(By.id("navbarDropdownCadastro"));
 		WebElement itemNavBarDropDown = driver.findElement(By.id("dropDownCadastro" +nomeEntidade));
-
-		WebDriverWait wait = new WebDriverWait(driver, 5);
-		ExpectedCondition<Boolean> navBarDropDownCadastroIsDisplayed = displayed -> navBarDropDownCadastro.isDisplayed();
-	   	wait.until(navBarDropDownCadastroIsDisplayed);
+		
+		PageUtil.espereOWebElementAparecer(navBarDropDownCadastro, driver, 5L);
 		navBarDropDownCadastro.click();
 		
-		ExpectedCondition<Boolean> itemNavBarDropDownIsDisplayed = displayed -> itemNavBarDropDown.isDisplayed();
-	   	wait.until(itemNavBarDropDownIsDisplayed);
+		PageUtil.espereOWebElementAparecer(itemNavBarDropDown, driver, 5L);
 		itemNavBarDropDown.click();
 		
 		System.out.println("Entrando na tela de CADASTRO DE: " +nomeEntidade);
@@ -43,14 +41,11 @@ public class PageUtil {
 	public static void goToTelaDeConsulta(WebDriver driver, String nomeEntidade) {
 		WebElement navBarDropDownConsulta = driver.findElement(By.id("navbarDropdownConsulta"));
 		WebElement itemNavBarDropDown = driver.findElement(By.id("dropDownConsulta" +nomeEntidade));
-
-		WebDriverWait wait = new WebDriverWait(driver, 3);
-		ExpectedCondition<Boolean> navBarDropDownConsultaIsDisplayed = displayed -> navBarDropDownConsulta.isDisplayed();
-		wait.until(navBarDropDownConsultaIsDisplayed);
+		
+		PageUtil.espereOWebElementAparecer(navBarDropDownConsulta, driver, 3L);
 		navBarDropDownConsulta.click();
 		
-		ExpectedCondition<Boolean> itemNavBarDropDownIsDisplayed = displayed ->  navBarDropDownConsulta.isDisplayed();
-		wait.until(itemNavBarDropDownIsDisplayed);
+		PageUtil.espereOWebElementAparecer(itemNavBarDropDown, driver, 3L);
 		itemNavBarDropDown.click();
 		System.out.println("Entrando na tela de CONSULTA DE: " +nomeEntidade);
 	}
@@ -85,18 +80,46 @@ public class PageUtil {
 		}
 	}
 
-	public static void verificaSeApareceuMsgDeSucesso(String pageTitle, WebDriver driver ) {
-		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
-			assertThat(driver.getTitle()).isEqualTo(pageTitle);
-			assertThat(driver.findElement(By.id("spanMensagemSucesso")).getText().contains("alterado/cadastrado"));
-		});
-	}
-	
 	public static void espereOWebElementAparecer(WebElement element, WebDriver driver, Long timeOutInSeconds) {
 		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
 		ExpectedCondition<Boolean> elementIsDisplayed = displayed -> element.isDisplayed();
 		wait.until(elementIsDisplayed);
 	}
+	
+	public static void verificaSeApareceuMsgDeSucesso(String pageTitle, WebDriver driver ) {
+		boolean isMsgSucess = driver.findElement(By.id("spanMensagemSucesso")).getText().contains("alterado/cadastrado");
+		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(driver.getTitle()).isEqualTo(pageTitle);
+//			assertThat(driver.findElement(By.id("spanMensagemSucesso")).getText().contains("alterado/cadastrado"));
+			assertTrue(isMsgSucess);
+		});
+	}
+	
+	public static void verificaSeApareceuMsgDeSucesso(String pageTitle, WebDriver driver, String message ) {
+		boolean isMsgSucess = driver.findElement(By.id("spanMensagemSucesso")).getText().contains(message);
+		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(driver.getTitle()).isEqualTo(pageTitle);
+			assertTrue(isMsgSucess);
+		});
+	}
+	
+	// "Colocar em todas as mensagens de de Erro, a palavra "Erro"
+	public static void verificaSeApareceuMsgDeErro(String pageTitle, WebDriver driver) {
+		boolean isMsgError = driver.findElement(By.id("spanMensagemErro")).getText().contains("Erro");
+		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(driver.getTitle()).isEqualTo(pageTitle);
+			assertTrue(isMsgError);
+		});
+	}
+	
+	public static void verificaSeApareceuMsgDeErro(String pageTitle, WebDriver driver, String message) {
+		boolean isMsgError = driver.findElement(By.id("spanMensagemErro")).getText().contains(message);
+		Awaitility.await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(driver.getTitle()).isEqualTo(pageTitle);
+			assertTrue(isMsgError);
+		});
+	}
+
 	
 }
 
