@@ -112,6 +112,30 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	}
 	
 	
+	@Test
+	public void test10_TentaCadastrarUmaOperacaoIncompleta() {
+		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+		testHelper.limpaBanco();
+		operacaoPage.tentaCadastrarUmaOperacaoSemADescricao();
+		System.out.println("\n"+ this.getClass().getName() + " test10_TentaCadastrarUmaOperacaoIncompleta, Ok");
+
+	}
+	
+	@Test
+	public void test11_TentaCadastrarUmaOperacaoCorretamente() {
+		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+		testHelper.limpaBanco();
+		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+		System.out.println("\n"+ this.getClass().getName() + " test11_TentaCadastrarUmaOperacaoCorretamente, Ok");
+	}
+	
+	@Test
+	public void test12_TentaConsultarUmaOperacaoVazia() {
+		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+		testHelper.limpaBanco();
+		operacaoPage.tentaConsultarUmaOperacaoVazia();
+		System.out.println("\n"+ this.getClass().getName() + " test12_TentaConsultarUmaOperacaoVazia, Ok");
+	}
 	
 }
 
