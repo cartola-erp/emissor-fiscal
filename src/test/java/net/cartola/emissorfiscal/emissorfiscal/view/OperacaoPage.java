@@ -44,7 +44,8 @@ public class OperacaoPage {
 	public static String OPERACAO_TITLE_PAGE_CONSULTA = "Consulta de operação";
 	// As msgs abaixo, é uma parte da msg que aparece para o usuário, e não a msg completa
 	public static String OPERACAO_MSG_ALTERADA_CADASTRADA = "alterado/cadastrado";
-	public static String OPERACAO_MSG_DELETADO_SUCESSO = "deletado com sucesso";
+	public static String OPERACAO_MSG_DELETADO_SUCESSO = "deletada com sucesso";
+
 //	public static String OPERACAO_MSG_CADASTRO_REPETIDO_ERRO = "Já existe essa combinação"; 
 
 	public static String OPERACAO_DESCRICAO_01 = "Venda Estadual";
