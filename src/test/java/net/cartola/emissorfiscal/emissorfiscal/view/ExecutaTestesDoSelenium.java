@@ -26,6 +26,8 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Autowired 
 	private TestHelper testHelper;
 	
+	// ======================================= NCM ============================================
+	
 	@Test
 	public void test01_TentaCadastrarUmNcmIncompleto() {
 		NcmPage ncm = new NcmPage(driver);
@@ -110,6 +112,8 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		System.out.println("\n"+ this.getClass().getName() + " test09_TentaDeletarUmNcm, Ok");
 	}
 	
+	// ======================================= OPERACAO ============================================
+	
 	@Test
 	public void test10_TentaCadastrarUmaOperacaoIncompleta() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
@@ -135,7 +139,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	}
 	
 	@Test
-	public void test13_TentaConsultaUmaOperacaoExistente() {
+	public void test13_TentaConsultarUmaOperacaoExistente() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
 		testHelper.limpaBanco();
 		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
@@ -144,7 +148,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	}
 	
 	@Test
-	public void test14_TentaConsultaUmaOperacaoInexistente() {
+	public void test14_TentaConsultarUmaOperacaoInexistente() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
 		testHelper.limpaBanco();
 		operacaoPage.tentaConsultarUmaOperacaoInexistente();
@@ -169,6 +173,150 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		System.out.println("\n"+ this.getClass().getName() + " test16_TentaDeletarUmaOperacao, Ok");
 	}
 	
+	// ======================================= ESTADOS ============================================
+	
+	@Test
+	public void test17_TentaCadastrarUmEstadoIncompleto() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaCadastrarUmEstadoSemONome();
+		System.out.println("\n"+ this.getClass().getName() + " test17_TentaCadastrarUmEstadoIncompleto, Ok");
+	}
+	
+	@Test
+	public void test18_TentaCadastrarUmEstadoCorretamente() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaCadastrarEstadoSPCorretamente();
+		System.out.println("\n"+ this.getClass().getName() + " test18_TentaCadastrarUmEstadoCorretamente, Ok");
+	}
+	
+	@Test
+	public void test19_TentaCadastrarUmEstadoQueNaoExista() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaCadastrarEstadoQueNaoExista();
+		System.out.println("\n"+ this.getClass().getName() + " test19_TentaCadastrarUmEstadoQueNaoExista, Ok");
+	}
+	
+	
+	@Test
+	public void test20_TentaConsultarUmEstadoVazio() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaConsultarUmEstadoVazio();
+		System.out.println("\n"+ this.getClass().getName() + " test20_TentaConsultarUmEstadoVazio, Ok");
+	}
+	
+	@Test
+	public void test21_TentaConsultarUmEstadoExistente() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaCadastrarEstadoSPCorretamente();
+		estadoPage.tentaConsultarEstadoSPExistente();
+		System.out.println("\n"+ this.getClass().getName() + " test21_TentaConsultarUmEstadoExistente, Ok");
+	}
+	
+	@Test
+	public void test22_TentaConsultarUmEstadoNaoCadastrado() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaConsultarUmEstadoNaoCadastrado();
+		System.out.println("\n"+ this.getClass().getName() + " test22_TentaConsultarUmEstadoNaoCadastrado, Ok");
+	}
+	
+	
+	@Test
+	public void test23_TentaConsultarUmEstadoInexistente() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaConsultarUmEstadoInexistente();
+		System.out.println("\n"+ this.getClass().getName() + " test23_TentaConsultarUmEstadoInexistente, Ok");
+	}
+	
+	@Test
+	public void test23_TentaEditarUmEstado() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaCadastrarEstadoSPCorretamente();
+		estadoPage.tentaEditarOPrimeiroRegistroDeUmEstado();
+		System.out.println("\n"+ this.getClass().getName() + " test23_TentaEditarUmEstado, Ok");
+	}
+	
+	@Test
+	public void test24_TentaDeletarUmEstado() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaCadastrarEstadoSPCorretamente();
+		estadoPage.tentaDeletarOPrimeiroRegistroDeEstado();
+		System.out.println("\n"+ this.getClass().getName() + " test24_TentaDeletarUmEstado, Ok");
+	}
+	
+	// ===========================================================================================================
+	// ======================================= TRIBUTACAO ESTADUAL ============================================
+	// ===========================================================================================================
+	
+//	@Test
+//	public void test10_TentaCadastrarUmaOperacaoIncompleta() {
+//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+//		testHelper.limpaBanco();
+//		operacaoPage.tentaCadastrarUmaOperacaoSemADescricao();
+//		System.out.println("\n"+ this.getClass().getName() + " test10_TentaCadastrarUmaOperacaoIncompleta, Ok");
+//	}
+//	
+//	@Test
+//	public void test11_TentaCadastrarUmaOperacaoCorretamente() {
+//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+//		testHelper.limpaBanco();
+//		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+//		System.out.println("\n"+ this.getClass().getName() + " test11_TentaCadastrarUmaOperacaoCorretamente, Ok");
+//	}
+//	
+//	@Test
+//	public void test12_TentaConsultarUmaOperacaoVazia() {
+//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+//		testHelper.limpaBanco();
+//		operacaoPage.tentaConsultarUmaOperacaoVazia();
+//		System.out.println("\n"+ this.getClass().getName() + " test12_TentaConsultarUmaOperacaoVazia, Ok");
+//	}
+//	
+//	@Test
+//	public void test13_TentaConsultarUmaOperacaoExistente() {
+//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+//		testHelper.limpaBanco();
+//		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+//		operacaoPage.tentaConsultarUmaOperacaoExistente();
+//		System.out.println("\n"+ this.getClass().getName() + " test13_TentaConsultaUmaOperacaoExistente, Ok");
+//	}
+//	
+//	@Test
+//	public void test14_TentaConsultarUmaOperacaoInexistente() {
+//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+//		testHelper.limpaBanco();
+//		operacaoPage.tentaConsultarUmaOperacaoInexistente();
+//		System.out.println("\n"+ this.getClass().getName() + " test14_TentaConsultaUmaOperacaoInexistente, Ok");
+//	}
+//	
+//	@Test
+//	public void test15_TentaEditarUmaOperacao() {
+//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+//		testHelper.limpaBanco();
+//		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+//		operacaoPage.tentaEditarOPrimeiroRegistroDeUmaOperacao();
+//		System.out.println("\n"+ this.getClass().getName() + " test15_TentaEditarUmaOperacao, Ok");
+//	}
+//	
+//	@Test
+//	public void test16_TentaDeletarUmaOperacao() {
+//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+//		testHelper.limpaBanco();
+//		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+//		operacaoPage.tentaDeletarOPrimeiroRegistroDeOperacao();
+//		System.out.println("\n"+ this.getClass().getName() + " test16_TentaDeletarUmaOperacao, Ok");
+//	}
+	
+	// ======================================= TRIBUTACAO FEDERAL ============================================
+
 }
 
 
