@@ -104,13 +104,11 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test09_TentaDeletarUmNcm() {
 		NcmPage ncmPage = new NcmPage(this.driver);
-//		int i = 0
 		testHelper.limpaBanco();
 		ncmPage.tentaCadastrarUmNcmCorretamente();
 		ncmPage.tentaDeletarOPrimeiroRegistroDeNcm();
 		System.out.println("\n"+ this.getClass().getName() + " test09_TentaDeletarUmNcm, Ok");
 	}
-	
 	
 	@Test
 	public void test10_TentaCadastrarUmaOperacaoIncompleta() {
@@ -118,7 +116,6 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		testHelper.limpaBanco();
 		operacaoPage.tentaCadastrarUmaOperacaoSemADescricao();
 		System.out.println("\n"+ this.getClass().getName() + " test10_TentaCadastrarUmaOperacaoIncompleta, Ok");
-
 	}
 	
 	@Test
@@ -135,6 +132,41 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		testHelper.limpaBanco();
 		operacaoPage.tentaConsultarUmaOperacaoVazia();
 		System.out.println("\n"+ this.getClass().getName() + " test12_TentaConsultarUmaOperacaoVazia, Ok");
+	}
+	
+	@Test
+	public void test13_TentaConsultaUmaOperacaoExistente() {
+		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+		testHelper.limpaBanco();
+		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+		operacaoPage.tentaConsultarUmaOperacaoExistente();
+		System.out.println("\n"+ this.getClass().getName() + " test13_TentaConsultaUmaOperacaoExistente, Ok");
+	}
+	
+	@Test
+	public void test14_TentaConsultaUmaOperacaoInexistente() {
+		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+		testHelper.limpaBanco();
+		operacaoPage.tentaConsultarUmaOperacaoInexistente();
+		System.out.println("\n"+ this.getClass().getName() + " test14_TentaConsultaUmaOperacaoInexistente, Ok");
+	}
+	
+	@Test
+	public void test15_TentaEditarUmaOperacao() {
+		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+		testHelper.limpaBanco();
+		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+		operacaoPage.tentaEditarOPrimeiroRegistroDeUmaOperacao();
+		System.out.println("\n"+ this.getClass().getName() + " test15_TentaEditarUmaOperacao, Ok");
+	}
+	
+	@Test
+	public void test16_TentaDeletarUmaOperacao() {
+		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+		testHelper.limpaBanco();
+		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+		operacaoPage.tentaDeletarOPrimeiroRegistroDeOperacao();
+		System.out.println("\n"+ this.getClass().getName() + " test16_TentaDeletarUmaOperacao, Ok");
 	}
 	
 }

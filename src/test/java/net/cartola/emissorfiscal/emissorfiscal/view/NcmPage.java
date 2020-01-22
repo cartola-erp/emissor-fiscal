@@ -99,6 +99,7 @@ public class NcmPage {
 	public void tentaCadastrarUmNcmCorretamente() {
 		preencheOCadastroDeUmNCMSemADescricao();
 		PageUtil.preencheTxt(txtDescricao, NCM_DESCRICAO_01, 500L);
+		PageUtil.espereUmTempo(750L);
 		assertEquals(NCM_DESCRICAO_01, txtDescricao.getAttribute("value"));
 		btnCadastrarAlterar.click();
 		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CADASTRO, driver);
@@ -119,6 +120,7 @@ public class NcmPage {
 		PageUtil.espereOWebElementAparecer(btnPesquisar, this.driver, 3L);
 		PageUtil.espereUmTempo(600L);
 		btnPesquisar.click();
+		PageUtil.espereUmTempo(600L);
 		PageUtil.verificaSeApareceuMsgDeErro(NCM_TITLE_PAGE_CONSULTA, this.driver);
 	}
 	
@@ -126,9 +128,7 @@ public class NcmPage {
 		PageUtil.goToHome(this.driver);
 		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
 		PageUtil.espereOWebElementAparecer(txtNumero, this.driver, 3L);
-		PageUtil.espereUmTempo(600L);
-		txtNumero.sendKeys(NCM_NUMERO_01);
-//		PageUtil.espereUmTempo(600L);
+		PageUtil.preencheTxt(txtNumero, NCM_NUMERO_01, 600L);
 		btnPesquisar.click();
 		PageUtil.espereUmTempo(600L);
 		btnEditarPrimeiroRegistro.click();
@@ -139,12 +139,15 @@ public class NcmPage {
 		PageUtil.goToHome(this.driver);
 		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
 		PageUtil.espereOWebElementAparecer(txtNumero, this.driver, 3L);
+		PageUtil.preencheTxt(txtNumero, "h@ir87654321", 600L);
 		PageUtil.espereUmTempo(600L);
-		txtNumero.sendKeys("87654321");
+		btnPesquisar.click();
 		WebElement element = driver.findElement(By.id("txtNumero"));
 		assertThat(element.isDisplayed());
 		assertThat(element.isEnabled());
 	}
+	
+	// ======================================= EDITAR ============================================
 	
 	public void tentaEditarOPrimeiroRegistroDeUmNcm() {
 		PageUtil.goToHome(this.driver);
@@ -178,7 +181,6 @@ public class NcmPage {
 		PageUtil.goToTelaDeConsulta(this.driver, "Ncm");
 		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
 		PageUtil.espereUmTempo(700L);
-//		btnEditarPrimeiroRegistro.click();
 		btnDeletarPrimeiroRegistro.click();
 		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CONSULTA, this.driver, NCM_MSG_DELETADO_SUCESSO);
 	}
