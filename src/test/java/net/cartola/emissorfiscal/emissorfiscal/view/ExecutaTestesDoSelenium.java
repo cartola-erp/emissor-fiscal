@@ -199,57 +199,64 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		System.out.println("\n"+ this.getClass().getName() + " test19_TentaCadastrarUmEstadoQueNaoExista, Ok");
 	}
 	
-	
 	@Test
-	public void test20_TentaConsultarUmEstadoVazio() {
+	public void test20_TentaCadastrarUmEstadoRepetido() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
 		testHelper.limpaBanco();
-		estadoPage.tentaConsultarUmEstadoVazio();
-		System.out.println("\n"+ this.getClass().getName() + " test20_TentaConsultarUmEstadoVazio, Ok");
+		estadoPage.tentaCadastrarEstadoSPDuasVezes();
+		System.out.println("\n"+ this.getClass().getName() + " test20_TentaCadastrarUmEstadoRepetido, Ok");
 	}
 	
 	@Test
-	public void test21_TentaConsultarUmEstadoExistente() {
+	public void test21_TentaConsultarUmEstadoVazio() {
+		EstadoPage estadoPage = new EstadoPage(this.driver);
+		testHelper.limpaBanco();
+		estadoPage.tentaConsultarUmEstadoVazio();
+		System.out.println("\n"+ this.getClass().getName() + " test21_TentaConsultarUmEstadoVazio, Ok");
+	}
+	
+	@Test
+	public void test22_TentaConsultarUmEstadoExistente() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
 		testHelper.limpaBanco();
 		estadoPage.tentaCadastrarEstadoSPCorretamente();
 		estadoPage.tentaConsultarEstadoSPExistente();
-		System.out.println("\n"+ this.getClass().getName() + " test21_TentaConsultarUmEstadoExistente, Ok");
+		System.out.println("\n"+ this.getClass().getName() + " test22_TentaConsultarUmEstadoExistente, Ok");
 	}
 	
 	@Test
-	public void test22_TentaConsultarUmEstadoNaoCadastrado() {
+	public void test23_TentaConsultarUmEstadoNaoCadastrado() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
 		testHelper.limpaBanco();
 		estadoPage.tentaConsultarUmEstadoNaoCadastrado();
-		System.out.println("\n"+ this.getClass().getName() + " test22_TentaConsultarUmEstadoNaoCadastrado, Ok");
+		System.out.println("\n"+ this.getClass().getName() + " test23_TentaConsultarUmEstadoNaoCadastrado, Ok");
 	}
 	
 	
 	@Test
-	public void test23_TentaConsultarUmEstadoInexistente() {
+	public void test24_TentaConsultarUmEstadoInexistente() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
 		testHelper.limpaBanco();
 		estadoPage.tentaConsultarUmEstadoInexistente();
-		System.out.println("\n"+ this.getClass().getName() + " test23_TentaConsultarUmEstadoInexistente, Ok");
+		System.out.println("\n"+ this.getClass().getName() + " test24_TentaConsultarUmEstadoInexistente, Ok");
 	}
 	
 	@Test
-	public void test23_TentaEditarUmEstado() {
+	public void test25_TentaEditarUmEstado() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
 		testHelper.limpaBanco();
 		estadoPage.tentaCadastrarEstadoSPCorretamente();
 		estadoPage.tentaEditarOPrimeiroRegistroDeUmEstado();
-		System.out.println("\n"+ this.getClass().getName() + " test23_TentaEditarUmEstado, Ok");
+		System.out.println("\n"+ this.getClass().getName() + " test25_TentaEditarUmEstado, Ok");
 	}
 	
 	@Test
-	public void test24_TentaDeletarUmEstado() {
+	public void test26_TentaDeletarUmEstado() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
 		testHelper.limpaBanco();
 		estadoPage.tentaCadastrarEstadoSPCorretamente();
 		estadoPage.tentaDeletarOPrimeiroRegistroDeEstado();
-		System.out.println("\n"+ this.getClass().getName() + " test24_TentaDeletarUmEstado, Ok");
+		System.out.println("\n"+ this.getClass().getName() + " test26_TentaDeletarUmEstado, Ok");
 	}
 	
 	// ===========================================================================================================

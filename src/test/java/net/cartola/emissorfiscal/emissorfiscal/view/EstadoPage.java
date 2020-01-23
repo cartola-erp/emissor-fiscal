@@ -47,7 +47,7 @@ public class EstadoPage {
 	public static String ESTADO_MSG_DELETADO_SUCESSO = "deletado com sucesso";
 	public static String ESTADO_MSG_CONSULTA_ERRO = "A sigla informada";
 	
-//	public static String ESTADO_MSG_CADASTRO_REPETIDO_ERRO = "Já existe essa combinação"; 
+	public static String ESTADO_MSG_CADASTRO_REPETIDO_ERRO = "já está cadastrado"; 
 
 	public static String ESTADO_SIGLA_SP = "SP";
 	public static String ESTADO_NOME_SP = "São Paulo";
@@ -60,6 +60,18 @@ public class EstadoPage {
 	public EstadoPage(WebDriver driver) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
+	}
+	
+	private void preencheOCadastroDoEstadoDeSP() {
+		PageUtil.goToHome(driver);
+		PageUtil.goToTelaDeCadastro(this.driver, "Estado");
+		PageUtil.espereOWebElementAparecer(txtSigla, this.driver, 3L);
+		txtSigla.clear();
+		PageUtil.preencheTxt(txtSigla, ESTADO_SIGLA_SP, 500L);
+		assertEquals(ESTADO_SIGLA_SP, txtSigla.getAttribute("value"));
+		PageUtil.preencheTxt(txtNome, ESTADO_NOME_SP, 750L);
+		assertEquals(ESTADO_NOME_SP, txtNome.getAttribute("value"));
+		btnCadastrarAlterar.click();
 	}
 	
 	// ======================================= CADASTROS ============================================
@@ -80,15 +92,7 @@ public class EstadoPage {
 	}
 	
 	public void tentaCadastrarEstadoSPCorretamente() {
-		PageUtil.goToHome(driver);
-		PageUtil.goToTelaDeCadastro(this.driver, "Estado");
-		PageUtil.espereOWebElementAparecer(txtSigla, this.driver, 3L);
-		txtSigla.clear();
-		PageUtil.preencheTxt(txtSigla, ESTADO_SIGLA_SP, 500L);
-		assertEquals(ESTADO_SIGLA_SP, txtSigla.getAttribute("value"));
-		PageUtil.preencheTxt(txtNome, ESTADO_NOME_SP, 750L);
-		assertEquals(ESTADO_NOME_SP, txtNome.getAttribute("value"));
-		btnCadastrarAlterar.click();
+		preencheOCadastroDoEstadoDeSP();
 		PageUtil.verificaSeApareceuMsgDeSucesso(ESTADO_TITLE_PAGE_CADASTRO, this.driver);
 	}
 	
@@ -105,6 +109,11 @@ public class EstadoPage {
 		PageUtil.verificaSeApareceuMsgDeErro(ESTADO_TITLE_PAGE_CADASTRO, this.driver, "Failed");
 	}
 	
+	public void tentaCadastrarEstadoSPDuasVezes() {
+		preencheOCadastroDoEstadoDeSP();
+		preencheOCadastroDoEstadoDeSP();
+		PageUtil.verificaSeApareceuMsgDeErro(ESTADO_TITLE_PAGE_CADASTRO, this.driver, ESTADO_MSG_CADASTRO_REPETIDO_ERRO);
+	}
 	
 	// ======================================= CONSULTAS ============================================
 
@@ -141,8 +150,6 @@ public class EstadoPage {
 		assertThat(elementTxtSigla.isEnabled());
 	}
 
-	// ====================== VERIFICAR DAQUI PARA BAIXO SE NÂO TEM ERROS =========================
-	
 	public void tentaConsultarUmEstadoInexistente() {
 		PageUtil.goToHome(this.driver);
 		PageUtil.goToTelaDeConsulta(this.driver, "Estado");
@@ -164,10 +171,10 @@ public class EstadoPage {
 		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
 		PageUtil.espereUmTempo(700L);
 		btnEditarPrimeiroRegistro.click();
-		
 		txtNome.clear();
 		PageUtil.preencheTxt(txtNome, ESTADO_NOME_SP_EDITADA, 500L);
 		btnCadastrarAlterar.click();
+		
 		PageUtil.espereUmTempo(750L);
 		PageUtil.verificaSeApareceuMsgDeSucesso(ESTADO_TITLE_PAGE_CADASTRO, driver);
 		PageUtil.espereUmTempo(500L);
@@ -178,7 +185,6 @@ public class EstadoPage {
 		PageUtil.espereUmTempo(500L);
 		assertEquals(ESTADO_NOME_SP_EDITADA, txtNome.getAttribute("value"));
 	}
-	
 	
 	// ======================================= DELETES ============================================
 	
