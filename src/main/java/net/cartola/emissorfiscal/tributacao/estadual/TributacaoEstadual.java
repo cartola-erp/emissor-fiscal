@@ -99,7 +99,7 @@ public class TributacaoEstadual implements Serializable {
         this.icmsCst = icmsCst;
     }
 
-    @Column(name = "icms_base", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_base", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
     public BigDecimal getIcmsBase() {
         return icmsBase;
     }
@@ -108,7 +108,7 @@ public class TributacaoEstadual implements Serializable {
         this.icmsBase = icmsBase;
     }
 
-    @Column(name = "icms_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
     public BigDecimal getIcmsAliquota() {
         return icmsAliquota;
     }
@@ -117,7 +117,7 @@ public class TributacaoEstadual implements Serializable {
         this.icmsAliquota = icmsAliquota;
     }
 
-    @Column(name = "icms_iva", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_iva", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
     public BigDecimal getIcmsIva() {
         return icmsIva;
     }
@@ -126,7 +126,7 @@ public class TributacaoEstadual implements Serializable {
         this.icmsIva = icmsIva;
     }
 
-    @Column(name = "icms_aliq_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_aliq_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
     public BigDecimal getIcmsAliquotaDestino() {
         return icmsAliquotaDestino;
     }
