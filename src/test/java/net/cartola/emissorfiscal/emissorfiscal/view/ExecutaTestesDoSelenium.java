@@ -126,7 +126,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	public void test11_TentaCadastrarUmaOperacaoCorretamente() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
 		testHelper.limpaBanco();
-		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
 		System.out.println("\n"+ this.getClass().getName() + " test11_TentaCadastrarUmaOperacaoCorretamente, Ok");
 	}
 	
@@ -142,7 +142,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	public void test13_TentaConsultarUmaOperacaoExistente() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
 		testHelper.limpaBanco();
-		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
 		operacaoPage.tentaConsultarUmaOperacaoExistente();
 		System.out.println("\n"+ this.getClass().getName() + " test13_TentaConsultaUmaOperacaoExistente, Ok");
 	}
@@ -159,7 +159,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	public void test15_TentaEditarUmaOperacao() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
 		testHelper.limpaBanco();
-		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
 		operacaoPage.tentaEditarOPrimeiroRegistroDeUmaOperacao();
 		System.out.println("\n"+ this.getClass().getName() + " test15_TentaEditarUmaOperacao, Ok");
 	}
@@ -168,7 +168,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	public void test16_TentaDeletarUmaOperacao() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
 		testHelper.limpaBanco();
-		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
+		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
 		operacaoPage.tentaDeletarOPrimeiroRegistroDeOperacao();
 		System.out.println("\n"+ this.getClass().getName() + " test16_TentaDeletarUmaOperacao, Ok");
 	}
@@ -262,15 +262,25 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	// ===========================================================================================================
 	// ======================================= TRIBUTACAO ESTADUAL ============================================
 	// ===========================================================================================================
+	@Test
+	public void test27_TentaCadastrarUmaTributacaoEstadualIncompleta() {
+		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
+		testHelper.limpaBanco();
+		icmsPage.tentaCadastrarUmaTributacaoEstadualIncompleta();
+		System.out.println("\n"+ this.getClass().getName() + " test27_TentaCadastrarUmaTributacaoEstadualIncompleta, Ok");
+	}
 	
 //	@Test
-//	public void test10_TentaCadastrarUmaOperacaoIncompleta() {
-//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-//		testHelper.limpaBanco();
-//		operacaoPage.tentaCadastrarUmaOperacaoSemADescricao();
-//		System.out.println("\n"+ this.getClass().getName() + " test10_TentaCadastrarUmaOperacaoIncompleta, Ok");
+//	public void test28_TentaCadastrarUmaTributacaoEstadualDeSP() {
+//		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
+////		testHelper.limpaBanco();
+////		icmsPage.preencheOCadastroDeTributacaoEstadualDoMesmoEstado();
+//		System.out.println("\n"+ this.getClass().getName() + " test27_TentaCadastrarUmaOperacaoIncompleta, Ok");
 //	}
-//	
+	
+	
+	
+	
 //	@Test
 //	public void test11_TentaCadastrarUmaOperacaoCorretamente() {
 //		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
