@@ -35,7 +35,7 @@
 							<label for="cmbEstadoOrigem"><strong>Estado ORIGEM</strong></label>
 							<select class="custom-select" name="ufOrigemId">
 								<option selected id="opEstadoOrigem"> </option>
-								<option th:each="estado : ${listEstado}" th:value="${estado.id}" th:selected="${estado.id == ufOrigemIdSelecionado}" th:text="${estado.sigla}" ></option>
+								<option th:each="estado : ${listEstado}" th:value="${estado.id}" th:id="${estado.sigla}" th:selected="${estado.id == ufOrigemIdSelecionado}" th:text="${estado.sigla}" ></option>
 							</select>
 						</div>
 
@@ -43,7 +43,8 @@
 							<label for="cmbEstadoDestino"><strong>Estado DESTINO</strong></label>
 							<select class="custom-select" name="ufDestinoId">
 								<option selected id="opEstadoDestino"> </option>
-								<option th:each="estado : ${listEstado}" th:value="${estado.id}" th:selected="${estado.id == ufDestinoIdSelecionado}" th:text="${estado.sigla}" ></option>
+								<!-- ${} essa concatenação no id é uma POG, para diferenciar do id de UF ORIGEM -->
+								<option th:each="estado : ${listEstado}" th:value="${estado.id}" th:id="${_}+${estado.sigla}" th:selected="${estado.id == ufDestinoIdSelecionado}" th:text="${estado.sigla}" ></option>
 							</select>
 						</div>
 					</div>
@@ -54,7 +55,7 @@
 							<label for="cmbOperacao"><strong>Operação</strong></label>
 							<select class="custom-select" name="operacaoId">
 							<option selected id="opOperacao"> </option>
-								<option th:each="operacao : ${listOperacao}" th:value="${operacao.id}" th:selected="${operacao.id == operacaoIdSelecionado}" th:text="${operacao.descricao}" ></option>
+								<option th:each="operacao : ${listOperacao}" th:value="${operacao.id}" th:id="${operacao.descricao}" th:selected="${operacao.id == operacaoIdSelecionado}" th:text="${operacao.descricao}" ></option>
 							</select>
 						</div>
 
@@ -62,7 +63,7 @@
 							<label for="cmbNcm"><strong>NCM</strong></label>
 							<select class="custom-select" id="ncmId" name="ncmId" >
 								<option selected id="opNcm"> </option>
-								<option th:each="ncm : ${listNcms}" th:value="${ncm.id}" th:selected="${ncm.id == ncmdIdSelecionado}" th:text="${ncm.numero}" ></option>
+								<option th:each="ncm : ${listNcms}" th:value="${ncm.id}" th:id="${ncm.numero}" th:selected="${ncm.id == ncmdIdSelecionado}" th:text="${ncm.numero}" ></option>
 							</select>
 						</div>
 					</div>
@@ -71,8 +72,8 @@
 					<div class="form-row">
 
 						<div class="form-group col-md-1">
-							<label for="txtCfopItem"><strong>ICMS CST</strong></label>
-							<input type="text" class="form-control somenteNumeros" id="txtCfopItem" th:field="*{icmsCst}" name="icmsCst" placeholder="ICMS CST..." minlength="1" maxlength="3" required />
+							<label for="txtIcmsCst"><strong>ICMS CST</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtIcmsCst" th:field="*{icmsCst}" name="icmsCst" placeholder="ICMS CST..." minlength="1" maxlength="3" required />
 						</div> 
 
 						<div class="form-group col-md-2">
