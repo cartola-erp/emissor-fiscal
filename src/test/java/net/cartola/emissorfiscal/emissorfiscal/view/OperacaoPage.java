@@ -70,7 +70,7 @@ public class OperacaoPage {
 		PageUtil.verificaSeApareceuMsgDeErro(OPERACAO_TITLE_PAGE_CADASTRO, this.driver, "DESCRIÇÃO");
 	}
 	
-	public void tentaCadastrarUmaOperacaoCorretamente() {
+	public void tentaCadastrarUmaOperacaoDeVendaEstadual() {
 		PageUtil.goToHome(driver);
 		PageUtil.goToTelaDeCadastro(this.driver, "Operacao");
 		PageUtil.espereOWebElementAparecer(txtDescricao, this.driver, 3L);
