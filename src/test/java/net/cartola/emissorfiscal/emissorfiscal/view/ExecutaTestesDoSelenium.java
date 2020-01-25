@@ -266,30 +266,72 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	public void test27_TentaCadastrarUmaTributacaoEstadualIncompleta() {
 		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
 		testHelper.limpaBanco();
-		icmsPage.tentaCadastrarUmaTributacaoEstadualIncompleta();
+		icmsPage.tentaCadastrarUmaTributacaoEstadualSemONcm();
 		System.out.println("\n"+ this.getClass().getName() + " test27_TentaCadastrarUmaTributacaoEstadualIncompleta, Ok");
 	}
 	
+	@Test
+	public void test28_TentaCadastrarUmaTributacaoEstadualDeSP() {
+		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
+		testHelper.limpaBanco();
+		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
+		System.out.println("\n"+ this.getClass().getName() + " test28_TentaCadastrarUmaTributacaoEstadualDeSP, Ok");
+	}
+	
+	
+	@Test
+	public void test29_TentaConsultarUmaTributacaoEstadualVazio() {
+		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
+		testHelper.limpaBanco();
+		icmsPage.tentaConsultarUmaTributacaoEstadualVazio();
+		System.out.println("\n"+ this.getClass().getName() + " test29_TentaConsultarUmaTributacaoEstadualVazio, Ok");
+	}
+
+
+	@Test
+	public void test30_TentaConsultarUmaTributacaoEstadualExistente() {
+		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
+		testHelper.limpaBanco();
+		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
+		icmsPage.tentaConsultarUmaTributacaoEstadualExistente();
+		System.out.println("\n"+ this.getClass().getName() + " test30_TentaConsultarUmaTributacaoEstadualExistente, Ok");
+	}
+	
+	@Test
+	public void test31_TentaConsultarUmaTributacaoEstadualInexistente() {
+		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
+		testHelper.limpaBanco();
+		icmsPage.tentaConsultaUmaTributacaoEstadualInexistente();
+		System.out.println("\n"+ this.getClass().getName() + " test31_TentaConsultarUmaTributacaoEstadualInexistente, Ok");
+	}
+	
+	@Test
+	public void test32_TentaEditarUmaTributacaoEstadual() {
+		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
+		testHelper.limpaBanco();
+		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
+		icmsPage.tentaEditarOPrimeiroRegistroDeUmaTributacaoEstadual();
+		System.out.println("\n"+ this.getClass().getName() + " test32_TentaEditarUmaTributacaoEstadual, Ok");
+	}
+//	
 //	@Test
-//	public void test28_TentaCadastrarUmaTributacaoEstadualDeSP() {
-//		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
-////		testHelper.limpaBanco();
-////		icmsPage.preencheOCadastroDeTributacaoEstadualDoMesmoEstado();
-//		System.out.println("\n"+ this.getClass().getName() + " test27_TentaCadastrarUmaOperacaoIncompleta, Ok");
-//	}
-	
-	
-	
-	
-//	@Test
-//	public void test11_TentaCadastrarUmaOperacaoCorretamente() {
+//	public void test16_TentaDeletarUmaOperacao() {
 //		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
 //		testHelper.limpaBanco();
 //		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
-//		System.out.println("\n"+ this.getClass().getName() + " test11_TentaCadastrarUmaOperacaoCorretamente, Ok");
+//		operacaoPage.tentaDeletarOPrimeiroRegistroDeOperacao();
+//		System.out.println("\n"+ this.getClass().getName() + " test16_TentaDeletarUmaOperacao, Ok");
 //	}
-//	
+	
 //	@Test
+//	public void test24_TentaConsultarUmEstadoInexistente() {
+//		EstadoPage estadoPage = new EstadoPage(this.driver);
+//		testHelper.limpaBanco();
+//		estadoPage.tentaConsultarUmEstadoInexistente();
+//		System.out.println("\n"+ this.getClass().getName() + " test24_TentaConsultarUmEstadoInexistente, Ok");
+//	}
+
+	//	@Test
 //	public void test12_TentaConsultarUmaOperacaoVazia() {
 //		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
 //		testHelper.limpaBanco();
@@ -306,31 +348,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 //		System.out.println("\n"+ this.getClass().getName() + " test13_TentaConsultaUmaOperacaoExistente, Ok");
 //	}
 //	
-//	@Test
-//	public void test14_TentaConsultarUmaOperacaoInexistente() {
-//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-//		testHelper.limpaBanco();
-//		operacaoPage.tentaConsultarUmaOperacaoInexistente();
-//		System.out.println("\n"+ this.getClass().getName() + " test14_TentaConsultaUmaOperacaoInexistente, Ok");
-//	}
 //	
-//	@Test
-//	public void test15_TentaEditarUmaOperacao() {
-//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-//		testHelper.limpaBanco();
-//		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
-//		operacaoPage.tentaEditarOPrimeiroRegistroDeUmaOperacao();
-//		System.out.println("\n"+ this.getClass().getName() + " test15_TentaEditarUmaOperacao, Ok");
-//	}
-//	
-//	@Test
-//	public void test16_TentaDeletarUmaOperacao() {
-//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-//		testHelper.limpaBanco();
-//		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
-//		operacaoPage.tentaDeletarOPrimeiroRegistroDeOperacao();
-//		System.out.println("\n"+ this.getClass().getName() + " test16_TentaDeletarUmaOperacao, Ok");
-//	}
 	
 	// ======================================= TRIBUTACAO FEDERAL ============================================
 

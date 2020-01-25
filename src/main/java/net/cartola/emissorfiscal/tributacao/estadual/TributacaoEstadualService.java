@@ -39,6 +39,10 @@ public class TributacaoEstadualService {
 		return repository.findById(id); 
 	}
 	
+	public List<TributacaoEstadual> findTributacaoEstadualByNcms(Collection<Ncm> ncms) {
+		return repository.findByNcmIn(ncms);
+	}
+	
 	public List<TributacaoEstadual> findTributacaoEstadualByOperacaoENcms(Operacao operacao, Collection<Ncm> ncms) {
 		return repository.findByOperacaoAndNcmIn(operacao, ncms);
 	}

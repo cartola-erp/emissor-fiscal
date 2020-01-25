@@ -1,7 +1,9 @@
 package net.cartola.emissorfiscal.emissorfiscal.view;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -60,13 +62,16 @@ public class TributacaoEstadualPage {
 	@FindBy(id = "btnCadastrarAlterar")
 	private WebElement btnCadastrarAlterar;
 	
+	@FindBy(id = "txtNcmTributacaoEstadual")
+	private WebElement txtNcmTributacaoEstadual;	// Campo usado para consultar uma tributação especifica
+	
 	@FindBy(id = "btnPesquisar")
 	private WebElement btnPesquisar;
 	
-	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[4]/a/button")
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[12]/a/button")
 	private WebElement btnEditarPrimeiroRegistro;
 	
-	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[5]/form/button")
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[13]/form/button")
 	private WebElement btnDeletarPrimeiroRegistro;
 	
 	// ====================
@@ -88,6 +93,8 @@ public class TributacaoEstadualPage {
 	public static String TRIBUTACAO_ESTADUAL_ICMS_ALIQ_DESTINO = "9";
 	public static String TRIBUTACAO_ESTADUAL_ICMS_CEST = "100100";
 	public static String TRIBUTACAO_ESTADUAL_MENSAGEM = "Essa é o primeiro cadastro de teste";
+	public static String TRIBUTACAO_ESTADUAL_MENSAGEM_EDITADA = "Essa é uma mensagem EDITADA";
+
 	
 	// ====================
 	
@@ -130,104 +137,99 @@ public class TributacaoEstadualPage {
 //		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
 		
 		// PREENCHENDO DE FATO os TXTS
-		setTxtIcmsCst(txtIcmsCst, TRIBUTACAO_ESTADUAL_ICMS_CST, 600L);
-		setTxtIcmsBase(txtIcmsBase, TRIBUTACAO_ESTADUAL_ICMS_BASE, 600L);
-		setTxtIcmsAliquota(txtIcmsAliquota, TRIBUTACAO_ESTADUAL_ICMS_ALIQ, 600L);
-		setTxtIcmsIva(txtIcmsIva, TRIBUTACAO_ESTADUAL_ICMS_IVA, 600L);
-		setTxtIcmsAliquotaDestino(txtIcmsAliquotaDestino, TRIBUTACAO_ESTADUAL_ICMS_ALIQ_DESTINO, 600L);
-		setTxtCest(txtCest, TRIBUTACAO_ESTADUAL_ICMS_CEST, 600L);
-		setTxtMensagem(txtMensagem, TRIBUTACAO_ESTADUAL_MENSAGEM, 600L);
+		setTxt(txtIcmsCst, TRIBUTACAO_ESTADUAL_ICMS_CST, 600L);
+		setTxt(txtIcmsBase, TRIBUTACAO_ESTADUAL_ICMS_BASE, 600L);
+		setTxt(txtIcmsAliquota, TRIBUTACAO_ESTADUAL_ICMS_ALIQ, 600L);
+		setTxt(txtIcmsIva, TRIBUTACAO_ESTADUAL_ICMS_IVA, 600L);
+		setTxt(txtIcmsAliquotaDestino, TRIBUTACAO_ESTADUAL_ICMS_ALIQ_DESTINO, 600L);
+		setTxt(txtCest, TRIBUTACAO_ESTADUAL_ICMS_CEST, 600L);
+		setTxt(txtMensagem, TRIBUTACAO_ESTADUAL_MENSAGEM, 600L);
 		
 //		btnCadastrarAlterar.click();
 	}
 	
-	public void tentaCadastrarUmaTributacaoEstadualIncompleta() {
+	public void tentaCadastrarUmaTributacaoEstadualSemONcm() {
 		preencheOCadastroDeTributacaoEstadualDeSPparaSPSemONcm();
 		btnCadastrarAlterar.click();
 		PageUtil.verificaSeApareceuMsgDeErro(TRIBUTACAO_ESTADUAL_TITLE_PAGE_CADASTRO, this.driver, TRIBUTACAO_ESTADUAL_MSG_CADASTRADO_ERRO);
 	}
 
-//	public void preencheOCadastroDeTributacaoEstadualDoMesmoEstado() {
-//		estadoPage.tentaCadastrarEstadoSPCorretamente();
-//		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
-//		ncmPage.tentaCadastrarUmNcmCorretamente();
-//		
-//		
-//		// Preenchimento da TRIBUTAÇÃO ESTADUAL DE FATO
-//		PageUtil.goToHome(driver);
-//		PageUtil.goToTelaDeCadastro(driver, "TributacaoEstadual");
-//		PageUtil.espereOWebElementAparecer(btnCadastrarAlterar, this.driver, 3L);
-//		PageUtil.espereUmTempo(1000L);
-//		
-//		Select itemUfOrigem = new Select(selectUfOrigemId);
-//		itemUfOrigem.selectByVisibleText(EstadoPage.ESTADO_SIGLA_SP);
-//		
-//		Select itemUfDestino = new Select(selectUfDestinoId);
-//		itemUfDestino.selectByVisibleText(EstadoPage.ESTADO_SIGLA_SP);
-//		
-//		Select itemOperacao = new Select(selectOperacao);
-//		itemOperacao.selectByVisibleText(OperacaoPage.OPERACAO_DESCRICAO_01);
-//		
-//		Select itemNcm = new Select(selectNcm);
-//		itemNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
-//		
-//		// PREENCHENDO DE FATO os TXTS
-//		PageUtil.preencheTxt(txtIcmsCst, TRIBUTACAO_ESTADUAL_ICMS_CST, 600L);
-//		
-//		PageUtil.preencheTxt(txtIcmsBase, TRIBUTACAO_ESTADUAL_ICMS_BASE, 600L);
-//		PageUtil.preencheTxt(txtIcmsAliquota, TRIBUTACAO_ESTADUAL_ICMS_ALIQ, 600L);
-//		PageUtil.preencheTxt(txtIcmsIva, TRIBUTACAO_ESTADUAL_ICMS_IVA, 600L);
-//		
-//		PageUtil.preencheTxt(txtIcmsAliquotaDestino, TRIBUTACAO_ESTADUAL_ICMS_ALIQ_DESTINO, 600L);
-//		PageUtil.preencheTxt(txtCest, TRIBUTACAO_ESTADUAL_ICMS_CEST, 600L);
-//		PageUtil.preencheTxt(txtMensagem, TRIBUTACAO_ESTADUAL_MENSAGEM, 600L);
-//		btnCadastrarAlterar.click();
-//	}
+	public void tentaCadastrarUmaTributacaoEstadualDeSPparaSP() {
+		preencheOCadastroDeTributacaoEstadualDeSPparaSPSemONcm();
+		Select opNcm = new Select(selectNcm);
+		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
+		
+		btnCadastrarAlterar.click();
+	}
+	
+	// ======================================= CONSULTAS ============================================
+
+	public void tentaConsultarUmaTributacaoEstadualVazio() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoEstadual");
+		PageUtil.espereOWebElementAparecer(btnPesquisar, this.driver, 3L);
+		PageUtil.espereUmTempo(600L);
+		btnPesquisar.click();
+		PageUtil.espereUmTempo(600L);
+		PageUtil.verificaSeApareceuMsgDeErro(TRIBUTACAO_ESTADUAL_PAGE_CONSULTA, this.driver);
+	}
+	
+	public void tentaConsultarUmaTributacaoEstadualExistente() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoEstadual");
+		PageUtil.espereOWebElementAparecer(txtNcmTributacaoEstadual, this.driver, 3L);
+		PageUtil.preencheTxt(txtNcmTributacaoEstadual, NcmPage.NCM_NUMERO_01, 600L);
+		btnPesquisar.click();
+		PageUtil.espereUmTempo(600L);
+		btnEditarPrimeiroRegistro.click();
+		assertEquals(NcmPage.NCM_NUMERO_01, selectNcm.getText().trim());
+	}
+	
+	public void tentaConsultaUmaTributacaoEstadualInexistente() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoEstadual");
+		PageUtil.espereOWebElementAparecer(txtNcmTributacaoEstadual, this.driver, 3L);
+		
+		PageUtil.preencheTxt(txtNcmTributacaoEstadual, "h@ir87654321", 600L);
+		PageUtil.espereUmTempo(600L);
+		btnPesquisar.click();
+		WebElement element = driver.findElement(By.id("txtNcmTributacaoEstadual"));
+		assertThat(element.isDisplayed());
+		assertThat(element.isEnabled());
+	}
+	
+	// ======================================= EDITAR ============================================
+
+	public void tentaEditarOPrimeiroRegistroDeUmaTributacaoEstadual() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoEstadual");
+		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
+		PageUtil.espereUmTempo(700L);
+		btnEditarPrimeiroRegistro.click();
+	
+		setTxt(txtMensagem, TRIBUTACAO_ESTADUAL_MENSAGEM_EDITADA, 600L);
+		btnCadastrarAlterar.click();
+		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_ESTADUAL_TITLE_PAGE_CADASTRO, driver);
+		
+		PageUtil.espereUmTempo(500L);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoEstadual");
+		PageUtil.espereUmTempo(1000L);
+		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
+		btnEditarPrimeiroRegistro.click();
+		PageUtil.espereUmTempo(500L);
+		assertEquals(TRIBUTACAO_ESTADUAL_MENSAGEM_EDITADA, txtMensagem.getAttribute("value"));
+	}
+	
+	// ======================================= DELETES ============================================
+
 	
 	// ======================================= GETTERs And SETTERs ============================================
-
+	public void setTxt(WebElement txtIcms, String txtValueIcms, Long timeInMillis) {
+		txtIcms.clear();
+		PageUtil.preencheTxt(txtIcms, txtValueIcms, timeInMillis);
+		assertEquals(txtValueIcms, txtIcms.getAttribute("value"));
+	}
 	
-	public void setTxtIcmsCst(WebElement txtIcmsCst, String txtValueIcmsCst, Long timeInMillis) {
-		txtIcmsCst.clear();
-		PageUtil.preencheTxt(txtIcmsCst, txtValueIcmsCst, timeInMillis);
-		assertEquals(txtValueIcmsCst, txtIcmsCst.getAttribute("value"));
-	}
-
-	public void setTxtIcmsBase(WebElement txtIcmsBase, String txtValueIcmsBase, Long timeInMillis) {
-		txtIcmsBase.clear();
-		PageUtil.preencheTxt(txtIcmsBase, txtValueIcmsBase, timeInMillis);
-		assertEquals(txtValueIcmsBase, txtIcmsBase.getAttribute("value"));
-	}
-
-	public void setTxtIcmsAliquota(WebElement txtIcmsAliquota, String txtValueIcmsAliq, Long timeInMillis) {
-		txtIcmsAliquota.clear();
-		PageUtil.preencheTxt(txtIcmsAliquota, txtValueIcmsAliq, timeInMillis);
-		assertEquals(txtValueIcmsAliq, txtIcmsAliquota.getAttribute("value"));
-	}
-
-	public void setTxtIcmsIva(WebElement txtIcmsIva, String txtValueIcmsIva, Long timeInMillis) {
-		txtIcmsIva.clear();
-		PageUtil.preencheTxt(txtIcmsIva, txtValueIcmsIva, timeInMillis);
-		assertEquals(txtValueIcmsIva, txtIcmsIva.getAttribute("value"));
-	}
-
-	public void setTxtIcmsAliquotaDestino(WebElement txtIcmsAliquotaDestino, String txtValueIcmsAliqDest, Long timeInMillis) {
-		txtIcmsAliquotaDestino.clear();
-		PageUtil.preencheTxt(txtIcmsAliquotaDestino, txtValueIcmsAliqDest, timeInMillis);
-		assertEquals(txtValueIcmsAliqDest, txtIcmsAliquotaDestino.getAttribute("value"));
-	}
-
-	public void setTxtCest(WebElement txtCest, String txtValueCest, Long timeInMillis) {
-		txtCest.clear();
-		PageUtil.preencheTxt(txtCest, txtValueCest, timeInMillis);
-		assertEquals(txtValueCest, txtCest.getAttribute("value"));
-	}
-
-	public void setTxtMensagem(WebElement txtMensagem, String txtValueMensagem, Long timeInMillis) {
-		txtMensagem.clear();
-		PageUtil.preencheTxt(txtMensagem, txtValueMensagem, timeInMillis);
-		assertEquals(txtValueMensagem, txtMensagem.getAttribute("value"));
-	}
 	
 }
 
