@@ -81,7 +81,7 @@ public class TributacaoFederal implements Serializable {
 		this.pisCst = pisCst;
 	}
 
-	@Column(name = "pis_base", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
+	@Column(name = "pis_base", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getPisBase() {
 		return pisBase;
 	}
@@ -90,7 +90,7 @@ public class TributacaoFederal implements Serializable {
 		this.pisBase = pisBase;
 	}
 
-	@Column(name = "pis_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
+	@Column(name = "pis_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getPisAliquota() {
 		return pisAliquota;
 	}
@@ -108,7 +108,7 @@ public class TributacaoFederal implements Serializable {
 		this.cofinsCst = cofinsCst;
 	}
 
-	@Column(name = "cofins_base", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
+	@Column(name = "cofins_base", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getCofinsBase() {
 		return cofinsBase;
 	}
@@ -117,7 +117,7 @@ public class TributacaoFederal implements Serializable {
 		this.cofinsBase = cofinsBase;
 	}
 
-	@Column(name = "cofins_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
+	@Column(name = "cofins_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getCofinsAliquota() {
 		return cofinsAliquota;
 	}
@@ -135,7 +135,7 @@ public class TributacaoFederal implements Serializable {
 		this.ipiCst = ipiCst;
 	}
 
-	@Column(name = "ipi_base", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
+	@Column(name = "ipi_base", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIpiBase() {
 		return ipiBase;
 	}
@@ -144,7 +144,7 @@ public class TributacaoFederal implements Serializable {
 		this.ipiBase = ipiBase;
 	}
 
-	@Column(name = "ipi_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,5) default '0.00'")
+	@Column(name = "ipi_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIpiAliquota() {
 		return ipiAliquota;
 	}
