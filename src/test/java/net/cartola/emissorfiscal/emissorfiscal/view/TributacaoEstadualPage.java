@@ -28,8 +28,6 @@ public class TributacaoEstadualPage {
 	@FindBy(name = "ncmId")
 	private WebElement selectNcm;
 	
-	// VERIFICAR OS DAQUI PARA BAIXO (TENHO QUE VERIFICAR SE ESTÂO TODOS CORRETOS)
-	
 	@FindBy(id = "txtIcmsCst")
 	private WebElement txtIcmsCst;
 	
@@ -51,8 +49,6 @@ public class TributacaoEstadualPage {
 	@FindBy(id = "txtMensagem")
 	private WebElement txtMensagem;
 
-	// REPETIDOS PARA TODAS AS PAGINAS (TENHO QUE VERIFICAR SE ESTÂO TODOS CORRETOS)
-	
 	@FindBy(id = "spanMensagemErro")
 	private WebElement spanMensagemErro;
 	
@@ -80,11 +76,9 @@ public class TributacaoEstadualPage {
 	public static String TRIBUTACAO_ESTADUAL_PAGE_CONSULTA = "Consulta de tributação estadual - (ICMS)";
 	// As msgs abaixo, é uma parte da msg que aparece para o usuário, e não a msg completa
 	public static String TRIBUTACAO_ESTADUAL_MSG_ALTERADA_CADASTRADA = "alterado/cadastrado";
-	
 	public static String TRIBUTACAO_ESTADUAL_MSG_CADASTRADO_ERRO = "preencha todos os campos";
 	public static String TRIBUTACAO_ESTADUAL_MSG_DELETADO_SUCESSO = "deletada com sucesso";
-
-//	public static String OPERACAO_MSG_CADASTRO_REPETIDO_ERRO = "Já existe essa combinação"; 
+//	public static String TRIBUTACAO_ESTADUAL_MSG_CADASTRO_REPETIDO_ERRO = "Já existe essa combinação"; 
 
 	public static String TRIBUTACAO_ESTADUAL_ICMS_CST = "00";
 	public static String TRIBUTACAO_ESTADUAL_ICMS_BASE = "1";
@@ -95,8 +89,6 @@ public class TributacaoEstadualPage {
 	public static String TRIBUTACAO_ESTADUAL_MENSAGEM = "Essa é o primeiro cadastro de teste";
 	public static String TRIBUTACAO_ESTADUAL_MENSAGEM_EDITADA = "Essa é uma mensagem EDITADA";
 
-	
-	// ====================
 	
 	private WebDriver driver;
 	private EstadoPage estadoPage;
@@ -144,7 +136,6 @@ public class TributacaoEstadualPage {
 		setTxt(txtIcmsAliquotaDestino, TRIBUTACAO_ESTADUAL_ICMS_ALIQ_DESTINO, 600L);
 		setTxt(txtCest, TRIBUTACAO_ESTADUAL_ICMS_CEST, 600L);
 		setTxt(txtMensagem, TRIBUTACAO_ESTADUAL_MENSAGEM, 600L);
-		
 //		btnCadastrarAlterar.click();
 	}
 	
@@ -158,7 +149,8 @@ public class TributacaoEstadualPage {
 		preencheOCadastroDeTributacaoEstadualDeSPparaSPSemONcm();
 		Select opNcm = new Select(selectNcm);
 		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
-		
+//		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_ESTADUAL_TITLE_PAGE_CADASTRO, driver);
+
 		btnCadastrarAlterar.click();
 	}
 	
@@ -221,6 +213,14 @@ public class TributacaoEstadualPage {
 	}
 	
 	// ======================================= DELETES ============================================
+	public void tentaDeletarOPrimeiroRegistroDeUmaTributacaoEstadual() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoEstadual");
+		PageUtil.espereOWebElementAparecer(btnDeletarPrimeiroRegistro, this.driver, 3L);
+		PageUtil.espereUmTempo(700L);
+		btnDeletarPrimeiroRegistro.click();
+		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_ESTADUAL_PAGE_CONSULTA, this.driver, TRIBUTACAO_ESTADUAL_MSG_DELETADO_SUCESSO);
+	}
 
 	
 	// ======================================= GETTERs And SETTERs ============================================

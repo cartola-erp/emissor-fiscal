@@ -1,6 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -53,10 +54,15 @@ public class TributacaoEstadualController {
 	
 	@PostMapping("/cadastro")
 	public ModelAndView save(@Valid TributacaoEstadual icms, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, BindingResult result, RedirectAttributes attributes) {
-		if (result.hasErrors() ){
+		if (result.hasErrors() || ufOrigemId== null || ufDestinoId== null || operacaoId== null || ncmId== null ){
 			ModelAndView mv = new ModelAndView("tributacao-estadual/cadastro");
-			mv.addObject("icms", icms);
 //			mv.addObject("mensagemErro", icmsService.getMensagensErros(result, existeNumeroEExecao));
+			mv.addObject("mensagemErro", "Por favor, preencha todos os campos necessários!");
+
+			mv.addObject("icms", icms);
+			mv.addObject("listEstado", estadoService.findAll());
+			mv.addObject("listOperacao", operacaoService.findAll());
+			mv.addObject("listNcms", ncmService.findAll());
 			return mv;
 		}
 		ModelAndView mv = new ModelAndView("redirect:/tributacao-estadual/cadastro");
@@ -71,18 +77,11 @@ public class TributacaoEstadualController {
 			icms.setEstadoDestino(estadoDestino);
 			icms.setOperacao(operacao);
 			icms.setNcm(ncm);
-			// Ver com o Murilo, se esses valores serão salvos já divididos por cem, ou será
-			// salvo o número "inteiro" e nos calculos que usam tais valores divide por 100
-			// Se for dividir aqui, vai dar errado quando tentar editar, pois os valores q
-			// não mudarem SERAM DIVIDIOS NOVAMENTE
-			icms.setIcmsAliquota(icms.getIcmsAliquota().divide(new BigDecimal(100D)));
-			icms.setIcmsAliquotaDestino(icms.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
-			icms.setIcmsBase(icms.getIcmsBase().divide(new BigDecimal(100D)));
-			icms.setIcmsIva(icms.getIcmsIva().divide(new BigDecimal(100D)));
-
 			icmsService.save(icms);
 		} catch (Exception ex) {
-			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
+//			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
+			attributes.addFlashAttribute("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
+			return mv;
 		}
 		
 		attributes.addFlashAttribute("mensagemSucesso", "ICMS alterado/cadastrado com sucesso!");
@@ -97,17 +96,18 @@ public class TributacaoEstadualController {
 		return mv;
 	}
 
-//	@PostMapping("/consulta")
-//	public ModelAndView findByNumero(@RequestParam("numeroNcm") String numeroNcm, Model model) {
-//		ModelAndView mv = new ModelAndView("tributacaoEstadual/consulta");
-//		try {
-//			mv.addObject("listNcm", icmsService.findByNumero(Integer.parseInt(numeroNcm)));
-//		} catch (Exception ex) {
-//			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação informada");
-//		} 
-//		return mv;
-//	}
-//
+	@PostMapping("/consulta")
+	public ModelAndView findByNumero(@RequestParam("ncm") String numeroNcm, Model model) {
+		ModelAndView mv = new ModelAndView("tributacao-estadual/consulta");
+		try {
+			List<Ncm> listNcm = ncmService.findByNumero(Integer.parseInt(numeroNcm));
+			mv.addObject("listTributacaoEstadual", icmsService.findTributacaoEstadualByNcms(listNcm));
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação informada");
+		} 
+		return mv;
+	}
+
 	
 	// Método que irá carregar na tela de cadastro, os valores cadastrados de uma tributação estadual(para poder editar)
 	@GetMapping("/editar/{id}")

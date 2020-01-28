@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +25,12 @@ public class TributacaoEstadualService {
 	}
 	
 	public Optional<TributacaoEstadual> save(TributacaoEstadual tributacaoEstadual) {
+		if (tributacaoEstadual.getId() == null) {
+			tributacaoEstadual.setIcmsAliquota(tributacaoEstadual.getIcmsAliquota().divide(new BigDecimal(100D)));
+			tributacaoEstadual.setIcmsAliquotaDestino(tributacaoEstadual.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
+			tributacaoEstadual.setIcmsBase(tributacaoEstadual.getIcmsBase().divide(new BigDecimal(100D)));
+			tributacaoEstadual.setIcmsIva(tributacaoEstadual.getIcmsIva().divide(new BigDecimal(100D)));
+		}
 		return Optional.ofNullable(repository.saveAndFlush(tributacaoEstadual));
 	}
 	

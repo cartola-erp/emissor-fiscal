@@ -58,12 +58,12 @@
 
 						<div class="form-group col-md-2">
 							<label for="txtPisBase"><strong>PIS Base</strong></label>
-							<input type="text" class="form-control somenteNumeros" id="txtPisBase" th:field="*{pisBase}" name="pisBase" placeholder="PIS Base..." minlength="1" maxlength="5" required />
+							<input type="number" class="form-control somenteNumeros" id="txtPisBase" th:field="*{pisBase}" name="pisBase" placeholder="PIS Base..."  min="0" max="100" required />
 						</div> 
 
 						<div class="form-group col-md-2">
 							<label for="txtPisAliquota"><strong>PIS Aliquota</strong></label>
-							<input type="text" class="form-control somenteNumeros" id="txtPisAliquota" th:field="*{pisAliquota}"  name="pisAliquota" placeholder="PIS ALIQ." minlength="1" maxlength="3" required />
+							<input type="number" class="form-control somenteNumeros" id="txtPisAliquota" th:field="*{pisAliquota}"  name="pisAliquota" placeholder="PIS ALIQ." min="0" max="100" required />
 						</div> 
 
 						<!-- COFINS  -->
@@ -74,12 +74,12 @@
 
 						<div class="form-group col-md-2">
 							<label for="txtCofinsBase"><strong>COFINS Base</strong></label>
-							<input type="text" class="form-control somenteNumeros" id="txtCofinsBase" th:field="*{cofinsBase}" name="cofinsBase" placeholder="COFINS Base" minlength="1" maxlength="3" required />
+							<input type="number" class="form-control somenteNumeros" id="txtCofinsBase" th:field="*{cofinsBase}" name="cofinsBase" placeholder="COFINS Base"  min="0" max="100" required />
 						</div> 
 
 						<div class="form-group col-md-3">
 							<label for="txtCofinsAliq"><strong>COFINS Aliq.</strong></label>
-							<input type="text" class="form-control somenteNumeros" id="txtCofinsAliq" th:field="*{cofinsAliquota}" name="cofinsAliquota" placeholder="COFINS Aliq." minlength="1" maxlength="3" required>
+							<input type="number" class="form-control somenteNumeros" id="txtCofinsAliq" th:field="*{cofinsAliquota}" name="cofinsAliquota" placeholder="COFINS Aliq." min="0" max="100" required>
 						</div> 
 
 					</div>
@@ -94,12 +94,12 @@
 
 						<div class="form-group col-md-2">
 							<label for="txtIpiBase"><strong>IPI Base</strong></label>
-							<input type="text" class="form-control somenteNumeros" id="txtCofinsBase" th:field="*{ipiBase}" name="ipiBase" placeholder="IPI Base" minlength="1" maxlength="3" required />
+							<input type="number" class="form-control somenteNumeros" id="txtIpiBase" th:field="*{ipiBase}" name="ipiBase" placeholder="IPI Base"  min="0" max="100"  required />
 						</div> 
 
 						<div class="form-group col-md-2">
-							<label for="txtIpiAliq"><strong>IPI Aliq.</strong></label>
-							<input type="text" class="form-control somenteNumeros" id="txtIpiAliq" th:field="*{ipiAliquota}" name="ipiAliquota" placeholder="IPI Aliq." minlength="1" maxlength="3" required>
+							<label for="txtIpiAliq"><strong>IPI Aliq. (%)</strong></label>
+							<input type="number" class="form-control somenteNumeros" id="txtIpiAliq" th:field="*{ipiAliquota}" name="ipiAliquota" placeholder="IPI Aliq." min="0" max="100" required>
 						</div> 
 
 						<!-- Mensagem -->

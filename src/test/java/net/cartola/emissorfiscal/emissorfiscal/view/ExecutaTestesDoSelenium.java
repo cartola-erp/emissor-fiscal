@@ -259,9 +259,8 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		System.out.println("\n"+ this.getClass().getName() + " test26_TentaDeletarUmEstado, Ok");
 	}
 	
-	// ===========================================================================================================
 	// ======================================= TRIBUTACAO ESTADUAL ============================================
-	// ===========================================================================================================
+
 	@Test
 	public void test27_TentaCadastrarUmaTributacaoEstadualIncompleta() {
 		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
@@ -313,15 +312,26 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		icmsPage.tentaEditarOPrimeiroRegistroDeUmaTributacaoEstadual();
 		System.out.println("\n"+ this.getClass().getName() + " test32_TentaEditarUmaTributacaoEstadual, Ok");
 	}
-//	
+	
 //	@Test
-//	public void test16_TentaDeletarUmaOperacao() {
-//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
+//	public void test33_TentaDeletarUmaTributatacaoEstadual() {
+//		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
 //		testHelper.limpaBanco();
-//		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
-//		operacaoPage.tentaDeletarOPrimeiroRegistroDeOperacao();
-//		System.out.println("\n"+ this.getClass().getName() + " test16_TentaDeletarUmaOperacao, Ok");
+//		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
+//		icmsPage.tentaDeletarOPrimeiroRegistroDeUmaTributacaoEstadual();
+//		System.out.println("\n"+ this.getClass().getName() + " test33_TentaDeletarUmaTributatacaoEstadual, Ok");
 //	}
+
+	// ===========================================================================================================
+	// ======================================= TRIBUTACAO FEDERAL ============================================
+	// ===========================================================================================================
+
+	//	EstadoPage estadoPage = new EstadoPage(this.driver);
+//	testHelper.limpaBanco();
+//	estadoPage.tentaCadastrarEstadoSPCorretamente();
+//	estadoPage.tentaDeletarOPrimeiroRegistroDeEstado();
+//	System.out.println("\n"+ this.getClass().getName() + " test26_TentaDeletarUmEstado, Ok");
+//}
 	
 //	@Test
 //	public void test24_TentaConsultarUmEstadoInexistente() {

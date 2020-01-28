@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,14 @@ public class TributacaoFederalService {
 	}
 
 	public Optional<TributacaoFederal> save(TributacaoFederal tributacaoFederal) {
+		if (tributacaoFederal.getId() == null) {
+			tributacaoFederal.setPisAliquota(tributacaoFederal.getPisAliquota().divide(new BigDecimal(100D)));
+			tributacaoFederal.setPisBase(tributacaoFederal.getPisBase().divide(new BigDecimal(100D)));
+			tributacaoFederal.setCofinsAliquota(tributacaoFederal.getCofinsAliquota().divide(new BigDecimal(100D)));
+			tributacaoFederal.setCofinsBase(tributacaoFederal.getCofinsBase().divide(new BigDecimal(100D)));
+			tributacaoFederal.setIpiAliquota(tributacaoFederal.getIpiAliquota().divide(new BigDecimal(100D)));
+			tributacaoFederal.setIpiBase(tributacaoFederal.getIpiBase().divide(new BigDecimal(100D)));
+		}
 		return Optional.ofNullable(tributacaoFederalRepository.saveAndFlush(tributacaoFederal));
 	}
 
