@@ -43,10 +43,7 @@ public class TributacaoEstadualController {
 	public ModelAndView loadTributacaoEstadual() {
 		ModelAndView mv = new ModelAndView("tributacao-estadual/cadastro");
 		TributacaoEstadual icms = new TributacaoEstadual();
-		mv.addObject("icms", icms);
-		mv.addObject("listEstado", estadoService.findAll());
-		mv.addObject("listOperacao", operacaoService.findAll());
-		mv.addObject("listNcms", ncmService.findAll());
+		addObjetosNaView(mv, icms);
 		
 		// mv.addObject("textBtnCadastrarEditar", "Cadastrar");
 		return mv;
@@ -59,10 +56,7 @@ public class TributacaoEstadualController {
 //			mv.addObject("mensagemErro", icmsService.getMensagensErros(result, existeNumeroEExecao));
 			mv.addObject("mensagemErro", "Por favor, preencha todos os campos necessários!");
 
-			mv.addObject("icms", icms);
-			mv.addObject("listEstado", estadoService.findAll());
-			mv.addObject("listOperacao", operacaoService.findAll());
-			mv.addObject("listNcms", ncmService.findAll());
+			addObjetosNaView(mv, icms);
 			return mv;
 		}
 		ModelAndView mv = new ModelAndView("redirect:/tributacao-estadual/cadastro");
@@ -80,7 +74,7 @@ public class TributacaoEstadualController {
 			icmsService.save(icms);
 		} catch (Exception ex) {
 //			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
-			attributes.addFlashAttribute("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
+			attributes.addFlashAttribute("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação estadual ");
 			return mv;
 		}
 		
@@ -91,8 +85,14 @@ public class TributacaoEstadualController {
 	@GetMapping("/consulta")
 	public ModelAndView findAll() {
 		ModelAndView mv = new ModelAndView("tributacao-estadual/consulta");
-		mv.addObject("listTributacaoEstadual", icmsService.findAll());
+		List<TributacaoEstadual> listTributacaoEstadual = icmsService.findAll();
 		
+		if (!listTributacaoEstadual.isEmpty()) {
+			listTributacaoEstadual.forEach(tributacaoEstadual -> {
+				icmsService.multiplicaTributacaoEstadualPorCem(tributacaoEstadual);
+			});
+		}
+		mv.addObject("listTributacaoEstadual", listTributacaoEstadual);
 		return mv;
 	}
 
@@ -101,7 +101,14 @@ public class TributacaoEstadualController {
 		ModelAndView mv = new ModelAndView("tributacao-estadual/consulta");
 		try {
 			List<Ncm> listNcm = ncmService.findByNumero(Integer.parseInt(numeroNcm));
-			mv.addObject("listTributacaoEstadual", icmsService.findTributacaoEstadualByNcms(listNcm));
+			List<TributacaoEstadual> listTributacaoEstadual = icmsService.findTributacaoEstadualByNcms(listNcm);
+			
+			if (!listTributacaoEstadual.isEmpty()) {
+				listTributacaoEstadual.forEach(tributacaoEstadual -> {
+					icmsService.multiplicaTributacaoEstadualPorCem(tributacaoEstadual);
+				});
+			}
+			mv.addObject("listTributacaoEstadual", listTributacaoEstadual);
 		} catch (Exception ex) {
 			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação informada");
 		} 
@@ -119,11 +126,9 @@ public class TributacaoEstadualController {
 		model.addAttribute("ufDestinoIdSelecionado", icms.getEstadoDestino().getId());
 		model.addAttribute("operacaoIdSelecionado", icms.getOperacao().getId());
 		model.addAttribute("ncmdIdSelecionado", icms.getNcm().getId());
-		
-		mv.addObject("icms", icms);
-		mv.addObject("listEstado", estadoService.findAll());
-		mv.addObject("listOperacao", operacaoService.findAll());
-		mv.addObject("listNcms", ncmService.findAll());
+
+		icmsService.multiplicaTributacaoEstadualPorCem(icms);
+		addObjetosNaView(mv, icms);
 
 		// mv.addObject("textBtnCadastrarEditar", "Editar");
 
@@ -140,4 +145,13 @@ public class TributacaoEstadualController {
 //		attributes.addFlashAttribute("mensagemSucesso", "Tributação Estadual deletado com sucesso!");
 //		return new ModelAndView("redirect:/tributacaoEstadual/consulta");
 //	}
+	
+	// Para adicionar os objetos necessários na view
+	private void addObjetosNaView(ModelAndView mv, TributacaoEstadual icms) {
+//		TributacaoEstadual icms = new TributacaoEstadual();
+		mv.addObject("icms", icms);
+		mv.addObject("listEstado", estadoService.findAll());
+		mv.addObject("listOperacao", operacaoService.findAll());
+		mv.addObject("listNcms", ncmService.findAll());
+	}
 }

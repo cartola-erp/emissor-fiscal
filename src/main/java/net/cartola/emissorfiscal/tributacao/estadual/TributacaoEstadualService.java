@@ -25,22 +25,16 @@ public class TributacaoEstadualService {
 	}
 	
 	public Optional<TributacaoEstadual> save(TributacaoEstadual tributacaoEstadual) {
-		if (tributacaoEstadual.getId() == null) {
-			tributacaoEstadual.setIcmsAliquota(tributacaoEstadual.getIcmsAliquota().divide(new BigDecimal(100D)));
-			tributacaoEstadual.setIcmsAliquotaDestino(tributacaoEstadual.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
-			tributacaoEstadual.setIcmsBase(tributacaoEstadual.getIcmsBase().divide(new BigDecimal(100D)));
-			tributacaoEstadual.setIcmsIva(tributacaoEstadual.getIcmsIva().divide(new BigDecimal(100D)));
+		if (tributacaoEstadual != null) {
+			divideTributacaoEstadualPorCem(tributacaoEstadual);
 		}
 		return Optional.ofNullable(repository.saveAndFlush(tributacaoEstadual));
 	}
 	
 	public List<TributacaoEstadual> saveAll(List<TributacaoEstadual> tributacaoEstaduals) {
 		tributacaoEstaduals.forEach(tributacaoEstadual -> {
-			if (tributacaoEstadual.getId() == null) {
-				tributacaoEstadual.setIcmsAliquota(tributacaoEstadual.getIcmsAliquota().divide(new BigDecimal(100D)));
-				tributacaoEstadual.setIcmsAliquotaDestino(tributacaoEstadual.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
-				tributacaoEstadual.setIcmsBase(tributacaoEstadual.getIcmsBase().divide(new BigDecimal(100D)));
-				tributacaoEstadual.setIcmsIva(tributacaoEstadual.getIcmsIva().divide(new BigDecimal(100D)));
+			if (tributacaoEstadual != null) {
+				divideTributacaoEstadualPorCem(tributacaoEstadual);
 			}
 		});
 		return repository.saveAll(tributacaoEstaduals);
@@ -66,6 +60,19 @@ public class TributacaoEstadualService {
 		repository.deleteById(id);
 	}
 	
+	private void divideTributacaoEstadualPorCem(TributacaoEstadual tributacaoEstadual) {
+		tributacaoEstadual.setIcmsAliquota(tributacaoEstadual.getIcmsAliquota().divide(new BigDecimal(100D)));
+		tributacaoEstadual.setIcmsAliquotaDestino(tributacaoEstadual.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
+		tributacaoEstadual.setIcmsBase(tributacaoEstadual.getIcmsBase().divide(new BigDecimal(100D)));
+		tributacaoEstadual.setIcmsIva(tributacaoEstadual.getIcmsIva().divide(new BigDecimal(100D)));
+	}
+	
+	public void multiplicaTributacaoEstadualPorCem(TributacaoEstadual tributacaoEstadual) {
+		tributacaoEstadual.setIcmsAliquota(tributacaoEstadual.getIcmsAliquota().multiply(new BigDecimal(100D)));
+		tributacaoEstadual.setIcmsAliquotaDestino(tributacaoEstadual.getIcmsAliquotaDestino().multiply(new BigDecimal(100D)));
+		tributacaoEstadual.setIcmsBase(tributacaoEstadual.getIcmsBase().multiply(new BigDecimal(100D)));
+		tributacaoEstadual.setIcmsIva(tributacaoEstadual.getIcmsIva().multiply(new BigDecimal(100D)));
+	}
 	
 	// ====================  "VALIDAÇÕES" =================== 
 
@@ -79,4 +86,6 @@ public class TributacaoEstadualService {
 		}
 		return msg;
 	}
+	
+
 }
