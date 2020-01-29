@@ -34,8 +34,16 @@ public class TributacaoEstadualService {
 		return Optional.ofNullable(repository.saveAndFlush(tributacaoEstadual));
 	}
 	
-	public List<TributacaoEstadual> saveAll(List<TributacaoEstadual> tributacaoEstadual) {
-		return repository.saveAll(tributacaoEstadual);
+	public List<TributacaoEstadual> saveAll(List<TributacaoEstadual> tributacaoEstaduals) {
+		tributacaoEstaduals.forEach(tributacaoEstadual -> {
+			if (tributacaoEstadual.getId() == null) {
+				tributacaoEstadual.setIcmsAliquota(tributacaoEstadual.getIcmsAliquota().divide(new BigDecimal(100D)));
+				tributacaoEstadual.setIcmsAliquotaDestino(tributacaoEstadual.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
+				tributacaoEstadual.setIcmsBase(tributacaoEstadual.getIcmsBase().divide(new BigDecimal(100D)));
+				tributacaoEstadual.setIcmsIva(tributacaoEstadual.getIcmsIva().divide(new BigDecimal(100D)));
+			}
+		});
+		return repository.saveAll(tributacaoEstaduals);
 	}
 
 	public List<TributacaoEstadual> findTributacaoEstadualByNcm(Ncm ncm) {

@@ -55,14 +55,14 @@ public class TestHelper {
 	public static final String OPERACAO_REMESSA = "Remessa";
 	public static final String OPERACAO_REMESSA_CONSIGNADA = "Remessa consignada";
 
-	private static final String PESSOA_CNPJ = "12345678901234";
-	private static final String PESSOA_UF_SP = EstadoSigla.SP.toString();
-	private static final String PESSOA_REGIME_APURACAO = "Regime de apuração 1";
-	private static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
+	public static final String PESSOA_CNPJ = "12345678901234";
+	public static final String PESSOA_UF_SP = EstadoSigla.SP.toString();
+	public static final String PESSOA_REGIME_APURACAO = "Regime de apuração 1";
+	public static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
 	                
-	private static final String PESSOA_CNPJ_2 = "02329838429395";
-	private static final String PESSOA_UF_MG = EstadoSigla.MG.toString();
-	private static final String PESSOA_TIPO_JURIDICA = PessoaTipo.JURIDICA.toString();
+	public static final String PESSOA_CNPJ_2 = "02329838429395";
+	public static final String PESSOA_UF_MG = EstadoSigla.MG.toString();
+	public static final String PESSOA_TIPO_JURIDICA = PessoaTipo.JURIDICA.toString();
 	                
 	private static final String DOC_FISCAL_SERIE_1 = "262265758";
 	private static final String DOC_FISCAL_SERIE_2 = "883591913";

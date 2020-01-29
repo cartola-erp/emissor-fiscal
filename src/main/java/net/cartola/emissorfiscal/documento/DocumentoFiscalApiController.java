@@ -3,10 +3,12 @@ package net.cartola.emissorfiscal.documento;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
  *	@author robson.costa
  */
 
-@RequestMapping("api/v1/documento-fiscal/")
 @RestController
+@RequestMapping("api/v1/documento-fiscal/")
 public class DocumentoFiscalApiController {
 	
 	@Autowired
@@ -28,18 +30,29 @@ public class DocumentoFiscalApiController {
 //		return null;
 //	}
 	
-//	@GetMapping("cnpjEmitente/{cnpjEmitente}/tipoDocumento/{tipoDocumento}/serie/{serie}/numero/{numero}")
-	@GetMapping("cnpj-emitente/{cnpj}/tipo-documento/{tipo}/serie/{serie}/numero/{numero}") 
-	public ResponseEntity<List<DocumentoFiscalDto>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@PathVariable Long cnpj, @PathVariable String tipo, @PathVariable Long serie,  @PathVariable Long numero) {
-		List<DocumentoFiscal> listDoc = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(cnpj, tipo, serie, numero);
-		if(listDoc.isEmpty()) {
+//	public ResponseEntity<List<DocumentoFiscalDto>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@PathVariable Long cnpj, @PathVariable String tipo, @PathVariable Long serie,  @PathVariable Long numero) {
+	@PostMapping(value = "buscar-por-cnpjEmitente-tipoDocumento-serie-numero")
+	public ResponseEntity<List<DocumentoFiscalDto>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@RequestBody DocumentoFiscal docFiscal) {
+		if(docFiscal == null || docFiscal.getEmitente() == null || docFiscal.getTipo() == null || docFiscal.getSerie() == null || docFiscal.getNumero() == null) {
 			return ResponseEntity.notFound().build();
 		} 
-		return ResponseEntity.ok(listDoc.stream().map(docFiscal -> docFiscalService.convertToDto(docFiscal))
+		List<DocumentoFiscal> listDoc = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
+		
+		return ResponseEntity.ok(listDoc.stream().map(docuFiscal -> docFiscalService.convertToDto(docuFiscal))
 				.collect(Collectors.toList()));
-//		return ResponseEntity.ok(listDoc);
 	}
 	
+	
+	@PostMapping()
+	public ResponseEntity<DocumentoFiscalDto> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
+		DocumentoFiscal documentoFiscal  = docFiscalService.save(docFiscal).get();
+		if (documentoFiscal == null) {
+			return ResponseEntity.notFound().build();
+		}
+		// DEVOLVER AS INFORMAÇÔES NECESSÁRIAS PARA REALIZAR O CALCULO/MONTAR a nota corretamente
+		
+		return ResponseEntity.ok(docFiscalService.convertToDto(documentoFiscal));
+	}
 	
 }
 

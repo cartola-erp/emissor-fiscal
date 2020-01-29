@@ -61,9 +61,9 @@ public class TributacaoEstadualLogicTest {
 	// TRIBUTAÇÃO ESTADUAL (icms)
 	public static int TRIBUTACAO_ESTADUAL_ICMS_CST = 00;
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_BASE = new BigDecimal(1);			// 1, pois é "TRIBUTADA INTEGRALMENTE". (100/100 = 1)
-	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA = new BigDecimal(0.18D);
+	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA = new BigDecimal(18D);
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_IVA = new BigDecimal(2);
-	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO = new BigDecimal(0.18D);
+	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO = new BigDecimal(18D);
 	public static int TRIBUTACAO_ESTADUAL_ICMS_CEST = 100100;
 	public static String TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM = " Essa é uma mensagem fake";
 	
@@ -93,8 +93,8 @@ public class TributacaoEstadualLogicTest {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA);
 		assertTrue(opOperacao.isPresent());
 		
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalRepository.findById(1L);
-		assertTrue(opDocFiscal.isPresent());
+		List<DocumentoFiscal> opDocFiscal = docFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(12345678901234L, "NFE", 262265758L, 82211429431055L);
+		assertTrue(!opDocFiscal.isEmpty());
 		
 		List<TributacaoEstadual> listTributacoes = new ArrayList<>();
 		listNcms.stream().forEach(ncm -> {
@@ -117,11 +117,11 @@ public class TributacaoEstadualLogicTest {
 		assertTrue(listIcms.size() == 3);
 
 		// CALCULANDO O  ICMS do DOCUMENTO FISCAL DE ID =  1
-		calculoFiscalEstadual.calculaImposto(opDocFiscal.get());
+		calculoFiscalEstadual.calculaImposto(opDocFiscal.get(0));
 
 		// VERIFICANDO SE ESTÁ CERTO O CALCULO
-		System.out.println("opDocFiscal.get().getIcmsBase() = " + opDocFiscal.get().getIcmsBase());
-		System.out.println("opDocFiscal.get().getIcmsValor() = " + opDocFiscal.get().getIcmsValor());
+		System.out.println("opDocFiscal.get().getIcmsBase() = " + opDocFiscal.get(0).getIcmsBase());
+		System.out.println("opDocFiscal.get().getIcmsValor() = " + opDocFiscal.get(0).getIcmsValor());
 //		
 //		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsBase() = " + opDocFiscal.get().getItens().get(0).getIcmsBase());
 //		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsValor() = " + opDocFiscal.get().getItens().get(0).getIcmsValor());
