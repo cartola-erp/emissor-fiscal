@@ -30,6 +30,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private static final long serialVersionUID = -3885752189101767947L;
 
 	private static final String FINALIDADE_OBRIGATORIA = "Atenção! A finalidade do item é obrigatória!!";
+	private static final String PRODUTO_ORIGEM_OBRIGATORIA = "Atenção! A origem do produto é obrigatória!!";
 	private static final String QUANTIDADE_OBRIGATORIA = "Atenção! A quantidade do item é obrigatória!!";
 	private static final String QUANTIDADE_INVALIDA = "Atenção! A quantidade inserida é inválida!!";
 	private static final String VALOR_OBRIGATORIO = "Atenção! O valor do item é obrigatório!!";
@@ -37,6 +38,7 @@ public class DocumentoFiscalItem implements Serializable {
 
 	private Long id;
 	private Finalidade finalidade = Finalidade.CONSUMO;
+	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
 	private BigDecimal quantidade;
 	private BigDecimal valorUnitario;
 	private Ncm ncm;
@@ -75,6 +77,16 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setFinalidade(Finalidade finalidade) {
 		this.finalidade = finalidade;
+	}
+	
+	@NotNull(message = PRODUTO_ORIGEM_OBRIGATORIA)
+	@Enumerated(EnumType.STRING)
+	public ProdutoOrigem getOrigem() {
+		return origem;
+	}
+
+	public void setOrigem(ProdutoOrigem origem) {
+		this.origem = origem;
 	}
 
 	@NotNull(message = QUANTIDADE_OBRIGATORIA)
