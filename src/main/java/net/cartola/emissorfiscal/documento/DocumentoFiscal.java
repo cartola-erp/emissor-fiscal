@@ -183,4 +183,14 @@ public class DocumentoFiscal implements Serializable {
 		this.ipiValor = ipiValor;
 	}
 	
+	
+	@Override
+	public String toString() {
+		return "DocumentoFiscal [id=" + id + ", operacao=" + operacao + ", tipo=" + tipo + ", serie=" + serie
+				+ ", numero=" + numero + ", emitente=" + emitente + ", destinatario=" + destinatario + ", itens="
+				+ itens + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor + ", pisBase=" + pisBase + ", pisValor="
+				+ pisValor + ", cofinsBase=" + cofinsBase + ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase
+				+ ", ipiValor=" + ipiValor + "]";
+	}
+	
 }

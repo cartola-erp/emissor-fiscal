@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.documento;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,7 +19,7 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 //	@Query("SELECT doc, e FROM DocumentoFiscal doc INNER JOIN doc.emitente e WHERE e.id = :idEmitente")
 //	List <DocumentoFiscal> findDocFiscalByEmitenteId(@Param("idEmitente") Long idEmitente);
 	
-	List<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(Long cnpj, String tipo, Long serie, Long numero);
+	Optional<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(Long cnpj, String tipo, Long serie, Long numero);
 	
 
 }
