@@ -28,7 +28,11 @@ public class PessoaService {
 	public Optional<Pessoa> findOne(Long id) {
 		return pessoaRepository.findById(id);
 	}
-
+	
+	public List<Pessoa> findByCnpj(Long cnpj) {
+		return pessoaRepository.findPessoaByCnpj(cnpj);
+	}
+	
 	public void deleteById(Long id) {
 		pessoaRepository.deleteById(id);
 	}
