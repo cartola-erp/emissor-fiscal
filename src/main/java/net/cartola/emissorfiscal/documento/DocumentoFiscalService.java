@@ -2,20 +2,45 @@ package net.cartola.emissorfiscal.documento;
 
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.operacao.OperacaoService;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.PessoaService;
+import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
+import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
+import net.cartola.emissorfiscal.util.ValidationHelper;
 
 @Service
 public class DocumentoFiscalService {
 
 	@Autowired
 	private DocumentoFiscalRepository documentoFiscalRepository;
+	
+	@Autowired
+	private OperacaoService operacaoService;
+	
+	@Autowired
+	private PessoaService pessoaService;
+	
+	@Autowired 
+	private NcmService ncmService;
+	
+	@Autowired
+	private CalculoFiscalEstadual calcFiscalEstadual;
+	
+	@Autowired
+	private CalculoFiscalFederal calcFiscalFederal;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -40,6 +65,8 @@ public class DocumentoFiscalService {
 	}
 	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
+		calcFiscalEstadual.calculaImposto(documentoFiscal);
+		calcFiscalFederal.calculaImposto(documentoFiscal);
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
@@ -59,7 +86,39 @@ public class DocumentoFiscalService {
 		documentoFiscalRepository.deleteById(id);
 	}
 	
-	public List<DocumentoFiscal> findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(Long cnpjEmitente, String tipoDocumento, Long serie, Long numero) {
+	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(Long cnpjEmitente, String tipoDocumento, Long serie, Long numero) {
 		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(cnpjEmitente,  tipoDocumento,  serie,  numero);
 	}
+	
+	/**
+	 * Valida se as informações necessárias para um documento Fiscal existem, caso sim, as mesmas são setadas no 
+	 * documentoFiscal
+	 * @param documentoFiscal
+	 * @return
+	 */
+	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal documentoFiscal) {
+		Map<String, Boolean> map = new HashMap<>();
+		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
+		List<Pessoa> opEmitente = pessoaService.findByCnpj(documentoFiscal.getEmitente().getCnpj());
+		List<Pessoa> opDestinatario = pessoaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
+
+		documentoFiscal.getItens().forEach(docItem -> {
+			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
+			if(opNcm.isPresent()) {
+				docItem.setNcm(opNcm.get());
+			}
+			map.put("O NCM: " +docItem.getNcm().getNumero()+ " NÃO existe", opNcm.isPresent());
+		});
+		map.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", opOperacao.isPresent());
+		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isEmpty());
+		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isEmpty());
+		
+		if (opOperacao.isPresent() && !opEmitente.isEmpty() && !opDestinatario.isEmpty()) {
+			documentoFiscal.setOperacao(opOperacao.get());
+			documentoFiscal.setEmitente(opEmitente.get(0));
+			documentoFiscal.setDestinatario(opDestinatario.get(0));
+		}
+		return ValidationHelper.processaErros(map);
+	}
+	
 }

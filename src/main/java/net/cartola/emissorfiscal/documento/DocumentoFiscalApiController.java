@@ -2,17 +2,18 @@ package net.cartola.emissorfiscal.documento;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.cartola.emissorfiscal.response.Response;
+import net.cartola.emissorfiscal.util.ValidationHelper;
 
 
 /**
@@ -46,19 +47,28 @@ public class DocumentoFiscalApiController {
 	
 	
 	@PostMapping()
-	public ResponseEntity<DocumentoFiscalDto> save(@Valid @RequestBody DocumentoFiscal docFiscal, BindingResult result) {
-		if (result.hasErrors() || docFiscal == null) {
-			return ResponseEntity.badRequest().build();
+	public ResponseEntity<Response<DocumentoFiscalDto>> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
+		Response<DocumentoFiscalDto> response = new Response<>();
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
+
+		if(opDocFiscal.isPresent()) {
+			response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
+			return ResponseEntity.ok(response);
 		}
-		DocumentoFiscal docuFiscal;
-		try {
-			docuFiscal = docFiscalService.save(docFiscal).get();
-		} catch (Exception ex) {
-			return ResponseEntity.badRequest().build();
-		}
-		// DEVOLVER AS INFORMAÇÔES NECESSÁRIAS PARA REALIZAR O CALCULO/MONTAR a nota corretamente
 		
-		return ResponseEntity.ok(docFiscalService.convertToDto(docuFiscal));
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal);
+		if (!ValidationHelper.collectionEmpty(erros)) {
+			response.setErrors(erros);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		opDocFiscal = docFiscalService.save(docFiscal);
+		if (opDocFiscal.isPresent()) {
+			response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
+			return ResponseEntity.ok(response);
+		} else {
+			return ResponseEntity.noContent().build();
+		}
 	}
 	
 }
