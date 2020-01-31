@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
-import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
@@ -27,9 +26,6 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	@Autowired
 	private CalculoIcms calculoIcms;
 	
-	@Autowired
-	private DocumentoFiscalService docFiscalService;
-
 	/**
 	 * O calculo de imposto retornado aqui é do TOTAL DA NFE (aparentemente)
 	 */
@@ -42,15 +38,13 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		Map<Ncm, TributacaoEstadual> mapaTributacoes = ncms.stream()
 				.collect(Collectors.toMap(ncm -> ncm, ncm -> listTributacoes.stream()
 						.filter(icms -> icms.getNcm().getId().equals(ncm.getId())).findAny().get()));
-
+		
 		documentoFiscal.getItens().forEach(docItem -> {
 			TributacaoEstadual tributacao = mapaTributacoes.get(docItem.getNcm());
 			listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
-
 		});
 
 		setaIcmsBaseEValor(documentoFiscal, listCalculoImpostos);
-		docFiscalService.save(documentoFiscal);
 	}
 
 	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {

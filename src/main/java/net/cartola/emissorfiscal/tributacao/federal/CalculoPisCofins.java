@@ -19,7 +19,7 @@ public class CalculoPisCofins {
 		pis.setImposto(Imposto.PIS);
 		pis.setAliquota(tributacao.getPisAliquota());
 		pis.setBaseDeCalculo(valorPisBase);
-		pis.setOrdem(di.getId().intValue()); // -> mudar
+//		pis.setOrdem(di.getId().intValue()); // -> mudar
 		pis.setQuantidade(di.getQuantidade());
 		pis.setValorUnitario(di.getValorUnitario());
 		pis.setValor(valorPis);
@@ -37,7 +37,7 @@ public class CalculoPisCofins {
 		cofins.setImposto(Imposto.COFINS);
 		cofins.setAliquota(tributacao.getCofinsAliquota());
 		cofins.setBaseDeCalculo(valorCofinsBase);
-		cofins.setOrdem(di.getId().intValue()); // -> mudar
+//		cofins.setOrdem(di.getId().intValue()); // -> mudar
 		cofins.setQuantidade(di.getQuantidade());
 		cofins.setValorUnitario(di.getValorUnitario());
 		cofins.setValor(valorCofins);
