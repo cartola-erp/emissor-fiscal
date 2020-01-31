@@ -267,5 +267,6 @@ public class TestHelper {
 		docFiscalRepository.deleteAll();
 		operacaoRepository.deleteAll();
 		ncmRepository.deleteAll();
+		pessoaRepository.deleteAll();
 	}
 }
