@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.documento;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
+import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
 import net.cartola.emissorfiscal.util.ValidationHelper;
 
@@ -43,6 +45,9 @@ public class DocumentoFiscalService {
 	
 	@Autowired
 	private TributacaoEstadualService icmsService;
+	
+	@Autowired
+	private TributacaoFederalService tributacaoFederalService;
 	
 	@Autowired
 	private CalculoFiscalEstadual calcFiscalEstadual;
@@ -109,7 +114,6 @@ public class DocumentoFiscalService {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		List<Pessoa> opEmitente = pessoaService.findByCnpj(documentoFiscal.getEmitente().getCnpj());
 		List<Pessoa> opDestinatario = pessoaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
-	
 		documentoFiscal.getItens().forEach(docItem -> {
 			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
 			if(opNcm.isPresent()) {
@@ -119,12 +123,19 @@ public class DocumentoFiscalService {
 		});
 		
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
-		List<TributacaoEstadual> listTributacoes = icmsService.findTributacaoEstadualByOperacaoENcms(opOperacao.get(), ncms);
-		
+		List<TributacaoEstadual> listTributacoes = new ArrayList<TributacaoEstadual>();
+		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
+
+		if (opOperacao.isPresent() && !ncms.isEmpty() && !map.containsValue(false) ) {
+			listTributacoes = icmsService.findTributacaoEstadualByOperacaoENcms(opOperacao.get(), ncms);
+			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacao(documentoFiscal.getOperacao(), ncms);
+		}
+
 		map.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", opOperacao.isPresent());
 		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isEmpty());
 		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isEmpty());
-		map.put("Não existe tributação para essa OPERAÇÃO e os NCMS dos itens", !listTributacoes.isEmpty());
+		map.put("Não existe a tributação estadual para essa OPERAÇÃO e os NCMS dos itens", !listTributacoes.isEmpty());
+		map.put("Não existe a tributação federal para essa OPERAÇÃO e os NCMS dos itens", !tributacoesFederais.isEmpty());
 		
 		if (opOperacao.isPresent() && !opEmitente.isEmpty() && !opDestinatario.isEmpty()) {
 			documentoFiscal.setOperacao(opOperacao.get());
