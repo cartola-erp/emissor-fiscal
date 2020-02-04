@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
@@ -26,9 +27,8 @@ import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
-import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
-import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
+import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -36,9 +36,6 @@ import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TributacaoEstadualLogicTest {
 	
-	@Autowired
-	private CalculoFiscalEstadual calculoFiscalEstadual;
-
 	@Autowired
 	private EstadoService estadoService;
 	
@@ -49,14 +46,13 @@ public class TributacaoEstadualLogicTest {
 	private NcmService ncmService;
 	
 	@Autowired
-	private TributacaoEstadualService icmsService;
-	
-	@Autowired
 	private DocumentoFiscalRepository docFiscalRepository;
 	
 	@Autowired
+	private DocumentoFiscalService docFiscalService;
+	
+	@Autowired
 	private TestHelper testHelper;
-
 	
 	// TRIBUTAÇÃO ESTADUAL (icms)
 	public static int TRIBUTACAO_ESTADUAL_ICMS_CST = 00;
@@ -76,9 +72,7 @@ public class TributacaoEstadualLogicTest {
 		testHelper.criarUsuarioRoot();
 	}
 	
-	
-	// Venda ESTADUAL
-	@Test
+	@Test 	// Venda ESTADUAL
 	public void test01_DeveCalcularOIcmsDeSPparaSPVendaJuridicaParaFisica() {
 		// Buscando o Estado Origem inserido previamente
 		Optional<Estado> opEstadoOrigem = estadoService.findBySigla(EstadoSigla.SP);
@@ -93,42 +87,32 @@ public class TributacaoEstadualLogicTest {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA);
 		assertTrue(opOperacao.isPresent());
 		
-		List<DocumentoFiscal> opDocFiscal = docFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(12345678901234L, "NFE", 262265758L, 82211429431055L);
-		assertTrue(!opDocFiscal.isEmpty());
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(12345678901234L, "NFE", 262265758L, 82211429431055L);
+		assertTrue(opDocFiscal.isPresent());
 		
-		List<TributacaoEstadual> listTributacoes = new ArrayList<>();
-		listNcms.stream().forEach(ncm -> {
-			TributacaoEstadual icms = new TributacaoEstadual();
-			icms.setEstadoOrigem(opEstadoOrigem.get());
-			icms.setEstadoDestino(opEstadoOrigem.get());
-			icms.setOperacao(opOperacao.get());
-			icms.setNcm(ncm);
-			icms.setIcmsCst(TRIBUTACAO_ESTADUAL_ICMS_CST);
-			icms.setIcmsBase(TRIBUTACAO_ESTADUAL_ICMS_BASE);
-			icms.setIcmsAliquota(TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA);
-			icms.setIcmsIva(TRIBUTACAO_ESTADUAL_ICMS_IVA);
-			icms.setIcmsAliquotaDestino(TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO);
-			icms.setCest(TRIBUTACAO_ESTADUAL_ICMS_CEST);
-			icms.setMensagem(TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM);
-			listTributacoes.add(icms);
-		});
-		// Salvando as TRIBUTAÇÕES ESTADUAIS, para CADA NCM 
-		List<TributacaoEstadual> listIcms = icmsService.saveAll(listTributacoes);
-		assertTrue(listIcms.size() == 3);
+		// Criando TRIBUTAÇÃO ESTADUAL
+		List<TributacaoEstadual> tributacoesEstaduais = testHelper.criarTribEstaPorNcmsEOperDentroDeSP(listNcms, opOperacao.get());
+		assertTrue(tributacoesEstaduais.size() == 3);
+		
+		// Criando TRIBUTAÇÃO FEDERAL
+		List<TributacaoFederal> tributacoesFederais = testHelper.criarTributacaoFederal(listNcms, opOperacao.get());
+		assertTrue(tributacoesFederais.size() == 3);
 
-		// CALCULANDO O  ICMS do DOCUMENTO FISCAL DE ID =  1
-		calculoFiscalEstadual.calculaImposto(opDocFiscal.get(0));
-
+		/* CALCULANDO O  ICMS do DOCUMENTO FISCAL DE ID =  1
+		* PS provavelmente se tentar salvar um docFiscal, que NÃO tenha as TRIBUTACOES cadastradas previamente, dará erro
+		* já que essas validações é feitas na API
+		*/
+		docFiscalService.save(opDocFiscal.get());
+		
 		// VERIFICANDO SE ESTÁ CERTO O CALCULO
-		System.out.println("opDocFiscal.get().getIcmsBase() = " + opDocFiscal.get(0).getIcmsBase());
-		System.out.println("opDocFiscal.get().getIcmsValor() = " + opDocFiscal.get(0).getIcmsValor());
+		System.out.println("opDocFiscal.get().getIcmsBase() = " + opDocFiscal.get().getIcmsBase());
+		System.out.println("opDocFiscal.get().getIcmsValor() = " + opDocFiscal.get().getIcmsValor());
 //		
 //		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsBase() = " + opDocFiscal.get().getItens().get(0).getIcmsBase());
 //		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsValor() = " + opDocFiscal.get().getItens().get(0).getIcmsValor());
 //		System.out.println("opDocFiscal.get().getItens().get(0).getIcmsAliquota() = " + opDocFiscal.get().getItens().get(0).getIcmsAliquota());
 		
 		System.out.println("\n"+ this.getClass().getName() + " test01_DeveCalcularOIcmsDeSPparaSP, Ok");
-
 	}
 	
 	

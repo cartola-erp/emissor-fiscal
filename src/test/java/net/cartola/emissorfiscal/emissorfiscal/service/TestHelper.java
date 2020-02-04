@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.emissorfiscal.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
 import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.emissorfiscal.model.TributacaoFederalBuilder;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoRepository;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
@@ -25,8 +27,12 @@ import net.cartola.emissorfiscal.operacao.OperacaoRepository;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaRepository;
 import net.cartola.emissorfiscal.pessoa.PessoaTipo;
+import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualRepository;
+import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
+import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalRepository;
+import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
 import net.cartola.emissorfiscal.usuario.Perfil;
 import net.cartola.emissorfiscal.usuario.Usuario;
 import net.cartola.emissorfiscal.usuario.UsuarioPerfil;
@@ -95,9 +101,15 @@ public class TestHelper {
 
 	@Autowired
 	private TributacaoEstadualRepository tributacaoEstadualRepository;
+	
+	@Autowired
+	private TributacaoEstadualService icmsService;
 
 	@Autowired
 	private TributacaoFederalRepository tributacaoFederalRepository;
+	
+	@Autowired 
+	private TributacaoFederalService tributacaoFederalService;
 	
 	@Autowired
 	private UsuarioService usuarioService;
@@ -120,7 +132,7 @@ public class TestHelper {
 		estadoRepository.saveAll(estados);
 	}
 
-	private List<Operacao> defineOperacoes() {
+	public List<Operacao> criarOperacoes() {
 		List<Operacao> operacoes = new LinkedList<>();
 		String[][] data = { { OPERACAO_VENDA }, { OPERACAO_VENDA_INTERESTADUAL }, { OPERACAO_COMPRA },
 				{ OPERACAO_DEVOLUÇAO }, { OPERACAO_DEVOLUCAO_FORNECEDOR },
@@ -133,11 +145,10 @@ public class TestHelper {
 			operacao.setDescricao(dados[aux]);
 			operacoes.add(operacao);
 		}
-		operacaoRepository.saveAll(operacoes);
-		return operacoes;
+		return operacaoRepository.saveAll(operacoes);
 	}
 
-	private List<Ncm> defineNcms() {
+	public List<Ncm> criarNcms() {
 		List<Ncm> ncms = new LinkedList<>();
 		String[][] data = { { NCM1, "43", "Essa é uma DESCRIÇÃO do PRIMEIRO NCM para o teste" },
 				{ NCM2, "32", "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste" },
@@ -151,11 +162,10 @@ public class TestHelper {
 			ncm.setDescricao(dados[aux++]);
 			ncms.add(ncm);
 		}
-		ncmRepository.saveAll(ncms);
-		return ncms;
+		return ncmRepository.saveAll(ncms);
 	}
 	
-	private List<Pessoa> criarPessoa() {
+	public List<Pessoa> criarPessoa() {
 		List<Pessoa> pessoas = new LinkedList<>();
 		String[][] data = { {PESSOA_CNPJ, PESSOA_UF_SP, PESSOA_REGIME_APURACAO, PESSOA_TIPO_JURIDICA},
 							{PESSOA_CNPJ_2, PESSOA_UF_SP, PESSOA_REGIME_APURACAO, PESSOA_TIPO_FISICA},
@@ -173,17 +183,64 @@ public class TestHelper {
 		}
 		return pessoaRepository.saveAll(pessoas);
 	}
+	
+	//  Criar TRIBUTAÇÕES ESTADUAIS, CONFORME LISTA DE NCM e a OPERAÇÃO
+	public List<TributacaoEstadual> criarTribEstaPorNcmsEOperDentroDeSP(List<Ncm> listNcms, Operacao operacao) {
+		Estado estadoOrigem = estadoRepository.findEstadoBySigla(EstadoSigla.SP).get();
+		List<TributacaoEstadual> listTributacoes = new ArrayList<>();
+		listNcms.stream().forEach(ncm -> {
+			TributacaoEstadual icms = new TributacaoEstadual();
+			icms.setEstadoOrigem(estadoOrigem);
+			icms.setEstadoDestino(estadoOrigem);
+			icms.setOperacao(operacao);
+			icms.setNcm(ncm);
+			icms.setIcmsCst(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CST);
+			icms.setIcmsBase(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_BASE);
+			icms.setIcmsAliquota(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA);
+			icms.setIcmsIva(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_IVA);
+			icms.setIcmsAliquotaDestino(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO);
+			icms.setCest(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CEST);
+			icms.setMensagem(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM);
+			listTributacoes.add(icms);
+		});
+		List<TributacaoEstadual> listIcms = icmsService.saveAll(listTributacoes);
+		return listIcms;
+	}
+	
+	//  Criar TRIBUTAÇÕES FEDERAIS, CONFORME LISTA DE NCM e a OPERAÇÃO
+	public List<TributacaoFederal> criarTributacaoFederal(List<Ncm> listNcms, Operacao operacao) {
+		List<TributacaoFederal> listTribFederal = new LinkedList<>();
+		listNcms.stream().forEach(ncm -> {
+			TributacaoFederalBuilder tributFedBuilder = new TributacaoFederalBuilder().withNcm(ncm)
+					.withOperacao(operacao).withPisCst(TributacaoFederalServiceLogicTest.PIS_CST)
+					.withPisBase(TributacaoFederalServiceLogicTest.PIS_BASE)
+					.withPisAliquota(TributacaoFederalServiceLogicTest.PIS_ALIQUOTA)
+					.withCofinsCst(TributacaoFederalServiceLogicTest.COFINS_CST)
+					.withCofinsBase(TributacaoFederalServiceLogicTest.COFINS_BASE)
+					.withCofinsAliquota(TributacaoFederalServiceLogicTest.COFINS_ALIQUOTA)
+					.withIpiCst(TributacaoFederalServiceLogicTest.IPI_CST)
+					.withIpiBase(TributacaoFederalServiceLogicTest.IPI_BASE)
+					.withIpiAliquota(TributacaoFederalServiceLogicTest.IPI_ALIQUOTA);
+			listTribFederal.add(tributFedBuilder.build());
 
+		});
+		return tributacaoFederalService.saveAll(listTribFederal);
+	}
+	
+//	private boolean verificaListaTribFederal(List<TributacaoFederal> listTribFederal, DocumentoFiscal docFiscal,
+//			DocumentoFiscalItem docFiscalItem) {
+//		return listTribFederal.stream()
+//				.filter(tribFed -> tribFed.getNcm().getId().equals(docFiscalItem.getNcm().getId())
+//						&& tribFed.getOperacao().getId().equals(docFiscal.getOperacao().getId()))
+//				.findAny().isPresent();
+//	}
+	
 	public void criarDocumentoFiscal() {
 		List<DocumentoFiscal> documentosFiscais = new LinkedList<>();
-		List<Operacao> operacoes = defineOperacoes();
-		List<Ncm> ncms = defineNcms();
+		List<Operacao> operacoes = criarOperacoes();
+		List<Ncm> ncms = criarNcms();
 		List<Pessoa> pessoas = criarPessoa();
 		
-//		String[][] data = { { "tipo1", "SP", "Emitente Regime Apuração 1", "SP", "FISICA", OPERACAO_VENDA },
-//				{ "tipo2", "SP", "Emitente Regime Apuração 2", "SP", "JURIDICA", OPERACAO_VENDA },
-//				{ "tipo3", "SP", "Emitente Regime Apuração 3", "MG", "FISICA", OPERACAO_VENDA_INTERESTADUAL },
-//				{ "tipo4", "SP", "Emitente Regime Apuração 4", "MG", "JURIDICA", OPERACAO_VENDA_INTERESTADUAL } };
 		String[][] data = { { "NFE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_1, DOC_FISCAL_NUMERO_1 },
 				{ "SAT", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_2, DOC_FISCAL_NUMERO_2 },
 				{ "CTE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_3, DOC_FISCAL_NUMERO_3 },
