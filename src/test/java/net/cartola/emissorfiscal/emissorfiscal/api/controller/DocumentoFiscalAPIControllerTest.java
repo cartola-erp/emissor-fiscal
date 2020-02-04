@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.emissorfiscal.api.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,16 +20,16 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.google.gson.Gson;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.emissorfiscal.service.NcmServiceLogicTest;
 import net.cartola.emissorfiscal.emissorfiscal.service.TestHelper;
-import net.cartola.emissorfiscal.estado.Estado;
-import net.cartola.emissorfiscal.estado.EstadoService;
-import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
@@ -56,20 +57,14 @@ public class DocumentoFiscalAPIControllerTest {
 	@Autowired
 	private NcmService ncmService;
 	
-	@Autowired
-	private EstadoService estadoService;
-	
 	@Autowired 
 	private OperacaoService operacaoService;
 	
 	@Autowired
 	private PessoaService pessoaService;
-	
-	
-	private static final String DOCUMENTO_FISCAL_TIPO = "NFE";
-	private static final Long DOCUMENTO_FISCAL_SERIE = 1L;
-	private static final Long DOCUMENTO_FISCAL_NUMERO = 30L;
-	
+
+	AuthorizationTestHelper<Object> auth = new AuthorizationTestHelper<Object>();
+
 	
 	private static final BigDecimal DOCUMENTO_FISCAL_ITEM_QUANTIDADE = new BigDecimal(5);
 	private static final BigDecimal DOCUMENTO_FISCAL_ITEM_VALOR_UNITARIO = new BigDecimal(12);
@@ -77,74 +72,130 @@ public class DocumentoFiscalAPIControllerTest {
 	private static final int DOCUMENTO_FISCAL_ITEM_CFOP = 5655;
 	private static final BigDecimal DOCUMENTO_FISCAL_ITEM_ICMS_CEST = new BigDecimal(100010);
 	
+	private static final String PATH = "/api/v1/documento-fiscal";
+	
+	private Gson gson = new Gson();
+
+	
 	@Test
 	public void test00_CleanUp() {
 		testHelper.limpaBanco();
 		testHelper.criarEstados();
 		testHelper.criarPessoa();
-		testHelper.defineOperacoes();
-		testHelper.defineNcms();
+		testHelper.criarOperacoes();
+		testHelper.criarNcms();
+		testHelper.criarUsuarioRoot();
 	}
 	
+	
 	@Test
-	public void test01_insereDocumentoFiscalVendaInterEstadual() {
-		// popula obj
-		DocumentoFiscal docFiscal = new DocumentoFiscal();
+	public void test01_tentaInserirDocumentoFiscalVendaInterEstadual() {
+		// POPULANDO OBJ
 		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA).get();
 		Pessoa emitente = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ)).get(0);
 		Pessoa destinatario = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ_2)).get(0);
-		Ncm ncm = new Ncm();
+		Ncm ncm = ncmService.findNcmByNumeroAndExcecao(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1, NcmServiceLogicTest.NCM_EXCECAO_REGISTRO_1).get();
 		
-		List<DocumentoFiscalItem> listItens = new ArrayList<>();
-		DocumentoFiscalItem item = new DocumentoFiscalItem(); 
-
-//		 NCM
-		ncm = ncmService.findNcmByNumeroAndExcecao(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1, NcmServiceLogicTest.NCM_EXCECAO_REGISTRO_1).get();
-//		ncm.setNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
-//		ncm.setExcecao(NcmServiceLogicTest.NCM_EXCECAO_REGISTRO_1);
-//		ncm.setDescricao(NcmServiceLogicTest.NCM_DESCRICAO_REGISTRO_1);
+		List<Ncm> listNcms = ncmService.findAll();
+		// CRIANDO TRIBUTACOES
+		testHelper.criarTribEstaPorNcmsEOperDentroDeSP(listNcms, operacao);
+		testHelper.criarTributacaoFederal(listNcms, operacao);
 		
 		// ITEM
+		List<DocumentoFiscalItem> listItens = new ArrayList<>();
+		DocumentoFiscalItem item = new DocumentoFiscalItem(); 
 		item.setQuantidade(DOCUMENTO_FISCAL_ITEM_QUANTIDADE);
 		item.setValorUnitario(DOCUMENTO_FISCAL_ITEM_VALOR_UNITARIO);
 		item.setNcm(ncm);
 		listItens.add(item);
 		
-		// Documento Fiscal
+		// DOCUMENTO FISCAL
+		DocumentoFiscal docFiscal = new DocumentoFiscal();
 		docFiscal.setOperacao(operacao);
-		docFiscal.setTipo(DOCUMENTO_FISCAL_TIPO);
-		docFiscal.setSerie(DOCUMENTO_FISCAL_SERIE);
-		docFiscal.setNumero(DOCUMENTO_FISCAL_NUMERO);
+		docFiscal.setTipo(TestHelper.DOC_FISCAL_TIPO_NFE);
+		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
+		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
 		docFiscal.setEmitente(emitente);
 		docFiscal.setDestinatario(destinatario);
 		docFiscal.setItens(listItens);
-		
-		// CRIANDO TRIBUTACOES
-		List<Ncm> listNcms = ncmService.findAll();
-		Estado estadoOrigem = estadoService.findBySigla(EstadoSigla.SP).get();
-		
-		testHelper.criarTributacoesEstaduaisDentroDeSP(listNcms, estadoOrigem, operacao);
-		testHelper.criaTributacaoFederal(listNcms, operacao);
 
-		HttpEntity<DocumentoFiscal> httpEntity = new HttpEntity<DocumentoFiscal>(docFiscal);
+		HttpEntity<Object> httpEntity = auth.autorizar(docFiscal, restTemplate);
 
-//		HttpEntity<Object> httpEntity
 		ParameterizedTypeReference<Response<DocumentoFiscal>> tipoRetorno = new ParameterizedTypeReference<Response<DocumentoFiscal>>() {
 		};
-		ResponseEntity<Response<DocumentoFiscal>> response = restTemplate.exchange("/api/v1/documento-fiscal", HttpMethod.POST,httpEntity, tipoRetorno);
+		ResponseEntity<Response<DocumentoFiscal>> response = restTemplate.exchange(PATH, HttpMethod.POST,httpEntity, tipoRetorno);
 
-		System.err.println("ERRORS: " +response.getBody().getErrors());
-		System.out.println("BODY: " +response.getBody());
-		System.out.println("DATA: " +response.getBody().getData());
-		
-		docFiscal = response.getBody().getData();
-		
+		String gsonResponse = gson.toJson(response);
+		System.out.println("\n\nRESPONSE JSON SAVE: " +gsonResponse);
+
 		assertEquals(HttpStatus.OK, response.getStatusCode());
+		docFiscal = response.getBody().getData();
 		assertNotNull(docFiscal);
 		
-		System.out.println("\n" +this.getClass() + "test01_insereDocumentoFiscalVendaInterEstadual, ok");
-	
+		System.out.println("\n" +this.getClass() + " test01_tentaInserirDocumentoFiscalVendaInterEstadual, ok");
 	}
 	
+
+	
+	@Test
+	public void test03_buscarUmDocumentoFiscal() {
+		ResponseEntity<Response<DocumentoFiscal>> response = buscarUmDocumentoFiscal();
+		System.out.println("\n" +this.getClass() + " test03_buscarUmDocumentoFiscal, ok");
+	}
+	
+	@Test
+	public void test04_tentaEditarDocFiscalVendaParaVendaInterEstadual() {
+		ResponseEntity<Response<DocumentoFiscal>> response = buscarUmDocumentoFiscal();
+		DocumentoFiscal docFiscal = response.getBody().getData();
+		
+		// CRIANDO TRIBUTACOES
+		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA_INTERESTADUAL).get();
+		testHelper.criarTribEstaPorNcmsEOperDentroDeSP(ncmService.findAll(), operacao);
+		testHelper.criarTributacaoFederal(ncmService.findAll(), operacao);
+		// TENHO QUE SETAR A OPERAÃO AQUI,
+		// MAS PRIMEIRO TENHO QUE VER PORQUE, NÃO PREENCHE A LISTA DE ITENS, QUANDO BUSCA UM DOCUMENTO FISCAL
+//		docFiscal.setOperacao(operacao);
+		
+		HttpEntity<Object> httpEntity = auth.autorizar(docFiscal, restTemplate);
+		ParameterizedTypeReference<Response<DocumentoFiscal>> tipoRetorno = new ParameterizedTypeReference<Response<DocumentoFiscal>>() {
+		};
+		
+		ResponseEntity<Response<DocumentoFiscal>> responsePut = restTemplate.exchange(PATH, HttpMethod.PUT, httpEntity, tipoRetorno);
+		String gsonResponsePut = gson.toJson(responsePut);
+		System.out.println("\n\nRESPONSE JSON EDITAR: " +gsonResponsePut);
+		
+		assertEquals(HttpStatus.OK, responsePut.getStatusCode());
+		
+		buscarUmDocumentoFiscal();
+	}
+	
+	
+	// === MÉTODOS "auxiliares" ===
+	private ResponseEntity<Response<DocumentoFiscal>> buscarUmDocumentoFiscal() {
+		DocumentoFiscal docFiscal = new DocumentoFiscal();
+		docFiscal.setEmitente(new Pessoa());
+		docFiscal.getEmitente().setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ));
+		docFiscal.setTipo(TestHelper.DOC_FISCAL_TIPO_NFE);
+		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
+		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
+		
+		ParameterizedTypeReference<Response<DocumentoFiscal>> tipoRetorno = new ParameterizedTypeReference<Response<DocumentoFiscal>>() {
+		};
+		
+		HttpEntity<Object> httpEntity = auth.autorizar(docFiscal, restTemplate);
+		
+		ResponseEntity<Response<DocumentoFiscal>> response = restTemplate.exchange(PATH + "/buscar", HttpMethod.POST, httpEntity, tipoRetorno);
+		String gsonResponse = gson.toJson(response);
+		System.out.println("\n\nRESPONSE JSON BUSCA: " +gsonResponse);
+		
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		
+		assertNotNull(response);
+		docFiscal = response.getBody().getData();
+		assertNotNull(docFiscal);
+		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_CNPJ);
+		assertTrue(response.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON));
+		return response;
+	}
 }
 

@@ -70,16 +70,18 @@ public class TestHelper {
 	public static final String PESSOA_UF_MG = EstadoSigla.MG.toString();
 	public static final String PESSOA_TIPO_JURIDICA = PessoaTipo.JURIDICA.toString();
 	                
-	private static final String DOC_FISCAL_SERIE_1 = "262265758";
+	public static final String DOC_FISCAL_SERIE_1 = "262265758";
 	private static final String DOC_FISCAL_SERIE_2 = "883591913";
 	private static final String DOC_FISCAL_SERIE_3 = "283871141";
 	private static final String DOC_FISCAL_SERIE_4 = "357115603";
                     
-	private static final String DOC_FISCAL_NUMERO_1 = "82211429431055";
+	public static final String DOC_FISCAL_NUMERO_1 = "82211429431055";
 	private static final String DOC_FISCAL_NUMERO_2 = "45436809221754";
 	private static final String DOC_FISCAL_NUMERO_3 = "65791541873496";
 	private static final String DOC_FISCAL_NUMERO_4 = "30802553106899";
 	
+	public static final String DOC_FISCAL_TIPO_NFE = "NFE";
+	public static final String DOC_FISCAL_TIPO_SAT = "SAT";
 	
 	@Autowired
 	private EstadoRepository estadoRepository;

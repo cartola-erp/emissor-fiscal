@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
@@ -17,12 +16,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
-import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
-import net.cartola.emissorfiscal.emissorfiscal.model.TributacaoFederalBuilder;
+import net.cartola.emissorfiscal.ncm.NcmService;
+import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
-import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
 
 /**
  * 8 de nov de 2019
@@ -34,6 +32,7 @@ import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@Component
 public class TributacaoFederalServiceLogicTest {
 
 	public static final int PIS_CST = 1;
@@ -50,11 +49,14 @@ public class TributacaoFederalServiceLogicTest {
 	private CalculoFiscalFederal calculoFiscalFederal;
 
 	@Autowired
-	private TributacaoFederalService tributacaoFederalService;
-
-	@Autowired
 	private DocumentoFiscalService documentoFiscalService;
 
+	@Autowired
+	private NcmService ncmService;
+	
+	@Autowired
+	private OperacaoService operacaoService;
+	
 	@Autowired
 	private TestHelper testHelper;
 
@@ -65,45 +67,42 @@ public class TributacaoFederalServiceLogicTest {
 		testHelper.criarDocumentoFiscal();
 	}
 
-	private List<TributacaoFederal> criaTributacaoFederal(List<DocumentoFiscal> documentosFiscais) {
-		List<TributacaoFederal> listTribFederal = new LinkedList<>();
-		documentosFiscais.stream().forEach(docFiscal -> {
-			docFiscal.getItens().stream().forEach(docFiscalItem -> {
-				boolean existeTribFedNcmOper = false;
-				if (listTribFederal != null && !listTribFederal.isEmpty()) {
-					existeTribFedNcmOper = verificaListaTribFederal(listTribFederal, docFiscal, docFiscalItem);
-				}
-				if (!existeTribFedNcmOper) {
-					TributacaoFederalBuilder tributFedBuilder = new TributacaoFederalBuilder()
-							.withNcm(docFiscalItem.getNcm()).withOperacao(docFiscal.getOperacao()).withPisCst(PIS_CST)
-							.withPisBase(PIS_BASE).withPisAliquota(PIS_ALIQUOTA).withCofinsCst(COFINS_CST)
-							.withCofinsBase(COFINS_BASE).withCofinsAliquota(COFINS_ALIQUOTA).withIpiCst(IPI_CST)
-							.withIpiBase(IPI_BASE).withIpiAliquota(IPI_ALIQUOTA);
-					listTribFederal.add(tributFedBuilder.build());
-				}
-			});
-		});
-		return listTribFederal;
-	}
+//	public List<TributacaoFederal> criaTributacaoFederal(List<DocumentoFiscal> documentosFiscais) {
+//		List<TributacaoFederal> listTribFederal = new LinkedList<>();
+//		documentosFiscais.stream().forEach(docFiscal -> {
+//			docFiscal.getItens().stream().forEach(docFiscalItem -> {
+//				boolean existeTribFedNcmOper = false;
+//				if (listTribFederal != null && !listTribFederal.isEmpty()) {
+//					existeTribFedNcmOper = verificaListaTribFederal(listTribFederal, docFiscal, docFiscalItem);
+//				}
+//				if (!existeTribFedNcmOper) {
+//					TributacaoFederalBuilder tributFedBuilder = new TributacaoFederalBuilder()
+//							.withNcm(docFiscalItem.getNcm()).withOperacao(docFiscal.getOperacao()).withPisCst(PIS_CST)
+//							.withPisBase(PIS_BASE).withPisAliquota(PIS_ALIQUOTA).withCofinsCst(COFINS_CST)
+//							.withCofinsBase(COFINS_BASE).withCofinsAliquota(COFINS_ALIQUOTA).withIpiCst(IPI_CST)
+//							.withIpiBase(IPI_BASE).withIpiAliquota(IPI_ALIQUOTA);
+//					listTribFederal.add(tributFedBuilder.build());
+//				}
+//			});
+//		});
+//		return listTribFederal;
+//	}
 
-	private boolean verificaListaTribFederal(List<TributacaoFederal> listTribFederal, DocumentoFiscal docFiscal,
-			DocumentoFiscalItem docFiscalItem) {
-		return listTribFederal.stream()
-				.filter(tribFed -> tribFed.getNcm().getId().equals(docFiscalItem.getNcm().getId())
-						&& tribFed.getOperacao().getId().equals(docFiscal.getOperacao().getId()))
-				.findAny().isPresent();
-	}
+//	private boolean verificaListaTribFederal(List<TributacaoFederal> listTribFederal, DocumentoFiscal docFiscal,
+//			DocumentoFiscalItem docFiscalItem) {
+//		return listTribFederal.stream()
+//				.filter(tribFed -> tribFed.getNcm().getId().equals(docFiscalItem.getNcm().getId())
+//						&& tribFed.getOperacao().getId().equals(docFiscal.getOperacao().getId()))
+//				.findAny().isPresent();
+//	}
 
 	@Test
 	public void test01_CalcularPisCofinsIPI() {
-		List<TributacaoFederal> tributacoesFederais = new LinkedList<>();
 		List<DocumentoFiscal> documentosFiscais = documentoFiscalService.findAll();
-		tributacoesFederais.addAll(criaTributacaoFederal(documentosFiscais));
-		tributacaoFederalService.saveAll(tributacoesFederais);
-
-		documentosFiscais.stream().forEach(docFiscal -> {
-			calculoFiscalFederal.calculaImposto(docFiscal);
-		});
+		
+		List<TributacaoFederal> tributacoesFederais = testHelper.criarTributacaoFederal(ncmService.findAll(), operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA).get());
+		
+		calculoFiscalFederal.calculaImposto(documentosFiscais.get(0));
 
 		DocumentoFiscal documentoFiscal = documentosFiscais.get(0);
 		assertNotNull(documentoFiscal);
