@@ -64,13 +64,12 @@ public class DocumentoFiscalAPIControllerTest {
 	private PessoaService pessoaService;
 
 	AuthorizationTestHelper<Object> auth = new AuthorizationTestHelper<Object>();
-
 	
 	private static final BigDecimal DOCUMENTO_FISCAL_ITEM_QUANTIDADE = new BigDecimal(5);
 	private static final BigDecimal DOCUMENTO_FISCAL_ITEM_VALOR_UNITARIO = new BigDecimal(12);
 	
-	private static final int DOCUMENTO_FISCAL_ITEM_CFOP = 5655;
-	private static final BigDecimal DOCUMENTO_FISCAL_ITEM_ICMS_CEST = new BigDecimal(100010);
+//	private static final int DOCUMENTO_FISCAL_ITEM_CFOP = 5655;
+//	private static final BigDecimal DOCUMENTO_FISCAL_ITEM_ICMS_CEST = new BigDecimal(100010);
 	
 	private static final String PATH = "/api/v1/documento-fiscal";
 	
@@ -93,12 +92,6 @@ public class DocumentoFiscalAPIControllerTest {
 		String gsonResponse = gson.toJson(response);
 		System.out.println("\n\nRESPONSE JSON BUSCA: " +gsonResponse);
 		
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertNotNull(response);
-		docFiscal = response.getBody().getData();
-		assertNotNull(docFiscal);
-		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_CNPJ);
-		assertTrue(response.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON));
 		return response;
 	}
 	
@@ -112,9 +105,15 @@ public class DocumentoFiscalAPIControllerTest {
 		testHelper.criarUsuarioRoot();
 	}
 	
+	@Test
+	public void test01_espera404NotFoundAoBuscarUmDocFiscalInexistente() {
+		ResponseEntity<Response<DocumentoFiscal>> response = buscarUmDocumentoFiscal();
+		assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
+		System.out.println("\n" +this.getClass() + " test01_espera404NotFoundAoBuscarUmDocFiscalInexistente, ok");
+	}
 	
 	@Test
-	public void test01_tentaInserirDocumentoFiscalVendaInterEstadual() {
+	public void test02_tentaInserirDocumentoFiscalVendaInterEstadual() {
 		// POPULANDO OBJ
 		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA_INTERESTADUAL).get();
 		Pessoa emitente = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ)).get(0);
@@ -156,19 +155,32 @@ public class DocumentoFiscalAPIControllerTest {
 		docFiscal = response.getBody().getData();
 		assertNotNull(docFiscal);
 		
-		System.out.println("\n" +this.getClass() + " test01_tentaInserirDocumentoFiscalVendaInterEstadual, ok");
+		System.out.println("\n" +this.getClass() + " test02_tentaInserirDocumentoFiscalVendaInterEstadual, ok");
 	}
 	
 	@Test
 	public void test03_buscarUmDocumentoFiscal() {
 		ResponseEntity<Response<DocumentoFiscal>> response = buscarUmDocumentoFiscal();
+		
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		DocumentoFiscal docFiscal = response.getBody().getData();
+		assertNotNull(docFiscal);
+		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_CNPJ);
+		assertTrue(response.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON));
+		
 		System.out.println("\n" +this.getClass() + " test03_buscarUmDocumentoFiscal, ok");
 	}
 	
 	@Test
 	public void test04_tentaEditarDocFiscalVendaInterEstadualParaVenda() {
 		ResponseEntity<Response<DocumentoFiscal>> response = buscarUmDocumentoFiscal();
+		
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 		DocumentoFiscal docFiscal = response.getBody().getData();
+		assertNotNull(docFiscal);
+		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_CNPJ);
+		assertTrue(response.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON));
+		
 		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA).get();
 		docFiscal.setOperacao(operacao);
 		// CRIANDO TRIBUTACOES
