@@ -76,6 +76,31 @@ public class DocumentoFiscalAPIControllerTest {
 	
 	private Gson gson = new Gson();
 
+	// ========= MÉTODO"auxiliar" =========
+	private ResponseEntity<Response<DocumentoFiscal>> buscarUmDocumentoFiscal() {
+		DocumentoFiscal docFiscal = new DocumentoFiscal();
+		docFiscal.setEmitente(new Pessoa());
+		docFiscal.getEmitente().setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ));
+		docFiscal.setTipo(TestHelper.DOC_FISCAL_TIPO_NFE);
+		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
+		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
+		
+		ParameterizedTypeReference<Response<DocumentoFiscal>> tipoRetorno = new ParameterizedTypeReference<Response<DocumentoFiscal>>() {
+		};
+		HttpEntity<Object> httpEntity = auth.autorizar(docFiscal, restTemplate);
+		
+		ResponseEntity<Response<DocumentoFiscal>> response = restTemplate.exchange(PATH + "/buscar", HttpMethod.POST, httpEntity, tipoRetorno);
+		String gsonResponse = gson.toJson(response);
+		System.out.println("\n\nRESPONSE JSON BUSCA: " +gsonResponse);
+		
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNotNull(response);
+		docFiscal = response.getBody().getData();
+		assertNotNull(docFiscal);
+		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_CNPJ);
+		assertTrue(response.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON));
+		return response;
+	}
 	
 	@Test
 	public void test00_CleanUp() {
@@ -91,7 +116,7 @@ public class DocumentoFiscalAPIControllerTest {
 	@Test
 	public void test01_tentaInserirDocumentoFiscalVendaInterEstadual() {
 		// POPULANDO OBJ
-		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA).get();
+		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA_INTERESTADUAL).get();
 		Pessoa emitente = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ)).get(0);
 		Pessoa destinatario = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ_2)).get(0);
 		Ncm ncm = ncmService.findNcmByNumeroAndExcecao(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1, NcmServiceLogicTest.NCM_EXCECAO_REGISTRO_1).get();
@@ -120,7 +145,6 @@ public class DocumentoFiscalAPIControllerTest {
 		docFiscal.setItens(listItens);
 
 		HttpEntity<Object> httpEntity = auth.autorizar(docFiscal, restTemplate);
-
 		ParameterizedTypeReference<Response<DocumentoFiscal>> tipoRetorno = new ParameterizedTypeReference<Response<DocumentoFiscal>>() {
 		};
 		ResponseEntity<Response<DocumentoFiscal>> response = restTemplate.exchange(PATH, HttpMethod.POST,httpEntity, tipoRetorno);
@@ -135,8 +159,6 @@ public class DocumentoFiscalAPIControllerTest {
 		System.out.println("\n" +this.getClass() + " test01_tentaInserirDocumentoFiscalVendaInterEstadual, ok");
 	}
 	
-
-	
 	@Test
 	public void test03_buscarUmDocumentoFiscal() {
 		ResponseEntity<Response<DocumentoFiscal>> response = buscarUmDocumentoFiscal();
@@ -144,58 +166,32 @@ public class DocumentoFiscalAPIControllerTest {
 	}
 	
 	@Test
-	public void test04_tentaEditarDocFiscalVendaParaVendaInterEstadual() {
+	public void test04_tentaEditarDocFiscalVendaInterEstadualParaVenda() {
 		ResponseEntity<Response<DocumentoFiscal>> response = buscarUmDocumentoFiscal();
 		DocumentoFiscal docFiscal = response.getBody().getData();
-		
+		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA).get();
+		docFiscal.setOperacao(operacao);
 		// CRIANDO TRIBUTACOES
-		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA_INTERESTADUAL).get();
 		testHelper.criarTribEstaPorNcmsEOperDentroDeSP(ncmService.findAll(), operacao);
 		testHelper.criarTributacaoFederal(ncmService.findAll(), operacao);
-		// TENHO QUE SETAR A OPERAÃO AQUI,
-		// MAS PRIMEIRO TENHO QUE VER PORQUE, NÃO PREENCHE A LISTA DE ITENS, QUANDO BUSCA UM DOCUMENTO FISCAL
-//		docFiscal.setOperacao(operacao);
 		
 		HttpEntity<Object> httpEntity = auth.autorizar(docFiscal, restTemplate);
 		ParameterizedTypeReference<Response<DocumentoFiscal>> tipoRetorno = new ParameterizedTypeReference<Response<DocumentoFiscal>>() {
 		};
-		
 		ResponseEntity<Response<DocumentoFiscal>> responsePut = restTemplate.exchange(PATH, HttpMethod.PUT, httpEntity, tipoRetorno);
+		
 		String gsonResponsePut = gson.toJson(responsePut);
 		System.out.println("\n\nRESPONSE JSON EDITAR: " +gsonResponsePut);
 		
 		assertEquals(HttpStatus.OK, responsePut.getStatusCode());
-		
-		buscarUmDocumentoFiscal();
-	}
-	
-	
-	// === MÉTODOS "auxiliares" ===
-	private ResponseEntity<Response<DocumentoFiscal>> buscarUmDocumentoFiscal() {
-		DocumentoFiscal docFiscal = new DocumentoFiscal();
-		docFiscal.setEmitente(new Pessoa());
-		docFiscal.getEmitente().setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ));
-		docFiscal.setTipo(TestHelper.DOC_FISCAL_TIPO_NFE);
-		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
-		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
-		
-		ParameterizedTypeReference<Response<DocumentoFiscal>> tipoRetorno = new ParameterizedTypeReference<Response<DocumentoFiscal>>() {
-		};
-		
-		HttpEntity<Object> httpEntity = auth.autorizar(docFiscal, restTemplate);
-		
-		ResponseEntity<Response<DocumentoFiscal>> response = restTemplate.exchange(PATH + "/buscar", HttpMethod.POST, httpEntity, tipoRetorno);
-		String gsonResponse = gson.toJson(response);
-		System.out.println("\n\nRESPONSE JSON BUSCA: " +gsonResponse);
-		
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		
-		assertNotNull(response);
-		docFiscal = response.getBody().getData();
+		docFiscal = responsePut.getBody().getData();
 		assertNotNull(docFiscal);
-		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_CNPJ);
-		assertTrue(response.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON));
-		return response;
+		assertEquals(TestHelper.OPERACAO_VENDA, responsePut.getBody().getData().getOperacao().getDescricao());
+		
+		System.out.println("\n" +this.getClass() + " test04_tentaEditarDocFiscalVendaParaVendaInterEstadual, ok");
 	}
+	
+	
+
 }
 

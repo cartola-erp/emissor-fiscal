@@ -114,7 +114,9 @@ public class DocumentoFiscalService {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		List<Pessoa> opEmitente = pessoaService.findByCnpj(documentoFiscal.getEmitente().getCnpj());
 		List<Pessoa> opDestinatario = pessoaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
+		
 		documentoFiscal.getItens().forEach(docItem -> {
+			docItem.setDocumentoFiscal(documentoFiscal);
 			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
 			if(opNcm.isPresent()) {
 				docItem.setNcm(opNcm.get());
