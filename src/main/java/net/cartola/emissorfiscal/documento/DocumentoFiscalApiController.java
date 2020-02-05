@@ -45,6 +45,9 @@ public class DocumentoFiscalApiController {
 		} 
 		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
 		
+		if(!opDocFiscal.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
 		response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
 		return ResponseEntity.ok(response);
 	}
