@@ -59,20 +59,7 @@ public class DocumentoFiscalApiController {
 			response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
 			return ResponseEntity.ok(response);
 		}
-		
-		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal);
-		if (!ValidationHelper.collectionEmpty(erros)) {
-			response.setErrors(erros);
-			return ResponseEntity.badRequest().body(response);
-		}
-		
-		opDocFiscal = docFiscalService.save(docFiscal);
-		if (opDocFiscal.isPresent()) {
-			response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
-			return ResponseEntity.ok(response);
-		} else {
-			return ResponseEntity.noContent().build();
-		}
+		return saveOrEditDocumentoFiscal(docFiscal);
 	}
 	
 	@PutMapping()
@@ -84,15 +71,19 @@ public class DocumentoFiscalApiController {
 			response.setErrors(Arrays.asList("O documento fiscal que você está tentando editar, NÃO existe!"));
 			return ResponseEntity.badRequest().body(response);
 		}
+		return saveOrEditDocumentoFiscal(docFiscal);
+	}
+	
+	private ResponseEntity<Response<DocumentoFiscalDto>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {
+		Response<DocumentoFiscalDto> response = new Response<>();
 		
-		// Daqui p/ baixo está igual ao save(). Isolar em um método a parte  ?
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal);
 		if (!ValidationHelper.collectionEmpty(erros)) {
 			response.setErrors(erros);
 			return ResponseEntity.badRequest().body(response);
 		}
 		
-		opDocFiscal = docFiscalService.save(docFiscal);
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.save(docFiscal);
 		if (opDocFiscal.isPresent()) {
 			response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
 			return ResponseEntity.ok(response);
@@ -100,7 +91,6 @@ public class DocumentoFiscalApiController {
 			return ResponseEntity.noContent().build();
 		}
 	}
-	
 }
 
 
