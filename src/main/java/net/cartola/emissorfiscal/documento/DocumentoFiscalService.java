@@ -116,35 +116,45 @@ public class DocumentoFiscalService {
 		List<Pessoa> opDestinatario = pessoaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
 		
 		documentoFiscal.getItens().forEach(docItem -> {
-			docItem.setDocumentoFiscal(documentoFiscal);
 			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
-			if(opNcm.isPresent()) {
-				docItem.setNcm(opNcm.get());
-			}
 			map.put("O NCM: " +docItem.getNcm().getNumero()+ " NÃO existe", opNcm.isPresent());
 		});
 		
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
-		List<TributacaoEstadual> listTributacoes = new ArrayList<TributacaoEstadual>();
+		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
 		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
-
+		
 		if (opOperacao.isPresent() && !ncms.isEmpty() && !map.containsValue(false) ) {
-			listTributacoes = icmsService.findTributacaoEstadualByOperacaoENcms(opOperacao.get(), ncms);
+			tributacoesEstaduais = icmsService.findTributacaoEstadualByOperacaoENcms(opOperacao.get(), ncms);
 			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacao(documentoFiscal.getOperacao(), ncms);
 		}
 
 		map.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", opOperacao.isPresent());
 		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isEmpty());
 		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isEmpty());
-		map.put("Não existe a tributação estadual para essa OPERAÇÃO e os NCMS dos itens", !listTributacoes.isEmpty());
+		map.put("Não existe a tributação estadual para essa OPERAÇÃO e os NCMS dos itens", !tributacoesEstaduais.isEmpty());
 		map.put("Não existe a tributação federal para essa OPERAÇÃO e os NCMS dos itens", !tributacoesFederais.isEmpty());
+		
+		if (!map.containsValue(false)) {
+			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario);
+		}
+		return ValidationHelper.processaErros(map);
+	}
+	
+	private void setValoresNecessariosParaODocumentoFiscal(DocumentoFiscal documentoFiscal, Optional<Operacao> opOperacao, List<Pessoa> opEmitente, List<Pessoa> opDestinatario) {
+		documentoFiscal.getItens().forEach(docItem -> {
+			docItem.setDocumentoFiscal(documentoFiscal);
+			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
+			if(opNcm.isPresent()) {
+				docItem.setNcm(opNcm.get());
+			}
+		});
 		
 		if (opOperacao.isPresent() && !opEmitente.isEmpty() && !opDestinatario.isEmpty()) {
 			documentoFiscal.setOperacao(opOperacao.get());
 			documentoFiscal.setEmitente(opEmitente.get(0));
 			documentoFiscal.setDestinatario(opDestinatario.get(0));
 		}
-		return ValidationHelper.processaErros(map);
 	}
 	
 }
