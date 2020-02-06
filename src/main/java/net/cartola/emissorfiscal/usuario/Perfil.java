@@ -7,7 +7,8 @@ package net.cartola.emissorfiscal.usuario;
 public enum Perfil {
 	
 	ROLE_CONTADOR,
-	;
+	ROLE_FATURAMENTO,
+	ROLE_ESCRITURADOR;
 }
 
 
