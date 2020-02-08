@@ -30,6 +30,7 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity5 -->
+		<!-- https://github.com/thymeleaf/thymeleaf-extras-springsecurity -->
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
