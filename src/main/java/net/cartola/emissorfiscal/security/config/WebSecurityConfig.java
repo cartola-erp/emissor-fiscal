@@ -52,10 +52,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable().authorizeRequests()
-				.antMatchers("/autenticacao/*", "/", "/home", "/api/v1/usuario/criar-usuario").permitAll()
-				.antMatchers("/api/**").authenticated().and().exceptionHandling()
-				.authenticationEntryPoint(unauthorizedHandler).and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				.antMatchers("/autenticacao/*", "/", "/login", "/home", "/api/v1/usuario/criar-usuario").permitAll()
+//				.antMatchers("/api/**").permitAll();
+				.antMatchers("/api/**").authenticated()
+				.anyRequest().authenticated()
+				.and().exceptionHandling()
+				.authenticationEntryPoint(unauthorizedHandler)
+				// SE a SessionPolicy, for STATELESS, não salvará o cookie de session no HTML
+				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+				.and().formLogin().loginPage("/login").permitAll()
+//				.loginProcessingUrl("/")
+				.and().logout().logoutUrl("/logout");
+//				.exceptionHandling()
+		
 		http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 	}
 
