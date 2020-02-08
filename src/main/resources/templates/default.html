@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:fragment="layout (title, content)" xmlns:th="http://www.thymeleaf.org">
+<html th:fragment="layout (title, content)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset='utf-8'>
@@ -37,6 +37,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- CADASTRAR -->
         <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
             <div class="nav-item dropdown ml-5">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCadastro" role="button" data-toggle="dropdown"
@@ -54,6 +55,7 @@
                 </div>
             </div>
 
+            <!-- CONSULTAR -->
             <div class="nav-item dropdown ml-5">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownConsulta" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
@@ -72,7 +74,8 @@
             </div>
            <!--  <a class="ml-5" th:href="@{/assistencia}" id="navbar-a">Assistências</a> -->     
 
-           <div class="nav-item dropdown ml-5">
+           <!-- SIMULACAO -->
+            <div class="nav-item dropdown ml-5">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     Simulação
@@ -81,6 +84,12 @@
                 <!-- TODO: templates -->
                     <a class="dropdown-item" th:href="@{/}">Simulacao de Calculo</a>
                </div>
+            </div>
+            
+            <!-- LOGOUT --> 
+            <div sec:authorize="isAuthenticated()" class="nav-item dropdown  ml-5 ml-auto">
+                <!-- <a class="dropdown-item" id="navbarDropdownLogout" th:href="@{/logout}">Sair</a> -->
+                <a class="btn btn-danger" id="navbarDropdownLogout" th:href="@{/logout}">Sair</a>
             </div>
 
         </div>
