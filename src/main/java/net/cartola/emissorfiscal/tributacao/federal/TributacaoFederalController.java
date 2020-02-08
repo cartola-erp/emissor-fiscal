@@ -1,6 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -55,24 +55,14 @@ public class TributacaoFederalController {
 		}
 		ModelAndView mv = new ModelAndView("redirect:/tributacao-federal/cadastro");
 		
-		Operacao operacao = operacaoService.findOne(operacaoId).get();
-		Ncm ncm = ncmService.findOne(ncmId).get();
-		
-		tributacaoFederal.setOperacao(operacao);
-		tributacaoFederal.setNcm(ncm);
-		
 		try {
+			Operacao operacao = operacaoService.findOne(operacaoId).get();
+			Ncm ncm = ncmService.findOne(ncmId).get();
+			
+			tributacaoFederal.setOperacao(operacao);
+			tributacaoFederal.setNcm(ncm);
+			
 			tributacaoFederalService.save(tributacaoFederal);
-			// Ver com o Murilo, se esses valores serão salvos já divididos por cem, ou será
-			// salvo o número "inteiro" e nos calculos que usam tais valores divide por 100
-			// Se for dividir aqui, vai dar errado quando tentar editar, pois os valores q
-			// não mudarem SERAM DIVIDIOS NOVAMENTE
-			tributacaoFederal.setPisAliquota(tributacaoFederal.getPisAliquota().divide(new BigDecimal(100D)));
-			tributacaoFederal.setPisBase(tributacaoFederal.getPisBase().divide(new BigDecimal(100D)));
-			tributacaoFederal.setCofinsAliquota(tributacaoFederal.getCofinsAliquota().divide(new BigDecimal(100D)));
-			tributacaoFederal.setCofinsBase(tributacaoFederal.getCofinsBase().divide(new BigDecimal(100D)));
-			tributacaoFederal.setIpiAliquota(tributacaoFederal.getIpiAliquota().divide(new BigDecimal(100D)));
-			tributacaoFederal.setIpiBase(tributacaoFederal.getIpiBase().divide(new BigDecimal(100D)));
 		} catch (Exception ex) {
 			mv.setViewName("tributacao-federal/cadastro");
 //			mv.addObject("tributacaoFederal", tributacaoFederal);
@@ -88,7 +78,15 @@ public class TributacaoFederalController {
 	@GetMapping("/consulta")
 	public ModelAndView findAll() {
 		ModelAndView mv = new ModelAndView("tributacao-federal/consulta");
-		mv.addObject("listTributacaoFederal", tributacaoFederalService.findAll());
+		List<TributacaoFederal> listTributacaoFederal = tributacaoFederalService.findAll();
+		
+		if (!listTributacaoFederal.isEmpty()) {
+			listTributacaoFederal.forEach(tributacaoFederal -> {
+				tributacaoFederalService.multiplicaTributacaoFederalPorCem(tributacaoFederal);
+			});
+		}
+		
+		mv.addObject("listTributacaoFederal", listTributacaoFederal);
 		
 		return mv;
 	}
@@ -110,7 +108,8 @@ public class TributacaoFederalController {
 	public ModelAndView edit(@PathVariable long id, Model model) {
 		ModelAndView mv = new ModelAndView("tributacao-federal/cadastro");
 		TributacaoFederal tributacaoFederal = tributacaoFederalService.findOne(id).get();
-	
+		tributacaoFederalService.multiplicaTributacaoFederalPorCem(tributacaoFederal);
+
 		model.addAttribute("operacaoIdSelecionado", tributacaoFederal.getOperacao().getId());
 		model.addAttribute("ncmdIdSelecionado", tributacaoFederal.getNcm().getId());
 		

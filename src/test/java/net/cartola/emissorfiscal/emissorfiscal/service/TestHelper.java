@@ -327,5 +327,6 @@ public class TestHelper {
 		operacaoRepository.deleteAll();
 		ncmRepository.deleteAll();
 		pessoaRepository.deleteAll();
+		criarUsuarioRoot();				// COLOQUEI esse criar usuario por causa dos testes do selenium (ver uma melhor forma de fazer isso)
 	}
 }

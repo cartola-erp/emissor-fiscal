@@ -52,12 +52,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable().authorizeRequests()
-				.antMatchers("/autenticacao/*", "/", "/login", "/home", "/api/v1/usuario/criar-usuario").permitAll()
+				.antMatchers("/autenticacao/*", "/login", "/home", "/api/v1/usuario/criar-usuario").permitAll()
 //				.antMatchers("/api/**").permitAll();
 				.antMatchers("/api/**").authenticated()
 				.anyRequest().authenticated()
 				.and().exceptionHandling()
-				.authenticationEntryPoint(unauthorizedHandler)
+//				.authenticationEntryPoint(unauthorizedHandler)
 				// SE a SessionPolicy, for STATELESS, não salvará o cookie de session no HTML
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 				.and().formLogin().loginPage("/login").permitAll()
@@ -71,8 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 //	public void configure(WebSecurity web) throws Exception {
 	public void configure(WebSecurity web) {
-		web.ignoring().antMatchers("/css/**", "/ico/**", "/js/**", "/img/**", "/favicon.ico", "/logo.png",
-				"/logo-closed.png");
+		web.ignoring().antMatchers("/css/**", "/js/**", "/img/**");
+//		"/ico/**", "/favicon.ico", "/logo.png", "logo-closed.png"
 	}
 
 	@Bean

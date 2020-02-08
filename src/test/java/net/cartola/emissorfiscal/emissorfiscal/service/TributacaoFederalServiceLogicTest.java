@@ -38,12 +38,12 @@ public class TributacaoFederalServiceLogicTest {
 	public static final int PIS_CST = 1;
 	public static final int COFINS_CST = 1;
 	public static final int IPI_CST = 1;
-	public static final BigDecimal PIS_ALIQUOTA = new BigDecimal(0.0165D);
-	public static final BigDecimal COFINS_ALIQUOTA = new BigDecimal(0.076D);
-	public static final BigDecimal IPI_ALIQUOTA = new BigDecimal(0.05D); // valor arbitrário
+	public static final BigDecimal PIS_ALIQUOTA = new BigDecimal(1.65D);
+	public static final BigDecimal COFINS_ALIQUOTA = new BigDecimal(7.6D);
+	public static final BigDecimal IPI_ALIQUOTA = new BigDecimal(5D); // valor arbitrário
 	public static final BigDecimal PIS_BASE = new BigDecimal(1D);		// 1, pois é "TRIBUTADA COM ALIQ. BÁSICA". (100/100 = 1)
 	public static final BigDecimal COFINS_BASE = new BigDecimal(1D);	// 1, pois é "TRIBUTADA COM ALIQ. BÁSICA". (100/100 = 1)
-	public static final BigDecimal IPI_BASE = new BigDecimal(0.9D);
+	public static final BigDecimal IPI_BASE = new BigDecimal(9D);
 
 	@Autowired
 	private CalculoFiscalFederal calculoFiscalFederal;

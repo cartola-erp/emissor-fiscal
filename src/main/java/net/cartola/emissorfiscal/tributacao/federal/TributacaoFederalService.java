@@ -28,18 +28,19 @@ public class TributacaoFederalService {
 	}
 
 	public Optional<TributacaoFederal> save(TributacaoFederal tributacaoFederal) {
-		if (tributacaoFederal.getId() == null) {
-			tributacaoFederal.setPisAliquota(tributacaoFederal.getPisAliquota().divide(new BigDecimal(100D)));
-			tributacaoFederal.setPisBase(tributacaoFederal.getPisBase().divide(new BigDecimal(100D)));
-			tributacaoFederal.setCofinsAliquota(tributacaoFederal.getCofinsAliquota().divide(new BigDecimal(100D)));
-			tributacaoFederal.setCofinsBase(tributacaoFederal.getCofinsBase().divide(new BigDecimal(100D)));
-			tributacaoFederal.setIpiAliquota(tributacaoFederal.getIpiAliquota().divide(new BigDecimal(100D)));
-			tributacaoFederal.setIpiBase(tributacaoFederal.getIpiBase().divide(new BigDecimal(100D)));
+//		if (tributacaoFederal.getId() == null) {
+		if (tributacaoFederal != null) {
+			divideTributacaoFederalPorCem(tributacaoFederal);
 		}
 		return Optional.ofNullable(tributacaoFederalRepository.saveAndFlush(tributacaoFederal));
 	}
 
 	public List<TributacaoFederal> saveAll(List<TributacaoFederal> tributacoesFederais) {
+		tributacoesFederais.forEach(tributacaoEstadual -> {
+			if (tributacaoEstadual != null) {
+				divideTributacaoFederalPorCem(tributacaoEstadual);
+			}
+		});
 		return tributacaoFederalRepository.saveAll(tributacoesFederais);
 	}
 
@@ -69,5 +70,23 @@ public class TributacaoFederalService {
 
 	public void deleteById(Long id) {
 		tributacaoFederalRepository.deleteById(id);
+	}
+	
+	private void divideTributacaoFederalPorCem(TributacaoFederal tributacaoFederal) {
+		tributacaoFederal.setPisAliquota(tributacaoFederal.getPisAliquota().divide(new BigDecimal(100D)));
+		tributacaoFederal.setPisBase(tributacaoFederal.getPisBase().divide(new BigDecimal(100D)));
+		tributacaoFederal.setCofinsAliquota(tributacaoFederal.getCofinsAliquota().divide(new BigDecimal(100D)));
+		tributacaoFederal.setCofinsBase(tributacaoFederal.getCofinsBase().divide(new BigDecimal(100D)));
+		tributacaoFederal.setIpiAliquota(tributacaoFederal.getIpiAliquota().divide(new BigDecimal(100D)));
+		tributacaoFederal.setIpiBase(tributacaoFederal.getIpiBase().divide(new BigDecimal(100D)));
+	}
+	
+	public void multiplicaTributacaoFederalPorCem(TributacaoFederal tributacaoFederal) {
+		tributacaoFederal.setPisAliquota(tributacaoFederal.getPisAliquota().multiply(new BigDecimal(100D)));
+		tributacaoFederal.setPisBase(tributacaoFederal.getPisBase().multiply(new BigDecimal(100D)));
+		tributacaoFederal.setCofinsAliquota(tributacaoFederal.getCofinsAliquota().multiply(new BigDecimal(100D)));
+		tributacaoFederal.setCofinsBase(tributacaoFederal.getCofinsBase().multiply(new BigDecimal(100D)));
+		tributacaoFederal.setIpiAliquota(tributacaoFederal.getIpiAliquota().multiply(new BigDecimal(100D)));
+		tributacaoFederal.setIpiBase(tributacaoFederal.getIpiBase().multiply(new BigDecimal(100D)));
 	}
 }
