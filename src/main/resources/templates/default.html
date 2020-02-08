@@ -25,12 +25,14 @@
     <!-- Default -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/default.css}" href="../css/default.css">
 
+	<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" href="../css/login.css">
+	
 
 </head>
 
 <body>
 
-    <nav class="navbar navbar  navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav sec:authorize="isAuthenticated()" class="navbar navbar  navbar-expand-lg navbar-dark bg-dark fixed-top">
         <a class="navbar-brand mr-5" th:href="@{/}" style="color: azure; font-weight: bold">Emissor Fiscal</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado"
             aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">

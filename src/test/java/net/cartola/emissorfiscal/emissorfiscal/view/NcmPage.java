@@ -103,6 +103,7 @@ public class NcmPage {
 		assertEquals(NCM_DESCRICAO_01, txtDescricao.getAttribute("value"));
 		btnCadastrarAlterar.click();
 		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CADASTRO, driver);
+		PageUtil.deslogar(driver);
 		System.out.println("\n"+ this.getClass().getName() + " test02_TentaCadastrarUmNCMCorretamente, Ok");
 	}
 	

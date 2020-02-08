@@ -11,6 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.stereotype.Component;
 
 /**
  *	13 de jan de 2020
@@ -19,10 +20,29 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class PageUtil {
 	
 	private static String PATH = "localhost:8080/";
-
+	
 	public static void goToHome(WebDriver driver) {
 		driver.get(PATH);
+		login(driver);
 		System.out.println("Entrando no link (home): " +PATH);
+	}
+	
+	private static void login(WebDriver driver) {
+		WebElement txtUsername = driver.findElement(By.id("username"));
+		WebElement txtPassword = driver.findElement(By.id("password"));
+		WebElement bEntrar = driver.findElement(By.id("bEntrar"));
+		
+		PageUtil.espereOWebElementAparecer(txtUsername, driver, 3L);
+		txtUsername.sendKeys("root");
+		txtPassword.sendKeys("root");
+		bEntrar.click();
+	}
+	
+	public static void deslogar(WebDriver driver) {
+		WebElement navbarDropdownLogout = driver.findElement(By.id("navbarDropdownLogout"));
+		
+		PageUtil.espereOWebElementAparecer(navbarDropdownLogout, driver, 3L);
+		navbarDropdownLogout.click();
 	}
 	
 	public static void goToTelaDeCadastro(WebDriver driver, String nomeEntidade) {

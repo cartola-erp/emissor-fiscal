@@ -38,8 +38,8 @@ public class SimulacaoController {
 	CalculoFiscalEstadual calcFiscalEstadual;
 	
 	
-//	@GetMapping("/simulacao")
-	@GetMapping
+//	@GetMapping("simulador")
+	@GetMapping()
 	public ModelAndView loadSimulacaoTeste() {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
 //		Operacao operacao = new Operacao();

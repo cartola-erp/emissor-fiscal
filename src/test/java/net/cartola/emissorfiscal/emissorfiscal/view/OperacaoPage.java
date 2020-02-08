@@ -78,6 +78,7 @@ public class OperacaoPage {
 		assertEquals(OPERACAO_DESCRICAO_01, txtDescricao.getAttribute("value"));
 		btnCadastrarAlterar.click();
 		PageUtil.verificaSeApareceuMsgDeSucesso(OPERACAO_TITLE_PAGE_CADASTRO, this.driver);
+		PageUtil.deslogar(driver);
 	}
 	
 	// ======================================= CONSULTAS ============================================

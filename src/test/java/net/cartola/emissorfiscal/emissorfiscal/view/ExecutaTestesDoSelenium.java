@@ -312,7 +312,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		icmsPage.tentaEditarOPrimeiroRegistroDeUmaTributacaoEstadual();
 		System.out.println("\n"+ this.getClass().getName() + " test32_TentaEditarUmaTributacaoEstadual, Ok");
 	}
-	
+
 //	@Test
 //	public void test33_TentaDeletarUmaTributatacaoEstadual() {
 //		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
@@ -325,7 +325,15 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	// ===========================================================================================================
 	// ======================================= TRIBUTACAO FEDERAL ============================================
 	// ===========================================================================================================
-
+	
+	@Test
+	public void test34_TentaCadastrarUmaTributacaoFederalIncompleta() {
+		TributacaoFederalPage tributacaoFederalPage = new TributacaoFederalPage(this.driver);
+		testHelper.limpaBanco();
+		tributacaoFederalPage.tentaCadastrarUmaTributacaoFederalSemONcm();
+		System.out.println("\n"+ this.getClass().getName() + " test34_TentaCadastrarUmaTributacaoFederalIncompleta, Ok");
+	}
+	
 	//	EstadoPage estadoPage = new EstadoPage(this.driver);
 //	testHelper.limpaBanco();
 //	estadoPage.tentaCadastrarEstadoSPCorretamente();
