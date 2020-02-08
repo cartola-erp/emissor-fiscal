@@ -9,7 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class UsuarioController {
 	
-	@GetMapping({"", "login"})
+//	@GetMapping({"", "login"})
+	@GetMapping("login")
 //	public ModelAndView loadLoginUsuario() {
 	public String loadLoginUsuario() {
 //		ModelAndView mv = new ModelAndView("usuario/login");

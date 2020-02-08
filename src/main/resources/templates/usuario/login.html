@@ -5,49 +5,51 @@
 	<meta charset="utf-8">
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
 	<title> Login </title>
+	
+<!-- 	<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" href="../css/login.css"> -->
+
+
 </head>
 
+
 <body>
-	<section id="tributacao-estadual-container container">
+	<section id="login-container container">
 
-		<div class="container">
+	    <div id="login" class="body-login">
+	<!--         <h3 class="text-center text-white pt-5">Login d form</h3> -->
+	        <div class="container">
+	            <div id="login-row" class="row justify-content-center align-items-center">
+	                <div id="login-column" class="col-md-6">
+	                    <div id="login-box" class="col-md-12">
 
-			<!-- FORMULÁRIO O USUARIO SE LOGAR -->
-			<form th:action="@{/login}"  method="POST">
+	                        <form id="login-form" class="form" th:action="@{/login}"  method="POST">
+	                            <h3 class="text-center text-info">Por favor, autentique-se</h3>
+	                            <div class="form-group">
+	                                <label for="username" class="text-info">Login</label><br>
+	                                <input type="text" name="username" id="username" class="form-control" placeholder="login..." maxlength="25" required >
+	                            </div>
+	                            <div class="form-group">
+	                                <label for="password" class="text-info">Senha:</label><br>
+	                                <input type="password" name="password" id="password" class="form-control" placeholder="senha..." maxlength="25" required >
+	                            </div>
+	<!--                             <div class="form-group"> -->
+	<!--                                 <label for="remember-me" class="text-info"><span>Remember me</span> <span><input id="remember-me" name="remember-me" type="checkbox"></span></label><br> -->
+	<!--                                 <input type="submit" name="bEntrar" class="btn btn-info btn-md" value="Entrar"> -->
+	<!--                             </div> -->
+	
+								<!-- BTN LOGIN -->
+								<div class="text-center">
+									<input type="submit" id="bEntrar" name="bEntrar" class="btn btn-info btn-md"	value="Entrar">
+								</div>
+							</form>
+							
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
 
-				<!-- <spring:url value="/resources/_imagens" var="imagensPath" /> -->
-				<!-- <img src="${imagensPath}/logoWFB-rolamento.png" class="mb-4" alt="" width="150" height="150"> -->
-				<div class="form-row">
-					<h1 class="h3 mb-3 font-weight-normal">Por favor, autentique-se</h1>
-				</div>
-
-				<div class="form-row">
-					<!-- Login e Senha -->
-					<div class="form-group col-md-6">
-						<label for="txtLogin"><strong>Login</strong></label>
-						<!-- <input type="text" name="login"> -->
-						<input type="text" class="form-control" id="username" name="username" placeholder="login..."
-							maxlength="25" required />
-					</div>
-					<div class="form-group col-md-6">
-						<label for="txtSenha"><strong>Senha</strong></label>
-						<input type="password" class="form-control" id="password" name="password" placeholder="senha..."
-							maxlength="25" required />
-					</div>
-				</div>
-
-				<!-- BTN LOGIN -->
-				<div class="form-row">
-					<div class="form-group col-md-12">
-						<button type="submit" class="btn btn-outline-primary col-md-12" id="bLogin"><strong>Login</strong></button>
-					</div>
-				</div>
-				<!-- <p class="mt-5 mb-3 text-muted">&copy; 2019-2020</p> -->
-
-			</form>
-
-		</div>
-		<section>
+	<section>
 
 </body>
 
