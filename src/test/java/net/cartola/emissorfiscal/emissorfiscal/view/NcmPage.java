@@ -98,11 +98,13 @@ public class NcmPage {
 	
 	public void tentaCadastrarUmNcmCorretamente() {
 		preencheOCadastroDeUmNCMSemADescricao();
+		PageUtil.espereUmTempo(750L);
 		PageUtil.preencheTxt(txtDescricao, NCM_DESCRICAO_01, 500L);
 		PageUtil.espereUmTempo(750L);
 		assertEquals(NCM_DESCRICAO_01, txtDescricao.getAttribute("value"));
 		btnCadastrarAlterar.click();
 		PageUtil.verificaSeApareceuMsgDeSucesso(NCM_TITLE_PAGE_CADASTRO, driver);
+		PageUtil.espereUmTempo(750L);
 		PageUtil.deslogar(driver);
 		System.out.println("\n"+ this.getClass().getName() + " test02_TentaCadastrarUmNCMCorretamente, Ok");
 	}

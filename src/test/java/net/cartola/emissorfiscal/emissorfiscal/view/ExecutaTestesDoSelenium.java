@@ -26,12 +26,17 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Autowired 
 	private TestHelper testHelper;
 	
+	private void limpaBancoECriaUserRoot() {
+		testHelper.limpaBanco();
+		testHelper.criarUsuarioRoot();
+	}
+	
 	// ======================================= NCM ============================================
 	
 	@Test
 	public void test01_TentaCadastrarUmNcmIncompleto() {
 		NcmPage ncm = new NcmPage(driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		ncm.tentaCadastrarUmNcmIncompleto();
 		System.out.println("\n" + this.getClass().getName() + " test01_TentaCadastrarUmNCMIncompleto, Ok");
 	}
@@ -39,7 +44,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test02_TentaCadastrarUmNcmCorretamente() {
 		NcmPage ncm = new NcmPage(driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		ncm.tentaCadastrarUmNcmCorretamente();
 		System.out.println("\n"+ this.getClass().getName() + " test02_TentaCadastrarUmNcmCorretamente, Ok");
 	}
@@ -47,7 +52,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	
 	public void test03_TentaCadastrarUmNcmRepetido() {
 		NcmPage ncmPage = new NcmPage(driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		ncmPage.tentaCadastrarUmNcmRepetido();
 		System.out.println("\n"+ this.getClass().getName() + " test03_TentaCadastrarUmNcmRepetido, Ok");
 	}
@@ -55,7 +60,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test04_TentaConsultarUmNcmVazio() {
 		NcmPage ncm = new NcmPage(driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		ncm.tentaConsultarUmNcmVazio();
 		System.out.println("\n" + this.getClass().getName() + " test04_TentaConsultarUmNcmVazio, Ok");
 	}
@@ -63,7 +68,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test05_TentaConsultarUmNcmExistente() {
 		NcmPage ncm = new NcmPage(driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		ncm.tentaCadastrarUmNcmCorretamente();
 		ncm.tentaConsultarUmNcmExistente();
 		System.out.println("\n" + this.getClass().getName() + " test05_TentaConsultarUmNcmExistente, Ok");
@@ -72,7 +77,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test06_TentaConsultarUmNcmInexistente() {
 		NcmPage ncm = new NcmPage(driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		ncm.tentaConsultaUmNcmInexistente();
 		System.out.println("\n" + this.getClass().getName() + " test06_TentaConsultarUmNcmInexistente, Ok");
 	}
@@ -81,7 +86,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test07_TentaEditarUmNcm() {
 		NcmPage ncmPage = new NcmPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		ncmPage.tentaCadastrarUmNcmCorretamente();
 		ncmPage.tentaEditarOPrimeiroRegistroDeUmNcm();
 		System.out.println("\n"+ this.getClass().getName() + " test07_TentaEditarUmNcm, Ok");
@@ -95,7 +100,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 ////		int i = 0;
 //
 ////		while (i < 30) {
-//		testHelper.limpaBanco();
+//		limpaBancoECriaUserRoot();
 //		
 ////		i++;
 ////		System.out.println("test03_TentaEditarUmNCM: De NÚMERO == " + i);
@@ -106,7 +111,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test09_TentaDeletarUmNcm() {
 		NcmPage ncmPage = new NcmPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		ncmPage.tentaCadastrarUmNcmCorretamente();
 		ncmPage.tentaDeletarOPrimeiroRegistroDeNcm();
 		System.out.println("\n"+ this.getClass().getName() + " test09_TentaDeletarUmNcm, Ok");
@@ -117,7 +122,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test10_TentaCadastrarUmaOperacaoIncompleta() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		operacaoPage.tentaCadastrarUmaOperacaoSemADescricao();
 		System.out.println("\n"+ this.getClass().getName() + " test10_TentaCadastrarUmaOperacaoIncompleta, Ok");
 	}
@@ -125,7 +130,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test11_TentaCadastrarUmaOperacaoCorretamente() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
 		System.out.println("\n"+ this.getClass().getName() + " test11_TentaCadastrarUmaOperacaoCorretamente, Ok");
 	}
@@ -133,7 +138,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test12_TentaConsultarUmaOperacaoVazia() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		operacaoPage.tentaConsultarUmaOperacaoVazia();
 		System.out.println("\n"+ this.getClass().getName() + " test12_TentaConsultarUmaOperacaoVazia, Ok");
 	}
@@ -141,7 +146,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test13_TentaConsultarUmaOperacaoExistente() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
 		operacaoPage.tentaConsultarUmaOperacaoExistente();
 		System.out.println("\n"+ this.getClass().getName() + " test13_TentaConsultaUmaOperacaoExistente, Ok");
@@ -150,7 +155,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test14_TentaConsultarUmaOperacaoInexistente() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		operacaoPage.tentaConsultarUmaOperacaoInexistente();
 		System.out.println("\n"+ this.getClass().getName() + " test14_TentaConsultaUmaOperacaoInexistente, Ok");
 	}
@@ -158,7 +163,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test15_TentaEditarUmaOperacao() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
 		operacaoPage.tentaEditarOPrimeiroRegistroDeUmaOperacao();
 		System.out.println("\n"+ this.getClass().getName() + " test15_TentaEditarUmaOperacao, Ok");
@@ -167,7 +172,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test16_TentaDeletarUmaOperacao() {
 		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		operacaoPage.tentaCadastrarUmaOperacaoDeVendaEstadual();
 		operacaoPage.tentaDeletarOPrimeiroRegistroDeOperacao();
 		System.out.println("\n"+ this.getClass().getName() + " test16_TentaDeletarUmaOperacao, Ok");
@@ -178,7 +183,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test17_TentaCadastrarUmEstadoIncompleto() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaCadastrarUmEstadoSemONome();
 		System.out.println("\n"+ this.getClass().getName() + " test17_TentaCadastrarUmEstadoIncompleto, Ok");
 	}
@@ -186,7 +191,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test18_TentaCadastrarUmEstadoCorretamente() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaCadastrarEstadoSPCorretamente();
 		System.out.println("\n"+ this.getClass().getName() + " test18_TentaCadastrarUmEstadoCorretamente, Ok");
 	}
@@ -194,7 +199,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test19_TentaCadastrarUmEstadoQueNaoExista() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaCadastrarEstadoQueNaoExista();
 		System.out.println("\n"+ this.getClass().getName() + " test19_TentaCadastrarUmEstadoQueNaoExista, Ok");
 	}
@@ -202,7 +207,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test20_TentaCadastrarUmEstadoRepetido() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaCadastrarEstadoSPDuasVezes();
 		System.out.println("\n"+ this.getClass().getName() + " test20_TentaCadastrarUmEstadoRepetido, Ok");
 	}
@@ -210,7 +215,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test21_TentaConsultarUmEstadoVazio() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaConsultarUmEstadoVazio();
 		System.out.println("\n"+ this.getClass().getName() + " test21_TentaConsultarUmEstadoVazio, Ok");
 	}
@@ -218,7 +223,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test22_TentaConsultarUmEstadoExistente() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaCadastrarEstadoSPCorretamente();
 		estadoPage.tentaConsultarEstadoSPExistente();
 		System.out.println("\n"+ this.getClass().getName() + " test22_TentaConsultarUmEstadoExistente, Ok");
@@ -227,7 +232,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test23_TentaConsultarUmEstadoNaoCadastrado() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaConsultarUmEstadoNaoCadastrado();
 		System.out.println("\n"+ this.getClass().getName() + " test23_TentaConsultarUmEstadoNaoCadastrado, Ok");
 	}
@@ -236,7 +241,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test24_TentaConsultarUmEstadoInexistente() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaConsultarUmEstadoInexistente();
 		System.out.println("\n"+ this.getClass().getName() + " test24_TentaConsultarUmEstadoInexistente, Ok");
 	}
@@ -244,7 +249,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test25_TentaEditarUmEstado() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaCadastrarEstadoSPCorretamente();
 		estadoPage.tentaEditarOPrimeiroRegistroDeUmEstado();
 		System.out.println("\n"+ this.getClass().getName() + " test25_TentaEditarUmEstado, Ok");
@@ -253,7 +258,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test26_TentaDeletarUmEstado() {
 		EstadoPage estadoPage = new EstadoPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		estadoPage.tentaCadastrarEstadoSPCorretamente();
 		estadoPage.tentaDeletarOPrimeiroRegistroDeEstado();
 		System.out.println("\n"+ this.getClass().getName() + " test26_TentaDeletarUmEstado, Ok");
@@ -264,7 +269,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test27_TentaCadastrarUmaTributacaoEstadualIncompleta() {
 		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		icmsPage.tentaCadastrarUmaTributacaoEstadualSemONcm();
 		System.out.println("\n"+ this.getClass().getName() + " test27_TentaCadastrarUmaTributacaoEstadualIncompleta, Ok");
 	}
@@ -272,7 +277,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test28_TentaCadastrarUmaTributacaoEstadualDeSP() {
 		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
 		System.out.println("\n"+ this.getClass().getName() + " test28_TentaCadastrarUmaTributacaoEstadualDeSP, Ok");
 	}
@@ -281,7 +286,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test29_TentaConsultarUmaTributacaoEstadualVazio() {
 		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		icmsPage.tentaConsultarUmaTributacaoEstadualVazio();
 		System.out.println("\n"+ this.getClass().getName() + " test29_TentaConsultarUmaTributacaoEstadualVazio, Ok");
 	}
@@ -290,7 +295,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test30_TentaConsultarUmaTributacaoEstadualExistente() {
 		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
 		icmsPage.tentaConsultarUmaTributacaoEstadualExistente();
 		System.out.println("\n"+ this.getClass().getName() + " test30_TentaConsultarUmaTributacaoEstadualExistente, Ok");
@@ -299,7 +304,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test31_TentaConsultarUmaTributacaoEstadualInexistente() {
 		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		icmsPage.tentaConsultaUmaTributacaoEstadualInexistente();
 		System.out.println("\n"+ this.getClass().getName() + " test31_TentaConsultarUmaTributacaoEstadualInexistente, Ok");
 	}
@@ -307,7 +312,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test32_TentaEditarUmaTributacaoEstadual() {
 		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
 		icmsPage.tentaEditarOPrimeiroRegistroDeUmaTributacaoEstadual();
 		System.out.println("\n"+ this.getClass().getName() + " test32_TentaEditarUmaTributacaoEstadual, Ok");
@@ -316,7 +321,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 //	@Test
 //	public void test33_TentaDeletarUmaTributatacaoEstadual() {
 //		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
-//		testHelper.limpaBanco();
+//		limpaBancoECriaUserRoot();
 //		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
 //		icmsPage.tentaDeletarOPrimeiroRegistroDeUmaTributacaoEstadual();
 //		System.out.println("\n"+ this.getClass().getName() + " test33_TentaDeletarUmaTributatacaoEstadual, Ok");
@@ -329,13 +334,13 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	@Test
 	public void test34_TentaCadastrarUmaTributacaoFederalIncompleta() {
 		TributacaoFederalPage tributacaoFederalPage = new TributacaoFederalPage(this.driver);
-		testHelper.limpaBanco();
+		limpaBancoECriaUserRoot();
 		tributacaoFederalPage.tentaCadastrarUmaTributacaoFederalSemONcm();
 		System.out.println("\n"+ this.getClass().getName() + " test34_TentaCadastrarUmaTributacaoFederalIncompleta, Ok");
 	}
 	
 	//	EstadoPage estadoPage = new EstadoPage(this.driver);
-//	testHelper.limpaBanco();
+//	limpaBancoECriaUserRoot();
 //	estadoPage.tentaCadastrarEstadoSPCorretamente();
 //	estadoPage.tentaDeletarOPrimeiroRegistroDeEstado();
 //	System.out.println("\n"+ this.getClass().getName() + " test26_TentaDeletarUmEstado, Ok");
@@ -344,7 +349,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 //	@Test
 //	public void test24_TentaConsultarUmEstadoInexistente() {
 //		EstadoPage estadoPage = new EstadoPage(this.driver);
-//		testHelper.limpaBanco();
+//		limpaBancoECriaUserRoot();
 //		estadoPage.tentaConsultarUmEstadoInexistente();
 //		System.out.println("\n"+ this.getClass().getName() + " test24_TentaConsultarUmEstadoInexistente, Ok");
 //	}
@@ -352,7 +357,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 	//	@Test
 //	public void test12_TentaConsultarUmaOperacaoVazia() {
 //		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-//		testHelper.limpaBanco();
+//		limpaBancoECriaUserRoot();
 //		operacaoPage.tentaConsultarUmaOperacaoVazia();
 //		System.out.println("\n"+ this.getClass().getName() + " test12_TentaConsultarUmaOperacaoVazia, Ok");
 //	}
@@ -360,7 +365,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 //	@Test
 //	public void test13_TentaConsultarUmaOperacaoExistente() {
 //		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-//		testHelper.limpaBanco();
+//		limpaBancoECriaUserRoot();
 //		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
 //		operacaoPage.tentaConsultarUmaOperacaoExistente();
 //		System.out.println("\n"+ this.getClass().getName() + " test13_TentaConsultaUmaOperacaoExistente, Ok");

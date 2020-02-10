@@ -172,10 +172,10 @@ public class TributacaoFederalPage {
 	
 	
 	// ======================================= GETTERs And SETTERs ============================================
-		public void setTxt(WebElement txtIcms, String txtValueIcms, Long timeInMillis) {
-			txtIcms.clear();
-			PageUtil.preencheTxt(txtIcms, txtValueIcms, timeInMillis);
-			assertEquals(txtValueIcms, txtIcms.getAttribute("value"));
+		public void setTxt(WebElement txtTributacaoFedereal, String txtValueTributacao, Long timeInMillis) {
+			txtTributacaoFedereal.clear();
+			PageUtil.preencheTxt(txtTributacaoFedereal, txtValueTributacao, timeInMillis);
+			assertEquals(txtValueTributacao, txtTributacaoFedereal.getAttribute("value"));
 		}
 }
 

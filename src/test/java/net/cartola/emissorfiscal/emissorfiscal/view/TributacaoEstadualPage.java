@@ -143,15 +143,17 @@ public class TributacaoEstadualPage {
 		preencheOCadastroDeTributacaoEstadualDeSPparaSPSemONcm();
 		btnCadastrarAlterar.click();
 		PageUtil.verificaSeApareceuMsgDeErro(TRIBUTACAO_ESTADUAL_TITLE_PAGE_CADASTRO, this.driver, TRIBUTACAO_ESTADUAL_MSG_CADASTRADO_ERRO);
+		PageUtil.deslogar(driver);
 	}
 
 	public void tentaCadastrarUmaTributacaoEstadualDeSPparaSP() {
 		preencheOCadastroDeTributacaoEstadualDeSPparaSPSemONcm();
 		Select opNcm = new Select(selectNcm);
 		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
-//		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_ESTADUAL_TITLE_PAGE_CADASTRO, driver);
-
 		btnCadastrarAlterar.click();
+//		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_ESTADUAL_TITLE_PAGE_CADASTRO, driver);
+		PageUtil.espereUmTempo(750L);
+		PageUtil.deslogar(driver);
 	}
 	
 	// ======================================= CONSULTAS ============================================

@@ -78,6 +78,7 @@ public class OperacaoPage {
 		assertEquals(OPERACAO_DESCRICAO_01, txtDescricao.getAttribute("value"));
 		btnCadastrarAlterar.click();
 		PageUtil.verificaSeApareceuMsgDeSucesso(OPERACAO_TITLE_PAGE_CADASTRO, this.driver);
+		PageUtil.espereUmTempo(750L);
 		PageUtil.deslogar(driver);
 	}
 	
@@ -122,6 +123,7 @@ public class OperacaoPage {
 	public void tentaEditarOPrimeiroRegistroDeUmaOperacao() {
 		PageUtil.goToHome(this.driver);
 		PageUtil.goToTelaDeConsulta(this.driver, "Operacao");
+		PageUtil.espereUmTempo(750L);
 		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
 		PageUtil.espereUmTempo(700L);
 		btnEditarPrimeiroRegistro.click();

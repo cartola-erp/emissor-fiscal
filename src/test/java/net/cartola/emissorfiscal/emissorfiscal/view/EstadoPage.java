@@ -94,6 +94,8 @@ public class EstadoPage {
 	public void tentaCadastrarEstadoSPCorretamente() {
 		preencheOCadastroDoEstadoDeSP();
 		PageUtil.verificaSeApareceuMsgDeSucesso(ESTADO_TITLE_PAGE_CADASTRO, this.driver);
+		PageUtil.espereUmTempo(750L);
+		PageUtil.deslogar(driver);
 	}
 	
 	public void tentaCadastrarEstadoQueNaoExista() {
@@ -111,6 +113,8 @@ public class EstadoPage {
 	
 	public void tentaCadastrarEstadoSPDuasVezes() {
 		preencheOCadastroDoEstadoDeSP();
+		PageUtil.espereUmTempo(500L);
+		PageUtil.deslogar(driver);
 		preencheOCadastroDoEstadoDeSP();
 		PageUtil.verificaSeApareceuMsgDeErro(ESTADO_TITLE_PAGE_CADASTRO, this.driver, ESTADO_MSG_CADASTRO_REPETIDO_ERRO);
 	}

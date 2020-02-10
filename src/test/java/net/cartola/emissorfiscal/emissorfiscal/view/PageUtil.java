@@ -11,7 +11,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.stereotype.Component;
 
 /**
  *	13 de jan de 2020
@@ -24,6 +23,7 @@ public class PageUtil {
 	public static void goToHome(WebDriver driver) {
 		driver.get(PATH);
 		login(driver);
+		PageUtil.espereUmTempo(750L);
 		System.out.println("Entrando no link (home): " +PATH);
 	}
 	
@@ -31,10 +31,13 @@ public class PageUtil {
 		WebElement txtUsername = driver.findElement(By.id("username"));
 		WebElement txtPassword = driver.findElement(By.id("password"));
 		WebElement bEntrar = driver.findElement(By.id("bEntrar"));
-		
+
+		PageUtil.espereUmTempo(500L);
 		PageUtil.espereOWebElementAparecer(txtUsername, driver, 3L);
-		txtUsername.sendKeys("root");
-		txtPassword.sendKeys("root");
+		PageUtil.preencheTxt(txtUsername, "root", 500L);
+		PageUtil.espereUmTempo(500L);
+		PageUtil.preencheTxt(txtPassword, "root", 500L);
+		PageUtil.espereUmTempo(500L);
 		bEntrar.click();
 	}
 	
