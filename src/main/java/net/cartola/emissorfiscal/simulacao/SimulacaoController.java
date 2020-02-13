@@ -1,8 +1,6 @@
 package net.cartola.emissorfiscal.simulacao;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -18,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.EstadoService;
-import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
@@ -39,7 +36,7 @@ public class SimulacaoController {
 	
 	
 //	@GetMapping("simulador")
-	@GetMapping()
+	@GetMapping({"", "home"})
 	public ModelAndView loadSimulacaoTeste() {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
 //		Operacao operacao = new Operacao();

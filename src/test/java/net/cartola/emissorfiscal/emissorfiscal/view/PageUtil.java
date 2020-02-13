@@ -57,7 +57,7 @@ public class PageUtil {
 		
 		PageUtil.espereOWebElementAparecer(itemNavBarDropDown, driver, 5L);
 		itemNavBarDropDown.click();
-		
+		PageUtil.espereUmTempo(600L);
 		System.out.println("Entrando na tela de CADASTRO DE: " +nomeEntidade);
 	}
 	
@@ -70,6 +70,7 @@ public class PageUtil {
 		
 		PageUtil.espereOWebElementAparecer(itemNavBarDropDown, driver, 3L);
 		itemNavBarDropDown.click();
+		PageUtil.espereUmTempo(700L);
 		System.out.println("Entrando na tela de CONSULTA DE: " +nomeEntidade);
 	}
 	

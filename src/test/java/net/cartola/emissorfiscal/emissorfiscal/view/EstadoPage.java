@@ -124,7 +124,7 @@ public class EstadoPage {
 	public void tentaConsultarUmEstadoVazio() {
 		PageUtil.goToHome(this.driver);
 		PageUtil.goToTelaDeConsulta(this.driver, "Estado");
-		PageUtil.espereOWebElementAparecer(btnPesquisar, this.driver, 3L);
+		PageUtil.espereOWebElementAparecer(btnPesquisar, this.driver, 4L);
 		PageUtil.espereUmTempo(600L);
 		btnPesquisar.click();
 		assertTrue(btnPesquisar.isDisplayed());
@@ -157,7 +157,7 @@ public class EstadoPage {
 	public void tentaConsultarUmEstadoInexistente() {
 		PageUtil.goToHome(this.driver);
 		PageUtil.goToTelaDeConsulta(this.driver, "Estado");
-		PageUtil.espereOWebElementAparecer(btnPesquisar, this.driver, 3L);
+		PageUtil.espereOWebElementAparecer(btnPesquisar, this.driver, 4L);
 		PageUtil.preencheTxt(txtSigla, "NaO eXiste esse estado", 750L);
 		btnPesquisar.click();
 		PageUtil.espereUmTempo(600L);
