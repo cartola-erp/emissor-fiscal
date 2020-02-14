@@ -20,6 +20,7 @@ import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import net.cartola.emissorfiscal.cfop.Cfop;
 import net.cartola.emissorfiscal.ncm.Ncm;
 
 @Entity
@@ -42,21 +43,25 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal quantidade;
 	private BigDecimal valorUnitario;
 	private Ncm ncm;
-	private int cfop;
+	private Cfop cfop;
 	private Integer icmsCest;
 	private BigDecimal icmsBase;
 	private BigDecimal icmsAliquota;
 	private BigDecimal icmsValor;
+	private int icmsCst;
 	private BigDecimal pisBase;
 	private BigDecimal pisAliquota;
 	private BigDecimal pisValor;
+	private int pisCst;
 	private BigDecimal cofinsBase;
 	private BigDecimal cofinsAliquota;
 	private BigDecimal cofinsValor;
+	private int cofinsCst;
 	private BigDecimal ipiBase;
 	private BigDecimal ipiAliquota;
 	private BigDecimal ipiValor;
-
+	private int ipiCst;
+	
 	private DocumentoFiscal documentoFiscal;
 
 	@Id
@@ -119,11 +124,13 @@ public class DocumentoFiscalItem implements Serializable {
 		this.ncm = ncm;
 	}
 
-	public int getCfop() {
+	@ManyToOne
+	@JoinColumn(name = "cfop_id", foreignKey = @ForeignKey(name = "fnk_cfop"))
+	public Cfop getCfop() {
 		return cfop;
 	}
 
-	public void setCfop(int cfop) {
+	public void setCfop(Cfop  cfop) {
 		this.cfop = cfop;
 	}
 
@@ -159,6 +166,14 @@ public class DocumentoFiscalItem implements Serializable {
 	public void setIcmsValor(BigDecimal icmsValor) {
 		this.icmsValor = icmsValor;
 	}
+	
+	public int getIcmsCst() {
+		return icmsCst;
+	}
+
+	public void setIcmsCst(int icmsCst) {
+		this.icmsCst = icmsCst;
+	}
 
 	public BigDecimal getPisBase() {
 		return pisBase;
@@ -184,6 +199,14 @@ public class DocumentoFiscalItem implements Serializable {
 		this.pisValor = pisValor;
 	}
 
+	public int getPisCst() {
+		return pisCst;
+	}
+
+	public void setPisCst(int pisCst) {
+		this.pisCst = pisCst;
+	}
+
 	public BigDecimal getCofinsBase() {
 		return cofinsBase;
 	}
@@ -206,6 +229,14 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setCofinsValor(BigDecimal cofinsValor) {
 		this.cofinsValor = cofinsValor;
+	}
+	
+	public int getCofinsCst() {
+		return cofinsCst;
+	}
+
+	public void setCofinsCst(int cofinsCst) {
+		this.cofinsCst = cofinsCst;
 	}
 
 	public BigDecimal getIpiBase() {
@@ -230,6 +261,14 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setIpiValor(BigDecimal ipiValor) {
 		this.ipiValor = ipiValor;
+	}
+	
+	public int getIpiCst() {
+		return ipiCst;
+	}
+
+	public void setIpiCst(int ipiCst) {
+		this.ipiCst = ipiCst;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
