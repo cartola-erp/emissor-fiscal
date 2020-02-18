@@ -68,7 +68,7 @@ public class TributacaoFederalController {
 //			mv.addObject("tributacaoFederal", tributacaoFederal);
 			mv.addObject("listOperacao", operacaoService.findAll());
 			mv.addObject("listNcms", ncmService.findAll());
-			mv.addObject("mensagemErro", "Já existe um cadastro para esse tributo federal com essa OPERAÇÃO e NCM");
+			mv.addObject("mensagemErro", "Houve algum erro ao tentar cadastrar essa TRIBUTAÇÃO FEDERAL!! ");
 		}
 		
 		attributes.addFlashAttribute("mensagemSucesso", "Tributação Federal alterado/cadastrado com sucesso!");

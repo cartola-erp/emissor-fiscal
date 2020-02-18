@@ -339,6 +339,16 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		System.out.println("\n"+ this.getClass().getName() + " test34_TentaCadastrarUmaTributacaoFederalIncompleta, Ok");
 	}
 	
+	@Test
+	public void test35_TentaCadastrarUmaTributacaoFederalCorretamente() {
+		TributacaoFederalPage tributacaoFederalPage = new TributacaoFederalPage(this.driver);
+		limpaBancoECriaUserRoot();
+		tributacaoFederalPage.tentaCadastrarUmaTributacaoFederalCorretamente();
+		System.out.println("\n"+ this.getClass().getName() + " test35_TentaCadastrarUmaTributacaoFederalCorretamente, Ok");
+	}
+	
+	
+	
 	//	EstadoPage estadoPage = new EstadoPage(this.driver);
 //	limpaBancoECriaUserRoot();
 //	estadoPage.tentaCadastrarEstadoSPCorretamente();

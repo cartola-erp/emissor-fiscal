@@ -82,7 +82,8 @@ public class TributacaoFederalPage {
 	// As msgs abaixo, é uma parte da msg que aparece para o usuário, e não a msg completa
 	public static String TRIBUTACAO_FEDERAL_MSG_ALTERADA_CADASTRADA = "alterado/cadastrado";
 	
-	public static String TRIBUTACAO_FEDERAL_MSG_CADASTRADO_ERRO = "preencha todos os campos";
+	public static String TRIBUTACAO_FEDERAL_MSG_CADASTRADO_ERRO = "erro ao tentar cadastrar";
+//	public static String TRIBUTACAO_FEDERAL_MSG_CADASTRADO_ERRO = "preencha todos os campos";
 	public static String TRIBUTACAO_FEDERAL_MSG_DELETADO_SUCESSO = "deletada com sucesso";
 	// =========== VERIFICAR ESSAS MSGS ACIMA ==========
 	
@@ -128,7 +129,7 @@ public class TributacaoFederalPage {
 		
 		// Preenchimento da TRIBUTAÇÃO ESTADUAL DE FATO
 		PageUtil.goToHome(driver);
-		PageUtil.goToTelaDeCadastro(driver, "TributacaoEstadual");
+		PageUtil.goToTelaDeCadastro(driver, "TributacaoFederal");
 		PageUtil.espereOWebElementAparecer(selectOperacao, this.driver, 3L);
 		PageUtil.espereUmTempo(1000L);
 		
@@ -166,9 +167,11 @@ public class TributacaoFederalPage {
 		Select opNcm = new Select(selectNcm);
 		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
 //		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_ESTADUAL_TITLE_PAGE_CADASTRO, driver);
-
 		btnCadastrarAlterar.click();
 	}
+	
+	// ======================================= CONSULTAS ============================================
+
 	
 	
 	// ======================================= GETTERs And SETTERs ============================================
