@@ -327,9 +327,7 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 //		System.out.println("\n"+ this.getClass().getName() + " test33_TentaDeletarUmaTributatacaoEstadual, Ok");
 //	}
 
-	// ===========================================================================================================
 	// ======================================= TRIBUTACAO FEDERAL ============================================
-	// ===========================================================================================================
 	
 	@Test
 	public void test34_TentaCadastrarUmaTributacaoFederalIncompleta() {
@@ -347,44 +345,44 @@ public class ExecutaTestesDoSelenium extends SeleniumConfig {
 		System.out.println("\n"+ this.getClass().getName() + " test35_TentaCadastrarUmaTributacaoFederalCorretamente, Ok");
 	}
 	
-	
-	
-	//	EstadoPage estadoPage = new EstadoPage(this.driver);
-//	limpaBancoECriaUserRoot();
-//	estadoPage.tentaCadastrarEstadoSPCorretamente();
-//	estadoPage.tentaDeletarOPrimeiroRegistroDeEstado();
-//	System.out.println("\n"+ this.getClass().getName() + " test26_TentaDeletarUmEstado, Ok");
-//}
-	
-//	@Test
-//	public void test24_TentaConsultarUmEstadoInexistente() {
-//		EstadoPage estadoPage = new EstadoPage(this.driver);
-//		limpaBancoECriaUserRoot();
-//		estadoPage.tentaConsultarUmEstadoInexistente();
-//		System.out.println("\n"+ this.getClass().getName() + " test24_TentaConsultarUmEstadoInexistente, Ok");
-//	}
+	@Test
+	public void test36_TentaConsultarUmaTributacaoFederalVazio() {
+		TributacaoFederalPage tributacaoFederalPage = new TributacaoFederalPage(this.driver);
+		limpaBancoECriaUserRoot();
+		tributacaoFederalPage.tentaConsultarUmaTributacaoFederalVazio();
+		System.out.println("\n"+ this.getClass().getName() + " test36_TentaConsultarUmaTributacaoFederalVazio, Ok");
+	}
 
-	//	@Test
-//	public void test12_TentaConsultarUmaOperacaoVazia() {
-//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-//		limpaBancoECriaUserRoot();
-//		operacaoPage.tentaConsultarUmaOperacaoVazia();
-//		System.out.println("\n"+ this.getClass().getName() + " test12_TentaConsultarUmaOperacaoVazia, Ok");
-//	}
-//	
-//	@Test
-//	public void test13_TentaConsultarUmaOperacaoExistente() {
-//		OperacaoPage operacaoPage = new OperacaoPage(this.driver);
-//		limpaBancoECriaUserRoot();
-//		operacaoPage.tentaCadastrarUmaOperacaoCorretamente();
-//		operacaoPage.tentaConsultarUmaOperacaoExistente();
-//		System.out.println("\n"+ this.getClass().getName() + " test13_TentaConsultaUmaOperacaoExistente, Ok");
-//	}
-//	
-//	
-	
-	// ======================================= TRIBUTACAO FEDERAL ============================================
+	@Test
+	public void test37_TentaConsultarUmaTributacaoFederalExistente() {
+		TributacaoFederalPage tributacaoFederalPage = new TributacaoFederalPage(this.driver);
+		limpaBancoECriaUserRoot();
+		tributacaoFederalPage.tentaCadastrarUmaTributacaoFederalCorretamente();
+		tributacaoFederalPage.tentaConsultarUmaTributacaoFederalExistente();
+		System.out.println("\n"+ this.getClass().getName() + " test37_TentaConsultarUmaTributacaoFederalExistente, Ok");
+	}
 
+	@Test
+	public void test38_TentaEditarUmaTributacaoFederal() {
+		TributacaoFederalPage tributacaoFederalPage = new TributacaoFederalPage(this.driver);
+		limpaBancoECriaUserRoot();
+		tributacaoFederalPage.tentaCadastrarUmaTributacaoFederalCorretamente();
+		tributacaoFederalPage.tentaEditarOPrimeiroRegistroDeUmaTributacaoFederal();
+		System.out.println("\n"+ this.getClass().getName() + " test38_TentaEditarUmaTributacaoFederal, Ok");
+	}
+
+//	@Test
+//	public void test39_TentaDeletarUmaTributatacaoEstadual() {
+//		TributacaoEstadualPage icmsPage = new TributacaoEstadualPage(this.driver);
+//		limpaBancoECriaUserRoot();
+//		icmsPage.tentaCadastrarUmaTributacaoEstadualDeSPparaSP();
+//		icmsPage.tentaDeletarOPrimeiroRegistroDeUmaTributacaoEstadual();
+//		System.out.println("\n"+ this.getClass().getName() + " test39_TentaDeletarUmaTributatacaoEstadual, Ok");
+//	}
+	
+	// ===========================================================================================================
+	// ================================================ CFOP ================================================
+	// ===========================================================================================================
 }
 
 

@@ -62,16 +62,16 @@ public class TributacaoFederalPage {
 	@FindBy(id = "btnCadastrarAlterar")
 	private WebElement btnCadastrarAlterar;
 	
-	@FindBy(id = "txtNcmTributacaoEstadual")
-	private WebElement txtNcmTributacaoEstadual;	// Campo usado para consultar uma tributação especifica
+	@FindBy(id = "txtNcmTributacaoFederal")
+	private WebElement txtNcmTributacaoFederal;	// Campo usado para consultar uma tributação especifica
 	
 	@FindBy(id = "btnPesquisar")
 	private WebElement btnPesquisar;
 	
-	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[12]/a/button")
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[13]/a/button")
 	private WebElement btnEditarPrimeiroRegistro;
 	
-	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[13]/form/button")
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[14]/form/button")
 	private WebElement btnDeletarPrimeiroRegistro;
 	
 	// ====================
@@ -166,14 +166,66 @@ public class TributacaoFederalPage {
 		preencheOCadastroDeTributacaoFederalSemONcm();
 		Select opNcm = new Select(selectNcm);
 		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
-//		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_ESTADUAL_TITLE_PAGE_CADASTRO, driver);
 		btnCadastrarAlterar.click();
+		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_FEDERAL_TITLE_PAGE_CADASTRO, driver);
+		PageUtil.espereUmTempo(750L);
+		PageUtil.deslogar(driver);
 	}
 	
 	// ======================================= CONSULTAS ============================================
 
+	public void tentaConsultarUmaTributacaoFederalVazio() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoFederal");
+		PageUtil.espereOWebElementAparecer(btnPesquisar, this.driver, 3L);
+		PageUtil.espereUmTempo(600L);
+		btnPesquisar.click();
+		PageUtil.espereUmTempo(600L);
+		PageUtil.verificaSeApareceuMsgDeErro(TRIBUTACAO_FEDERAL_TITLE_PAGE_CONSULTA, this.driver);
+	}
+	public void tentaConsultarUmaTributacaoFederalExistente() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoFederal");
+		PageUtil.espereOWebElementAparecer(txtNcmTributacaoFederal, this.driver, 3L);
+		PageUtil.preencheTxt(txtNcmTributacaoFederal, NcmPage.NCM_NUMERO_01, 600L);
+		btnPesquisar.click();
+		PageUtil.espereUmTempo(600L);
+		btnEditarPrimeiroRegistro.click();
+		assertEquals(NcmPage.NCM_NUMERO_01, selectNcm.getText().trim());
+	}
 	
+	// ======================================= EDITAR ============================================
+
+	public void tentaEditarOPrimeiroRegistroDeUmaTributacaoFederal() {
+		PageUtil.goToHome(this.driver);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoFederal");
+		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
+		PageUtil.espereUmTempo(700L);
+		btnEditarPrimeiroRegistro.click();
 	
+		setTxt(txtMensagem, TRIBUTACAO_FEDERAL_MENSAGEM_EDITADA, 600L);
+		btnCadastrarAlterar.click();
+		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_FEDERAL_TITLE_PAGE_CADASTRO, driver);
+		
+		PageUtil.espereUmTempo(500L);
+		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoFederal");
+		PageUtil.espereUmTempo(1000L);
+		PageUtil.espereOWebElementAparecer(btnEditarPrimeiroRegistro, this.driver, 3L);
+		btnEditarPrimeiroRegistro.click();
+		PageUtil.espereUmTempo(500L);
+		assertEquals(TRIBUTACAO_FEDERAL_MENSAGEM_EDITADA, txtMensagem.getAttribute("value"));
+	}
+	
+	// ======================================= DELETES ============================================
+//	public void tentaDeletarOPrimeiroRegistroDeUmaTributacaoEstadual() {
+//		PageUtil.goToHome(this.driver);
+//		PageUtil.goToTelaDeConsulta(this.driver, "TributacaoEstadual");
+//		PageUtil.espereOWebElementAparecer(btnDeletarPrimeiroRegistro, this.driver, 3L);
+//		PageUtil.espereUmTempo(700L);
+//		btnDeletarPrimeiroRegistro.click();
+//		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_ESTADUAL_PAGE_CONSULTA, this.driver, TRIBUTACAO_ESTADUAL_MSG_DELETADO_SUCESSO);
+//	}
+
 	// ======================================= GETTERs And SETTERs ============================================
 		public void setTxt(WebElement txtTributacaoFedereal, String txtValueTributacao, Long timeInMillis) {
 			txtTributacaoFedereal.clear();

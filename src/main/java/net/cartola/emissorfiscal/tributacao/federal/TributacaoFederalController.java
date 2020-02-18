@@ -5,13 +5,14 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,8 +21,9 @@ import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 
+
+@Controller
 @RequestMapping("/tributacao-federal")
-@RestController
 public class TributacaoFederalController {
 	
 	@Autowired
@@ -91,18 +93,25 @@ public class TributacaoFederalController {
 		return mv;
 	}
 
-//	@PostMapping("/consulta")
-//	public ModelAndView findByNumero(@RequestParam("numeroNcm") String numeroNcm, Model model) {
-//		ModelAndView mv = new ModelAndView("tributacaoEstadual/consulta");
-//		try {
-//
-//			mv.addObject("listNcm", tributacaoFederalService.findByNumero(Integer.parseInt(numeroNcm)));
-//		} catch (Exception ex) {
-//			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação informada");
-//		}
-//		return mv;
-//	}
-//
+	@PostMapping("/consulta")
+	public ModelAndView findByNumero(@RequestParam("ncm") String numeroNcm, Model model) {
+		ModelAndView mv = new ModelAndView("tributacao-federal/consulta");
+		try {
+			List<Ncm> listNcm = ncmService.findByNumero(Integer.parseInt(numeroNcm));
+			List<TributacaoFederal> listTributacaoFederal = tributacaoFederalService.findTributacaoFederalByVariosNcms(listNcm);
+			
+			if (!listTributacaoFederal.isEmpty()) {
+				listTributacaoFederal.forEach(tributacaoFederal -> {
+					tributacaoFederalService.multiplicaTributacaoFederalPorCem(tributacaoFederal );
+				});
+			}
+			mv.addObject("listTributacaoFederal", listTributacaoFederal);
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação federal pelo NCM informado");
+		} 
+		return mv;
+	}
+	
 	// Método que irá carregar na tela de cadastro, os valores cadastrados de uma tributação federal(para poder editar)
 	@GetMapping("/editar/{id}")
 	public ModelAndView edit(@PathVariable long id, Model model) {
