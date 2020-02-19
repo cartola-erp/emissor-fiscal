@@ -22,7 +22,7 @@ public class Cfop implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-	private BigDecimal numero;
+	private int numero;
 	private String descricao;
 	
 	@Id
@@ -32,7 +32,7 @@ public class Cfop implements Serializable {
 		return id;
 	}
 	
-	public BigDecimal getNumero() {
+	public int getNumero() {
 		return numero;
 	}
 
@@ -44,7 +44,7 @@ public class Cfop implements Serializable {
 		this.id = id;
 	}
 	
-	public void setNumero(BigDecimal numero) {
+	public void setNumero(int numero) {
 		this.numero = numero;
 	}
 	

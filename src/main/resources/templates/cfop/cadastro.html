@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Cadastro de CFOP </title>
+	</head>
+
+	<body>
+		<section id="cfop-container container">
+
+			<!-- BREADCRUMB -->
+			<div class="container">
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
+								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Home</a></li>
+								<li class="breadcrumb-item"><a href="/cfop/cadastro" style="color: #1b8140; font-weight: 500">Cadastrar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">CFOP</li>
+							</ol>
+						</nav>
+					<div>
+				<div>
+			<div>
+
+			<div class="container">
+
+				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
+				<form th:action="@{/cfop/cadastro}" th:object="${cfop}" method="POST"  >
+					<div class="form-row">
+							
+						<div class="form-group col-md-6">
+							<label for="txtNumero"><strong>Numero da CFOP</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtNumero" th:field="*{numero}" name="numero" placeholder="Insira o número da cfop..." minlength="4" maxlength="4" required>
+						</div>
+						
+						<!-- <div class="form-group col-md-6">
+							<label for="txtDescricao"><strong>Descrição</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtDescricao" th:field="*{excecao}" name="excecao" placeholder="Insira a exceção..." maxlength="2">
+						</div> -->
+					</div>	
+					
+					<div class="form-row md-form " >
+						<i class="fas fa-pencil-alt prefix"></i>
+						<textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea>
+						<label for="txtDescricao">Informe uma descrição</label>
+					</div>	
+
+
+					<div class="form-row">
+						<input type="text" class="form-control" id="txt" th:field="*{id}" name="id" hidden="true" >
+						<div class = "form-group col-md-12">
+							<button type="submit" id="btnCadastrarAlterar" class="btn btn-outline-primary col-md-12"><strong>Alterar/Cadastrar</strong></button>
+							<!-- <button type="submit" class="btn btn-outline-primary col-md-12" th:text="${textBtnCadastrarEditar}"><strong> </strong></button> -->
+						</div>
+					</div>
+				</form>
+
+			</div>
+   		<section>
+
+	</body>
+
+</html>
