@@ -37,7 +37,7 @@ public class Ncm implements Serializable {
 	private Long id;
 	private int numero;
 	private int excecao;
-	private String descricao;
+	private transient String descricao;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,11 +1,9 @@
 package net.cartola.emissorfiscal.usuario;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,8 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import net.cartola.emissorfiscal.security.dto.UsuarioDTO;
 
 /**
  *	26 de dez de 2019
@@ -28,23 +24,6 @@ public class UsuarioService implements UserDetailsService {
 	
 	@Autowired
 	private UsuarioPerfilRepository usuarioPerfilRepository;
-	
-	@Autowired
-	private ModelMapper modelMapper;
-	
-	public UsuarioDTO convertToDto(Usuario usuario) {
-		UsuarioDTO usuarioDto = modelMapper.map(usuario, UsuarioDTO.class);
-		return usuarioDto;
-	}
-	
-	public Usuario convertToEntity(UsuarioDTO usuarioDTO) throws ParseException {
-		Usuario usuario = modelMapper.map(usuarioDTO, Usuario.class);
-		if (usuarioDTO.getId() != null ) {
-			Usuario oldUsuario = findByLogin(usuarioDTO.getLogin()).get();
-			usuario.setId(oldUsuario.getId());
-		}
-		return usuario;
-	}
 	
 	/**
 	 * Busca e retorna um usuário dado um login.

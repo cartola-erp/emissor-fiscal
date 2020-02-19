@@ -30,11 +30,13 @@ public class UsuarioApiController {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@PostMapping("/criar-usuario")
-	public ResponseEntity<UsuarioDTO> criarUsuario(@RequestBody Usuario usuario) {
+//	public ResponseEntity<UsuarioDTO> criarUsuario(@RequestBody Usuario usuario) {
+	public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
 		usuario.setSenha(bCryptPasswordEncoder.encode(usuario.getSenha()));
 		Optional<Usuario> opUsuario = usuarioService.save(usuario);
 		if (opUsuario.isPresent()) {
-			return ResponseEntity.ok().body(usuarioService.convertToDto(opUsuario.get()));
+//			return ResponseEntity.ok().body(usuarioService.convertToDto(opUsuario.get()));
+			return ResponseEntity.ok().body(opUsuario.get());
 		} else {
 			return ResponseEntity.noContent().build();
 		}

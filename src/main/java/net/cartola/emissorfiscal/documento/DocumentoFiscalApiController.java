@@ -36,10 +36,10 @@ public class DocumentoFiscalApiController {
 //		return null;
 //	}
 	
-//	public ResponseEntity<List<DocumentoFiscalDto>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@PathVariable Long cnpj, @PathVariable String tipo, @PathVariable Long serie,  @PathVariable Long numero) {
+//	public ResponseEntity<List<DocumentoFiscal>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@PathVariable Long cnpj, @PathVariable String tipo, @PathVariable Long serie,  @PathVariable Long numero) {
 	@PostMapping(value = "/buscar")
-	public ResponseEntity<Response<DocumentoFiscalDto>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@RequestBody DocumentoFiscal docFiscal) {
-		Response<DocumentoFiscalDto> response = new Response<>();
+	public ResponseEntity<Response<DocumentoFiscal>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@RequestBody DocumentoFiscal docFiscal) {
+		Response<DocumentoFiscal> response = new Response<>();
 		if(docFiscal == null || docFiscal.getEmitente() == null || docFiscal.getTipo() == null || docFiscal.getSerie() == null || docFiscal.getNumero() == null) {
 			return ResponseEntity.badRequest().build();
 		} 
@@ -48,26 +48,26 @@ public class DocumentoFiscalApiController {
 		if(!opDocFiscal.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
-		response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
+		response.setData(opDocFiscal.get());
 		return ResponseEntity.ok(response);
 	}
 	
 	
 	@PostMapping()
-	public ResponseEntity<Response<DocumentoFiscalDto>> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
-		Response<DocumentoFiscalDto> response = new Response<>();
+	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
+		Response<DocumentoFiscal> response = new Response<>();
 		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
 
 		if(opDocFiscal.isPresent()) {
-			response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
+			response.setData(opDocFiscal.get());
 			return ResponseEntity.ok(response);
 		}
 		return saveOrEditDocumentoFiscal(docFiscal);
 	}
 	
 	@PutMapping()
-	public ResponseEntity<Response<DocumentoFiscalDto>> edit (@Valid @RequestBody DocumentoFiscal docFiscal) {
-		Response<DocumentoFiscalDto> response = new Response<>();
+	public ResponseEntity<Response<DocumentoFiscal>> edit (@Valid @RequestBody DocumentoFiscal docFiscal) {
+		Response<DocumentoFiscal> response = new Response<>();
 		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findOne(docFiscal.getId());
 
 		if(!opDocFiscal.isPresent()) {
@@ -77,8 +77,8 @@ public class DocumentoFiscalApiController {
 		return saveOrEditDocumentoFiscal(docFiscal);
 	}
 	
-	private ResponseEntity<Response<DocumentoFiscalDto>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {
-		Response<DocumentoFiscalDto> response = new Response<>();
+	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {
+		Response<DocumentoFiscal> response = new Response<>();
 		
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal);
 		if (!ValidationHelper.collectionEmpty(erros)) {
@@ -88,7 +88,7 @@ public class DocumentoFiscalApiController {
 		
 		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.save(docFiscal);
 		if (opDocFiscal.isPresent()) {
-			response.setData(docFiscalService.convertToDto(opDocFiscal.get()));
+			response.setData(opDocFiscal.get());
 			return ResponseEntity.ok(response);
 		} else {
 			return ResponseEntity.noContent().build();
