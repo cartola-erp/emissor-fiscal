@@ -28,7 +28,7 @@ public class DemoApplication {
 			BCryptPasswordEncoder bcryptEncoder) {
 
 		return args -> {
-			Optional<Usuario> op = usuarioService.findByLogin("admin");
+			Optional<Usuario> op = usuarioService.findByLogin("contador");
 			if (!op.isPresent()) {
 				UsuarioPerfil upa = new UsuarioPerfil();
 				upa.setPerfil(Perfil.ROLE_CONTADOR);
@@ -38,7 +38,7 @@ public class DemoApplication {
 				Usuario u = new Usuario();
 				u.setLogin("contador");
 				u.setNome("Contador");
-				u.setSenha(bcryptEncoder.encode("Cotando123"));
+				u.setSenha(bcryptEncoder.encode("root"));
 				u.setPerfis(Arrays.asList(upa, upu));
 				usuarioService.save(u);
 				System.out.printf("Usuario criado : %s", u);
