@@ -106,10 +106,10 @@ public class TributacaoFederalServiceLogicTest {
 
 		DocumentoFiscal documentoFiscal = documentosFiscais.get(0);
 		assertNotNull(documentoFiscal);
-		assertEquals(documentoFiscal.getPisBase(), new BigDecimal("125.0000000000"));
-		assertEquals(documentoFiscal.getCofinsBase(), new BigDecimal("125.0000000000"));
-		assertEquals(documentoFiscal.getPisValor(), new BigDecimal("2.0625000000000000"));
-		assertEquals(documentoFiscal.getCofinsValor(), new BigDecimal("9.5000000000000000"));
+		assertEquals( new BigDecimal("1.2500000000"), documentoFiscal.getPisBase());
+		assertEquals(new BigDecimal("1.2500000000"), documentoFiscal.getCofinsBase());
+		assertEquals(new BigDecimal("0.0206250000000000"), documentoFiscal.getPisValor());
+		assertEquals(new BigDecimal("0.0950000000000000"), documentoFiscal.getCofinsValor());
 
 //		System.out.println("\n\n");
 		
