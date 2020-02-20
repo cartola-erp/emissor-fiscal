@@ -20,7 +20,6 @@ import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import net.cartola.emissorfiscal.cfop.Cfop;
 import net.cartola.emissorfiscal.ncm.Ncm;
 
 @Entity
@@ -43,7 +42,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal quantidade;
 	private BigDecimal valorUnitario;
 	private Ncm ncm;
-	private Cfop cfop;
+	private int cfop;
 	private Integer icmsCest;
 	private BigDecimal icmsBase;
 	private BigDecimal icmsAliquota;
@@ -124,13 +123,11 @@ public class DocumentoFiscalItem implements Serializable {
 		this.ncm = ncm;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "cfop_id", foreignKey = @ForeignKey(name = "fnk_cfop"))
-	public Cfop getCfop() {
+	public int getCfop() {
 		return cfop;
 	}
 
-	public void setCfop(Cfop  cfop) {
+	public void setCfop(int cfop) {
 		this.cfop = cfop;
 	}
 
