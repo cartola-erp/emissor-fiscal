@@ -19,6 +19,7 @@ import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaTipo;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
 /**
  * 29 de jan de 2020
@@ -40,8 +41,9 @@ public class DocumentoEmissaoControllerTest {
 //	@Autowired
 //	private CalculoFiscalEstadual calcFiscalEstadual;
 	
+	// Isso é o que o EMISSOR-FISCAL, irá receber de informação do ERPJ
 	@Test
-	public void testSerializacao() {
+	public void testSerializacaoGsonVenda() {
 		DocumentoFiscal docFiscal = new DocumentoFiscal();
 		Operacao operacao = new Operacao();
 		Pessoa emitente = new Pessoa();
@@ -55,13 +57,13 @@ public class DocumentoEmissaoControllerTest {
 		// EMITENTE
 		emitente.setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ));
 		emitente.setUf(EstadoSigla.SP);
-		emitente.setRegimeApuracao(TestHelper.PESSOA_REGIME_APURACAO);
+		emitente.setRegimeTributario(RegimeTributario.REAL);
 		emitente.setPessoaTipo(PessoaTipo.JURIDICA);
 		
 		// DESTINATARIO
 		destinatario.setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ_2));
 		destinatario.setUf(EstadoSigla.SP);
-		destinatario.setRegimeApuracao(TestHelper.PESSOA_REGIME_APURACAO);
+		destinatario.setRegimeTributario(RegimeTributario.REAL);
 		destinatario.setPessoaTipo(PessoaTipo.FISICA);
 		
 		// NCM
@@ -93,5 +95,8 @@ public class DocumentoEmissaoControllerTest {
 		
 		System.out.println(gsonDocFiscal);
 	}
+	
+	
+	
 }
 
