@@ -21,8 +21,8 @@ public class PessoaService {
 		return pessoaRepository.findAll();
 	}
 	
-	public Optional<Pessoa> save(Pessoa documentoFiscal) {
-		return Optional.ofNullable(pessoaRepository.saveAndFlush(documentoFiscal));
+	public Optional<Pessoa> save(Pessoa pessoa) {
+		return Optional.ofNullable(pessoaRepository.saveAndFlush(pessoa));
 	}
 		
 	public Optional<Pessoa> findOne(Long id) {

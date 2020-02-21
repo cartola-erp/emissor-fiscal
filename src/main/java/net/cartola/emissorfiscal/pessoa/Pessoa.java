@@ -22,7 +22,7 @@ public class Pessoa {
 	private Long id;
 	private Long cnpj;
 	private EstadoSigla uf = EstadoSigla.SP;
-	private String regimeApuracao;
+	private RegimeTributario regimeTributario;
 	private PessoaTipo pessoaTipo = PessoaTipo.FISICA;
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,14 +52,15 @@ public class Pessoa {
 		this.uf = uf;
 	}
 
-	public String getRegimeApuracao() {
-		return regimeApuracao;
+	@Enumerated(EnumType.STRING)
+	public RegimeTributario getRegimeTributario() {
+		return regimeTributario;
 	}
 
-	public void setRegimeApuracao(String regimeApuracao) {
-		this.regimeApuracao = regimeApuracao;
+	public void setRegimeTributario(RegimeTributario regimeTributario) {
+		this.regimeTributario = regimeTributario;
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	public PessoaTipo getPessoaTipo() {
 		return pessoaTipo;
