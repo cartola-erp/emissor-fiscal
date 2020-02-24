@@ -1,15 +1,17 @@
 package net.cartola.emissorfiscal.simulacao;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -27,7 +29,7 @@ import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 
 @RequestMapping("/")
-@RestController
+@Controller
 public class SimulacaoController {
 	
 	@Autowired
@@ -45,17 +47,17 @@ public class SimulacaoController {
 	@Autowired
 	private CalculoFiscalEstadual calcFiscalEstadual;
 	
+	@Autowired
+	private SimulacaoService simulacaoService;
+	
 	
 	
 //	@GetMapping("simulador")
-	@GetMapping({"", "home"})
+	@GetMapping({"", "home", "simulador/calculo"})
 	public ModelAndView loadSimulacaoTeste() {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
-//		Operacao operacao = new Operacao();
-//		DocumentoFiscal documentoFiscal = new DocumentoFiscal();
-//		mv.addObject("documentoFiscal ", documentoFiscal );
 
-		Operacao operacao = new Operacao();
+//		Operacao operacao = new Operacao();
 //		mv.addObject("operacao", operacao);
 		mv.addObject("listOperacao", operacaoService.findAll());
 		
@@ -64,6 +66,8 @@ public class SimulacaoController {
 		
 		mv.addObject("finalidades", Arrays.asList(Finalidade.values()));
 		mv.addObject("regimesTributarios", Arrays.asList(RegimeTributario.values()));
+		mv.addObject("resultadoCalculo", new String());
+
 		return mv;
 	}
 	
@@ -71,9 +75,8 @@ public class SimulacaoController {
 	@PostMapping("simulador/calculo")
 //	@PostMapping
 	public ModelAndView calculaTributacaoEstadual(@Valid DocumentoFiscal documentoFiscal, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, String regimeTributario, BindingResult result, RedirectAttributes attributes) {
-
 		ModelAndView mv = new ModelAndView("redirect:/");
-
+		
 		try {
 			Estado estadoOrigem = estadoService.findOne(ufOrigemId).get();
 			Estado estadoDestino = estadoService.findOne(ufDestinoId).get();
@@ -92,50 +95,30 @@ public class SimulacaoController {
 				}
 			}
 			destinatario.setUf(estadoDestino.getSigla());;
-//			destinatario.setRegimeTributario(RegimeTributario.REAL);
-			
 			
 			documentoFiscal.setEmitente(emitente);
 			documentoFiscal.setDestinatario(destinatario);
 
 			documentoFiscal.setOperacao(operacao);
 			documentoFiscal.getItens().get(0).setNcm(ncm);
-			
-//			docFiscalItemService.save(docFiscalItemService.getItens());
 		
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			
-			mv.addObject("simulacao", documentoFiscal);
-			
-			System.out.println(documentoFiscal);
-			
+			mv.addObject("documentoFiscal", documentoFiscal);
+			System.out.println("LISTA DO RESULTADO DO CALCULO: " +simulacaoService.getMsgResultadoCalculo(documentoFiscal).toString());
 		} catch (Exception ex) {
 //			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
 			attributes.addFlashAttribute("mensagemErro", "Algo inesperado aconteceu ao tentar calcular " + ex.getMessage());
 			return mv;
 		}
 		
-			
 		System.out.println("Documento Fiscal: " +documentoFiscal);
-
-//		System.out.println("simulacao: " +simulacao);
+//		attributes.addFlashAttribute("mensagemSucesso", "Calculo Realizado com SUCESSO");
+		// Trocar para o o MSG de SUCESSO exibir lista TBM
+		attributes.addFlashAttribute("mensagemErro", simulacaoService.getMsgResultadoCalculo(documentoFiscal));
+//		mv.addObject("mensagemErro", simulacaoService.getMsgResultadoCalculo(documentoFiscal));
 		
-//		calcFiscalEstadual.calculaImposto(documentoFiscal);
-//		
-//		System.out.println("ICMS Base: " + documentoFiscal.getIcmsBase());
-		
-//		System.out.println("ICMS Valor: " + documentoFiscal.getIcmsValor());
-//		Map<String, String> resultMapCalculoIcms = new HashMap<>();
-//		resultMapCalculoIcms = calcFiscalEstadual.calculaImposto(documentoFiscal);
-		
-//		System.out.println("resultMapCalculoIcms: " +resultMapCalculoIcms);
-
-		
-//		ModelAndView mv = new ModelAndView("redirect:/");
-
-//		ncmService.save(documentoFiscal);
-		attributes.addFlashAttribute("mensagemSucesso", "Calculo Realizado com SUCESSO");
 		return mv;
 	}
 }
