@@ -75,6 +75,7 @@ public class DocumentoFiscalItem implements Serializable {
 
 	@NotNull(message = FINALIDADE_OBRIGATORIA)
 	@Enumerated(EnumType.STRING)
+	@Column(name="finalidade", columnDefinition="enum('CONSUMO', 'REVENDA') default 'CONSUMO' ")
 	public Finalidade getFinalidade() {
 		return finalidade;
 	}
@@ -85,6 +86,7 @@ public class DocumentoFiscalItem implements Serializable {
 	
 	@NotNull(message = PRODUTO_ORIGEM_OBRIGATORIA)
 	@Enumerated(EnumType.STRING)
+	@Column(name="produto_origem", columnDefinition="enum('NACIONAL', 'ESTRANGEIRA_IMPORTACAO_DIRETA', 'ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO', 'NACIONAL_CONTEUDO_IMPORTADO_MAIOR_40', 'NACIONAL_CONFORMIDADE_PROCESSOS', 'NACIONAL_CONTEUDO_IMPORTADO_MENOR_40', 'ESTRANGEIRA_IMPORTACAO_DIRETA_CAMEX', 'ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO_CAMEX', 'NACIONAL_CONTEUDO_IMPORTADO_MAIOR_70') default 'NACIONAL' ")
 	public ProdutoOrigem getOrigem() {
 		return origem;
 	}

@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.pessoa;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -53,6 +54,7 @@ public class Pessoa {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Column(name="regime_tributario", columnDefinition="enum('SIMPLES', 'PRESUMIDO', 'REAL') ")
 	public RegimeTributario getRegimeTributario() {
 		return regimeTributario;
 	}
@@ -62,6 +64,7 @@ public class Pessoa {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Column(name="pessoa_tipo", columnDefinition="enum('FISICA', 'JURIDICA') default 'FISICA' ")
 	public PessoaTipo getPessoaTipo() {
 		return pessoaTipo;
 	}
