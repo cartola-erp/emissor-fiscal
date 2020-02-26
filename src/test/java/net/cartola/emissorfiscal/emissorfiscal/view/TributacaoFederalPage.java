@@ -8,6 +8,9 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
+
 /**
  * 27 de jan de 2020
  * @author robson.costa
@@ -17,10 +20,14 @@ public class TributacaoFederalPage {
 	@FindBy(name = "operacaoId")
 	private WebElement selectOperacao;
 	
+	@FindBy(name = "finalidade")
+	private WebElement selectFinalidade;
+	
+	@FindBy(name = "regimeTributario")
+	private WebElement selectRegimeTributario;
+	
 	@FindBy(name = "ncmId")
 	private WebElement selectNcm;
-	
-	// VERIFICAR OS DAQUI PARA BAIXO (TENHO QUE VERIFICAR SE ESTÂO TODOS CORRETOS)
 	
 	@FindBy(id = "txtPisCst")
 	private WebElement txtPisCst;
@@ -135,6 +142,12 @@ public class TributacaoFederalPage {
 		
 		Select opOperacao = new Select(selectOperacao);
 		opOperacao.selectByVisibleText(OperacaoPage.OPERACAO_DESCRICAO_01);
+		
+		Select opFinalidade = new Select(selectFinalidade);
+		opFinalidade.selectByVisibleText(Finalidade.CONSUMO.toString());
+		
+		Select opRegimeTributario = new Select(selectRegimeTributario);
+		opRegimeTributario.selectByVisibleText(RegimeTributario.REAL.toString());
 		
 //		Select opNcm = new Select(selectNcm);
 //		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
