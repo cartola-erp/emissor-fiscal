@@ -1,10 +1,12 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,19 +14,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
+@Controller
 @RequestMapping("/tributacao-estadual")
-@RestController
 public class TributacaoEstadualController {
 	
 	@Autowired
@@ -126,7 +129,9 @@ public class TributacaoEstadualController {
 		model.addAttribute("ufDestinoIdSelecionado", icms.getEstadoDestino().getId());
 		model.addAttribute("operacaoIdSelecionado", icms.getOperacao().getId());
 		model.addAttribute("ncmdIdSelecionado", icms.getNcm().getId());
-
+		model.addAttribute("finalidadeSelecionado", icms.getFinalidade());
+		model.addAttribute("regimeTributarioSelecionado", icms.getRegimeTributario());
+		
 		icmsService.multiplicaTributacaoEstadualPorCem(icms);
 		addObjetosNaView(mv, icms);
 
@@ -153,5 +158,7 @@ public class TributacaoEstadualController {
 		mv.addObject("listEstado", estadoService.findAll());
 		mv.addObject("listOperacao", operacaoService.findAll());
 		mv.addObject("listNcms", ncmService.findAll());
+		mv.addObject("listFinalidade", Arrays.asList(Finalidade.values()));
+		mv.addObject("listRegimeTributario", Arrays.asList(RegimeTributario.values()));
 	}
 }

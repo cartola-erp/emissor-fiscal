@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,9 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
 /**
  * 08/08/2017 17:37:43
@@ -27,9 +32,14 @@ import net.cartola.emissorfiscal.operacao.Operacao;
 public class TributacaoFederal implements Serializable {
 
 	private static final long serialVersionUID = 2348194323467554L;
+
+	private static final String FINALIDADE_OBRIGATORIA = "Atenção! A finalidade é obrigatória!!";
+
 	private Long id;
 	private Operacao operacao;
 	private Ncm ncm;
+	private Finalidade finalidade = Finalidade.CONSUMO;
+	private RegimeTributario regimeTributario;
 	private int pisCst;
 	private BigDecimal pisBase;
 	private BigDecimal pisAliquota;
@@ -70,6 +80,27 @@ public class TributacaoFederal implements Serializable {
 
 	public void setNcm(Ncm ncm) {
 		this.ncm = ncm;
+	}
+
+	@NotNull(message = FINALIDADE_OBRIGATORIA)
+	@Enumerated(EnumType.STRING)
+	@Column(name="finalidade", columnDefinition="enum('CONSUMO', 'REVENDA') default 'CONSUMO' ")
+	public Finalidade getFinalidade() {
+		return finalidade;
+	}
+
+	public void setFinalidade(Finalidade finalidade) {
+		this.finalidade = finalidade;
+	}
+
+	@Enumerated(EnumType.STRING)
+	@Column(name="regime_tributario", columnDefinition="enum('SIMPLES', 'PRESUMIDO', 'REAL') ")
+	public RegimeTributario getRegimeTributario() {
+		return regimeTributario;
+	}
+
+	public void setRegimeTributario(RegimeTributario regimeTributario) {
+		this.regimeTributario = regimeTributario;
 	}
 
 	@Column(name = "pis_cst", scale = 4, nullable = false)

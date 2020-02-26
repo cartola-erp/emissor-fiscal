@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,10 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
 /**
  * 08/08/2017 18:39:51
@@ -26,11 +31,16 @@ import net.cartola.emissorfiscal.operacao.Operacao;
 public class TributacaoEstadual implements Serializable {
 
     private static final long serialVersionUID = 970384982433L;
+    
+	private static final String FINALIDADE_OBRIGATORIA = "Atenção! A finalidade é obrigatória!!";
+
     private Long id;
     private Estado estadoOrigem;
     private Estado estadoDestino;
     private Operacao operacao;
     private Ncm ncm;
+	private Finalidade finalidade = Finalidade.CONSUMO;
+	private RegimeTributario regimeTributario;
     private int icmsCst;
     private BigDecimal icmsBase;
     private BigDecimal icmsAliquota;
@@ -90,7 +100,28 @@ public class TributacaoEstadual implements Serializable {
         this.ncm = ncm;
     }
 
-    @Column(name = "icms_cst", scale = 4, nullable = false)
+	@NotNull(message = FINALIDADE_OBRIGATORIA)
+	@Enumerated(EnumType.STRING)
+	@Column(name="finalidade", columnDefinition="enum('CONSUMO', 'REVENDA') default 'CONSUMO' ")
+    public Finalidade getFinalidade() {
+		return finalidade;
+	}
+
+	public void setFinalidade(Finalidade finalidade) {
+		this.finalidade = finalidade;
+	}
+
+	@Enumerated(EnumType.STRING)
+	@Column(name="regime_tributario", columnDefinition="enum('SIMPLES', 'PRESUMIDO', 'REAL') ")
+	public RegimeTributario getRegimeTributario() {
+		return regimeTributario;
+	}
+
+	public void setRegimeTributario(RegimeTributario regimeTributario) {
+		this.regimeTributario = regimeTributario;
+	}
+
+	@Column(name = "icms_cst", scale = 4, nullable = false)
     public int getIcmsCst() {
         return icmsCst;
     }

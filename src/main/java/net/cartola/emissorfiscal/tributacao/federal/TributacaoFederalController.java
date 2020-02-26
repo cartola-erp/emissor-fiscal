@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
 
 @Controller
@@ -36,13 +39,10 @@ public class TributacaoFederalController {
 	private NcmService ncmService;
 	
 	@GetMapping("/cadastro")
-	public ModelAndView loadTributacaoEstadual() {
+	public ModelAndView loadTributacaoFederal() {
 		ModelAndView mv = new ModelAndView("tributacao-federal/cadastro");
 		TributacaoFederal tributacaoFederal = new TributacaoFederal();
-		mv.addObject("tributacaoFederal", tributacaoFederal);
-		mv.addObject("listOperacao", operacaoService.findAll());
-		mv.addObject("listNcms", ncmService.findAll());
-		
+		addObjetosNaView(mv, tributacaoFederal);
 		// mv.addObject("textBtnCadastrarEditar", "Cadastrar");
 		return mv;
 	}
@@ -51,7 +51,7 @@ public class TributacaoFederalController {
 	public ModelAndView save(@Valid TributacaoFederal tributacaoFederal, Long operacaoId, Long ncmId, BindingResult result, RedirectAttributes attributes) {
 		if (result.hasErrors()) {
 			ModelAndView mv = new ModelAndView("tributacao-federal/cadastro");
-			mv.addObject("tributacaoFederal", tributacaoFederal);
+			addObjetosNaView(mv, tributacaoFederal);
 //			mv.addObject("mensagemErro", tributacaoFederalService.getMensagensErros(result, existeNumeroEExecao));
 			return mv;
 		}
@@ -67,9 +67,7 @@ public class TributacaoFederalController {
 			tributacaoFederalService.save(tributacaoFederal);
 		} catch (Exception ex) {
 			mv.setViewName("tributacao-federal/cadastro");
-//			mv.addObject("tributacaoFederal", tributacaoFederal);
-			mv.addObject("listOperacao", operacaoService.findAll());
-			mv.addObject("listNcms", ncmService.findAll());
+			addObjetosNaView(mv, tributacaoFederal);
 			mv.addObject("mensagemErro", "Houve algum erro ao tentar cadastrar essa TRIBUTAÇÃO FEDERAL!! ");
 		}
 		
@@ -87,7 +85,6 @@ public class TributacaoFederalController {
 				tributacaoFederalService.multiplicaTributacaoFederalPorCem(tributacaoFederal);
 			});
 		}
-		
 		mv.addObject("listTributacaoFederal", listTributacaoFederal);
 		
 		return mv;
@@ -121,13 +118,11 @@ public class TributacaoFederalController {
 
 		model.addAttribute("operacaoIdSelecionado", tributacaoFederal.getOperacao().getId());
 		model.addAttribute("ncmdIdSelecionado", tributacaoFederal.getNcm().getId());
+		model.addAttribute("finalidadeSelecionado", tributacaoFederal.getFinalidade());
+		model.addAttribute("regimeTributarioSelecionado", tributacaoFederal.getRegimeTributario());
 		
-		mv.addObject("tributacaoFederal", tributacaoFederal);
-		mv.addObject("listOperacao", operacaoService.findAll());
-		mv.addObject("listNcms", ncmService.findAll());
-
+		addObjetosNaView(mv, tributacaoFederal);
 		// mv.addObject("textBtnCadastrarEditar", "Editar");
-
 		return mv;
 	}
 
@@ -142,4 +137,13 @@ public class TributacaoFederalController {
 //		attributes.addFlashAttribute("mensagemSucesso", "Tributação Estadual deletado com sucesso!");
 //		return new ModelAndView("redirect:/tributacaoEstadual/consulta");
 //	}
+	
+	private void addObjetosNaView(ModelAndView mv, TributacaoFederal tributacaoFederal) {
+		mv.addObject("tributacaoFederal", tributacaoFederal);
+		mv.addObject("listOperacao", operacaoService.findAll());
+		mv.addObject("listNcms", ncmService.findAll());
+		mv.addObject("listFinalidade", Arrays.asList(Finalidade.values()));
+		mv.addObject("listRegimeTributario", Arrays.asList(RegimeTributario.values()));
+	}
+
 }
