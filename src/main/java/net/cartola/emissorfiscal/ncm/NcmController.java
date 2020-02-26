@@ -4,6 +4,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,9 +58,11 @@ public class NcmController {
 	}
 		
 	@GetMapping("/consulta")
-	public ModelAndView findAll() {
+	public ModelAndView findAll(Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("ncm/consulta");
-		mv.addObject("listNcm", ncmService.findAll());
+//		mv.addObject("listNcm", ncmService.findAll());
+		mv.addObject("listNcm", ncmService.findAll(PageRequest.of(page, 20)));
+		model.addAttribute("paginaAtual",page);
 		
 		return mv;
 	}

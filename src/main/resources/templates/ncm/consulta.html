@@ -89,24 +89,24 @@
 							
 						<!-- PAGINAÇÃO ? -->
 						<!-- <ul class="nav nav-pills ">
-							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listConsultorios.totalPages)}">
-								 <a th:href="@{/consultorio/consultar/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
-									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
+							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listNcm.totalPages)}">
+								 <a th:href="@{/ncm/consulta/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">
 								 </a>
 							</li>	
-						</ul>
-						-->
+						</ul> -->
+						
 				</table>
 						
-						<!-- 
+						
 						<ul class="nav nav-pills ">
-							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listConsultorios.totalPages)}">
-								 <a th:href="@{/consultorio/consultar/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listNcm.totalPages)}">
+								 <a th:href="@{/ncm/consulta/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
 									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
 								 </a>
 							</li>	
 						</ul>
-						-->
+						
 			</div>
    		<section>
 
