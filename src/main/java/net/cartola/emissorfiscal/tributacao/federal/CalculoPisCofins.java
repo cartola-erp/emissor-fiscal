@@ -26,6 +26,7 @@ public class CalculoPisCofins {
 		di.setPisAliquota(tributacao.getPisAliquota());
 		di.setPisBase(valorPisBase);
 		di.setPisValor(valorPis);
+		di.setPisCst(tributacao.getPisCst());
 		return pis;
 	}
 
@@ -44,6 +45,7 @@ public class CalculoPisCofins {
 		di.setCofinsAliquota(tributacao.getCofinsAliquota());
 		di.setCofinsBase(valorCofinsBase);
 		di.setCofinsValor(valorCofins);
+		di.setCofinsCst(tributacao.getCofinsCst());
 		return cofins;
 	}
 }
