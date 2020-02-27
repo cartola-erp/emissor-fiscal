@@ -66,7 +66,9 @@ public class SimulacaoController {
 		
 		mv.addObject("finalidades", Arrays.asList(Finalidade.values()));
 		mv.addObject("regimesTributarios", Arrays.asList(RegimeTributario.values()));
-		mv.addObject("resultadoCalculo", new String());
+		mv.addObject("resultadoCalculo", new StringBuffer("Esperando o calculo").toString());
+		mv.addObject("qtdLinhas", new Integer(2));
+
 
 		return mv;
 	}
@@ -75,7 +77,8 @@ public class SimulacaoController {
 	@PostMapping("simulador/calculo")
 //	@PostMapping
 	public ModelAndView calculaTributacaoEstadual(@Valid DocumentoFiscal documentoFiscal, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, String regimeTributario, BindingResult result, RedirectAttributes attributes) {
-		ModelAndView mv = new ModelAndView("redirect:/");
+//		ModelAndView mv = new ModelAndView("redirect:/");
+		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
 		
 		try {
 			Estado estadoOrigem = estadoService.findOne(ufOrigemId).get();
@@ -116,7 +119,18 @@ public class SimulacaoController {
 		System.out.println("Documento Fiscal: " +documentoFiscal);
 //		attributes.addFlashAttribute("mensagemSucesso", "Calculo Realizado com SUCESSO");
 		// Trocar para o o MSG de SUCESSO exibir lista TBM
-		attributes.addFlashAttribute("mensagemErro", simulacaoService.getMsgResultadoCalculo(documentoFiscal));
+//		attributes.addFlashAttribute("mensagemErro", simulacaoService.getMsgResultadoCalculo(documentoFiscal));
+		
+		final StringBuffer sb = new StringBuffer();
+		
+//		simulacaoService.getMsgResultadoCalculo(documentoFiscal).forEach(msg -> {sb.append(msg).append("\n");});
+		List<String> listMsgResultado = simulacaoService.getMsgResultadoCalculo(documentoFiscal);
+		listMsgResultado.forEach(msg -> {sb.append(msg).append("\n");});
+
+//		attributes.addFlashAttribute("mensagemErro", sb.toString());
+		mv.addObject("resultadoCalculo", sb.toString());
+		mv.addObject("qtdLinhas", listMsgResultado.size());
+
 //		mv.addObject("mensagemErro", simulacaoService.getMsgResultadoCalculo(documentoFiscal));
 		
 		return mv;

@@ -112,8 +112,11 @@
 						<div class="form-group col-md-12">
 							<i class="fas fa-pencil-alt prefix"></i>
 							<!-- <textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea> -->
-							<textarea id="txtResultadoCalculo" class="md-textarea form-control " rows="2"  th:text="${resultadoCalculo}"></textarea>
-							<label for="txtDescricao">Resultados dos cálculos</label>
+							<label for="txtResultadoCalculo">Resultados dos cálculos</label>
+							<textarea id="txtResultadoCalculo" class="md-textarea form-control " 
+								th:rows="${qtdLinhas}"  
+								th:text="${resultadoCalculo}">
+							</textarea>
 						</div>
 					</div>	
 
