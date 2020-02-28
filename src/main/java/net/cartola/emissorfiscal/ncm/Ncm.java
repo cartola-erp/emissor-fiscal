@@ -94,7 +94,7 @@ public class Ncm implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Ncm[id=" + id + ", numero=" + numero + ", excecao=" + excecao + ']';
+		return "Número = " + numero + " - Exceção = " + excecao;
 	}
 
 }
