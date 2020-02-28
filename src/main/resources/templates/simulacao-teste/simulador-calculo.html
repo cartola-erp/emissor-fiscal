@@ -28,8 +28,7 @@
 			<div class="container">
 
 				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
-				<!-- <form th:action="@{/operacao/cadastro}" th:object="${operacao}" method="POST"  > -->
-				<form th:action="@{simulador/calculo}" th:object="${documentoFiscal}" method="POST"  >
+				<form th:action="@{/simulador/calculo}" th:object="${documentoFiscal}" method="POST"  >
 
 					<!-- OPERAÇÃO -->
 					<div class="form-row">
@@ -97,7 +96,7 @@
 	
 						<!-- PESSOA (REGIME TRIBUTARIO) emitenteRegimeApuracao-->
 						<div class="form-group col-md-6">
-							<label for="cmbRegimeTributario"><strong>Regime Tributário</strong></label>
+							<label for="cmbRegimeTributario"><strong>Regime Tributário do emitente</strong></label>
 							<select class="custom-select" name="regimeTributario" >
 								<option selected id="opFinalidade"> </option>
 								<option th:each="regimeTributario : ${regimesTributarios}" th:value="${regimeTributario}" th:text="${regimeTributario}" ></option>
@@ -113,7 +112,7 @@
 							<i class="fas fa-pencil-alt prefix"></i>
 							<!-- <textarea id="txtDescricao" th:field="*{descricao}" name="descricao" class="md-textarea form-control" rows="2" ></textarea> -->
 							<label for="txtResultadoCalculo">Resultados dos cálculos</label>
-							<textarea id="txtResultadoCalculo" class="md-textarea form-control " 
+							<textarea readonly id="txtResultadoCalculo" class="md-textarea form-control " 
 								th:rows="${qtdLinhas}"  
 								th:text="${resultadoCalculo}">
 							</textarea>

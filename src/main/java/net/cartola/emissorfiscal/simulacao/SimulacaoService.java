@@ -17,7 +17,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 public class SimulacaoService {
 	
 	
-	public List<String> getMsgResultadoCalculo(DocumentoFiscal documentoFiscal ) {
+	public List<String> getListMsgResultadoCalculo(DocumentoFiscal documentoFiscal ) {
 		List<String> listResult = new ArrayList<String>();
 		DocumentoFiscalItem item = documentoFiscal.getItens().get(0);
 		
@@ -49,9 +49,26 @@ public class SimulacaoService {
 		listResult.add("PIS BASE (ITEM): " +item.getPisBase() );
 		listResult.add("PIS CST (ITEM): " +item.getPisCst() );
 		
+		if (listResult.isEmpty()) {
+			listResult.add("Está faltando o cadastro de alguma tributação para esse NCM escolhido");
+		}
 		return listResult;
 	}
 	
+	/**
+	 * Irá retornar cada resultado do calculo fiscal, em uma linha diferente
+	 * @param documentoFiscal
+	 * @return 
+	 */
+	public StringBuffer getStrbuffMsgResultadoCalculo(DocumentoFiscal documentoFiscal) {
+		final StringBuffer sb = new StringBuffer();
+		List<String> listMsgResultado = getListMsgResultadoCalculo(documentoFiscal);
+		
+		listMsgResultado.forEach(msg -> {
+			sb.append(msg).append("\n");
+		});
+		return sb;
+	}
 	
 
 	

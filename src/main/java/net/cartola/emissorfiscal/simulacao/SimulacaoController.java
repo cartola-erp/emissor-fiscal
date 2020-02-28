@@ -1,8 +1,6 @@
 package net.cartola.emissorfiscal.simulacao;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -50,25 +48,13 @@ public class SimulacaoController {
 	@Autowired
 	private SimulacaoService simulacaoService;
 	
-	
-	
 //	@GetMapping("simulador")
 	@GetMapping({"", "home", "simulador/calculo"})
 	public ModelAndView loadSimulacaoTeste() {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
 
-//		Operacao operacao = new Operacao();
-//		mv.addObject("operacao", operacao);
-		mv.addObject("listOperacao", operacaoService.findAll());
-		
-		mv.addObject("listEstado", estadoService.findAll());
-		mv.addObject("listNcm", ncmService.findAll());
-		
-		mv.addObject("finalidades", Arrays.asList(Finalidade.values()));
-		mv.addObject("regimesTributarios", Arrays.asList(RegimeTributario.values()));
-		mv.addObject("resultadoCalculo", new StringBuffer("Esperando o calculo").toString());
-		mv.addObject("qtdLinhas", new Integer(2));
-
+		addObjetosNaView(mv, new DocumentoFiscal());
+//		mv.addObject("resultadoCalculo", new StringBuffer("Esperando o calculo").toString());
 
 		return mv;
 	}
@@ -77,7 +63,6 @@ public class SimulacaoController {
 	@PostMapping("simulador/calculo")
 //	@PostMapping
 	public ModelAndView calculaTributacaoEstadual(@Valid DocumentoFiscal documentoFiscal, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, String regimeTributario, BindingResult result, RedirectAttributes attributes) {
-//		ModelAndView mv = new ModelAndView("redirect:/");
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
 		
 		try {
@@ -108,31 +93,34 @@ public class SimulacaoController {
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			
-			mv.addObject("documentoFiscal", documentoFiscal);
-			System.out.println("LISTA DO RESULTADO DO CALCULO: " +simulacaoService.getMsgResultadoCalculo(documentoFiscal).toString());
+			addObjetosNaView(mv, documentoFiscal);
 		} catch (Exception ex) {
 //			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
 			attributes.addFlashAttribute("mensagemErro", "Algo inesperado aconteceu ao tentar calcular " + ex.getMessage());
 			return mv;
 		}
-		
-		System.out.println("Documento Fiscal: " +documentoFiscal);
-//		attributes.addFlashAttribute("mensagemSucesso", "Calculo Realizado com SUCESSO");
-		// Trocar para o o MSG de SUCESSO exibir lista TBM
-//		attributes.addFlashAttribute("mensagemErro", simulacaoService.getMsgResultadoCalculo(documentoFiscal));
-		
-		final StringBuffer sb = new StringBuffer();
-		
-//		simulacaoService.getMsgResultadoCalculo(documentoFiscal).forEach(msg -> {sb.append(msg).append("\n");});
-		List<String> listMsgResultado = simulacaoService.getMsgResultadoCalculo(documentoFiscal);
-		listMsgResultado.forEach(msg -> {sb.append(msg).append("\n");});
+		final StringBuffer sbResultCalculo = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
+		int qtdLinhas = simulacaoService.getListMsgResultadoCalculo(documentoFiscal).size();
 
-//		attributes.addFlashAttribute("mensagemErro", sb.toString());
-		mv.addObject("resultadoCalculo", sb.toString());
-		mv.addObject("qtdLinhas", listMsgResultado.size());
+		mv.addObject("resultadoCalculo", sbResultCalculo.toString());
+		mv.addObject("qtdLinhas", qtdLinhas + 2);
 
-//		mv.addObject("mensagemErro", simulacaoService.getMsgResultadoCalculo(documentoFiscal));
-		
+		System.out.println("RESULTADO DO CALCULO: " + sbResultCalculo.toString());
+
 		return mv;
+	}
+	
+	public void addObjetosNaView(ModelAndView mv, DocumentoFiscal documentoFiscal) {
+		mv.addObject("documentoFiscal", documentoFiscal);
+
+		mv.addObject("listOperacao", operacaoService.findAll());
+		mv.addObject("listEstado", estadoService.findAll());
+		mv.addObject("listNcm", ncmService.findAll());
+		mv.addObject("finalidades", Arrays.asList(Finalidade.values()));
+		mv.addObject("regimesTributarios", Arrays.asList(RegimeTributario.values()));
+
+		mv.addObject("resultadoCalculo", new StringBuffer("Esperando o calculo").toString());
+		mv.addObject("qtdLinhas", new Integer(2));
+
 	}
 }
