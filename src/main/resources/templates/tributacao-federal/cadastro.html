@@ -43,7 +43,7 @@
 							<label for="cmbNcm"><strong>NCM</strong></label>
 							<select class="custom-select" id="ncmId" name="ncmId" >
 								<option selected id="opNcm"> </option>
-								<option th:each="ncm : ${listNcms}" th:value="${ncm.id}" th:selected="${ncm.id == ncmdIdSelecionado}" th:text="${ncm.numero}" ></option>
+								<option th:each="ncm : ${listNcms}" th:value="${ncm.id}" th:selected="${ncm.id == ncmdIdSelecionado}" th:text="${ncm}" ></option>
 							</select>
 						</div>
 					</div>
