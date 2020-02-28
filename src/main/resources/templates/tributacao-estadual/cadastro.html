@@ -80,7 +80,7 @@
 						</div>
 						
 						<div class="form-group col-md-6">
-							<label for="cmbRegimeTributario"><strong>Regime Tributário</strong></label>
+							<label for="cmbRegimeTributario"><strong>Regime Tributário do emitente</strong></label>
 							<select class="custom-select" id="regimeTributario" name="regimeTributario" >
 								<option selected id="opRegimeTributario"> </option>
 								<option th:each="regimeTributario : ${listRegimeTributario}" th:value="${regimeTributario}" th:selected="${regimeTributario == regimeTributarioSelecionado}" th:text="${regimeTributario}" ></option>
