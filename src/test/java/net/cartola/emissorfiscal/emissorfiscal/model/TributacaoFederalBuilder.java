@@ -2,8 +2,10 @@ package net.cartola.emissorfiscal.emissorfiscal.model;
 
 import java.math.BigDecimal;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 
 /**
@@ -26,6 +28,16 @@ public class TributacaoFederalBuilder {
 
 	public TributacaoFederalBuilder withOperacao(Operacao operacao) {
 		tributacaoFederal.setOperacao(operacao);
+		return this;
+	}
+	
+	public TributacaoFederalBuilder withFinalidadeo(Finalidade finalidade) {
+		tributacaoFederal.setFinalidade(finalidade);
+		return this;
+	}
+	
+	public TributacaoFederalBuilder withRegimeTributario(RegimeTributario regimeTributario) {
+		tributacaoFederal.setRegimeTributario(regimeTributario);
 		return this;
 	}
 

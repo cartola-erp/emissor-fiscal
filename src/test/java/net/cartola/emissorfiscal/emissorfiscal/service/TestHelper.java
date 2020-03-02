@@ -16,6 +16,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
 import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.emissorfiscal.model.TributacaoFederalBuilder;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoRepository;
@@ -27,6 +28,7 @@ import net.cartola.emissorfiscal.operacao.OperacaoRepository;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaRepository;
 import net.cartola.emissorfiscal.pessoa.PessoaTipo;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualRepository;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
@@ -63,7 +65,7 @@ public class TestHelper {
 
 	public static final String PESSOA_CNPJ = "12345678901234";
 	public static final String PESSOA_UF_SP = EstadoSigla.SP.toString();
-	public static final String PESSOA_REGIME_APURACAO = "Regime de apuração 1";
+	public static final String PESSOA_REGIME_TRIBUTARIO_REAL = RegimeTributario.REAL.toString();
 	public static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
 	                
 	public static final String PESSOA_CNPJ_2 = "02329838429395";
@@ -169,17 +171,17 @@ public class TestHelper {
 	
 	public List<Pessoa> criarPessoa() {
 		List<Pessoa> pessoas = new LinkedList<>();
-		String[][] data = { {PESSOA_CNPJ, PESSOA_UF_SP, PESSOA_REGIME_APURACAO, PESSOA_TIPO_JURIDICA},
-							{PESSOA_CNPJ_2, PESSOA_UF_SP, PESSOA_REGIME_APURACAO, PESSOA_TIPO_FISICA},
-							{PESSOA_CNPJ, PESSOA_UF_MG, PESSOA_REGIME_APURACAO, PESSOA_TIPO_FISICA},
-							{PESSOA_CNPJ_2, PESSOA_UF_MG, PESSOA_REGIME_APURACAO, PESSOA_TIPO_JURIDICA} };
+		String[][] data = { {PESSOA_CNPJ, PESSOA_UF_SP, PESSOA_REGIME_TRIBUTARIO_REAL, PESSOA_TIPO_JURIDICA},
+							{PESSOA_CNPJ_2, PESSOA_UF_SP, PESSOA_REGIME_TRIBUTARIO_REAL, PESSOA_TIPO_FISICA},
+							{PESSOA_CNPJ, PESSOA_UF_MG, PESSOA_REGIME_TRIBUTARIO_REAL, PESSOA_TIPO_FISICA},
+							{PESSOA_CNPJ_2, PESSOA_UF_MG, PESSOA_REGIME_TRIBUTARIO_REAL, PESSOA_TIPO_JURIDICA} };
 		
 		for (String[] dados : data) {
 			int aux = 0;
 			Pessoa pessoa = new Pessoa();
 			pessoa.setCnpj(Long.valueOf(dados[aux++]));
 			pessoa.setUf(EstadoSigla.valueOf(dados[aux++]));
-			pessoa.setRegimeApuracao(dados[aux++]);
+			pessoa.setRegimeTributario(RegimeTributario.valueOf(dados[aux++]));
 			pessoa.setPessoaTipo(PessoaTipo.valueOf(dados[aux++]));
 			pessoas.add(pessoa);
 		}
@@ -196,6 +198,8 @@ public class TestHelper {
 			icms.setEstadoDestino(estadoOrigem);
 			icms.setOperacao(operacao);
 			icms.setNcm(ncm);
+			icms.setFinalidade(Finalidade.CONSUMO);
+			icms.setRegimeTributario(RegimeTributario.REAL);
 			icms.setIcmsCst(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CST);
 			icms.setIcmsBase(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_BASE);
 			icms.setIcmsAliquota(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA);
@@ -215,6 +219,8 @@ public class TestHelper {
 		listNcms.stream().forEach(ncm -> {
 			TributacaoFederalBuilder tributFedBuilder = new TributacaoFederalBuilder().withNcm(ncm)
 					.withOperacao(operacao).withPisCst(TributacaoFederalServiceLogicTest.PIS_CST)
+					.withFinalidadeo(Finalidade.CONSUMO)
+					.withRegimeTributario(RegimeTributario.REAL)
 					.withPisBase(TributacaoFederalServiceLogicTest.PIS_BASE)
 					.withPisAliquota(TributacaoFederalServiceLogicTest.PIS_ALIQUOTA)
 					.withCofinsCst(TributacaoFederalServiceLogicTest.COFINS_CST)
@@ -280,13 +286,14 @@ public class TestHelper {
 	private List<DocumentoFiscalItem> criarDocumentoFiscalItem(List<Ncm> ncms) {
 		List<DocumentoFiscalItem> documentoFiscalItens = new LinkedList<>();
 
-		String[][] data = { { "CONSUMO", "10", "5", "5102", NCM1 }, { "CONSUMO", "5", "5", "5105", NCM2 },
-				{ "CONSUMO", "10", "5", "5102", NCM3 } };
+		String[][] data = { { "CONSUMO", "NACIONAL", "10", "5", "5102", NCM1 }, { "CONSUMO", "NACIONAL", "5", "5", "5105", NCM2 },
+				{ "CONSUMO", "NACIONAL", "10", "5", "5102", NCM3 } };
 
 		for (String[] dados : data) {
 			int aux = 0;
 			DocumentoFiscalItem docFiscalItem = new DocumentoFiscalItem();
 			docFiscalItem.setFinalidade(Finalidade.valueOf(dados[aux++]));
+			docFiscalItem.setOrigem(ProdutoOrigem.valueOf(dados[aux++]));
 			docFiscalItem.setQuantidade(new BigDecimal(dados[aux++]));
 			docFiscalItem.setValorUnitario(new BigDecimal(dados[aux++]));
 			docFiscalItem.setCfop(Integer.parseInt(dados[aux++]));
