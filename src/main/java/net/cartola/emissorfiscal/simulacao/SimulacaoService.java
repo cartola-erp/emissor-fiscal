@@ -47,7 +47,7 @@ public class SimulacaoService {
 	public List<String> getListMsgResultadoCalculo(DocumentoFiscal documentoFiscal ) {
 		List<String> listResult = new ArrayList<String>();
 		
-		List<String> erros = validaTributacaoFederal(documentoFiscal);
+		List<String> erros = validaTributacaoFederalAndEstadual(documentoFiscal);
 		
 		if (!ValidationHelper.collectionEmpty(erros)) {
 			return erros;
@@ -122,12 +122,11 @@ public class SimulacaoService {
 	
 	// Isso é uma parte das validações que tem no DocumentoFiscalService
 	// Como é para o SIMULADOR, o que importa aqui é a parte de Existir tributações, conforme: operação, finalide e regime tributario emitente
-	private List<String> validaTributacaoFederal(DocumentoFiscal documentoFiscal) {
+	private List<String> validaTributacaoFederalAndEstadual(DocumentoFiscal documentoFiscal) {
 		Map<String, Boolean> map = new HashMap<>();
-
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
-
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
 		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
 		
@@ -140,7 +139,7 @@ public class SimulacaoService {
 		}
 		
 		if(!tributacoesEstaduais.isEmpty()) {
-			
+			docFiscalService.validaTributacaoEstadualDoDocumentoFiscal(documentoFiscal, ncms, tributacoesEstaduais, map);
 		}
 		
 		return ValidationHelper.processaErros(map);

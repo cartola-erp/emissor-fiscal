@@ -91,11 +91,11 @@ public class SimulacaoController {
 			documentoFiscal.setOperacao(operacao);
 			documentoFiscal.getItens().get(0).setNcm(ncm);
 		
-			erros = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
-
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			
+			erros = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
+			System.out.println("ERROS AO CALCULAR: " +erros);
 			addObjetosNaView(mv, documentoFiscal);
 		} catch (Exception ex) {
 //			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
