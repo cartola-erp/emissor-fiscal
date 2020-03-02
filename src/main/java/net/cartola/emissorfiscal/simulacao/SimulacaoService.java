@@ -1,12 +1,27 @@
 package net.cartola.emissorfiscal.simulacao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
+import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.operacao.OperacaoService;
+import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
+import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
+import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
+import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
+import net.cartola.emissorfiscal.util.ValidationHelper;
 
 /**
  * 24 de fev de 2020
@@ -16,9 +31,28 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 @Service
 public class SimulacaoService {
 	
+	@Autowired
+	DocumentoFiscalService docFiscalService;
+	
+	@Autowired
+	private OperacaoService operacaoService;
+	
+	@Autowired
+	private TributacaoEstadualService icmsService;
+	
+	@Autowired
+	private TributacaoFederalService tributacaoFederalService;
+	
 	
 	public List<String> getListMsgResultadoCalculo(DocumentoFiscal documentoFiscal ) {
 		List<String> listResult = new ArrayList<String>();
+		
+		List<String> erros = validaTributacaoFederal(documentoFiscal);
+		
+		if (!ValidationHelper.collectionEmpty(erros)) {
+			return erros;
+		}
+		
 		DocumentoFiscalItem item = documentoFiscal.getItens().get(0);
 		
 		listResult.add(" =========================================== DADOS INFORMADOS =========================================== ");
@@ -85,6 +119,32 @@ public class SimulacaoService {
 		return sb;
 	}
 	
+	
+	// Isso é uma parte das validações que tem no DocumentoFiscalService
+	// Como é para o SIMULADOR, o que importa aqui é a parte de Existir tributações, conforme: operação, finalide e regime tributario emitente
+	private List<String> validaTributacaoFederal(DocumentoFiscal documentoFiscal) {
+		Map<String, Boolean> map = new HashMap<>();
+
+		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
+
+		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
+		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
+		
+//		if (opOperacao.isPresent() && !ncms.isEmpty() && !map.containsValue(false) ) {
+			tributacoesEstaduais = icmsService.findTributacaoEstadualByOperacaoENcms(opOperacao.get(), ncms);
+			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacao(documentoFiscal.getOperacao(), ncms);
+//		}
+		if (!tributacoesFederais.isEmpty()) {
+			docFiscalService.validaTributacaoFederalDoDocumentoFiscal(documentoFiscal, ncms, tributacoesFederais, map);
+		}
+		
+		if(!tributacoesEstaduais.isEmpty()) {
+			
+		}
+		
+		return ValidationHelper.processaErros(map);
+	}
 
 	
 }

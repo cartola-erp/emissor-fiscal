@@ -64,7 +64,7 @@ public class SimulacaoController {
 //	@PostMapping
 	public ModelAndView calculaTributacaoEstadual(@Valid DocumentoFiscal documentoFiscal, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, String regimeTributario, BindingResult result, RedirectAttributes attributes) {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
-		
+		 StringBuffer erros = new StringBuffer("Não existe nenhuma tributação cadastrada, para os dados informados");
 		try {
 			Estado estadoOrigem = estadoService.findOne(ufOrigemId).get();
 			Estado estadoDestino = estadoService.findOne(ufDestinoId).get();
@@ -73,15 +73,16 @@ public class SimulacaoController {
 			
 			Pessoa emitente = new Pessoa();
 			emitente.setCnpj(123456789012L);
-			emitente.setRegimeTributario(RegimeTributario.REAL);
+//			emitente.setRegimeTributario(RegimeTributario.REAL);
+			for(RegimeTributario regimeTributa : RegimeTributario.values()) {
+				if(regimeTributa.getDescricao().equalsIgnoreCase(regimeTributario)) {
+					emitente.setRegimeTributario(regimeTributa);
+				}
+			}
 			
 			Pessoa destinatario = new Pessoa();
 			destinatario.setCnpj(98765432102L);
-			for(RegimeTributario regimeTributa : RegimeTributario.values()) {
-				if(regimeTributa.getDescricao().equalsIgnoreCase(regimeTributario)) {
-					destinatario.setRegimeTributario(regimeTributa);
-				}
-			}
+		
 			destinatario.setUf(estadoDestino.getSigla());;
 			
 			documentoFiscal.setEmitente(emitente);
@@ -90,6 +91,8 @@ public class SimulacaoController {
 			documentoFiscal.setOperacao(operacao);
 			documentoFiscal.getItens().get(0).setNcm(ncm);
 		
+			erros = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
+
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			
@@ -97,6 +100,8 @@ public class SimulacaoController {
 		} catch (Exception ex) {
 //			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
 			attributes.addFlashAttribute("mensagemErro", "Algo inesperado aconteceu ao tentar calcular " + ex.getMessage());
+			addObjetosNaView(mv, documentoFiscal);
+			mv.addObject("resultadoCalculo", erros.toString());
 			return mv;
 		}
 		final StringBuffer sbResultCalculo = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
