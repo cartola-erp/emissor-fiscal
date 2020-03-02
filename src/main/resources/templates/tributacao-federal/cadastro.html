@@ -52,7 +52,7 @@
 					<div class="form-row">
 						<div class="form-group col-md-6">
 							<label for="cmbFinalidade"><strong>Finalidade</strong></label>
-							<select class="custom-select" name="finalidade">
+							<select class="custom-select" name="finalidade" required>
 							<option selected id="opFinalidade"> </option>
 								<option th:each="finalidade : ${listFinalidade}" th:value="${finalidade}" th:selected="${finalidade == finalidadeSelecionado}" th:text="${finalidade}" ></option>
 							</select>
@@ -60,7 +60,7 @@
 						
 						<div class="form-group col-md-6">
 							<label for="cmbRegimeTributario"><strong>Regime Tributário do emitente</strong></label>
-							<select class="custom-select" id="regimeTributario" name="regimeTributario" >
+							<select class="custom-select" id="regimeTributario" name="regimeTributario" required>
 								<option selected id="opRegimeTributario"> </option>
 								<option th:each="regimeTributario : ${listRegimeTributario}" th:value="${regimeTributario}" th:selected="${regimeTributario == regimeTributarioSelecionado}" th:text="${regimeTributario}" ></option>
 							</select>
