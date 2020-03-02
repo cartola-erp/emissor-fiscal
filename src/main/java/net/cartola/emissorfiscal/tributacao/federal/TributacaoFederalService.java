@@ -8,8 +8,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
 /**
  * 6 de nov de 2019
@@ -52,8 +54,9 @@ public class TributacaoFederalService {
 		return tributacaoFederalRepository.findByNcmIn(ncms);
 	}
 	
-	public List<TributacaoFederal> findTributacaoFederalByVariosNcmsEOperacao(Operacao operacao, Collection<Ncm> ncms) {
-		return tributacaoFederalRepository.findByOperacaoAndNcmIn(operacao, ncms);
+	public List<TributacaoFederal> findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(Operacao operacao,RegimeTributario regimeTributario,
+			Collection<Finalidade> finalidade, Collection<Ncm> ncms) {
+		return tributacaoFederalRepository.findByOperacaoAndRegimeTributarioAndFinalidadeInAndNcmIn(operacao, regimeTributario, finalidade, ncms );
 	}
 
 	public List<TributacaoFederal> findTributacaoFederalByOperacao(Operacao operacao) {

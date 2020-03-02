@@ -102,22 +102,14 @@ public class DocumentoFiscalService {
 		});
 		
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
 		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
 		
 		if (opOperacao.isPresent() && !ncms.isEmpty() && !map.containsValue(false) ) {
 			tributacoesEstaduais = icmsService.findTributacaoEstadualByOperacaoENcms(opOperacao.get(), ncms);
-			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacao(documentoFiscal.getOperacao(), ncms);
+			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(documentoFiscal.getOperacao(),documentoFiscal.getEmitente().getRegimeTributario(),finalidades, ncms);
 		}
-		
-		if (!tributacoesFederais.isEmpty()) {
-			validaTributacaoFederalDoDocumentoFiscal(documentoFiscal, ncms, tributacoesFederais, map);
-		}
-		
-		if (!tributacoesEstaduais.isEmpty()) {
-			validaTributacaoEstadualDoDocumentoFiscal(documentoFiscal, ncms, tributacoesEstaduais, map);
-		}
-	
 		
 		map.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", opOperacao.isPresent());
 		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isEmpty());
@@ -145,57 +137,6 @@ public class DocumentoFiscalService {
 			documentoFiscal.setEmitente(opEmitente.get(0));
 			documentoFiscal.setDestinatario(opDestinatario.get(0));
 		}
-	}
-	
-	// Validação TRIBUTAÇÃO FEDERAL  (Por regime Tributario e Finalidade)
-	public void validaTributacaoFederalDoDocumentoFiscal(DocumentoFiscal documentoFiscal, Set<Ncm> ncms, List<TributacaoFederal> tributacoesFederais, Map<String, Boolean> mapMsgValidacao ) {
-		Map<Ncm, TributacaoFederal> mapaTributacoes = filtraTributacaoFederalPorRegimeTributario(documentoFiscal, ncms, tributacoesFederais, mapMsgValidacao);
-		documentoFiscal.getItens().stream().forEach(item -> {
-			String finalidade = mapaTributacoes.get(item.getNcm()).getFinalidade().toString();
-			if(!item.getFinalidade().toString().equalsIgnoreCase(finalidade)) {
-				mapMsgValidacao.put("Não Existe Tributacao Federal para a finalidade do item de NCM: "+item.getNcm(), false);
-			}
-		});
-	}
-	
-	private Map<Ncm, TributacaoFederal> filtraTributacaoFederalPorRegimeTributario(DocumentoFiscal documentoFiscal, Set<Ncm> ncms, List<TributacaoFederal> tributacoesFederais, Map<String, Boolean> mapMsgValidacao ) {
-		Map<Ncm, TributacaoFederal> mapaTributacoesPorNcm = ncms.stream()
-				.collect(Collectors.toMap(ncm -> ncm,
-						ncm -> tributacoesFederais.stream()
-								.filter(tributacaoFederal -> tributacaoFederal.getNcm().getId().equals(ncm.getId()))
-								.findAny().get()));
-		mapaTributacoesPorNcm.forEach((k, v) -> {
-			String regimeTributario = documentoFiscal.getEmitente().getRegimeTributario().getDescricao();
-			if (!v.getRegimeTributario().getDescricao().equalsIgnoreCase(regimeTributario)) {
-				mapMsgValidacao.put("Não Existe Tributacao Federal para o REGIME (do emitente): " +regimeTributario, false);
-			}
-		});
-		return mapaTributacoesPorNcm;
-	}
-
-	// Validação TRIBUTAÇÃO ESTADUAL (Por regime Tributario e Finalidade)
-	public void validaTributacaoEstadualDoDocumentoFiscal(DocumentoFiscal documentoFiscal, Set<Ncm> ncms, List<TributacaoEstadual> tributacoesEstaduais, Map<String, Boolean> mapMsgValidacao ) {
-		Map<Ncm, TributacaoEstadual> mapaTributacoesPorRegimeTributario = filtraTributacaoEstadualPorRegimeTributario(documentoFiscal, ncms, tributacoesEstaduais, mapMsgValidacao);
-		documentoFiscal.getItens().stream().forEach(item -> {
-			String finalidade = mapaTributacoesPorRegimeTributario.get(item.getNcm()).getFinalidade().toString();
-			if (!item.getFinalidade().toString().equalsIgnoreCase(finalidade)) {
-				mapMsgValidacao.put("Não Existe Tributação Estadual para a finalidade do item de NCM: " +item.getNcm(), false);
-			}
-		});
-	}
-
-	private Map<Ncm, TributacaoEstadual> filtraTributacaoEstadualPorRegimeTributario(DocumentoFiscal documentoFiscal, Set<Ncm> ncms, List<TributacaoEstadual> tributacoesEstaduais, Map<String, Boolean> mapMsgValidacao) {
-		Map<Ncm, TributacaoEstadual> mapaTributacoesPorNcm = ncms.stream()
-				.collect(Collectors.toMap(ncm -> ncm, ncm -> tributacoesEstaduais.stream()
-						.filter(tributacaoEstadual -> tributacaoEstadual.getNcm().getId().equals(ncm.getId()))
-						.findAny().get()));
-		mapaTributacoesPorNcm.forEach((k, v) -> {
-			String regimeTributario = documentoFiscal.getEmitente().getRegimeTributario().getDescricao();
-			if (!v.getRegimeTributario().getDescricao().equalsIgnoreCase(regimeTributario)) {
-				mapMsgValidacao.put("Não Existe TRIBUTAÇÃO ESTADUAL para o Regime (do emitente): " +regimeTributario, false);
-			}
-		});
-		return mapaTributacoesPorNcm;
 	}
 	
 }

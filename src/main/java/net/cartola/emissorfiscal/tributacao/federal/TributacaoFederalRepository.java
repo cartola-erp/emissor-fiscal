@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
 /**
  * 6 de nov de 2019
@@ -23,5 +25,7 @@ public interface TributacaoFederalRepository extends JpaRepository<TributacaoFed
 
 	List<TributacaoFederal> findByOperacaoIn(Collection<Operacao> operacoes);
 
-	List<TributacaoFederal> findByOperacaoAndNcmIn(Operacao operacao, Collection<Ncm> ncms);
+	List<TributacaoFederal> findByOperacaoAndRegimeTributarioAndFinalidadeInAndNcmIn(Operacao operacao, RegimeTributario regimeTributario, 
+			Collection<Finalidade> finalidade, Collection<Ncm> ncms);
+
 }

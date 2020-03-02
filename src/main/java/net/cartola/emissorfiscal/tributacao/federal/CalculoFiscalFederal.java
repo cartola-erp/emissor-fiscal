@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
@@ -34,9 +35,10 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 		List<CalculoImposto> listaImpostos = new LinkedList<>();
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm)
 				.collect(Collectors.toSet());
+		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 
 		List<TributacaoFederal> tributacoesFederais = tributacaoFederalService
-				.findTributacaoFederalByVariosNcmsEOperacao(documentoFiscal.getOperacao(), ncms);
+				.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(documentoFiscal.getOperacao(), documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);
 		
 		Map<Ncm, TributacaoFederal> mapaTributacoesPorNcm = ncms.stream()
 				.collect(Collectors.toMap(ncm -> ncm,
