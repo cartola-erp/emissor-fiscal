@@ -75,10 +75,10 @@ public class TributacaoFederalPage {
 	@FindBy(id = "btnPesquisar")
 	private WebElement btnPesquisar;
 	
-	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[13]/a/button")
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[15]/a/button")
 	private WebElement btnEditarPrimeiroRegistro;
 	
-	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[14]/form/button")
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[16]/form/button")
 	private WebElement btnDeletarPrimeiroRegistro;
 	
 	// ====================

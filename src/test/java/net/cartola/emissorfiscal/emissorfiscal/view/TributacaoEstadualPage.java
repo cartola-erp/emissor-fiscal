@@ -73,10 +73,10 @@ public class TributacaoEstadualPage {
 	@FindBy(id = "btnPesquisar")
 	private WebElement btnPesquisar;
 	
-	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[12]/a/button")
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[14]/a/button")
 	private WebElement btnEditarPrimeiroRegistro;
 	
-	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[13]/form/button")
+	@FindBy(xpath = "/html/body/main/section/div/div/div/div/div/div/div/table/tbody/tr/td[15]/form/button")
 	private WebElement btnDeletarPrimeiroRegistro;
 	
 	// ====================
