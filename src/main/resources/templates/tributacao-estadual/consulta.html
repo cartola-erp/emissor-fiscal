@@ -54,6 +54,9 @@
 							<th scope="col"> <b> UF Destino </b> </th>	
 							<th scope="col"> <b> Operação </b> </th>	
 							<th scope="col"> <b> NCM </b> </th>	
+							<th scope="col"> <b> Finalidade </b> </th>	
+							<th scope="col"> <b> Regime </b> </th>	
+
 							<th scope="col"> <b> CST </b> </th>	
 							<th scope="col"> <b> Icms Base </b> </th>	
 							<th scope="col"> <b> Icms Aliq. </b> </th>	
@@ -73,7 +76,9 @@
 							<td scope="row" th:text="${icms.estadoDestino.sigla}"> MG </td>	
 
 							<td scope="row" th:text="${icms.operacao.descricao}"> Venda Interestadual </td>	
-							<td scope="row" th:text="${icms.ncm.numero}"> 12345678 </td>	
+							<td scope="row" th:text="${icms.ncm.numero}"> 12345678 </td>
+							<td scope="row" th:text="${icms.finalidade}"> CONSUMO </td>	
+							<td scope="row" th:text="${icms.regimeTributario}"> REALs </td>	
 							<td scope="row" th:text="${icms.icmsCst}"> 12345678 </td>	
 							<td scope="row" th:text="${icms.icmsBase}"> 12345678 </td>	
 							<td scope="row" th:text="${icms.icmsAliquota}"> 12345678 </td>	

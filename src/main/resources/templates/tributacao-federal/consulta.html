@@ -53,6 +53,9 @@
 							<th scope="col"> <b> Operação </b> </th>	
 							<th scope="col"> <b> NCM </b> </th>	
 
+							<th scope="col"> <b> Finalidade </b> </th>	
+							<th scope="col"> <b> Regime </b> </th>	
+
 							<th scope="col"> <b> PIS CST </b> </th>	
 							<th scope="col"> <b> PIS Base </b> </th>	
 							<th scope="col"> <b> PIS Aliq. </b> </th>
@@ -76,6 +79,9 @@
 
 							<td scope="row" th:text="${tribFede.operacao.descricao}"> Venda Interestadual </td>	
 							<td scope="row" th:text="${tribFede.ncm.numero}"> 12345678 </td>	
+							
+							<td scope="row" th:text="${tribFede.finalidade}"> CONSUMO </td>	
+							<td scope="row" th:text="${tribFede.regimeTributario}"> REALs </td>	
 
 							<td scope="row" th:text="${tribFede.pisCst}"> 12345678 </td>	
 							<td scope="row" th:text="${tribFede.pisBase}"> 12345678 </td>	
