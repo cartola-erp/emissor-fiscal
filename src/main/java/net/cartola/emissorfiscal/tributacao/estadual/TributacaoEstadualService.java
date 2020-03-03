@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
 @Service
 public class TributacaoEstadualService {
@@ -52,8 +55,9 @@ public class TributacaoEstadualService {
 		return repository.findByNcmIn(ncms);
 	}
 	
-	public List<TributacaoEstadual> findTributacaoEstadualByOperacaoENcms(Operacao operacao, Collection<Ncm> ncms) {
-		return repository.findByOperacaoAndNcmIn(operacao, ncms);
+	public List<TributacaoEstadual> findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(Operacao operacao, Estado estadoOrigem, Estado estadoDestino, RegimeTributario regimeTributario,
+			Collection<Finalidade> finalidade, Collection<Ncm> ncms) {
+		return repository.findByOperacaoAndEstadoOrigemAndEstadoDestinoAndRegimeTributarioAndFinalidadeInAndNcmIn(operacao, estadoOrigem, estadoDestino, regimeTributario, finalidade, ncms);
 	}
 
 	public void deleteById(long id) {

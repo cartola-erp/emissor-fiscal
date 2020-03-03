@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.estado.Estado;
+import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
@@ -24,6 +27,9 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	private TributacaoEstadualService icmsService;
 
 	@Autowired
+	private EstadoService estadoService;
+	
+	@Autowired
 	private CalculoIcms calculoIcms;
 	
 	/**
@@ -33,7 +39,11 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
-		List<TributacaoEstadual> listTributacoes = icmsService.findTributacaoEstadualByOperacaoENcms(documentoFiscal.getOperacao(), ncms);
+		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
+		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getUf()).get();
+		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getUf()).get();
+		
+		List<TributacaoEstadual> listTributacoes = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(documentoFiscal.getOperacao(), estadoOrigem, estadoDestino, documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);
 
 		Map<Ncm, TributacaoEstadual> mapaTributacoes = ncms.stream()
 				.collect(Collectors.toMap(ncm -> ncm, ncm -> listTributacoes.stream()

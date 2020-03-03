@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.estado.Estado;
+import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
@@ -43,6 +45,9 @@ public class DocumentoFiscalService {
 	
 	@Autowired
 	private TributacaoEstadualService icmsService;
+	
+	@Autowired
+	private EstadoService estadoService;
 	
 	@Autowired
 	private TributacaoFederalService tributacaoFederalService;
@@ -95,6 +100,8 @@ public class DocumentoFiscalService {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		List<Pessoa> opEmitente = pessoaService.findByCnpj(documentoFiscal.getEmitente().getCnpj());
 		List<Pessoa> opDestinatario = pessoaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
+		Estado estadoOrigem = estadoService.findBySigla(opEmitente.get(0).getUf()).get();
+		Estado estadoDestino = estadoService.findBySigla(opDestinatario.get(0).getUf()).get();
 		
 		documentoFiscal.getItens().forEach(docItem -> {
 			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
@@ -107,7 +114,8 @@ public class DocumentoFiscalService {
 		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
 		
 		if (opOperacao.isPresent() && !ncms.isEmpty() && !map.containsValue(false) ) {
-			tributacoesEstaduais = icmsService.findTributacaoEstadualByOperacaoENcms(opOperacao.get(), ncms);
+			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(),estadoOrigem, estadoDestino,
+					opEmitente.get(0).getRegimeTributario(), finalidades, ncms);
 			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(documentoFiscal.getOperacao(),documentoFiscal.getEmitente().getRegimeTributario(),finalidades, ncms);
 		}
 		

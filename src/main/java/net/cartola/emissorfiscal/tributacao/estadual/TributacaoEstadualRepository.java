@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
 public interface TributacaoEstadualRepository extends JpaRepository<TributacaoEstadual, Long> {
 	
@@ -15,6 +18,8 @@ public interface TributacaoEstadualRepository extends JpaRepository<TributacaoEs
 	
 	List<TributacaoEstadual> findByNcmIn(Collection<Ncm> ncm);
 
-	List<TributacaoEstadual> findByOperacaoAndNcmIn(Operacao operacao, Collection<Ncm> ncms);
-
+	List<TributacaoEstadual> findByOperacaoAndEstadoOrigemAndEstadoDestinoAndRegimeTributarioAndFinalidadeInAndNcmIn(Operacao operacao, 
+			Estado estadoOrigem, Estado estadoDestino,
+			RegimeTributario regimeTributario,
+			Collection<Finalidade> finalidade, Collection<Ncm> ncms);
 }
