@@ -13,13 +13,15 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
-import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
@@ -35,10 +37,10 @@ import net.cartola.emissorfiscal.util.ValidationHelper;
 public class SimulacaoService {
 	
 	@Autowired
-	private DocumentoFiscalService docFiscalService;
+	private OperacaoService operacaoService;
 	
 	@Autowired
-	private OperacaoService operacaoService;
+	private NcmService ncmService;
 	
 	@Autowired
 	private TributacaoEstadualService icmsService;
@@ -68,7 +70,7 @@ public class SimulacaoService {
 		listResult.add("VALOR DO ITEM: " + item.getValorUnitario() );
 		listResult.add("FINALIDADE: " +item.getFinalidade() );
 		listResult.add("NCM: " +item.getNcm().getNumero() + " | EXCEÇÃO: " +item.getNcm().getExcecao());
-		listResult.add("REGIME TRIBUTÁRIO EMITENTE: " +documentoFiscal.getDestinatario().getRegimeTributario());
+		listResult.add("REGIME TRIBUTÁRIO EMITENTE: " +documentoFiscal.getEmitente().getRegimeTributario());
 		listResult.add(" ===================================== VALORES DOCUMENTO FISCAL ===================================== ");
 		listResult.add("ICMS BASE (NFE): " +documentoFiscal.getIcmsBase().toPlainString());
 		listResult.add("ICMS VALOR (NFE): " +documentoFiscal.getIcmsValor().toPlainString());
@@ -153,6 +155,38 @@ public class SimulacaoService {
 		return ValidationHelper.processaErros(map);
 	}
 
+	
+	public DocumentoFiscal setValuesForCalc(DocumentoFiscal documentoFiscal, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, String regimeTributario) {
+		Estado estadoOrigem = estadoService.findOne(ufOrigemId).get();
+		Estado estadoDestino = estadoService.findOne(ufDestinoId).get();
+		Operacao operacao = operacaoService.findOne(operacaoId).get();
+		Ncm ncm = ncmService.findOne(ncmId).get();
+		
+		Pessoa emitente = new Pessoa();
+		emitente.setCnpj(123456789012L);
+		emitente.setUf(estadoOrigem.getSigla());
+		setRegimeTributario(emitente, regimeTributario);
+		
+		Pessoa destinatario = new Pessoa();
+		destinatario.setCnpj(98765432102L);
+		destinatario.setUf(estadoDestino.getSigla());;
+		
+		documentoFiscal.setEmitente(emitente);
+		documentoFiscal.setDestinatario(destinatario);
+		documentoFiscal.setOperacao(operacao);
+		documentoFiscal.getItens().get(0).setNcm(ncm);
+		
+		return documentoFiscal;
+	}
+	
+	private void setRegimeTributario(Pessoa pessoa, String regimeTributario) {
+		for(RegimeTributario regimeTributa : RegimeTributario.values()) {
+			if(regimeTributa.getDescricao().equalsIgnoreCase(regimeTributario)) {
+				pessoa.setRegimeTributario(regimeTributa);
+			}
+		}
+	}
+	
 	
 }
 

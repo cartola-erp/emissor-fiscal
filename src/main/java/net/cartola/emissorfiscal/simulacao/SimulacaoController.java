@@ -15,13 +15,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.Finalidade;
-import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
-import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
-import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
-import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
@@ -64,34 +60,10 @@ public class SimulacaoController {
 //	@PostMapping
 	public ModelAndView calculaTributacaoEstadual(@Valid DocumentoFiscal documentoFiscal, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, String regimeTributario, BindingResult result, RedirectAttributes attributes) {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
-		 StringBuffer erros = new StringBuffer("Não existe nenhuma tributação cadastrada, para os dados informados");
+		StringBuffer erros = new StringBuffer("Não existe nenhuma tributação cadastrada, para os dados informados");
 		try {
-			Estado estadoOrigem = estadoService.findOne(ufOrigemId).get();
-			Estado estadoDestino = estadoService.findOne(ufDestinoId).get();
-			Operacao operacao = operacaoService.findOne(operacaoId).get();
-			Ncm ncm = ncmService.findOne(ncmId).get();
+			simulacaoService.setValuesForCalc(documentoFiscal, ufOrigemId, ufDestinoId, operacaoId, ncmId, regimeTributario);
 			
-			Pessoa emitente = new Pessoa();
-			emitente.setCnpj(123456789012L);
-			emitente.setUf(estadoOrigem.getSigla());
-//			emitente.setRegimeTributario(RegimeTributario.REAL);
-			for(RegimeTributario regimeTributa : RegimeTributario.values()) {
-				if(regimeTributa.getDescricao().equalsIgnoreCase(regimeTributario)) {
-					emitente.setRegimeTributario(regimeTributa);
-				}
-			}
-			
-			Pessoa destinatario = new Pessoa();
-			destinatario.setCnpj(98765432102L);
-		
-			destinatario.setUf(estadoDestino.getSigla());;
-			
-			documentoFiscal.setEmitente(emitente);
-			documentoFiscal.setDestinatario(destinatario);
-
-			documentoFiscal.setOperacao(operacao);
-			documentoFiscal.getItens().get(0).setNcm(ncm);
-		
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			
