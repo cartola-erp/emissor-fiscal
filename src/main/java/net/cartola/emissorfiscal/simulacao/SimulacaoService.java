@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
+import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.estado.Estado;
+import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
@@ -32,13 +35,16 @@ import net.cartola.emissorfiscal.util.ValidationHelper;
 public class SimulacaoService {
 	
 	@Autowired
-	DocumentoFiscalService docFiscalService;
+	private DocumentoFiscalService docFiscalService;
 	
 	@Autowired
 	private OperacaoService operacaoService;
 	
 	@Autowired
 	private TributacaoEstadualService icmsService;
+	
+	@Autowired
+	private EstadoService estadoService;
 	
 	@Autowired
 	private TributacaoFederalService tributacaoFederalService;
@@ -52,7 +58,6 @@ public class SimulacaoService {
 		if (!ValidationHelper.collectionEmpty(erros)) {
 			return erros;
 		}
-		
 		DocumentoFiscalItem item = documentoFiscal.getItens().get(0);
 		
 		listResult.add(" =========================================== DADOS INFORMADOS =========================================== ");
@@ -126,20 +131,23 @@ public class SimulacaoService {
 		Map<String, Boolean> map = new HashMap<>();
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
+		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getUf()).get();
+		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getUf()).get();
 
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
 		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
 		
 //		if (opOperacao.isPresent() && !ncms.isEmpty() && !map.containsValue(false) ) {
-			tributacoesEstaduais = icmsService.findTributacaoEstadualByOperacaoENcms(opOperacao.get(), ncms);
-			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacao(documentoFiscal.getOperacao(), ncms);
+			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(), estadoOrigem, estadoDestino,  documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);
+			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(documentoFiscal.getOperacao(), documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);
 //		}
-		if (!tributacoesFederais.isEmpty()) {
-			docFiscalService.validaTributacaoFederalDoDocumentoFiscal(documentoFiscal, ncms, tributacoesFederais, map);
+		if (tributacoesFederais.isEmpty()) {
+			map.put("Não Existe TRIBUTAÇÃO FEDERAL para o Regime (do emitente): " + documentoFiscal.getEmitente().getRegimeTributario(), false);
 		}
 		
-		if(!tributacoesEstaduais.isEmpty()) {
-			docFiscalService.validaTributacaoEstadualDoDocumentoFiscal(documentoFiscal, ncms, tributacoesEstaduais, map);
+		if(tributacoesEstaduais.isEmpty()) {
+			map.put("Não Existe TRIBUTAÇÃO ESTADUAL para o Regime (do emitente): " + documentoFiscal.getEmitente().getRegimeTributario(), false);
 		}
 		
 		return ValidationHelper.processaErros(map);

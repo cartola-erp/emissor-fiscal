@@ -73,6 +73,7 @@ public class SimulacaoController {
 			
 			Pessoa emitente = new Pessoa();
 			emitente.setCnpj(123456789012L);
+			emitente.setUf(estadoOrigem.getSigla());
 //			emitente.setRegimeTributario(RegimeTributario.REAL);
 			for(RegimeTributario regimeTributa : RegimeTributario.values()) {
 				if(regimeTributa.getDescricao().equalsIgnoreCase(regimeTributario)) {
