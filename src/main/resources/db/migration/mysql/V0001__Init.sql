@@ -220,7 +220,7 @@ CREATE TABLE `pessoa` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cnpj` bigint(20) DEFAULT NULL,
   `pessoa_tipo` enum('FISICA', 'JURIDICA') default 'FISICA',
-  `regime_tributario` enum('SIMPLES', 'PRESUMIDO', 'REAL'),
+  `regime_tributario` enum('SIMPLES', 'SIMPLES_EXCESSO', 'NORMAL'),
   `uf` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -252,7 +252,7 @@ CREATE TABLE `trib_esta` (
   `icms_cst` int(11) NOT NULL,
   `icms_iva` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `mens` varchar(255) DEFAULT NULL,
-  `regime_tributario` enum('SIMPLES', 'PRESUMIDO', 'REAL'),
+  `regime_tributario` enum('SIMPLES', 'SIMPLES_EXCESSO', 'NORMAL'),
   `esta_dest_id` bigint(20) NOT NULL,
   `esta_orig_id` bigint(20) NOT NULL,
   `ncm_id` bigint(20) NOT NULL,
@@ -298,7 +298,7 @@ CREATE TABLE `trib_fede` (
   `pis_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `pis_base` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `pis_cst` int(11) NOT NULL,
-  `regime_tributario` enum('SIMPLES', 'PRESUMIDO', 'REAL'),
+  `regime_tributario` enum('SIMPLES', 'SIMPLES_EXCESSO', 'NORMAL'),
   `ncm_id` bigint(20) DEFAULT NULL,
   `oper_id` bigint(20) NOT NULL,
   PRIMARY KEY (`trib_fede_id`),
