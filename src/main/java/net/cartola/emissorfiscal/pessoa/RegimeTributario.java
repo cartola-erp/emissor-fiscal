@@ -10,9 +10,6 @@ public enum RegimeTributario {
 	SIMPLES_EXCESSO("Presumido"),
 	NORMAL("Real");
 	
-//    , , ;
-
-	
 	private String descricao;
 	 
 	RegimeTributario(String descricao) {
