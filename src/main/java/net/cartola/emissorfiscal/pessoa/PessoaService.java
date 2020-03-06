@@ -36,6 +36,19 @@ public class PessoaService {
 	public void deleteById(Long id) {
 		pessoaRepository.deleteById(id);
 	}
-		
+	
+	/**
+	 * Verifica se a pessoa Existe </br>
+	 * <b> Caso NÃO</b>, ela será <strong> salva </strong>
+	 * 
+	 * @return {@link Optional} <{@link Pessoa}>
+	 */
+	public Optional<Pessoa> verificaSePessoaExiste(Pessoa pessoa) {
+		List<Pessoa> listPessoa = findByCnpj(pessoa.getCnpj());
+		if (listPessoa.isEmpty()) {
+			return save(pessoa);
+		}
+		return Optional.ofNullable(listPessoa.get(0));
+	}
 }
 

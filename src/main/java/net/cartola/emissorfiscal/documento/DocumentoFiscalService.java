@@ -98,10 +98,10 @@ public class DocumentoFiscalService {
 	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal documentoFiscal) {
 		Map<String, Boolean> map = new HashMap<>();
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
-		List<Pessoa> opEmitente = pessoaService.findByCnpj(documentoFiscal.getEmitente().getCnpj());
-		List<Pessoa> opDestinatario = pessoaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
-		Estado estadoOrigem = estadoService.findBySigla(opEmitente.get(0).getUf()).get();
-		Estado estadoDestino = estadoService.findBySigla(opDestinatario.get(0).getUf()).get();
+		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());
+		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
+		Estado estadoOrigem = estadoService.findBySigla(opEmitente.get().getUf()).get();
+		Estado estadoDestino = estadoService.findBySigla(opDestinatario.get().getUf()).get();
 		
 		documentoFiscal.getItens().forEach(docItem -> {
 			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
@@ -115,13 +115,13 @@ public class DocumentoFiscalService {
 		
 		if (opOperacao.isPresent() && !ncms.isEmpty() && !map.containsValue(false) ) {
 			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(),estadoOrigem, estadoDestino,
-					opEmitente.get(0).getRegimeTributario(), finalidades, ncms);
+					opEmitente.get().getRegimeTributario(), finalidades, ncms);
 			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(documentoFiscal.getOperacao(),documentoFiscal.getEmitente().getRegimeTributario(),finalidades, ncms);
 		}
 		
 		map.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", opOperacao.isPresent());
-		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isEmpty());
-		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isEmpty());
+		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , opEmitente.isPresent());
+		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", opDestinatario.isPresent());
 		map.put("Não existe a tributação estadual para essa OPERAÇÃO e os NCMS dos itens", !tributacoesEstaduais.isEmpty());
 		map.put("Não existe a tributação federal para essa OPERAÇÃO e os NCMS dos itens", !tributacoesFederais.isEmpty());
 		
@@ -131,7 +131,7 @@ public class DocumentoFiscalService {
 		return ValidationHelper.processaErros(map);
 	}
 	
-	private void setValoresNecessariosParaODocumentoFiscal(DocumentoFiscal documentoFiscal, Optional<Operacao> opOperacao, List<Pessoa> opEmitente, List<Pessoa> opDestinatario) {
+	private void setValoresNecessariosParaODocumentoFiscal(DocumentoFiscal documentoFiscal, Optional<Operacao> opOperacao, Optional<Pessoa> opEmitente, Optional<Pessoa> opDestinatario) {
 		documentoFiscal.getItens().forEach(docItem -> {
 			docItem.setDocumentoFiscal(documentoFiscal);
 			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
@@ -140,10 +140,10 @@ public class DocumentoFiscalService {
 			}
 		});
 		
-		if (opOperacao.isPresent() && !opEmitente.isEmpty() && !opDestinatario.isEmpty()) {
+		if (opOperacao.isPresent() && opEmitente.isPresent() && opDestinatario.isPresent()) {
 			documentoFiscal.setOperacao(opOperacao.get());
-			documentoFiscal.setEmitente(opEmitente.get(0));
-			documentoFiscal.setDestinatario(opDestinatario.get(0));
+			documentoFiscal.setEmitente(opEmitente.get());
+			documentoFiscal.setDestinatario(opDestinatario.get());
 		}
 	}
 	
