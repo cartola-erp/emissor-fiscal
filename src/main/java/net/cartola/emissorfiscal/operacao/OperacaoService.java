@@ -27,12 +27,12 @@ public class OperacaoService {
 		return operacaoRepository.findOperacaoByParteDaDescricao(descricaoOperacao);
 	}
 
-	public Optional<Operacao> findOperacaoByDescricao(String descricaoOperacao) {
-		return operacaoRepository.findOperacaoByDescricao(descricaoOperacao);
+	public Optional<Operacao> findOperacaoByDescricao(String descricao) {
+		return operacaoRepository.findOperacaoByDescricaoIgnoreCase(descricao);
 	}
 
 	public boolean isOperacaoExistente(String descricaoOperacao) {
-		return operacaoRepository.findOperacaoByDescricao(descricaoOperacao).isPresent();
+		return operacaoRepository.findOperacaoByDescricaoIgnoreCase(descricaoOperacao).isPresent();
 	}
 
 	public Optional<Operacao> findOne(Long id) {

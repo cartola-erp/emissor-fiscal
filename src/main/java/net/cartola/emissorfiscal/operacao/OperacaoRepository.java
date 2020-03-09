@@ -19,8 +19,8 @@ public interface OperacaoRepository extends JpaRepository<Operacao, Long> {
 	 * @param descricaoOperacao
 	 * @return
 	 */
-	@Query("SELECT o FROM Operacao o WHERE o.descricao = :descricaoOperacao")
-	Optional<Operacao> findOperacaoByDescricao(String descricaoOperacao);
+//	@Query("SELECT o FROM Operacao o WHERE o.descricao = :descricaoOperacao")
+	Optional<Operacao> findOperacaoByDescricaoIgnoreCase(String descricao);
 
 	
 }

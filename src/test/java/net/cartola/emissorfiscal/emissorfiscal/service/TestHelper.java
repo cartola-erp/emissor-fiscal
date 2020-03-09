@@ -65,7 +65,7 @@ public class TestHelper {
 
 	public static final String PESSOA_CNPJ = "12345678901234";
 	public static final String PESSOA_UF_SP = EstadoSigla.SP.toString();
-	public static final String PESSOA_REGIME_TRIBUTARIO_REAL = RegimeTributario.REAL.toString();
+	public static final String PESSOA_REGIME_TRIBUTARIO_REAL = RegimeTributario.NORMAL.toString();
 	public static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
 	                
 	public static final String PESSOA_CNPJ_2 = "02329838429395";
@@ -199,7 +199,7 @@ public class TestHelper {
 			icms.setOperacao(operacao);
 			icms.setNcm(ncm);
 			icms.setFinalidade(Finalidade.CONSUMO);
-			icms.setRegimeTributario(RegimeTributario.REAL);
+			icms.setRegimeTributario(RegimeTributario.NORMAL);
 			icms.setIcmsCst(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CST);
 			icms.setIcmsBase(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_BASE);
 			icms.setIcmsAliquota(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA);
@@ -220,7 +220,7 @@ public class TestHelper {
 			TributacaoFederalBuilder tributFedBuilder = new TributacaoFederalBuilder().withNcm(ncm)
 					.withOperacao(operacao).withPisCst(TributacaoFederalServiceLogicTest.PIS_CST)
 					.withFinalidadeo(Finalidade.CONSUMO)
-					.withRegimeTributario(RegimeTributario.REAL)
+					.withRegimeTributario(RegimeTributario.NORMAL)
 					.withPisBase(TributacaoFederalServiceLogicTest.PIS_BASE)
 					.withPisAliquota(TributacaoFederalServiceLogicTest.PIS_ALIQUOTA)
 					.withCofinsCst(TributacaoFederalServiceLogicTest.COFINS_CST)
