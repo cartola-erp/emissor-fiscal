@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.cartola.emissorfiscal.response.Response;
+import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 import net.cartola.emissorfiscal.util.ValidationHelper;
 
 
@@ -29,6 +30,9 @@ public class DocumentoFiscalApiController {
 	
 	@Autowired
 	private DocumentoFiscalService docFiscalService;
+	
+	@Autowired
+	private CalculoFiscalFederal calcFiscalFederal;
 	
 //	@GetMapping("id{id}")
 //	public List<DocumentoFiscal> findDocumentoById(@PathVariable Long id) {
@@ -65,6 +69,24 @@ public class DocumentoFiscalApiController {
 		return saveOrEditDocumentoFiscal(docFiscal);
 	}
 	
+
+	@PostMapping("/busca-calculo-federal")
+	public ResponseEntity<Response<DocumentoFiscal>> findCalculoFederal(@Valid @RequestBody DocumentoFiscal docFiscal) {
+		Response<DocumentoFiscal> response = new Response<>();
+		// 1 - VALIDAR
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, false, true);
+		if (!ValidationHelper.collectionEmpty(erros)) {
+			response.setErrors(erros);
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		// 2 - CALCULAR
+		calcFiscalFederal.calculaImposto(docFiscal);
+		response.setData(docFiscal);
+		return ResponseEntity.ok(response);
+	}
+	
+	
 	@PutMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> edit (@Valid @RequestBody DocumentoFiscal docFiscal) {
 		Response<DocumentoFiscal> response = new Response<>();
@@ -80,7 +102,7 @@ public class DocumentoFiscalApiController {
 	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {
 		Response<DocumentoFiscal> response = new Response<>();
 		
-		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal);
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, true);
 		if (!ValidationHelper.collectionEmpty(erros)) {
 			response.setErrors(erros);
 			return ResponseEntity.badRequest().body(response);
