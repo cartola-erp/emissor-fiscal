@@ -104,13 +104,8 @@ public class DocumentoFiscalService {
 		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
 		Estado estadoOrigem = estadoService.findBySigla(opEmitente.get().getUf()).get();
 		Estado estadoDestino = estadoService.findBySigla(opDestinatario.get().getUf()).get();
-		
-		documentoFiscal.getItens().forEach(docItem -> {
-			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
-			map.put("O NCM: " +docItem.getNcm().getNumero()+ " NÃO existe", opNcm.isPresent());
-		});
-		
-		Set<Ncm> ncms = setNcmParaDocumentoFiscalItem(documentoFiscal);
+
+		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, map);
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
 		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
@@ -138,8 +133,32 @@ public class DocumentoFiscalService {
 		return ValidationHelper.processaErros(map);
 	}
 	
+	/**
+	 * Seta os NCMS para os Itens
+	 * E adiciona Msg no Map, caso o NCM, não exista
+	 * @param documentoFiscal
+	 * @param map
+	 * @return Set<Ncms>
+	 */
+	private Set<Ncm> setEVerificaNcmParaDocumentoFiscalItem(DocumentoFiscal documentoFiscal, Map<String, Boolean> map) {
+		documentoFiscal.getItens().forEach(docItem -> {
+			docItem.setDocumentoFiscal(documentoFiscal);
+			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
+			if(opNcm.isPresent()) {
+				docItem.setNcm(opNcm.get());
+			}
+			map.put("O NCM: " +docItem.getNcm().getNumero()+ " NÃO existe", opNcm.isPresent());
+		});
+		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+		return ncms;
+	}
+	
 //	private void verificaTributos(Optional<Operacao> opOperacao, Set<Ncm> ncms, Estado estaOrigem, Estado estaDestino, emitente, finalidade ncm, verTributEsta, verTribuFede) {
 		
+//	}
+	
+//	private void verificaTributos(Optional<Operacao> opOperacao, Set<Ncm> ncms, Estado estaOrigem, Estado estaDestino, emitente, finalidade ncm, verTributEsta, verTribuFede) {
+	
 //	}
 	
 	private void setValoresNecessariosParaODocumentoFiscal(DocumentoFiscal documentoFiscal, Optional<Operacao> opOperacao, Optional<Pessoa> opEmitente, Optional<Pessoa> opDestinatario) {
@@ -150,15 +169,5 @@ public class DocumentoFiscalService {
 		}
 	}
 	
-	private Set<Ncm> setNcmParaDocumentoFiscalItem(DocumentoFiscal documentoFiscal) {
-		documentoFiscal.getItens().forEach(docItem -> {
-			docItem.setDocumentoFiscal(documentoFiscal);
-			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
-			if(opNcm.isPresent()) {
-				docItem.setNcm(opNcm.get());
-			}
-		});
-		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
-		return ncms;
-	}
+	
 }
