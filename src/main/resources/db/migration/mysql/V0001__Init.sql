@@ -196,7 +196,8 @@ DROP TABLE IF EXISTS `oper`;
 CREATE TABLE `oper` (
   `oper_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `dscr` varchar(50) NOT NULL,
-  PRIMARY KEY (`oper_id`)
+  PRIMARY KEY (`oper_id`),
+  UNIQUE KEY `unk_oper_dscr` (`dscr`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

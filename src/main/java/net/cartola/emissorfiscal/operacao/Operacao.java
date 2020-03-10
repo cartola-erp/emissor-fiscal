@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -19,7 +20,7 @@ import org.hibernate.validator.constraints.Length;
  * @author murilo
  */
 @Entity
-@Table(name = "oper")
+@Table(name = "oper", uniqueConstraints = { @UniqueConstraint(name = "unk_oper_dscr", columnNames = {"dscr"}) })
 public class Operacao implements Serializable {
 
 	private static final long serialVersionUID = 12701892348311L;
