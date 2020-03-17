@@ -1,0 +1,13 @@
+
+	1 - Criar tabela trib_de_olho_no_imposto
+	2 - Importar dados do arquvio .csv
+	
+	
+	3 - Na classe DocumentoFiscal, adicionar os Seguintes campos:
+		- valorImpostoFederal
+		- valorImpostoEstadual
+	
+	4 - Para descobrir tais valores devo fazer o seguinte
+		4.1 - Buscar na tabela do arquivo .csv importado, usando o NCM e ORIGEM do PRODUTO como parâmetro
+		4.2 - Com as aliq (federal/estadual), retornadas eu MULTIPLICO pelo total do ITEM (com imposto)
+		
