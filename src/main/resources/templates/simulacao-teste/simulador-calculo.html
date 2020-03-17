@@ -79,7 +79,7 @@
 							<select class="custom-select" name="documentoFiscal.finalidade" >
 								<option selected id="opFinalidade"> </option>
 								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
-								<option th:each="finalidade : ${finalidades}" th:value="${finalidade}" th:text="${finalidade}" ></option>
+								<option th:each="finalidade : ${finalidades}" th:value="${finalidade}" th:text="${finalidade.descricao}" ></option>
 							</select>
 						</div>
 
@@ -99,7 +99,7 @@
 							<label for="cmbRegimeTributario"><strong>Regime Tributário do emitente</strong></label>
 							<select class="custom-select" name="regimeTributario" >
 								<option selected id="opFinalidade"> </option>
-								<option th:each="regimeTributario : ${regimesTributarios}" th:value="${regimeTributario}" th:text="${regimeTributario}" ></option>
+								<option th:each="regimeTributario : ${regimesTributarios}" th:value="${regimeTributario}" th:text="${regimeTributario.descricao}" ></option>
 							</select>
 						</div>	
 					</div>	
