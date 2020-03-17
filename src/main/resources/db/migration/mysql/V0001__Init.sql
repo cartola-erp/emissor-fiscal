@@ -63,6 +63,8 @@ CREATE TABLE `docu_fisc` (
   `destinatario_id` bigint(20) NOT NULL,
   `emitente_id` bigint(20) NOT NULL,
   `operacao_id` bigint(20) NOT NULL,
+  `vlr_imposto_esta` decimal(19,2) DEFAULT NULL,
+  `vlr_imposto_fede` decimal(19,2) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fnk_docu_fisc_destinatario_id` (`destinatario_id`),
   KEY `fnk_docu_fisc_emitente_id` (`emitente_id`),

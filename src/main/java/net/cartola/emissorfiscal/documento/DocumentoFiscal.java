@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -45,7 +46,10 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal cofinsValor;
 	private BigDecimal ipiBase;
 	private BigDecimal ipiValor;
-	 
+	// Para "atender" a lei "De Olho No Imposto"
+	private BigDecimal valorImpostoFederal;
+	private BigDecimal valorImpostoEstadual;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -183,6 +187,23 @@ public class DocumentoFiscal implements Serializable {
 		this.ipiValor = ipiValor;
 	}
 	
+	@Column(name = "vlr_imposto_fede")
+	public BigDecimal getValorImpostoFederal() {
+		return valorImpostoFederal;
+	}
+
+	public void setValorImpostoFederal(BigDecimal valorImpostoFederal) {
+		this.valorImpostoFederal = valorImpostoFederal;
+	}
+	
+	@Column(name = "vlr_imposto_esta")
+	public BigDecimal getValorImpostoEstadual() {
+		return valorImpostoEstadual;
+	}
+
+	public void setValorImpostoEstadual(BigDecimal valorImpostoEstadual) {
+		this.valorImpostoEstadual = valorImpostoEstadual;
+	}
 	
 	@Override
 	public String toString() {
