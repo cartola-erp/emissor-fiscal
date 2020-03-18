@@ -47,8 +47,9 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal ipiBase;
 	private BigDecimal ipiValor;
 	// Para "atender" a lei "De Olho No Imposto"
-	private BigDecimal valorImpostoFederal;
-	private BigDecimal valorImpostoEstadual;
+	private BigDecimal valorImpostoFederal = BigDecimal.ZERO;
+	private BigDecimal valorImpostoEstadual = BigDecimal.ZERO;
+	private BigDecimal valorImpostoMunicipal = BigDecimal.ZERO;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -192,6 +193,10 @@ public class DocumentoFiscal implements Serializable {
 		return valorImpostoFederal;
 	}
 
+	/**
+	 * Para o "IBPT" - LEI: ("De olho no imposto")
+	 * @param valorImpostoFederal
+	 */
 	public void setValorImpostoFederal(BigDecimal valorImpostoFederal) {
 		this.valorImpostoFederal = valorImpostoFederal;
 	}
@@ -201,8 +206,25 @@ public class DocumentoFiscal implements Serializable {
 		return valorImpostoEstadual;
 	}
 
+	/**
+	 * Para o "IBPT" - LEI: ("De olho no imposto")
+	 * @param valorImpostoEstadual
+	 */
 	public void setValorImpostoEstadual(BigDecimal valorImpostoEstadual) {
 		this.valorImpostoEstadual = valorImpostoEstadual;
+	}
+
+	@Column(name = "vlr_imposto_muni")
+	public BigDecimal getValorImpostoMunicipal() {
+		return valorImpostoMunicipal;
+	}
+
+	/**
+	 * Para o "IBPT" - LEI: ("De olho no imposto")
+	 * @param valorImpostoMunicipal
+	 */
+	public void setValorImpostoMunicipal(BigDecimal valorImpostoMunicipal) {
+		this.valorImpostoMunicipal = valorImpostoMunicipal;
 	}
 	
 	@Override
@@ -213,5 +235,7 @@ public class DocumentoFiscal implements Serializable {
 				+ pisValor + ", cofinsBase=" + cofinsBase + ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase
 				+ ", ipiValor=" + ipiValor + "]";
 	}
+
+	
 	
 }
