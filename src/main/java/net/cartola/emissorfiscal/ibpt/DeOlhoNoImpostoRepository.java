@@ -1,9 +1,9 @@
 package net.cartola.emissorfiscal.ibpt;
 
-import java.util.Optional;
+import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeOlhoNoImpostoRepository extends JpaRepository<DeOlhoNoImposto, Long> {
 	
-	@Query("SELECT imp FROM DeOlhoNoImposto imp WHERE imp.ncm = :ncm AND imp.exce = :exce")
-	Optional<DeOlhoNoImposto> findByNcmAndExce(int ncm, String exce);
+	List<DeOlhoNoImposto> findByNcmInAndExceIn(Collection<Integer> ncm, Collection<String> exce);
+	
 }
 

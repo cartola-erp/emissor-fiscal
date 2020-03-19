@@ -1,7 +1,11 @@
 package net.cartola.emissorfiscal.ibpt;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,15 +17,15 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 /**
  * 17 de mar de 2020
  * @author robson.costa
- */
+ */	
 @Service
 public class DeOlhoNoImpostoService {
 	
 	@Autowired
 	private DeOlhoNoImpostoRepository olhoNoImpostoRepository;
 	
-	public Optional<DeOlhoNoImposto> findNcmByNumeroAndExcecao(int ncm, String exce) {
-		return olhoNoImpostoRepository.findByNcmAndExce(ncm, exce);
+	public List<DeOlhoNoImposto> findNcmByNumeroInAndExcecaoIn(Collection<Integer> ncm, Collection<String> exce) {
+		return olhoNoImpostoRepository.findByNcmInAndExceIn(ncm, exce);
 	}
 	
 	public Optional<DeOlhoNoImposto> findOne(Long id) {
@@ -30,7 +34,7 @@ public class DeOlhoNoImpostoService {
 	
 	//  ========================================================= CALCULO =================================================================
 	
-	public BigDecimal getTotalImposto(Optional<DocumentoFiscal> opDocFiscal) {
+	public BigDecimal getTotalImpostoDocumentoFiscal(Optional<DocumentoFiscal> opDocFiscal) {
 		BigDecimal totalImposto = BigDecimal.ZERO;
 		if (opDocFiscal.isPresent()) {
 			setDeOlhoNoImposto(opDocFiscal);
@@ -43,21 +47,30 @@ public class DeOlhoNoImpostoService {
 	}
 	
 	public void setDeOlhoNoImposto(Optional<DocumentoFiscal> opDocFiscal) {
-		DeOlhoNoImposto[] olhoNoImposto = {new DeOlhoNoImposto()};
 		BigDecimal[] vlrImpostoFederal = {BigDecimal.ZERO};
 		BigDecimal[] vlrImpostoEstadual = {BigDecimal.ZERO};
 		BigDecimal[] vlrImpostoMunicipal = {BigDecimal.ZERO};
 		
 		if (opDocFiscal.isPresent() && opDocFiscal.get().getItens() != null) {
+			Set<Integer> numeroNcm = new HashSet<>();
+			Set<String> excecaoNcm = new HashSet<>();
+			opDocFiscal.get().getItens().forEach(item -> {
+				numeroNcm.add(item.getNcm().getNumero());
+				excecaoNcm.add(Integer.toString(item.getNcm().getExcecao()));
+			});
+			List<DeOlhoNoImposto> listOlhoNoImposto = findNcmByNumeroInAndExcecaoIn(numeroNcm, excecaoNcm);
+			// SÒ VOU AO BD UMA VEZ
 			opDocFiscal.get().getItens().stream().forEach(item -> {
-				olhoNoImposto[0] = findNcmByNumeroAndExcecao(item.getNcm().getNumero(), Integer.toString(item.getNcm().getExcecao())).get();
-				BigDecimal totalItem = totalItem(item);
-				BigDecimal aliqEstadual = olhoNoImposto[0].getAliqEstadual();
-				BigDecimal aliqMunicipal = olhoNoImposto[0].getAliqMunicipal();
-				
-				vlrImpostoFederal[0] = vlrImpostoFederal[0].add((CalculaImpostoFederal(item, olhoNoImposto[0])));
-				vlrImpostoEstadual[0] = vlrImpostoEstadual[0].add(totalItem.multiply(aliqEstadual));
-				vlrImpostoMunicipal[0] = vlrImpostoMunicipal[0].add(totalItem.multiply(aliqMunicipal));
+				Optional<DeOlhoNoImposto> opOlhoNoImposto = listOlhoNoImposto.stream().filter( o -> o.getNcm() == item.getNcm().getNumero() && Integer.parseInt(o.getExce())== item.getNcm().getExcecao()).findAny();
+				if (opOlhoNoImposto.isPresent()) {
+					BigDecimal totalItem = totalItem(item);
+					BigDecimal aliqEstadual = opOlhoNoImposto.get().getAliqEstadual();
+					BigDecimal aliqMunicipal = opOlhoNoImposto.get().getAliqMunicipal();
+					
+					vlrImpostoFederal[0] = vlrImpostoFederal[0].add((CalculaImpostoFederal(item, opOlhoNoImposto.get())));
+					vlrImpostoEstadual[0] = vlrImpostoEstadual[0].add(totalItem.multiply(aliqEstadual));
+					vlrImpostoMunicipal[0] = vlrImpostoMunicipal[0].add(totalItem.multiply(aliqMunicipal));
+				}
 			});
 			opDocFiscal.get().setValorImpostoFederal(vlrImpostoFederal[0]);
 			opDocFiscal.get().setValorImpostoEstadual(vlrImpostoEstadual[0]);
