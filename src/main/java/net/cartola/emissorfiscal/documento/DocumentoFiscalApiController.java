@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.cartola.emissorfiscal.ibpt.DeOlhoNoImpostoService;
 import net.cartola.emissorfiscal.response.Response;
+import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 import net.cartola.emissorfiscal.util.ValidationHelper;
 
@@ -33,6 +35,12 @@ public class DocumentoFiscalApiController {
 	
 	@Autowired
 	private CalculoFiscalFederal calcFiscalFederal;
+	
+	@Autowired
+	private CalculoFiscalEstadual calFiscalEstadual;
+	
+	@Autowired
+	private DeOlhoNoImpostoService olhoNoImpostoService;
 	
 //	@GetMapping("id{id}")
 //	public List<DocumentoFiscal> findDocumentoById(@PathVariable Long id) {
@@ -82,6 +90,7 @@ public class DocumentoFiscalApiController {
 		
 		// 2 - CALCULAR
 		calcFiscalFederal.calculaImposto(docFiscal);
+		olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(docFiscal));
 		response.setData(docFiscal);
 		return ResponseEntity.ok(response);
 	}

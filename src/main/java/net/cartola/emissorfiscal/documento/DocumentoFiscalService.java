@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
+import net.cartola.emissorfiscal.ibpt.DeOlhoNoImpostoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
@@ -58,6 +59,8 @@ public class DocumentoFiscalService {
 	@Autowired
 	private CalculoFiscalFederal calcFiscalFederal;
 	
+	@Autowired
+	private DeOlhoNoImpostoService olhoNoImpostoService;
 	
 	public List<DocumentoFiscal> findAll() {
 		return documentoFiscalRepository.findAll();
@@ -66,6 +69,7 @@ public class DocumentoFiscalService {
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
 		calcFiscalEstadual.calculaImposto(documentoFiscal);
 		calcFiscalFederal.calculaImposto(documentoFiscal);
+		olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(documentoFiscal));
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
