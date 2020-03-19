@@ -43,19 +43,19 @@ public class DeOlhoNoImpostoService {
 	}
 	
 	public void setDeOlhoNoImposto(Optional<DocumentoFiscal> opDocFiscal) {
-		DeOlhoNoImposto[] opOlhoNoImposto = {new DeOlhoNoImposto()};
+		DeOlhoNoImposto[] olhoNoImposto = {new DeOlhoNoImposto()};
 		BigDecimal[] vlrImpostoFederal = {BigDecimal.ZERO};
 		BigDecimal[] vlrImpostoEstadual = {BigDecimal.ZERO};
 		BigDecimal[] vlrImpostoMunicipal = {BigDecimal.ZERO};
 		
 		if (opDocFiscal.isPresent() && opDocFiscal.get().getItens() != null) {
 			opDocFiscal.get().getItens().stream().forEach(item -> {
-				opOlhoNoImposto[0] = findNcmByNumeroAndExcecao(item.getNcm().getNumero(), Integer.toString(item.getNcm().getExcecao())).get();
+				olhoNoImposto[0] = findNcmByNumeroAndExcecao(item.getNcm().getNumero(), Integer.toString(item.getNcm().getExcecao())).get();
 				BigDecimal totalItem = totalItem(item);
-				BigDecimal aliqEstadual = opOlhoNoImposto[0].getAliqEstadual();
-				BigDecimal aliqMunicipal = opOlhoNoImposto[0].getAliqMunicipal();
+				BigDecimal aliqEstadual = olhoNoImposto[0].getAliqEstadual();
+				BigDecimal aliqMunicipal = olhoNoImposto[0].getAliqMunicipal();
 				
-				vlrImpostoFederal[0] = vlrImpostoFederal[0].add((CalculaImpostoFederal(item, opOlhoNoImposto[0])));
+				vlrImpostoFederal[0] = vlrImpostoFederal[0].add((CalculaImpostoFederal(item, olhoNoImposto[0])));
 				vlrImpostoEstadual[0] = vlrImpostoEstadual[0].add(totalItem.multiply(aliqEstadual));
 				vlrImpostoMunicipal[0] = vlrImpostoMunicipal[0].add(totalItem.multiply(aliqMunicipal));
 			});
@@ -65,9 +65,9 @@ public class DeOlhoNoImpostoService {
 		}
 	}
 	
-	private BigDecimal CalculaImpostoFederal(DocumentoFiscalItem item, DeOlhoNoImposto opOlhoNoImposto) {
-		BigDecimal aliqFederalNacional = opOlhoNoImposto.getAliqFederalNacional();
-		BigDecimal aliqFederalImportado = opOlhoNoImposto.getAliqFederalImportado();
+	private BigDecimal CalculaImpostoFederal(DocumentoFiscalItem item, DeOlhoNoImposto olhoNoImposto) {
+		BigDecimal aliqFederalNacional = olhoNoImposto.getAliqFederalNacional();
+		BigDecimal aliqFederalImportado = olhoNoImposto.getAliqFederalImportado();
 		
 		switch (item.getOrigem()) {
 			case NACIONAL:
