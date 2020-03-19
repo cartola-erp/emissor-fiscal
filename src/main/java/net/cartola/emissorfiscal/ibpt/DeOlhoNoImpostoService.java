@@ -35,46 +35,49 @@ public class DeOlhoNoImpostoService {
 		if (opDocFiscal.isPresent()) {
 			setDeOlhoNoImposto(opDocFiscal);
 			DocumentoFiscal docFiscal = opDocFiscal.get();
-			totalImposto.add(docFiscal.getValorImpostoFederal()
+			totalImposto = totalImposto.add(docFiscal.getValorImpostoFederal()
 					.add(docFiscal.getValorImpostoEstadual()
-					.add(docFiscal.getValorImpostoMunicipal())));
+				    .add(docFiscal.getValorImpostoMunicipal())));
 		}
 		return totalImposto;
 	}
 	
-	// ACho melhor só listar os impostos aqui retornar numa lista,
-	// daí em outro método eu totalizo
 	public void setDeOlhoNoImposto(Optional<DocumentoFiscal> opDocFiscal) {
-		DeOlhoNoImposto[] opOlhoNoImposto = new DeOlhoNoImposto[0];
-		BigDecimal vlrImpostoFederal = BigDecimal.ZERO;
-		BigDecimal vlrImpostoEstadual = BigDecimal.ZERO;
-		BigDecimal vlrImpostoMunicipal = BigDecimal.ZERO;
+		DeOlhoNoImposto[] opOlhoNoImposto = {new DeOlhoNoImposto()};
+		BigDecimal[] vlrImpostoFederal = {BigDecimal.ZERO};
+		BigDecimal[] vlrImpostoEstadual = {BigDecimal.ZERO};
+		BigDecimal[] vlrImpostoMunicipal = {BigDecimal.ZERO};
 		
-		if (opDocFiscal.isPresent()) {
+		if (opDocFiscal.isPresent() && opDocFiscal.get().getItens() != null) {
 			opDocFiscal.get().getItens().stream().forEach(item -> {
 				opOlhoNoImposto[0] = findNcmByNumeroAndExcecao(item.getNcm().getNumero(), Integer.toString(item.getNcm().getExcecao())).get();
 				BigDecimal totalItem = totalItem(item);
-				vlrImpostoFederal.add(CalculaImpostoFederal(item, opOlhoNoImposto[0]));
-				vlrImpostoEstadual.add(totalItem.multiply(opOlhoNoImposto[0].getAliqEstadual()));
-				vlrImpostoMunicipal.add(totalItem.multiply(opOlhoNoImposto[0].getAliqMunicipal()));
+				BigDecimal aliqEstadual = opOlhoNoImposto[0].getAliqEstadual();
+				BigDecimal aliqMunicipal = opOlhoNoImposto[0].getAliqMunicipal();
+				
+				vlrImpostoFederal[0] = vlrImpostoFederal[0].add((CalculaImpostoFederal(item, opOlhoNoImposto[0])));
+				vlrImpostoEstadual[0] = vlrImpostoEstadual[0].add(totalItem.multiply(aliqEstadual));
+				vlrImpostoMunicipal[0] = vlrImpostoMunicipal[0].add(totalItem.multiply(aliqMunicipal));
 			});
-			
-			opDocFiscal.get().setValorImpostoFederal(vlrImpostoFederal);
-			opDocFiscal.get().setValorImpostoEstadual(vlrImpostoEstadual);
-			opDocFiscal.get().setValorImpostoMunicipal(vlrImpostoMunicipal);
+			opDocFiscal.get().setValorImpostoFederal(vlrImpostoFederal[0]);
+			opDocFiscal.get().setValorImpostoEstadual(vlrImpostoEstadual[0]);
+			opDocFiscal.get().setValorImpostoMunicipal(vlrImpostoMunicipal[0]);
 		}
 	}
 	
 	private BigDecimal CalculaImpostoFederal(DocumentoFiscalItem item, DeOlhoNoImposto opOlhoNoImposto) {
+		BigDecimal aliqFederalNacional = opOlhoNoImposto.getAliqFederalNacional();
+		BigDecimal aliqFederalImportado = opOlhoNoImposto.getAliqFederalImportado();
+		
 		switch (item.getOrigem()) {
 			case NACIONAL:
 			case NACIONAL_CONTEUDO_IMPORTADO_MAIOR_40:
 			case NACIONAL_CONFORMIDADE_PROCESSOS:
 			case NACIONAL_CONTEUDO_IMPORTADO_MENOR_40:
 			case NACIONAL_CONTEUDO_IMPORTADO_MAIOR_70:
-			return totalItem(item).multiply(opOlhoNoImposto.getAliqFederalNacional());
+			return totalItem(item).multiply(aliqFederalNacional);
 		default:
-			return totalItem(item).multiply(opOlhoNoImposto.getAliqFederalImportado());
+			return totalItem(item).multiply(aliqFederalImportado);
 		}
 	}
 

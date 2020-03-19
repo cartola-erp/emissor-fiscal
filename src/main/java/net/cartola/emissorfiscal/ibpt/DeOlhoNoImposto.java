@@ -28,10 +28,10 @@ public class DeOlhoNoImposto implements Serializable{
 	private String exce;
 	private int tabela;
 	private String descricaoIbpt;
-	private BigDecimal aliqFederalNacional;
-	private BigDecimal aliqFederalImportado;
-	private BigDecimal aliqEstadual;
-	private BigDecimal aliqMunicipal;
+	private BigDecimal aliqFederalNacional = BigDecimal.ZERO;
+	private BigDecimal aliqFederalImportado = BigDecimal.ZERO;
+	private BigDecimal aliqEstadual = BigDecimal.ZERO;
+	private BigDecimal aliqMunicipal = BigDecimal.ZERO;
 	private LocalDate vigenciaInicio;
 	private LocalDate vigenciaTermino;
 	private String chave;
