@@ -147,7 +147,7 @@ public class TributacaoFederalPage {
 		opFinalidade.selectByVisibleText(Finalidade.CONSUMO.toString());
 		
 		Select opRegimeTributario = new Select(selectRegimeTributario);
-		opRegimeTributario.selectByVisibleText(RegimeTributario.REAL.toString());
+		opRegimeTributario.selectByVisibleText(RegimeTributario.NORMAL.toString());
 		
 //		Select opNcm = new Select(selectNcm);
 //		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
@@ -178,7 +178,8 @@ public class TributacaoFederalPage {
 	public void tentaCadastrarUmaTributacaoFederalCorretamente() {
 		preencheOCadastroDeTributacaoFederalSemONcm();
 		Select opNcm = new Select(selectNcm);
-		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
+//		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01);
+		opNcm.selectByVisibleText(NcmPage.NCM_NUMERO_01 + " Ex: " +NcmPage.NCM_EXCECAO_01 + " " +NcmPage.NCM_DESCRICAO_01);
 		btnCadastrarAlterar.click();
 		PageUtil.verificaSeApareceuMsgDeSucesso(TRIBUTACAO_FEDERAL_TITLE_PAGE_CADASTRO, driver);
 		PageUtil.espereUmTempo(750L);

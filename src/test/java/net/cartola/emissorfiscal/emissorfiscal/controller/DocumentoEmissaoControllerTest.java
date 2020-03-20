@@ -57,13 +57,13 @@ public class DocumentoEmissaoControllerTest {
 		// EMITENTE
 		emitente.setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ));
 		emitente.setUf(EstadoSigla.SP);
-		emitente.setRegimeTributario(RegimeTributario.REAL);
+		emitente.setRegimeTributario(RegimeTributario.NORMAL);
 		emitente.setPessoaTipo(PessoaTipo.JURIDICA);
 		
 		// DESTINATARIO
 		destinatario.setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ_2));
 		destinatario.setUf(EstadoSigla.SP);
-		destinatario.setRegimeTributario(RegimeTributario.REAL);
+		destinatario.setRegimeTributario(RegimeTributario.NORMAL);
 		destinatario.setPessoaTipo(PessoaTipo.FISICA);
 		
 		// NCM
