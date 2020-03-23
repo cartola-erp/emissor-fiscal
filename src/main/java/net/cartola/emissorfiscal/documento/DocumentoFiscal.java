@@ -38,14 +38,14 @@ public class DocumentoFiscal implements Serializable {
 	private Pessoa emitente;
 	private Pessoa destinatario;
 	private List<DocumentoFiscalItem> itens;
-	private BigDecimal icmsBase;
-	private BigDecimal icmsValor;
-	private BigDecimal pisBase;
-	private BigDecimal pisValor;
-	private BigDecimal cofinsBase;
-	private BigDecimal cofinsValor;
-	private BigDecimal ipiBase;
-	private BigDecimal ipiValor;
+	private BigDecimal icmsBase = BigDecimal.ZERO;
+	private BigDecimal icmsValor = BigDecimal.ZERO;
+	private BigDecimal pisBase = BigDecimal.ZERO;
+	private BigDecimal pisValor = BigDecimal.ZERO;
+	private BigDecimal cofinsBase = BigDecimal.ZERO;
+	private BigDecimal cofinsValor = BigDecimal.ZERO;
+	private BigDecimal ipiBase = BigDecimal.ZERO;
+	private BigDecimal ipiValor = BigDecimal.ZERO;
 	// Para "atender" a lei "De Olho No Imposto"
 	private BigDecimal valorImpostoFederal = BigDecimal.ZERO;
 	private BigDecimal valorImpostoEstadual = BigDecimal.ZERO;
