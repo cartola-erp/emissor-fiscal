@@ -70,6 +70,9 @@ public class DeOlhoNoImpostoService {
 					vlrImpostoFederal[0] = vlrImpostoFederal[0].add((CalculaImpostoFederal(item, opOlhoNoImposto.get())));
 					vlrImpostoEstadual[0] = vlrImpostoEstadual[0].add(totalItem.multiply(aliqEstadual));
 					vlrImpostoMunicipal[0] = vlrImpostoMunicipal[0].add(totalItem.multiply(aliqMunicipal));
+					
+					BigDecimal valorTotalImposto = vlrImpostoEstadual[0].add(vlrImpostoFederal[0]).add(vlrImpostoMunicipal[0]);
+					item.setValorTotalImposto(valorTotalImposto);
 				}
 			});
 			opDocFiscal.get().setValorImpostoFederal(vlrImpostoFederal[0]);

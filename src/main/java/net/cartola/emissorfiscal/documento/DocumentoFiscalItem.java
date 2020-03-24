@@ -60,6 +60,8 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal ipiAliquota = BigDecimal.ZERO;
 	private BigDecimal ipiValor = BigDecimal.ZERO;
 	private int ipiCst;
+	// Para "atender" a lei "De Olho No Imposto"
+	private BigDecimal valorTotalImposto = BigDecimal.ZERO;
 	
 	private DocumentoFiscal documentoFiscal;
 
@@ -270,6 +272,15 @@ public class DocumentoFiscalItem implements Serializable {
 		this.ipiCst = ipiCst;
 	}
 
+	@Column(name = "vlr_tot_imposto")
+	public BigDecimal getValorTotalImposto() {
+		return valorTotalImposto;
+	}
+
+	public void setValorTotalImposto(BigDecimal valorTotalImposto) {
+		this.valorTotalImposto = valorTotalImposto;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "docu_fisc_id", unique = false, foreignKey = @ForeignKey(name = "fnk_documento_fiscal"))
 	public DocumentoFiscal getDocumentoFiscal() {
@@ -279,4 +290,5 @@ public class DocumentoFiscalItem implements Serializable {
 	public void setDocumentoFiscal(DocumentoFiscal documentoFiscal) {
 		this.documentoFiscal = documentoFiscal;
 	}
+
 }
