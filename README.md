@@ -18,14 +18,14 @@ git clone https://github.com/cartola-erp/emissor-fiscal.git
 * 2 - [Java 8](https://www.youtube.com/watch?v=rzto4yY3pVw)
 * 3 - [STS - Spring Tool Suite ](https://spring.io/tools#suite-three) (IDE - recomendada)
 
-### Installing
+### Instalando o projeto no ambiente de desenvolvimento
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+* 1 - [Importe o projeto maven no STS](https://www.lagomframework.com/documentation/1.6.x/java/EclipseMavenInt.html)
+* 2 - Crie os seguinte bancos de dados:
 
 ```
-Give the example
+create database emissorfiscal;
+create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
 ```
 
 And repeat
