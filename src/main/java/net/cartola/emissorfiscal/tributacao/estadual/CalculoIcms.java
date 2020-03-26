@@ -33,6 +33,7 @@ public class CalculoIcms {
 		docItem.setIcmsAliquota(tributacao.getIcmsAliquota());
 		docItem.setIcmsBase(valorIcmsBase);
 		docItem.setIcmsValor(valorIcms);
+		docItem.setIcmsCst(tributacao.getIcmsCst());
 		return icms;
 	}
 	
