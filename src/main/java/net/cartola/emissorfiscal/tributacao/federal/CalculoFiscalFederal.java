@@ -50,27 +50,37 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 			TributacaoFederal tributacao = mapaTributacoesPorNcm.get(di.getNcm());
 			listaImpostos.add(calculoPisCofins.calculaPis(di, tributacao));
 			listaImpostos.add(calculoPisCofins.calculaCofins(di, tributacao));
+			listaImpostos.add(calculoIpi.calculaIpi(di, tributacao));
 		});
 
 		setaPisBaseValor(documentoFiscal, listaImpostos);
 		setaCofinsBaseValor(documentoFiscal, listaImpostos);
+		setaIpiBaseValor(documentoFiscal, listaImpostos);
 	}
 
 	private void setaPisBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
 		documentoFiscal.setPisBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getPisBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
-		documentoFiscal.setPisValor(totaliza(listaImpostos.stream().filter(ipi -> ipi.getImposto().equals(Imposto.PIS))
-				.collect(Collectors.toList())));
+		documentoFiscal.setPisValor(totaliza(listaImpostos.stream()
+				.filter(pis -> pis.getImposto().equals(Imposto.PIS)).collect(Collectors.toList())));
 	}
 
 	private void setaCofinsBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
 		documentoFiscal.setCofinsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getCofinsBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setCofinsValor(totaliza(listaImpostos.stream()
-				.filter(ipi -> ipi.getImposto().equals(Imposto.COFINS)).collect(Collectors.toList())));
+				.filter(cofins -> cofins.getImposto().equals(Imposto.COFINS)).collect(Collectors.toList())));
 	}
-
+	
+	private void setaIpiBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
+		documentoFiscal.setIpiBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIpiBase)
+				.reduce(BigDecimal.ZERO, BigDecimal::add));
+		documentoFiscal.setIpiValor(totaliza(listaImpostos.stream()
+				.filter(ipi -> ipi.getImposto().equals(Imposto.IPI)).collect(Collectors.toList())));
+	}
+	
 	private BigDecimal totaliza(List<CalculoImposto> listaImposto) {
 		return listaImposto.stream().map(CalculoImposto::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
+	
 }
