@@ -116,6 +116,7 @@ CREATE TABLE `docu_fisc_item` (
   `pis_valor` decimal(19,2) DEFAULT NULL,
   `quantidade` decimal(19,2) NOT NULL,
   `valor_unitario` decimal(19,2) NOT NULL,
+  `vlr_tot_imposto` decimal(19,2) DEFAULT NULL,
   `docu_fisc_id` bigint(20) DEFAULT NULL,
   `ncm_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
