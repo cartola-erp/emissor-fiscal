@@ -66,6 +66,52 @@ Nessa tela tem que informar apenas a descrição da OPERAÇÃO, que é a mesma q
 ![Cadastrar uma operação](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/06%20-%20Cadastrar%20Opera%C3%A7%C3%A3o.png?raw=true)
 **Figura 06** - Cadastrar uma OPERAÇÃO 
 
+### 7. Cadastrando uma TRIBUTAÇÃO ESTADUAL
+OBS IMPORTANTE: Para inserir uma tributação, é OBRIGATÓRIO, realizar os cadastros nas telas anteriores, caso ainda **NÃO EXISTA** essas informações, que serão necessárias para a tributação que será cadastrada.
+
+1. **UF. Origem** - **Estado** de onde a mercadoria está **saindo**.
+2. **UF. Destino** - **Estado destino** da "mercadoria".
+3. **Operação** - Venda, Venda Interestadual, devolução etc.
+4. **NCM** - Ncm do "item" que será cadastrado a **tributação estadual**
+5. **Finalidade** - Qual é a finalidade do item? Revenda, Brinde, Doação, Patrimônio ou Consumo ?
+6. **Regime tributário do emitente** - O regime tribuário da PESSOA que está emitindo o documento fiscal. SIMPLES, PRESUMIDO ou REAL ?
+
+**OBS:** A COMBINAÇÃO dessas SEIS INFORMAÇÕES, será o que o ERP, usará como base para procurar as ALÍQUOTAS, CST etc (que serão usadas nos cálculos), quando estiver cadastrando um DOCUMENTO FISCAL. Ou seja, mesmo que ja tenha o cadastro para algum NCM, porém na hora do preenchimento do Documento qualquer um dos outros parametros acima for diferente, NÃO FUNCIONARÁ.
+
+Ex.: (Tenho a seguinte tributação cadastrada):
+```
+UF ORIGEM = SP
+UF DESTINO = SP
+OPERAÇÃO = VENDA
+NCM = 7031011
+FINALIDADE = CONSUMO
+REGIME DO EMITENTE = REAL
+```
+Porém estamos preenchendo um documento fiscal, cujo o mesmo terá apenas uma informação diferente do de cima (no nosso exemplo a finalidade):
+
+```
+FINALIDADE = REVENDA
+```
+Logo no preenchimento desse Documento Fiscal (no ERP), receberá uma mensagem semelhante a: "Não existe tributação cadastrada para esse item".
+
+Para corrigir isso deverá realizar o cadastro de uma nova tributação, que se encaixe nessa finalidade.
+
+Já os campos abaixo do formulário, é o que de fato será usado no calculo, para o item, que se encaixe nas combinações acima.
+
+7. **ICMS CST** - Código da substitução tributária do icms.
+8. **ICMS BASE** - Porcentagem de redução na base de calculo.
+9. **ICMS Aliq.** - **Alíquota** do estado de **origem**
+10. **ICMS IVA/MVA** - Porcentagem(referente ao estado de origem) de IVA/MVA do item que está sendo cadastrado
+11. **ICMS Aliq. Destino** - **Alíquota** do estado de **destino**
+12. **ICMS CEST** - Código especificador da substituição tributária
+13. **Mensagem** Uma observação/mensagem, para essa tributação. (não há interferência no cálculo)
+
+![Cadastrar uma tributação estadual](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/07%20-%20Cadastrar%20Tributacao%20Estadual%20-%20(ICMS).png?raw=true)
+**Figura 06** - Cadastrar uma TRIBUTAÇÃO ESTADUAL 
+
+### 7. Cadastrando uma TRIBUTAÇÃO FEDERAL
+
+
 ## Começando
 
 Clone esse projeto em um diretório de sua máquina
