@@ -10,8 +10,8 @@ Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte su
 [NCM](https://github.com/cartola-erp/emissor-fiscal/#4-cadastrando-um-ncm), 
 [Estado](https://github.com/cartola-erp/emissor-fiscal/#5-cadastrando-um-estado), 
 [Operação](https://github.com/cartola-erp/emissor-fiscal/#6-cadastrando-uma-opera%C3%A7%C3%A3o), 
-[Tributação Estadual]() e 
-[Federal]())
+[Tributação Estadual](https://github.com/cartola-erp/emissor-fiscal#7-cadastrando-uma-tributa%C3%A7%C3%A3o-estadual) e 
+[Federal](https://github.com/cartola-erp/emissor-fiscal#7-cadastrando-uma-tributa%C3%A7%C3%A3o-federal))
 * **Consultar** ([CFOP](), NCM, Estado, Operação, Tributação Estadual e Federal)
 * **Simulação** ([Essa tela](https://github.com/cartola-erp/emissor-fiscal/#2-tela-de-simula%C3%A7%C3%A3o))
 * **Sair** (Irá deslogar do sistema, voltando assim para a página de login)
@@ -111,6 +111,28 @@ Já os campos abaixo do formulário, é o que de fato será usado no calculo, pa
 
 ### 7. Cadastrando uma TRIBUTAÇÃO FEDERAL
 
+Na tela de cadastro de **tributação federal**, vale a mesma regra das **combinações** da [TRIBUTAÇÃO ESTADUAL](https://github.com/cartola-erp/emissor-fiscal#7-cadastrando-uma-tributa%C3%A7%C3%A3o-estadual) que o (ERP usará para encontrar as CST, ALIQ. etc, da tributação), com a diferença, que como é uma **TRIBUTAÇÃO FEDERAL**, não precisará dos **UF origem** e nem de **destino**, ou seja, serão as QUATROS combinações abaixo:
+
+1. **Operação** - Venda, Venda Interestadual, devolução etc.
+2. **NCM** - Ncm do "item" que será cadastrado a **tributação estadual**
+3. **Finalidade** - Qual é a finalidade do item? Revenda, Brinde, Doação, Patrimônio ou Consumo ?
+4. **Regime tributário do emitente** - O regime tribuário da PESSOA que está emitindo o documento fiscal. SIMPLES, PRESUMIDO ou REAL ?
+
+![Cadastrar uma tributação federal](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/08%20-%20Cadastrar%20Tributacao%20Federal%20-%20(PIS%20&%20COFINS).png?raw=true)
+**Figura 07** - Cadastrar uma TRIBUTAÇÃO FEDERAL 
+
+Já nesses abaixo, são os valores que serão usados nos cálculos:
+
+5. **PIS CST** - Código da substitução tributária do PIS.
+6. **PIS Base** - Porcentagem de redução na base de calculo do PIS.
+7. **PIS Alíquota** - A alíquota do PIS. (GERALMENTE **1,65%**)
+8. **COFINS CST** - Código da substitução tributária do COFINS. (GERALMENTE, é o mesmo que o do COFINS)
+9. **COFINS Base** - Porcentagem de redução na base de calculo do COFINS.
+10. **COFINS Alíquota** - A alíquota do COFINS. (GERALMENTE **7,60%**)
+11. **IPI CST** - 
+12. **IPI Base** -
+13. **IPI Alíquota** -
+14. **Mensagem** - Uma observação/mensagem, para essa tributação. (não há interferência no cálculo)
 
 ## Começando
 
