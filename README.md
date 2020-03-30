@@ -6,9 +6,14 @@ de documentos fiscais recebidos.
 ### 2. Tela de simulação
 
 Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte superior temos os seguintes menus:
-* **Cadastrar** (CFOP, NCM, Estado, Operação, Tributação Estadual e Federal)
-* **Consultar** (CFOP, NCM, Estado, Operação, Tributação Estadual e Federal)
-* **Simulação** (Essa tela)
+* **Cadastrar** ([CFOP](https://github.com/cartola-erp/emissor-fiscal/#3-cadastrando-uma-cfop), 
+[NCM](https://github.com/cartola-erp/emissor-fiscal/#4-cadastrando-um-ncm), 
+[Estado](https://github.com/cartola-erp/emissor-fiscal/#5-cadastrando-um-estado), 
+[Operação](https://github.com/cartola-erp/emissor-fiscal/#6-cadastrando-uma-opera%C3%A7%C3%A3o), 
+[Tributação Estadual]() e 
+[Federal]())
+* **Consultar** ([CFOP](), NCM, Estado, Operação, Tributação Estadual e Federal)
+* **Simulação** ([Essa tela](https://github.com/cartola-erp/emissor-fiscal/#2-tela-de-simula%C3%A7%C3%A3o))
 * **Sair** (Irá deslogar do sistema, voltando assim para a página de login)
 
 Já essa página inicial, servirá apenas para: Fazer uma simulação de como as informações de um item deverá sair num documento fiscal. E para isso ser feito será preciso, "alimentar/parametrizar o sistema nas telas seguintes".
