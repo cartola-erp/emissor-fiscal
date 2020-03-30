@@ -33,7 +33,22 @@ Caso ocorra algum **erro ou falte preencher algum campo**, será mostrada alguma
 
 ### 4. Cadastrando um NCM
 
+Semelhante a tela anterior, nessa deverá ser informado:
 
+1. NCM("classe fiscal"), que deverá ter no máximo 8 digítos
+2. Exceção com até 2 números 
+3. Descrição do NCM que está sendo cadastrado.
+4. Click em "ALTERAR/CADASTRAR"
+
+![Cadastrar NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/04%20-%20Cadastrar%20NCM.png?raw=true)
+**Figura 04** - Cadastrar um NCM 
+
+### 5. Cadastrando uma OPERAÇÃO
+
+Nessa tela tem que informar apenas a descrição da OPERAÇÃO, que é a mesma que será usado no documento fiscal. (EX.: VENDA, VENDA INTERESTADUAL, DEVOLUÇÃO etc)
+
+![Cadastrar NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/05%20-%20Cadastrar%20Opera%C3%A7%C3%A3o.png?raw=true)
+**Figura 05** - Cadastrar uma OPERAÇÃO 
 
 ## Começando
 
