@@ -43,12 +43,23 @@ Semelhante a tela anterior, nessa deverá ser informado:
 ![Cadastrar NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/04%20-%20Cadastrar%20NCM.png?raw=true)
 **Figura 04** - Cadastrar um NCM 
 
-### 5. Cadastrando uma OPERAÇÃO
+### 5. Cadastrando um ESTADO
+
+OBS: O estado será usado, para fazer o cadastro das **tributações estaduais** para isso na tela abaixo:
+
+1. Informe a **sigla** do estado
+2. E o nome
+
+![Cadastrar ESTADO](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/05%20-%20Cadastrar%20Estado.png
+)
+**Figura 05** - Cadastrar um ESTADO 
+
+### 6. Cadastrando uma OPERAÇÃO
 
 Nessa tela tem que informar apenas a descrição da OPERAÇÃO, que é a mesma que será usado no documento fiscal. (EX.: VENDA, VENDA INTERESTADUAL, DEVOLUÇÃO etc)
 
 ![Cadastrar uma operação](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/06%20-%20Cadastrar%20Opera%C3%A7%C3%A3o.png?raw=true)
-**Figura 05** - Cadastrar uma OPERAÇÃO 
+**Figura 06** - Cadastrar uma OPERAÇÃO 
 
 ## Começando
 
