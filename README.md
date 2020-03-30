@@ -3,6 +3,8 @@
 Projeto criado para um analista fiscal, ser o responsável por manter as tributações estaduais e federais que serão usadas no cálculo, 
 de documentos fiscais recebidos. 
 
+### 2. Tela de simulação
+
 Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte superior temos os seguintes menus:
 * **Cadastrar** (CFOP, NCM, Estado, Operação, Tributação Estadual e Federal)
 * **Consultar** (CFOP, NCM, Estado, Operação, Tributação Estadual e Federal)
@@ -14,6 +16,7 @@ Já essa página inicial, servirá apenas para: Fazer uma simulação de como as
 ![Simulação de calculo](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/02%20-%20Simula%C3%A7%C3%A3o.png)
 **Figura 02** - Simulação de cálculo 
 
+### 3. Cadastrando uma CFOP
 
 Informe o número de 4 dígitos da CFOP e sua descrição. 
 
@@ -27,6 +30,9 @@ Após preencher o formulário acima, ao clicar no botão **ALTERAR/CADASTRAR**, 
 Caso ocorra algum **erro ou falte preencher algum campo**, será mostrada alguma mensagem semelhante a essa embaixo
 
 ![Mensagem de erro](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/12%20-%20Mensagem%20Erro.png)
+
+### 4. Cadastrando um NCM
+
 
 
 ## Começando
