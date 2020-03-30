@@ -10,9 +10,23 @@ Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte su
 * **Sair** (Irá deslogar do sistema, voltando assim para a página de login)
 
 Já essa página inicial, servirá apenas para: Fazer uma simulação de como as informações de um item deverá sair num documento fiscal. E para isso ser feito será preciso, "alimentar/parametrizar o sistema nas telas seguintes".
+
 ![Simulação de calculo](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/02%20-%20Simula%C3%A7%C3%A3o.png)
 **Figura 02** - Simulação de cálculo 
 
+
+Informe o número de 4 dígitos da CFOP e sua descrição. 
+
+![Cadastrar CFOP](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/03%20-%20Cadastrar%20CFOP.png)
+**Figura 03** - Cadastrar CFOP 
+
+Após preencher o formulário acima, ao clicar no botão **ALTERAR/CADASTRAR**, a msg abaixo deverá ser mostrada, na parte superior do formulário.
+
+![Mensagem de Alterado/Cadastrado com sucesso](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/11%20-%20Mensagem%20Alterado-Cadastrado%20Sucesso.png)
+
+Caso ocorra algum **erro ou falte preencher algum campo**, será mostrada alguma mensagem semelhante a essa embaixo
+
+![Mensagem de erro](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/12%20-%20Mensagem%20Erro.png)
 
 
 ## Começando
