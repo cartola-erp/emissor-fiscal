@@ -25,11 +25,11 @@ Informe o número de 4 dígitos da CFOP e sua descrição.
 
 Após preencher o formulário acima, ao clicar no botão **ALTERAR/CADASTRAR**, a msg abaixo deverá ser mostrada, na parte superior do formulário.
 
-![Mensagem de Alterado/Cadastrado com sucesso](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/11%20-%20Mensagem%20Alterado-Cadastrado%20Sucesso.png)
+![Mensagem de Alterado/Cadastrado com sucesso](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/12%20-%20Mensagem%20Alterado-Cadastrado%20Sucesso.png?raw=true)
 
 Caso ocorra algum **erro ou falte preencher algum campo**, será mostrada alguma mensagem semelhante a essa embaixo
 
-![Mensagem de erro](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/12%20-%20Mensagem%20Erro.png)
+![Mensagem de erro](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/13%20-%20Mensagem%20Erro.png?raw=true)
 
 ### 4. Cadastrando um NCM
 
@@ -47,7 +47,7 @@ Semelhante a tela anterior, nessa deverá ser informado:
 
 Nessa tela tem que informar apenas a descrição da OPERAÇÃO, que é a mesma que será usado no documento fiscal. (EX.: VENDA, VENDA INTERESTADUAL, DEVOLUÇÃO etc)
 
-![Cadastrar NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/05%20-%20Cadastrar%20Opera%C3%A7%C3%A3o.png?raw=true)
+![Cadastrar uma operação](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/06%20-%20Cadastrar%20Opera%C3%A7%C3%A3o.png?raw=true)
 **Figura 05** - Cadastrar uma OPERAÇÃO 
 
 ## Começando
