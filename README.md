@@ -3,6 +3,18 @@
 Projeto criado para um analista fiscal, ser o responsável por manter as tributações estaduais e federais que serão usadas no cálculo, 
 de documentos fiscais recebidos. 
 
+Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte superior temos os seguintes menus:
+* **Cadastrar** (CFOP, NCM, Estado, Operação, Tributação Estadual e Federal)
+* **Consultar** (CFOP, NCM, Estado, Operação, Tributação Estadual e Federal)
+* **Simulação** (Essa tela)
+* **Sair** (Irá deslogar do sistema, voltando assim para a página de login)
+
+Já essa página inicial, servirá apenas para: Fazer uma simulação de como as informações de um item deverá sair num documento fiscal. E para isso ser feito será preciso, "alimentar/parametrizar o sistema nas telas seguintes".
+![Simulação de calculo](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/02%20-%20Simula%C3%A7%C3%A3o.png)
+**Figura 02** - Simulação de cálculo 
+
+
+
 ## Começando
 
 Clone esse projeto em um diretório de sua máquina
