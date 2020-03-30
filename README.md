@@ -3,6 +3,8 @@
 Projeto criado para um analista fiscal, ser o responsável por manter as tributações estaduais e federais que serão usadas no cálculo, 
 de documentos fiscais recebidos. 
 
+### 2. Tela de simulação
+
 Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte superior temos os seguintes menus:
 * **Cadastrar** (CFOP, NCM, Estado, Operação, Tributação Estadual e Federal)
 * **Consultar** (CFOP, NCM, Estado, Operação, Tributação Estadual e Federal)
@@ -10,10 +12,43 @@ Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte su
 * **Sair** (Irá deslogar do sistema, voltando assim para a página de login)
 
 Já essa página inicial, servirá apenas para: Fazer uma simulação de como as informações de um item deverá sair num documento fiscal. E para isso ser feito será preciso, "alimentar/parametrizar o sistema nas telas seguintes".
+
 ![Simulação de calculo](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/02%20-%20Simula%C3%A7%C3%A3o.png)
 **Figura 02** - Simulação de cálculo 
 
+### 3. Cadastrando uma CFOP
 
+Informe o número de 4 dígitos da CFOP e sua descrição. 
+
+![Cadastrar CFOP](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/03%20-%20Cadastrar%20CFOP.png)
+**Figura 03** - Cadastrar CFOP 
+
+Após preencher o formulário acima, ao clicar no botão **ALTERAR/CADASTRAR**, a msg abaixo deverá ser mostrada, na parte superior do formulário.
+
+![Mensagem de Alterado/Cadastrado com sucesso](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/11%20-%20Mensagem%20Alterado-Cadastrado%20Sucesso.png)
+
+Caso ocorra algum **erro ou falte preencher algum campo**, será mostrada alguma mensagem semelhante a essa embaixo
+
+![Mensagem de erro](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/12%20-%20Mensagem%20Erro.png)
+
+### 4. Cadastrando um NCM
+
+Semelhante a tela anterior, nessa deverá ser informado:
+
+1. NCM("classe fiscal"), que deverá ter no máximo 8 digítos
+2. Exceção com até 2 números 
+3. Descrição do NCM que está sendo cadastrado.
+4. Click em "ALTERAR/CADASTRAR"
+
+![Cadastrar NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/04%20-%20Cadastrar%20NCM.png?raw=true)
+**Figura 04** - Cadastrar um NCM 
+
+### 5. Cadastrando uma OPERAÇÃO
+
+Nessa tela tem que informar apenas a descrição da OPERAÇÃO, que é a mesma que será usado no documento fiscal. (EX.: VENDA, VENDA INTERESTADUAL, DEVOLUÇÃO etc)
+
+![Cadastrar NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/05%20-%20Cadastrar%20Opera%C3%A7%C3%A3o.png?raw=true)
+**Figura 05** - Cadastrar uma OPERAÇÃO 
 
 ## Começando
 
