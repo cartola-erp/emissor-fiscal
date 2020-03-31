@@ -126,14 +126,39 @@ Já nesses abaixo, são os valores que serão usados nos cálculos:
 5. **PIS CST** - Código da substitução tributária do PIS.
 6. **PIS Base** - Porcentagem de redução na base de calculo do PIS.
 7. **PIS Alíquota** - A alíquota do PIS. (GERALMENTE **1,65%**)
-8. **COFINS CST** - Código da substitução tributária do COFINS. (GERALMENTE, é o mesmo que o do COFINS)
-9. **COFINS Base** - Porcentagem de redução na base de calculo do COFINS.
+8. **COFINS CST** - Código da substitução tributária do COFINS. (GERALMENTE, é o mesmo que o do PIS)
+9. **COFINS Base** - Porcentagem de redução na base de calculo do COFINS. (GERALMENTE, é o mesmo que o do PIS)
 10. **COFINS Alíquota** - A alíquota do COFINS. (GERALMENTE **7,60%**)
-11. **IPI CST** - 
-12. **IPI Base** -
-13. **IPI Alíquota** -
+11. **IPI CST** - Código da substitução tributária do IPI.
+12. **IPI Base** - Porcentagem de redução na base de calculo do IPI.
+13. **IPI Alíquota** - A alíquota do IPI.
 14. **Mensagem** - Uma observação/mensagem, para essa tributação. (não há interferência no cálculo)
 
+### 7. Consultando uma CFOP
+
+No menu superior vá para **Consultar**>**CFOP**. Será aberta a tela abaixo.
+  
+![Consultar uma CFOP](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/09%20-%20Consultar%20CFOP.png?raw=true)
+**Figura 08** - Consultar uma CFOP 
+
+As telas de consulta sempre serão no mesmo padrão:
+1. Na parte superior -> Uma **caixa de texto** para informar o parâmetro de pesquisa(**nº da cfop**) de um registro especifico
+e ao lado um **botão com icone de lupa**, para procurar.
+2. Na tabela embaixo é onde os registros são mostrados. E na mesma sempre terá pelo menos 2 colunas:
+  * 1. **[Editar]()** - Irá carregar a tela de cadastro (do registro daquela linha) com todas as informações cadastradas preenchidas.
+  * 2. Deletar - Será deltetado o registro daquela linha.
+
+### 8. Consultando um NCM
+
+### 9. Editando/deletando uma CFOP
+
+~~Tudo que for relacionado a "alteração e o delete" de algum registro, sempre irá seguir o **mesmo fluxo**. No menu superior clique, em **Consultar** e no que pretende editar, no nosso exemplo a **CFOP**.
+Então a tela abaixo será aberta.~~
+
+~~2. Na tabela embaixo é onde os registros são mostrados. E na mesma sempre terá pelo menos 2 colunas:
+  * 1. Editar - Irá carregar a tela de cadastro (do registro daquela linha) com todas as informações cadastradas preenchidas.
+  * 2. Deletar - Será deltetado o registro daquela linha.~~
+  
 ## Começando
 
 Clone esse projeto em um diretório de sua máquina
