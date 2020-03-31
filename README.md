@@ -12,7 +12,9 @@ Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte su
 [Operação](https://github.com/cartola-erp/emissor-fiscal/#6-cadastrando-uma-opera%C3%A7%C3%A3o), 
 [Tributação Estadual](https://github.com/cartola-erp/emissor-fiscal#7-cadastrando-uma-tributa%C3%A7%C3%A3o-estadual) e 
 [Federal](https://github.com/cartola-erp/emissor-fiscal#7-cadastrando-uma-tributa%C3%A7%C3%A3o-federal))
-* **Consultar** ([CFOP](), NCM, Estado, Operação, Tributação Estadual e Federal)
+* **Consultar** ([CFOP](https://github.com/cartola-erp/emissor-fiscal/blob/master/README.md#7-consultando-uma-cfop),
+[NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/README.md#8-consultando-um-ncm),
+Estado, Operação, Tributação Estadual e Federal)
 * **Simulação** ([Essa tela](https://github.com/cartola-erp/emissor-fiscal/#2-tela-de-simula%C3%A7%C3%A3o))
 * **Sair** (Irá deslogar do sistema, voltando assim para a página de login)
 
@@ -144,9 +146,9 @@ No menu superior vá para **Consultar**>**CFOP**. Será aberta a tela abaixo.
 As telas de consulta sempre serão no mesmo padrão:
 1. Na parte superior -> Uma **caixa de texto** para informar o parâmetro de pesquisa(**nº da cfop**) de um registro especifico
 e ao lado um **botão com icone de lupa**, para procurar.
-2. Na tabela embaixo é onde os registros são mostrados. E na mesma sempre terá pelo menos 2 colunas:
-  * 1. **[Editar]()** - Irá carregar a tela de cadastro (do registro daquela linha) com todas as informações cadastradas preenchidas.
-  * 2. Deletar - Será deltetado o registro daquela linha.
+2. Na parte inferior (tabela) é onde os registros são mostrados. E na mesma sempre terá pelo menos 2 colunas:
+  * 1. **[Editar](https://github.com/cartola-erp/emissor-fiscal/blob/master/README.md#9-editandodeletando-uma-cfop)** - Irá carregar a tela de cadastro (do registro daquela linha) com todas as informações cadastradas preenchidas.
+  * 2. **[Deletar](https://github.com/cartola-erp/emissor-fiscal/blob/master/README.md#9-editandodeletando-uma-cfop)** - Será deletado o registro daquela linha.
 
 ### 8. Consultando um NCM
 
