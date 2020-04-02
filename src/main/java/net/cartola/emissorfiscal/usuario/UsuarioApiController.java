@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.cartola.emissorfiscal.security.dto.UsuarioDTO;
+import net.cartola.emissorfiscal.response.Response;
+import net.cartola.emissorfiscal.util.ApiUtil;
 
 /**
  *	27 de dez de 2019
@@ -30,17 +31,24 @@ public class UsuarioApiController {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@PostMapping("/criar-usuario")
-//	public ResponseEntity<UsuarioDTO> criarUsuario(@RequestBody Usuario usuario) {
-	public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
+	public ResponseEntity<Response<Usuario>> criarUsuario(@RequestBody Usuario usuario) {
 		usuario.setSenha(bCryptPasswordEncoder.encode(usuario.getSenha()));
+		Optional<Usuario> opUser = usuarioService.findByLogin(usuario.getLogin());
+		Response<Usuario> response;
+
+		if(opUser.isPresent()) {
+			response = ApiUtil.criaResponseDeErro("O usuário: " +opUser.get().getLogin()+ "já está cadastrado no EMISSOR-FISCAL");
+			return ResponseEntity.badRequest().body(response);
+		}
+		
 		Optional<Usuario> opUsuario = usuarioService.save(usuario);
 		if (opUsuario.isPresent()) {
-//			return ResponseEntity.ok().body(usuarioService.convertToDto(opUsuario.get()));
-			return ResponseEntity.ok().body(opUsuario.get());
+			return ResponseEntity.ok().build();
 		} else {
-			return ResponseEntity.noContent().build();
+			response = ApiUtil.criaResponseDeErro("Ocorreu algum ERRO, ao tentar cadastrar o usuário no EMISSOR-FISCAL! Por favor, contate o setor de TI!");
+			return ResponseEntity.badRequest().body(response);
 		}
-	}
+	}	
 
 }
 

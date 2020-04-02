@@ -13,12 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  *	26 de dez de 2019
  *	@author robson.costa
  */
 @Entity
 @Table(name = "usua_perf")
+@JsonIgnoreProperties(value = { "usuario" })
 public class UsuarioPerfil implements Serializable {
 
 	private static final long serialVersionUID = -3489621368595642366L;
