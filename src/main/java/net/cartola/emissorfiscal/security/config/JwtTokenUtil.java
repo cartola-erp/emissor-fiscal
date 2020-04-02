@@ -1,11 +1,9 @@
 package net.cartola.emissorfiscal.security.config;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Function;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -53,23 +51,36 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    public String generateToken(Usuario user) {
-        return doGenerateToken(user.getLogin());
+    public String generateToken(Usuario user, UserDetails userDetails) {
+        return doGenerateToken(user.getLogin(), userDetails);
     }
 
-    private String doGenerateToken(String subject) {
-        Claims claims = Jwts.claims().setSubject(subject);
-        claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+//    private String doGenerateToken(String subject) {
+//        Claims claims = Jwts.claims().setSubject(subject);
+//        claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+//
+//        return Jwts.builder()
+//                .setClaims(claims)
+//                .setIssuer("http://devglan.com")
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS*1000))
+//                .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
+//                .compact();
+//    }
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuer("http://devglan.com")
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS*1000))
-                .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
-                .compact();
+    private String doGenerateToken(String subject, UserDetails userDetails) {
+    	Claims claims = Jwts.claims().setSubject(subject);
+    	claims.put("scopes", userDetails.getAuthorities());
+    	return Jwts.builder()
+    			.setClaims(claims)
+    			.setIssuer("http://devglan.com")
+    			.setIssuedAt(new Date(System.currentTimeMillis()))
+    			.setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS*1000))
+    			.signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
+    			.compact();
+
     }
-
+    
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = getUsernameFromToken(token);
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));

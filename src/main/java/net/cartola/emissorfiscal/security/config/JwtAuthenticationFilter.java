@@ -1,7 +1,7 @@
 package net.cartola.emissorfiscal.security.config;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collection;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 		String path = request.getRequestURI();
-		if (!path.contains("/obter-token")) {
+		if (!path.contains("/obter-token") && !path.contains("/criar-usuario")) {
 			String header = request.getHeader(HEADER_STRING);
 			String username = null;
 			String authToken = null;
@@ -63,15 +63,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
 				if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-							userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-					authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					settingAuthentication(request, userDetails, userDetails.getAuthorities());
 					logger.info("authenticated user " + username + ", setting security context");
-					SecurityContextHolder.getContext().setAuthentication(authentication);
+				} else {
+					settingAuthentication(request, userDetails, null);
+					logger.info("unauthenticated user " + username + ", setting security context");
 				}
 			}
 		}
 		chain.doFilter(request, response);
+	}
+	
+	private void settingAuthentication(HttpServletRequest req, UserDetails userDetails,
+			Collection<? extends GrantedAuthority> authorities) {
+		UsernamePasswordAuthenticationToken authentication = null;
+		if (authorities.isEmpty()) {
+			authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
+		} else {
+			authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+		}
+		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 	
 }
