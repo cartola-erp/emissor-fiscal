@@ -3,6 +3,35 @@
 Projeto criado para um analista fiscal, ser o responsável por manter as tributações estaduais e federais que serão usadas no cálculo, 
 de documentos fiscais recebidos. 
 
+### 1. Criando login
+
+ **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as 2 propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I
+
+```
+emissor-fiscal.ativo=true
+emissor-fiscal.server=http://localhost:8080          (TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL)  
+```
+
+<p align="left">
+  <img src="./doc/Telas do Sistema/01 - Caminho (ERP) para criar usuario.png" width="190" height="400" />
+  <img src="./doc/Telas do Sistema/01.1 - Tela (ERP) Cadastrar usuario.png" width="670" height="400" />
+</p>
+
+Para criar o login, no ERP vá no menu: **CONTABILIDADE**>**CRIAR USUARIO EMISSOR-FISCAL**. (Somente será mostrada, caso as properties acima estejam configuradas).
+Na tela aberta teremos os seguintes botões:
+
+1. **Cancelar** - Fecha a tela aberta.
+2. **Atualizar Usuário** - Caso tenha feito, alguma alteração no usuário do ERP (EX.: de Senha) e queira que essas alterações tenham efeito no emissor-fiscal, clique nesse botão.
+3. **Efetuar Cadastro** - Irá criar um usuário no emissor-fiscal, com as mesmas informações do ERP.
+
+### 1.1 Fazendo Login
+
+**Vá para** o endereço configurado nas properties acima, no nosso exemplo: **http://localhost:8080**
+
+![Tela de login](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/01.2%20-%20Tela%20de%20Login.png?raw=true)
+
+Informe os dados solicitados, e clique no botão **ENTRAR**
+
 ### 2. Tela de simulação
 
 Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte superior temos os seguintes menus:
