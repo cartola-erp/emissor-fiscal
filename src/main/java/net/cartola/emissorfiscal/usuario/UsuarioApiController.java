@@ -56,14 +56,14 @@ public class UsuarioApiController {
 		usuario.setSenha(bCryptPasswordEncoder.encode(usuario.getSenha()));
 		Optional<Usuario> opUser = usuarioService.findByLogin(usuario.getLogin());
 		Response<Usuario> response;
-		
-		if(!opUser.isPresent()) {
-			response = ApiUtil.criaResponseDeErro("O usuário: " +opUser.get().getLogin()+ " NÃO está cadastrado no EMISSOR-FISCAL");
+		Optional<Usuario> opUserUpdated;
+		if(opUser.isPresent()) {
+			opUserUpdated =  usuarioService.edit(opUser, usuario);
+		} else {
+			response = ApiUtil.criaResponseDeErro("O usuário: " +usuario.getLogin()+ " NÃO está cadastrado no EMISSOR-FISCAL");
 			return ResponseEntity.badRequest().body(response);
 		}
-//		Optional<Usuario> opUsuario = usuarioService.save(usuario);
-		Optional<Usuario> opUsuario = usuarioService.edit(opUser, usuario);
-		if (opUsuario.isPresent()) {
+		if (opUserUpdated.isPresent()) {
 			return ResponseEntity.ok().build();
 		} else {
 			response = ApiUtil.criaResponseDeErro("Ocorreu algum ERRO, ao tentar ATUALIZAR o usuário no EMISSOR-FISCAL! Por favor, contate o setor de TI!");
