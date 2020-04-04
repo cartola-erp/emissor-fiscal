@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.usuario;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -33,7 +34,7 @@ public class Usuario implements Serializable {
 	private String nome;
 	private String email;
 	private String senha;
-	private List<UsuarioPerfil> perfis = null;
+	private List<UsuarioPerfil> perfis = new ArrayList<>();
 //	private List<Perfil> perfis = null;
   
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)

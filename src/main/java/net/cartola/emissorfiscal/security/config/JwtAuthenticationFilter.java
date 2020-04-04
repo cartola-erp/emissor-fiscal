@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 		String path = request.getRequestURI();
-		if (!path.contains("/obter-token") && !path.contains("/criar-usuario")) {
+		if (!path.contains("/obter-token") && !path.contains("/usuario")) {
 			String header = request.getHeader(HEADER_STRING);
 			String username = null;
 			String authToken = null;

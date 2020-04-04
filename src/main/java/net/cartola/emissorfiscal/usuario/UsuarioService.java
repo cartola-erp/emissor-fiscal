@@ -95,6 +95,33 @@ public class UsuarioService implements UserDetailsService {
 		}
 	}
 	
+	@Transactional
+	public Optional<Usuario> edit(Optional<Usuario> opOldUser, Usuario userToUpdate) {
+		if (opOldUser.isPresent()) {
+			Usuario oldUser = opOldUser.get();
+			oldUser.setLogin(userToUpdate.getLogin());
+			oldUser.setNome(userToUpdate.getNome());
+			oldUser.setEmail(userToUpdate.getEmail());
+			oldUser.setSenha(userToUpdate.getSenha());
+			// Deleting all old profiles
+			usuarioPerfilRepository.deleteInBatch(oldUser.getPerfis());
+			// Setting the "oldUser" (object) for the new profiles
+			List<UsuarioPerfil> listPerfisToUpdate = userToUpdate.getPerfis();
+			if (!listPerfisToUpdate.isEmpty()) {
+				listPerfisToUpdate.forEach(perfil -> {
+					perfil.setUsuario(oldUser);
+				});
+			}
+			// Saving the new profiles for the user
+			List<UsuarioPerfil> listPerfisUpdated = usuarioPerfilRepository.saveAll(listPerfisToUpdate);
+			oldUser.setPerfis(listPerfisUpdated);
+			// Updating the user information
+			Optional<Usuario> opUserUpdated = Optional.ofNullable(usuarioRepository.saveAndFlush(oldUser));
+			return opUserUpdated;
+		}
+		return Optional.empty();
+	}
+	
 }
 
 
