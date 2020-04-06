@@ -40,6 +40,8 @@ public class DocumentoFiscal implements Serializable {
 	private List<DocumentoFiscalItem> itens;
 	private BigDecimal icmsBase = BigDecimal.ZERO;
 	private BigDecimal icmsValor = BigDecimal.ZERO;
+	private BigDecimal icmsStBase = BigDecimal.ZERO;
+	private BigDecimal icmsStValor = BigDecimal.ZERO;
 	private BigDecimal pisBase = BigDecimal.ZERO;
 	private BigDecimal pisValor = BigDecimal.ZERO;
 	private BigDecimal cofinsBase = BigDecimal.ZERO;
@@ -140,6 +142,22 @@ public class DocumentoFiscal implements Serializable {
 		this.icmsValor = icmsValor;
 	}
 
+	public BigDecimal getIcmsStBase() {
+		return icmsStBase;
+	}
+
+	public void setIcmsStBase(BigDecimal icmsStBase) {
+		this.icmsStBase = icmsStBase;
+	}
+
+	public BigDecimal getIcmsStValor() {
+		return icmsStValor;
+	}
+
+	public void setIcmsStValor(BigDecimal icmsStValor) {
+		this.icmsStValor = icmsStValor;
+	}
+	
 	public BigDecimal getPisBase() {
 		return pisBase;
 	}

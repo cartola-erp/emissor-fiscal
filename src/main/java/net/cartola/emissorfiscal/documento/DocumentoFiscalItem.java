@@ -47,6 +47,8 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal icmsBase = BigDecimal.ZERO;
 	private BigDecimal icmsAliquota = BigDecimal.ZERO;
 	private BigDecimal icmsValor = BigDecimal.ZERO;
+	private BigDecimal icmsStBase = BigDecimal.ZERO;
+	private BigDecimal icmsStValor = BigDecimal.ZERO;
 	private int icmsCst;
 	private BigDecimal pisBase = BigDecimal.ZERO;
 	private BigDecimal pisAliquota = BigDecimal.ZERO;
@@ -166,6 +168,22 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setIcmsValor(BigDecimal icmsValor) {
 		this.icmsValor = icmsValor;
+	}
+	
+	public BigDecimal getIcmsStBase() {
+		return icmsStBase;
+	}
+
+	public void setIcmsStBase(BigDecimal icmsStBase) {
+		this.icmsStBase = icmsStBase;
+	}
+
+	public BigDecimal getIcmsStValor() {
+		return icmsStValor;
+	}
+
+	public void setIcmsStValor(BigDecimal icmsStValor) {
+		this.icmsStValor = icmsStValor;
 	}
 	
 	public int getIcmsCst() {
