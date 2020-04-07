@@ -11,7 +11,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
     <!-- Google font -->
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <!-- <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'> -->
     <!-- Bootstrap core CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
@@ -23,10 +23,11 @@
 
     <!-- IMPORTAS CSS aqui-->
     <!-- Default -->
-    <link rel="stylesheet" type="text/css" th:href="@{/css/default.css}" href="../css/default.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/default.css}" href="../static/css/default.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/navbar.css}" href="../static/css/navbar.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" href="../static/css/main.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" href="../static/css/login.css">
 
-	<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" href="../css/login.css">
-	
 
 </head>
 
@@ -138,6 +139,14 @@
 
     <script>
         feather.replace()
+    </script>
+
+    <!-- PARA MEXER O LOGO NO LOGIN -->
+    <script th:src="@{/js/tilt/tilt.jquery.min.js}" type="text/javascript"></script>
+    <script>
+        $('.js-tilt').tilt({
+            scale: 1.1
+        })
     </script>
 </body>
 
