@@ -13,44 +13,60 @@
 
 
 <body>
-	<section id="login-container container">
+	<section id="login-container ">
 
-	    <div id="login" class="body-login">
-	<!--         <h3 class="text-center text-white pt-5">Login d form</h3> -->
-	        <div class="container">
-	            <div id="login-row" class="row justify-content-center align-items-center">
-	                <div id="login-column" class="col-md-6">
-	                    <div id="login-box" class="col-md-12">
-
-	                        <form id="login-form" class="form" th:action="@{/login}"  method="POST">
-	                            <h3 class="text-center text-info">Por favor, autentique-se</h3>
-	                            <div class="form-group">
-	                                <label for="username" class="text-info">Login</label><br>
-	                                <input type="text" name="username" id="username" class="form-control" placeholder="login..." maxlength="25" required >
-	                            </div>
-	                            <div class="form-group">
-	                                <label for="password" class="text-info">Senha:</label><br>
-	                                <input type="password" name="password" id="password" class="form-control" placeholder="senha..." maxlength="25" required >
-	                            </div>
-	<!--                             <div class="form-group"> -->
-	<!--                                 <label for="remember-me" class="text-info"><span>Remember me</span> <span><input id="remember-me" name="remember-me" type="checkbox"></span></label><br> -->
-	<!--                                 <input type="submit" name="bEntrar" class="btn btn-info btn-md" value="Entrar"> -->
-	<!--                             </div> -->
+		<div class="limiter">
+			<div class="container-login100">
+				<div class="wrap-login100">
+					<div class="login100-pic js-tilt" data-tilt>
+						<img th:src="@{/img/logo-autogeral.png}" alt="Logo">
+					</div>
 	
-								<!-- BTN LOGIN -->
-								<div class="text-center">
-									<input type="submit" id="bEntrar" name="bEntrar" class="btn btn-info btn-md"	value="Entrar">
-								</div>
-							</form>
-							
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
+					<form class="login100-form " id="login-form" th:action="@{/login}" method="POST">
+						<span class="login100-form-title"> Por favor, autentique-se </span>
+						<div class="wrap-input100 ">
+							<input class="input100" type="text" name="username" id="username" placeholder="Login..." maxlength="25" required>
+							<span class="focus-input100"></span>
+							<span class="symbol-input100"> 
+								<i class="fas fa-user" aria-hidden="true"></i>
+							</span>
+						</div>
+	
+						<div class="wrap-input100 " >
+							<input class="input100" type="password" name="password" id="password" placeholder="Senha..." maxlength="25" required>
+							<span class="focus-input100"></span>
+							<span class="symbol-input100">
+								<i class="fa fa-lock" aria-hidden="true"></i>
+							</span>
+						</div>
+						
+						<!-- BTN LOGIN -->
+						<div class="container-login100-form-btn">
+							<button class="login100-form-btn"> Entrar </button>
+						</div>
+	
+						<!-- <div class="text-center p-t-12">
+							<span class="txt1">
+								Esqueci
+							</span>
+							<a class="txt2" href="#">
+								Usuário / Senha?
+							</a>
+						</div> -->
+	
+						<!-- p-t-136 é -- o padding top do css util -->
+						<!-- <div class="text-center p-t-136" style="padding-top: 136px;">
+							<a class="txt2" href="#">
+								Criar sua conta
+								<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+							</a>
+						</div> -->
+					</form>
+				</div>
+			</div>
+		</div>
 
 	<section>
-
 </body>
 
 </html>
