@@ -4,28 +4,28 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-		<title> Cadastro de operação </title>
+		<title> Simulação de calculo </title>
 	</head>
 
 	<body>
-		<section id="operacao-container container">
+		<section id="simulacao-calculo-container">
 
 			<!-- BREADCRUMB -->
-			<div class="container">
+			<div>
 				<div class="row mb-3 ">
 					<div class="col-md-12">
 						<nav aria-label="breadcrumb">
-							<ol class="breadcrumb" style="background: #fff; border-radius: 0; border-bottom: 2px solid#e4ba06;">
-								<li class="breadcrumb-item"><a href="/home" style="color: #1b8140; font-weight: 500">Simulação de calculo</a></li>
+							<ol class="breadcrumb breadcrumb-personalizado">
+								<li class="breadcrumb-item"><a href="/home" class="breadcrumb-item-personalizado">Simulação de calculo</a></li>
 								<!-- <li class="breadcrumb-item"><a href="/" style="color: #1b8140; font-weight: 500">Simulação de calculo</a></li>			 -->
 								<!-- <li class="breadcrumb-item active" aria-current="page">Simulação de calculo</li> -->
 							</ol>
 						</nav>
-					<div>
-				<div>
-			<div>
+					</div>
+				</div>
+			</div>
 
-			<div class="container">
+			<div>
 
 				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
 				<form th:action="@{/simulador/calculo}" th:object="${documentoFiscal}" method="POST"  >
@@ -132,7 +132,7 @@
 				</form>
 
 			</div>
-   		<section>
+		</section>
 
 	</body>
 
