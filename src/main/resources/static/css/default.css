@@ -5,6 +5,10 @@
     padding-right: 0;
 }
 
+.ajusta-margin-btn {
+    margin-left: 0%;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
 }
@@ -16,6 +20,7 @@ body {
     border-radius: 0;
     border-bottom: 2px solid#e4ba06;
     margin-bottom: 2rem;
+    padding-left: 0;
 }
 
 .breadcrumb-item-personalizado {
