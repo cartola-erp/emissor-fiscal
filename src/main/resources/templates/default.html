@@ -34,7 +34,10 @@
 <body>
 
     <nav sec:authorize="isAuthenticated()" class="navbar navbar  navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand mr-5" th:href="@{/}" style="color: azure; font-weight: bold">Emissor Fiscal</a>
+        <!-- <a class="navbar-brand mr-5" th:href="@{/}" style="color: azure; font-weight: bold">Emissor Fiscal</a> -->
+        <a class="navbar-brand mr-5" th:href="@{/}">
+            <img th:src="@{/img/logo-autogeral.png}" width="135px" height="45px" alt="Logo">
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado"
             aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">
             <span class="navbar-toggler-icon"></span>

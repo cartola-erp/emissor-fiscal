@@ -47,27 +47,13 @@ section {
     justify-content: center;
     align-items: center;
     padding: 15px;
-    /* background: #9053c7; */
-    /* background:#ce1bc2; */
-    /* -135deg, #ce1bc2, #4158d0 */
   
     /* background: -webkit-linear-gradient(-135deg, #c850c0, #4158d0);
     background: -o-linear-gradient(-135deg, #c850c0, #4158d0);
     background: -moz-linear-gradient(-135deg, #c850c0, #4158d0);
     background: linear-gradient(-135deg, #c850c0, #4158d0); */
-
-    /* TESTANDO AQUI EMBAIXO */
-    /* OK */
-    /* background: rgb(162,58,218); */
-    /* background: linear-gradient(90deg, rgba(162,58,218,1) 0%, rgba(171,10,214,1) 61%, rgba(143,25,201,1) 72%); */
-    
-    /* OK 2 */
-    /* background-color: #2187fd; */
-    /* background-image: linear-gradient(165deg, #2187fd 0%, #b941f5 100%); */
-    
-    /* background-color: #1f83f7; */
-/* background-image: linear-gradient(165deg, #1f83f7 0%, #b436f3 50%, #a813dc 100%); */
-background: linear-gradient(-135deg, #1f83f7 0%, #b436f3 50%, #a813dc 100%);
+    /* background: linear-gradient(-135deg, #1f83f7 0%, #b436f3 50%, #a813dc 100%); */
+    background: #4848CE;
 
 
 }
@@ -95,8 +81,11 @@ background: linear-gradient(-135deg, #1f83f7 0%, #b436f3 50%, #a813dc 100%);
  */
 
 [role="main"] {
-    background: linear-gradient(-135deg, #1f83f7 0%, #b436f3 50%, #a813dc 100%);
     padding-top: 7%;
+
+    background: #4848CE;
+    /* background: linear-gradient(-135deg, #1f83f7 0%, #b436f3 50%, #a813dc 100%); */
+
     /* Space for fixed navbar */
     /* background-color: #ececec; */
 }
