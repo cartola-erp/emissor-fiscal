@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+<html lang="pt-br" xmlns:th="http://thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<title> Login </title>
-	
-<!-- 	<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" href="../css/login.css"> -->
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<meta name='viewport' content='width=device-width, initial-scale=1'>
 
+		<title> Login </title>
+		
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+		<!-- Bootstrap core CSS -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+		
+		<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" href="../../static/css/main.css">
+		<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" href="../../static/css/login.css">
 
-</head>
+	</head>
 
 
 <body>
@@ -19,7 +27,7 @@
 			<div class="container-login100">
 				<div class="wrap-login100">
 					<div class="login100-pic js-tilt" data-tilt>
-						<img th:src="@{/img/logo-autogeral.png}" alt="Logo">
+						<img th:src="@{/img/logo-autogeral.png}" src="../../static/img/logo-autogeral.png" alt="Logo">
 					</div>
 	
 					<form class="login100-form " id="login-form" th:action="@{/login}" method="POST">
@@ -67,6 +75,17 @@
 		</div>
 
 	<section>
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	
+	<!-- PARA MEXER O LOGO NO LOGIN -->
+	<script th:src="@{/js/tilt/tilt.jquery.min.js}" type="text/javascript"></script>
+	<script>
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
 </body>
 
 </html>
