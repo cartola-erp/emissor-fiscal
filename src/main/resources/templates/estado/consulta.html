@@ -29,14 +29,14 @@
 
 				<!-- FORMULÁRIO para CONSULTAR OS NCMS -->
 				<form action="/estado/consulta" method="POST" >
-                    <div class="form-group form-row col-md-12">
+                    <div class="form-group form-row zera-padd-left col-md-12">
                         <div class="form-group col-md-8">
                             <label><b>Pesquisar Estado pela Sigla: </b></label>
                             <input type="text" class="form-control somenteLetras" id="txtSigla" name="siglaEstado" placeholder="Informe a sigla do estado...">
                         </div>
 
-                        <div class="form-group col-md-4" style="padding-top: 25px;">
-                            <button class="btn btn-outline-primary" type="submit" id="btnPesquisar" style="margin-top:auto;">
+                        <div>
+                            <button class="btn btn-outline-primary" type="submit" id="btnPesquisar">
                                 <span data-feather="search">search</span>
                             </button>
                         </div>
@@ -44,7 +44,7 @@
 				</form>
 
 
-				<!-- TABELA COM OS NCMS CONSULTADOS-->
+				<!-- TABELA COM OS ESTADOS CONSULTADOS-->
 				<table class="table table-hover table-responsive ">
 					<thead>
 						<tr>
