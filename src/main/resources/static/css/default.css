@@ -9,6 +9,17 @@
     margin-left: 0%;
 }
 
+.zera-padd-left {
+    padding-left: 0%;
+}
+
+/* .btn-pesquisa { */
+#btnPesquisar{    
+    margin-top: 65% ;
+    margin-left: 35%;    
+    padding: 10% 15% 10% 15%;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
 }
