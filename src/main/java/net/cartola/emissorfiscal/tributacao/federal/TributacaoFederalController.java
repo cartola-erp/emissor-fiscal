@@ -49,7 +49,7 @@ public class TributacaoFederalController {
 	
 	@PostMapping("/cadastro")
 	public ModelAndView save(@Valid TributacaoFederal tributacaoFederal, Long operacaoId, Long ncmId, BindingResult result, RedirectAttributes attributes) {
-		if (result.hasErrors()) {
+		if (result.hasErrors() || ncmId.equals(0L)) {
 			ModelAndView mv = new ModelAndView("tributacao-federal/cadastro");
 			addObjetosNaView(mv, tributacaoFederal);
 //			mv.addObject("mensagemErro", tributacaoFederalService.getMensagensErros(result, existeNumeroEExecao));
@@ -141,7 +141,7 @@ public class TributacaoFederalController {
 	private void addObjetosNaView(ModelAndView mv, TributacaoFederal tributacaoFederal) {
 		mv.addObject("tributacaoFederal", tributacaoFederal);
 		mv.addObject("listOperacao", operacaoService.findAll());
-		mv.addObject("listNcms", ncmService.findAll());
+//		mv.addObject("listNcms", ncmService.findAll());
 		mv.addObject("listFinalidade", Arrays.asList(Finalidade.values()));
 		mv.addObject("listRegimeTributario", Arrays.asList(RegimeTributario.values()));
 	}

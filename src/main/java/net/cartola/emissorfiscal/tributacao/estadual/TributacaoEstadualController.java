@@ -54,7 +54,7 @@ public class TributacaoEstadualController {
 	
 	@PostMapping("/cadastro")
 	public ModelAndView save(@Valid TributacaoEstadual icms, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, BindingResult result, RedirectAttributes attributes) {
-		if (result.hasErrors() || ufOrigemId== null || ufDestinoId== null || operacaoId== null || ncmId== null ){
+		if (result.hasErrors() || ufOrigemId== null || ufDestinoId== null || operacaoId== null || ncmId== null || ncmId.equals(0L)){
 			ModelAndView mv = new ModelAndView("tributacao-estadual/cadastro");
 //			mv.addObject("mensagemErro", icmsService.getMensagensErros(result, existeNumeroEExecao));
 			mv.addObject("mensagemErro", "Por favor, preencha todos os campos necessários!");
@@ -157,7 +157,7 @@ public class TributacaoEstadualController {
 		mv.addObject("icms", icms);
 		mv.addObject("listEstado", estadoService.findAll());
 		mv.addObject("listOperacao", operacaoService.findAll());
-		mv.addObject("listNcms", ncmService.findAll());
+//		mv.addObject("listNcms", ncmService.findAll());
 		mv.addObject("listFinalidade", Arrays.asList(Finalidade.values()));
 		mv.addObject("listRegimeTributario", Arrays.asList(RegimeTributario.values()));
 	}

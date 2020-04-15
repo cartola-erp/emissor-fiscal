@@ -83,19 +83,26 @@
 							</select>
 						</div>
 
-						<div class="form-group col-md-6">
+						<!-- <div class="form-group col-md-6">
 							<label for="cmbNcm"><strong>NCM</strong></label>
-							<!-- <select class="custom-select" name="itens[0].ncm" > -->
 							<select class="custom-select" name="ncmId" >
 								<option selected id="opNcm"> </option>
-								<!-- <option th:field="*{emitenteUf}"  th:each="estado : ${listEstado}" th:value="${estado}" th:text="${estado}" ></option> -->
-								<!-- <option th:each="ncm : ${ncms}" th:value="${ncm}" th:text="NÚMERO = ${ncm.numero} --- EXECEÇÃO = ${ncm.exececao}" ></option> -->
 								<option th:each="ncm : ${listNcm}" th:value="${ncm.id}" th:text="${ncm}" ></option>
 							</select>
-						</div>
+						</div> -->
+
+						<div class="form-group col-md-7">
+							<label for="txtNcm"><strong>NCM</strong></label>
+							<input type="hidden" th:value="*{itens[0].ncm.id}" id="txtNcmId" name="ncmId" readonly required /> 
+							<input type="text" class="form-control" id="txtNcmDescricao" th:value="*{itens[0].ncm}" placeholder="Clique No botão (+) ao lado para buscar o NCM" disabled required />
+						</div> 
+						
+						<button type="button" class="btn btn-outline-primary ajusta-botao-tbl" data-toggle="modal" data-target=".bd-example-modal-lg">
+							<span data-feather="plus">adicionar ncm</span>
+						</button>
 	
 						<!-- PESSOA (REGIME TRIBUTARIO) emitenteRegimeApuracao-->
-						<div class="form-group col-md-6">
+						<div class="form-group col-md-4">
 							<label for="cmbRegimeTributario"><strong>Regime Tributário do emitente</strong></label>
 							<select class="custom-select" name="regimeTributario" >
 								<option selected id="opFinalidade"> </option>
@@ -130,6 +137,8 @@
 					</div>
 
 				</form>
+
+				<div th:replace="/ncm/modal-add-ncm :: modal-add-ncm"></div>
 
 			</div>
 		</section>

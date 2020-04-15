@@ -30,7 +30,7 @@ public class Ncm implements Serializable {
 
 	private static final long serialVersionUID = 7049871263623L;
 
-	private Long id;
+	private Long id = 0L;
 	private int numero;
 	private int excecao;
 	private transient String descricao;
@@ -94,7 +94,10 @@ public class Ncm implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Número = " + numero + " - Exceção = " + excecao;
+		if(id.equals(0L)) {
+			return "";
+		}
+		return   numero + (excecao>0?" Ex: "+ excecao:"")+" "+descricao;
 	}
 
 }

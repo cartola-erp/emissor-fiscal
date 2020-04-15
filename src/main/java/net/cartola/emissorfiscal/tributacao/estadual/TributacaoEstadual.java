@@ -38,7 +38,7 @@ public class TributacaoEstadual implements Serializable {
     private Estado estadoOrigem;
     private Estado estadoDestino;
     private Operacao operacao;
-    private Ncm ncm;
+    private Ncm ncm = new Ncm();
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private RegimeTributario regimeTributario;
     private int icmsCst;

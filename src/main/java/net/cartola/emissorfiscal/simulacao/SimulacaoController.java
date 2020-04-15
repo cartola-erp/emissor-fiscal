@@ -1,6 +1,8 @@
 package net.cartola.emissorfiscal.simulacao;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -14,8 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.EstadoService;
+import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.RegimeTributario;
@@ -48,7 +52,7 @@ public class SimulacaoController {
 	@GetMapping({"", "home", "simulador/calculo"})
 	public ModelAndView loadSimulacaoTeste() {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
-
+		
 		addObjetosNaView(mv, new DocumentoFiscal());
 //		mv.addObject("resultadoCalculo", new StringBuffer("Esperando o calculo").toString());
 
@@ -89,11 +93,19 @@ public class SimulacaoController {
 	}
 	
 	public void addObjetosNaView(ModelAndView mv, DocumentoFiscal documentoFiscal) {
+		// ISSO ABAIXO, BASICAMENTE é para INICIALIZAR o ID do NCM, para não quebrar a página
+//		DocumentoFiscal docFiscal = new DocumentoFiscal();
+		List<DocumentoFiscalItem> listItem = new ArrayList<>();
+		DocumentoFiscalItem item = new DocumentoFiscalItem();
+		item.setNcm(new Ncm());
+		listItem.add(item);
+		documentoFiscal.setItens(listItem);
+		
 		mv.addObject("documentoFiscal", documentoFiscal);
 
 		mv.addObject("listOperacao", operacaoService.findAll());
 		mv.addObject("listEstado", estadoService.findAll());
-		mv.addObject("listNcm", ncmService.findAll());
+//		mv.addObject("listNcm", ncmService.findAll());
 		mv.addObject("finalidades", Arrays.asList(Finalidade.values()));
 		mv.addObject("regimesTributarios", Arrays.asList(RegimeTributario.values()));
 

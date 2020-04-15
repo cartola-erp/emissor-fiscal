@@ -37,7 +37,7 @@ public class TributacaoFederal implements Serializable {
 
 	private Long id;
 	private Operacao operacao;
-	private Ncm ncm;
+	private Ncm ncm = new Ncm();
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private RegimeTributario regimeTributario;
 	private int pisCst;
