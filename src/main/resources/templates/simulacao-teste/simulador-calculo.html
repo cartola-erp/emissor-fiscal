@@ -91,16 +91,16 @@
 							</select>
 						</div> -->
 
-						<div class="form-group col-md-7">
+						<div class="form-group col-md-6">
 							<label for="txtNcm"><strong>NCM</strong></label>
 							<input type="hidden" th:value="*{itens[0].ncm.id}" id="txtNcmId" name="ncmId" readonly required /> 
 							<input type="text" class="form-control" id="txtNcmDescricao" th:value="*{itens[0].ncm}" placeholder="Clique No botão (+) ao lado para buscar o NCM" disabled required />
 						</div> 
 						
-						<button type="button" class="btn btn-outline-primary ajusta-botao-tbl" data-toggle="modal" data-target=".bd-example-modal-lg">
+						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnAdicionarNcm" data-toggle="modal" data-target=".bd-example-modal-lg">
 							<span data-feather="plus">adicionar ncm</span>
 						</button>
-	
+
 						<!-- PESSOA (REGIME TRIBUTARIO) emitenteRegimeApuracao-->
 						<div class="form-group col-md-4">
 							<label for="cmbRegimeTributario"><strong>Regime Tributário do emitente</strong></label>
