@@ -107,22 +107,22 @@
 
 						<div class="form-group col-md-2">
 							<label for="txtIcmsBase"><strong>ICMS Base</strong></label>
-							<input type="number" class="form-control somenteNumeros" id="txtIcmsBase" th:field="*{icmsBase}" name="icmsBase" placeholder="ICMS Base..." min="0" max="100" required />
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsBase" th:field="*{icmsBase}" name="icmsBase" placeholder="ICMS Base..." maxlength="5" required />
 						</div> 
 
 						<div class="form-group col-md-2">
 							<label for="txtIcmsAliquota"><strong>ICMS Aliq. (%)</strong></label>
-							<input type="number" class="form-control somenteNumeros" id="txtIcmsAliquota" th:field="*{icmsAliquota}"  name="icmsAliquota" placeholder="ICMS ALIQ." min="0" max="100" required />
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsAliquota" th:field="*{icmsAliquota}"  name="icmsAliquota" placeholder="ICMS ALIQ." maxlength="5" required />
 						</div> 
 
 						<div class="form-group col-md-2">
 							<label for="txtIcmsIva"><strong>ICMS IVA/MVA</strong></label>
-							<input type="number" class="form-control somenteNumeros" id="txtIcmsIva" th:field="*{icmsIva}" name="icmsIva" placeholder="ICMS IVA/MVA." min="0" max="100" />
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsIva" th:field="*{icmsIva}" name="icmsIva" placeholder="ICMS IVA/MVA." maxlength="5" />
 						</div> 
 
 						<div class="form-group col-md-2">
 							<label for="txtIcmsAliquotaDestino"><strong>ICMS aliq. destino (%)</strong></label>
-							<input type="number" class="form-control somenteNumeros" id="txtIcmsAliquotaDestino" th:field="*{icmsAliquotaDestino}" name="icmsAliquotaDestino" placeholder="ICMS ALIQ." min="0" max="100" required />
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsAliquotaDestino" th:field="*{icmsAliquotaDestino}" name="icmsAliquotaDestino" placeholder="ICMS ALIQ." maxlength="5" required />
 						</div> 
 
 						<div class="form-group col-md-3">
