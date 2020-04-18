@@ -44,7 +44,7 @@ public class TributacaoEstadual implements Serializable {
     private int icmsCst;
     private BigDecimal icmsBase;
     private BigDecimal icmsAliquota;
-    private BigDecimal icmsIva;
+    private BigDecimal icmsIva = BigDecimal.ZERO;
     private BigDecimal icmsAliquotaDestino;
     private Integer cest;
     private String mensagem;
