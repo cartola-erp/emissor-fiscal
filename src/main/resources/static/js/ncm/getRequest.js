@@ -82,5 +82,5 @@ function addSpanMsgSucesso() {
 
 function addSpanMsgErro() {
     $("#spanMensagemSucessoModal").removeClass("alert alert-success alert-dismissible").empty();
-    $("#spanMensagemErroModal").addClass("alert alert-danger alert-dismissible").html("<span> Erro ao tentar buscar o NCM com o número informado  </span>");
+    $("#spanMensagemErroModal").addClass("alert alert-danger alert-dismissible").html("<span> NÃO foi encontrado NCM com o número informado  </span>");
 }
