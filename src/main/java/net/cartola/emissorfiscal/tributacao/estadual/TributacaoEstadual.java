@@ -46,6 +46,7 @@ public class TributacaoEstadual implements Serializable {
     private BigDecimal icmsAliquota;
     private BigDecimal icmsIva = BigDecimal.ZERO;
     private BigDecimal icmsAliquotaDestino;
+    private BigDecimal fcpAliquota = BigDecimal.ZERO;
     private Integer cest;
     private String mensagem;
 
@@ -166,7 +167,16 @@ public class TributacaoEstadual implements Serializable {
         this.icmsAliquotaDestino = icmsAliquotaDestino;
     }
 
-    @Column(name = "cest", scale = 7)
+    @Column(name = "fcp_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    public BigDecimal getFcpAliquota() {
+		return fcpAliquota;
+	}
+
+	public void setFcpAliquota(BigDecimal fcpAliquota) {
+		this.fcpAliquota = fcpAliquota;
+	}
+
+//	@Column(name = "cest", scale = 7)
     public Integer getCest() {
         return cest;
     }

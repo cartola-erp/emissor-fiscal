@@ -257,6 +257,7 @@ CREATE TABLE `trib_esta` (
   `finalidade` enum('COMERCIALIZACAO', 'BRINDE', 'DOACAO', 'PATRIMONIO', 'CONSUMO') default 'CONSUMO' not null,
   `icms_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_aliq_dest` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `fcp_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_base` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_cst` int(11) NOT NULL,
   `icms_iva` decimal(7,6) NOT NULL DEFAULT '0.000000',
