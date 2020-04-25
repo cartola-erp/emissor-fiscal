@@ -105,7 +105,7 @@
 							<input type="text" class="form-control somenteNumeros" id="txtIcmsCst" th:field="*{icmsCst}" name="icmsCst" placeholder="ICMS CST..." minlength="1" maxlength="3" required />
 						</div> 
 
-						<div class="form-group col-md-2">
+						<div class="form-group col-md-1">
 							<label for="txtIcmsBase"><strong>ICMS Base</strong></label>
 							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsBase" th:field="*{icmsBase}" name="icmsBase" placeholder="ICMS Base..." maxlength="5" required />
 						</div> 
@@ -121,11 +121,16 @@
 						</div> 
 
 						<div class="form-group col-md-2">
-							<label for="txtIcmsAliquotaDestino"><strong>ICMS aliq. destino (%)</strong></label>
-							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsAliquotaDestino" th:field="*{icmsAliquotaDestino}" name="icmsAliquotaDestino" placeholder="ICMS ALIQ." maxlength="5" required />
+							<label for="txtIcmsAliquotaDestino"><strong>Aliq. Interna destino (%)</strong></label>
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsAliquotaDestino" th:field="*{icmsAliquotaDestino}" name="icmsAliquotaDestino" placeholder="ICMS ALIQ. Inter. dest" maxlength="5" required />
 						</div> 
 
-						<div class="form-group col-md-3">
+						<div class="form-group col-md-2">
+							<label for="txtIcmsAliquotaDestino"><strong>FCP Aliq. (%)</strong></label>
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtFcpAliquota" th:field="*{fcpAliquota}" name="fcpAliquota" placeholder="ALIQ. do Fundo de combate a pobreza" maxlength="5" required />
+						</div> 
+
+						<div class="form-group col-md-2">
 							<label for="txtCest"><strong>CEST</strong></label>
 							<input type="text" class="form-control somenteNumeros" id="txtCest" th:field="*{cest}" name="cest" placeholder="Cest..." minlength="1" maxlength="10" required>
 						</div> 
