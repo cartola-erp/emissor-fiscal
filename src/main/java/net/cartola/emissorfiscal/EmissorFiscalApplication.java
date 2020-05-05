@@ -16,10 +16,10 @@ import net.cartola.emissorfiscal.usuario.UsuarioPerfil;
 import net.cartola.emissorfiscal.usuario.UsuarioService;
 
 @SpringBootApplication
-public class DemoApplication {
+public class EmissorFiscalApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(EmissorFiscalApplication.class, args);
 	}
 	
 	@Bean

@@ -11,12 +11,17 @@
 	</parent>
 	<groupId>net.cartola.emissorfiscal</groupId>
 	<artifactId>emissor-fiscal</artifactId>
+	<packaging>war</packaging>
 	<version>0.1</version>
-	<name>demo</name>
+	<name>emissor-fiscal</name>
 	<description>Projeto de emissao de documentos fiscais</description>
 
 	<properties>
+<!-- 		<appengine.maven.plugin.version>2.2.0</appengine.maven.plugin.version> -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<spring-cloud.version>Greenwich.SR1</spring-cloud.version>
 	</properties>
 
 	<dependencies>
@@ -39,6 +44,19 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -63,6 +81,20 @@
 			<artifactId>flyway-core</artifactId>
 		</dependency>
 		
+		<!-- CLOUD -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter-trace</artifactId>
+		</dependency> 
+
 		<!-- Testes -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -107,18 +139,39 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
-			<!-- <optional>true</optional> -->
+			<optional>true</optional>
 		</dependency>
 
 	</dependencies>
 
-
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+                  <groupId>com.google.cloud.tools</groupId>
+                  <artifactId>appengine-maven-plugin</artifactId>
+<!-- 				<version>${appengine.maven.plugin.version}</version> -->
+                  <version>1.3.1</version>
+				<configuration>
+					<version>1</version>
+<!-- 					<deploy.projectId>emissor-fiscal</deploy.projectId> -->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
