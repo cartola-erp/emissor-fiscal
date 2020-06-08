@@ -1,0 +1,11 @@
+> COMANDOS PARA DEPLOY <- (executar dentro da pasta do projeto)
+
+> Se for "buildar" o projeto para, produção: lembre-se de passar o parametro -Pnome_perfil
+Ex.: mvn clean install -Pproducao install -DskipTests	, etc....
+
+
+- mvn clean install -DskipTests
+
+- mvn package -DskipTests
+
+- mvn appengine:deploy -DskipTests
