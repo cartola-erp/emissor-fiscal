@@ -312,7 +312,7 @@ CREATE TABLE `trib_fede` (
   `ncm_id` bigint(20) DEFAULT NULL,
   `oper_id` bigint(20) NOT NULL,
   PRIMARY KEY (`trib_fede_id`),
-  UNIQUE KEY `unk_trib_fede_oper_ncms` (`oper_id`,`ncm_id`),
+  UNIQUE KEY `unk_trib_fede_oper_ncms` (`oper_id`,`ncm_id`, `finalidade`, `regime_tributario`),
   KEY `fnk_trib_fede_ncms` (`ncm_id`),
   CONSTRAINT `fnk_trib_fede_ncms` FOREIGN KEY (`ncm_id`) REFERENCES `ncms` (`ncm_id`),
   CONSTRAINT `fnk_trib_fede_oper` FOREIGN KEY (`oper_id`) REFERENCES `oper` (`oper_id`)

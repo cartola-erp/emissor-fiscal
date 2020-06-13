@@ -28,7 +28,7 @@ import net.cartola.emissorfiscal.pessoa.RegimeTributario;
  */
 @Entity
 @Table(name = "trib_fede", uniqueConstraints = @UniqueConstraint(name = "unk_trib_fede_oper_ncms", columnNames = {
-		"oper_id", "ncm_id" }))
+		"oper_id", "ncm_id", "finalidade", "regime_tributario" }))
 public class TributacaoFederal implements Serializable {
 
 	private static final long serialVersionUID = 2348194323467554L;
