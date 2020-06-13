@@ -4,8 +4,37 @@
 Ex.: mvn clean install -Pproducao install -DskipTests	, etc....
 
 
-- mvn clean install -DskipTests
+- mvn clean install -Pproducao -DskipTests
 
-- mvn package -DskipTests
+- mvn package -Pproducao -DskipTests
 
-- mvn appengine:deploy -DskipTests
+- mvn appengine:deploy -Pproducao -DskipTests
+
+
+ -------------------------------------------------------
+| 					INSTRUÇÕES GCP 						|
+ -------------------------------------------------------
+ 
+# gcloud auth list
+
+
+# Setar o projeto que irei trabalhar
+
+	gcloud config set project NOME_PROJETO
+	
+# Vendo instancias SQL
+
+	gcloud sql instances list
+		
+	cloud_sql_proxy_x64.exe -instances=cnpj-p:southamerica-east1:erpj=tcp:3307
+	cloud_sql_proxy_x64.exe -instances=emissor-fiscal:us-central1:erpj-sql=tcp:3307
+
+# Conectando no banco 	
+	mysql -uroot -h 127.0.0.1 -P 3307 -pSENHA_USUARIO
+	
+# criando o usuario 
+	create user emissorfiscal identified by 'emissorfiscal';
+
+# concendendo privilegio 
+	 grant all on emissorfiscal.* to emissorfiscal;
+	 
