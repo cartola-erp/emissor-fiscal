@@ -21,46 +21,46 @@ public class EmissorFiscalApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EmissorFiscalApplication.class, args);
 	}
-	
-	@Bean
-	@Profile({"test"})
-	CommandLineRunner initDev(UsuarioService usuarioService,
-			BCryptPasswordEncoder bcryptEncoder) {
-
-		return args -> {
-			Optional<Usuario> op = usuarioService.findByLogin("contador");
-			if (!op.isPresent()) {
-				UsuarioPerfil upa = new UsuarioPerfil();
-				upa.setPerfil(Perfil.ROLE_CONTADOR);
-
-				UsuarioPerfil upu = new UsuarioPerfil();
-				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
-				Usuario u = new Usuario();
-				u.setLogin("contador");
-				u.setNome("Contador");
-				u.setSenha(bcryptEncoder.encode("root"));
-				u.setPerfis(Arrays.asList(upa, upu));
-				usuarioService.save(u);
-				System.out.printf("Usuario criado : %s", u);
-			}
-			
-			Optional<Usuario> opUser = usuarioService.findByLogin("robson.costa");
-			if (!opUser.isPresent()) {
-				UsuarioPerfil upa = new UsuarioPerfil();
-				upa.setPerfil(Perfil.ROLE_CONTADOR);
-
-				UsuarioPerfil upu = new UsuarioPerfil();
-				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
-				Usuario u = new Usuario();
-				u.setLogin("robson.costa");
-				u.setNome("Robson");
-				u.setSenha(bcryptEncoder.encode("123123"));
-				u.setPerfis(Arrays.asList(upa, upu));
-				usuarioService.save(u);
-				System.out.printf("Usuario criado : %s", u);
-			}
-		};
-	}
+//	
+//	@Bean
+////	@Profile({"test"})
+//	CommandLineRunner initDev(UsuarioService usuarioService,
+//			BCryptPasswordEncoder bcryptEncoder) {
+//
+//		return args -> {
+//			Optional<Usuario> op = usuarioService.findByLogin("contador");
+//			if (!op.isPresent()) {
+//				UsuarioPerfil upa = new UsuarioPerfil();
+//				upa.setPerfil(Perfil.ROLE_CONTADOR);
+//
+//				UsuarioPerfil upu = new UsuarioPerfil();
+//				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
+//				Usuario u = new Usuario();
+//				u.setLogin("contador");
+//				u.setNome("Contador");
+//				u.setSenha(bcryptEncoder.encode("root"));
+//				u.setPerfis(Arrays.asList(upa, upu));
+//				usuarioService.save(u);
+//				System.out.printf("Usuario criado : %s", u);
+//			}
+//			
+//			Optional<Usuario> opUser = usuarioService.findByLogin("robson.costa");
+//			if (!opUser.isPresent()) {
+//				UsuarioPerfil upa = new UsuarioPerfil();
+//				upa.setPerfil(Perfil.ROLE_CONTADOR);
+//
+//				UsuarioPerfil upu = new UsuarioPerfil();
+//				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
+//				Usuario u = new Usuario();
+//				u.setLogin("robson.costa");
+//				u.setNome("Robson");
+//				u.setSenha(bcryptEncoder.encode("123123"));
+//				u.setPerfis(Arrays.asList(upa, upu));
+//				usuarioService.save(u);
+//				System.out.printf("Usuario criado : %s", u);
+//			}
+//		};
+//	}
 
 	
 }
