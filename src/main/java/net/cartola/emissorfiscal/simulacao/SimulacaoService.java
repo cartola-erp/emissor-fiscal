@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.simulacao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -138,7 +139,7 @@ public class SimulacaoService {
 		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getUf()).get();
 
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
-		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
+		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
 		
 //		if (opOperacao.isPresent() && !ncms.isEmpty() && !map.containsValue(false) ) {
 			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(), estadoOrigem, estadoDestino,  documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);

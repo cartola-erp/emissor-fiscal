@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.tributacao.federal;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -25,7 +26,7 @@ public interface TributacaoFederalRepository extends JpaRepository<TributacaoFed
 
 	List<TributacaoFederal> findByOperacaoIn(Collection<Operacao> operacoes);
 
-	List<TributacaoFederal> findByOperacaoAndRegimeTributarioAndFinalidadeInAndNcmIn(Operacao operacao, RegimeTributario regimeTributario, 
+	Set<TributacaoFederal> findByOperacaoAndRegimeTributarioAndFinalidadeInAndNcmIn(Operacao operacao, RegimeTributario regimeTributario, 
 			Collection<Finalidade> finalidade, Collection<Ncm> ncms);
 
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class TributacaoFederalService {
 		return tributacaoFederalRepository.findByNcmIn(ncms);
 	}
 	
-	public List<TributacaoFederal> findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(Operacao operacao,RegimeTributario regimeTributario,
+	public Set<TributacaoFederal> findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(Operacao operacao,RegimeTributario regimeTributario,
 			Collection<Finalidade> finalidade, Collection<Ncm> ncms) {
 		return tributacaoFederalRepository.findByOperacaoAndRegimeTributarioAndFinalidadeInAndNcmIn(operacao, regimeTributario, finalidade, ncms );
 	}

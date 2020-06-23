@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.documento;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -112,7 +113,7 @@ public class DocumentoFiscalService {
 		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, map);
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
-		List<TributacaoFederal> tributacoesFederais = new ArrayList<TributacaoFederal>();
+		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
 		
 		if (opOperacao.isPresent() && !ncms.isEmpty() && opEmitente.get().getRegimeTributario() != null && !map.containsValue(false) ) {
 			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(),estadoOrigem, estadoDestino,
@@ -128,7 +129,9 @@ public class DocumentoFiscalService {
 			map.put("Não existe a tributação estadual para essa OPERAÇÃO e os NCMS dos itens", !tributacoesEstaduais.isEmpty());
 		}
 		if (validaTribuFede) {
-			map.put("Não existe a tributação federal para essa OPERAÇÃO e os NCMS dos itens", !tributacoesFederais.isEmpty());
+			boolean temTributosParaTodosNcms = isTamanhoSetNcmEqTribFede(ncms, tributacoesFederais);
+//			map.put("Não existe a tributação federal para essa OPERAÇÃO e os NCMS dos itens", !tributacoesFederais.isEmpty());
+			map.put("Não existe a tributação federal para essa OPERAÇÃO e os NCMS dos itens", temTributosParaTodosNcms);
 		}
 		
 		if (!map.containsValue(false)) {
@@ -171,6 +174,14 @@ public class DocumentoFiscalService {
 			documentoFiscal.setEmitente(opEmitente.get());
 			documentoFiscal.setDestinatario(opDestinatario.get());
 		}
+	}
+	
+	// O ideal é usar generics para Tributacao (p/ poder usar na tributacao estadual tbm)
+	private boolean isTamanhoSetNcmEqTribFede(Set<Ncm> ncms, Set<TributacaoFederal> tributacoesFederais) {
+		if(ncms.size() == tributacoesFederais.size()) {
+			return true;
+		}
+		return false;
 	}
 	
 	

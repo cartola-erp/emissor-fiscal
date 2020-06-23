@@ -37,7 +37,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 				.collect(Collectors.toSet());
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 
-		List<TributacaoFederal> tributacoesFederais = tributacaoFederalService
+		Set<TributacaoFederal> tributacoesFederais = tributacaoFederalService
 				.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(documentoFiscal.getOperacao(), documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);
 		
 		Map<Ncm, TributacaoFederal> mapaTributacoesPorNcm = ncms.stream()
