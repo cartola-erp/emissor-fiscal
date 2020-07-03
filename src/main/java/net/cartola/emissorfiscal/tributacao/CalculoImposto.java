@@ -9,15 +9,17 @@ public class CalculoImposto implements Serializable {
 
 	private static final long serialVersionUID = 1969652305638170032L;
 
-	private Imposto imposto;
-	private BigDecimal valorUnitario;
-	private int ordem;
-	private BigDecimal quantidade;
-	private BigDecimal baseDeCalculo;
-	private BigDecimal aliquota;
-	private BigDecimal valor;
-	private BigDecimal iva;
+	protected Imposto imposto;
+	protected BigDecimal valorUnitario;
+	protected int ordem;
+	protected BigDecimal quantidade;
+	protected BigDecimal baseDeCalculo;
+	protected BigDecimal aliquota;
+	protected BigDecimal valor;
+	
+    // Usado no calculo de ICMS
 	private String modalidadeDaBaseCalculo;
+
 	private Map<MensagemTipo, List<String>> mensagens;
 
 	public Imposto getImposto() {
@@ -74,14 +76,6 @@ public class CalculoImposto implements Serializable {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
-	}
-
-	public BigDecimal getIva() {
-		return iva;
-	}
-
-	public void setIva(BigDecimal iva) {
-		this.iva = iva;
 	}
 
 	public String getModalidadeDaBaseCalculo() {
