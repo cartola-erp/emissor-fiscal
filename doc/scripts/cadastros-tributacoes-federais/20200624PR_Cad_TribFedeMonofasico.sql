@@ -36,17 +36,38 @@ BEGIN
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',3, ID_NCM);
 		SELECT "TRIB_FEDE | 3 - VENDA INTERESTADUAL (FISICA)", ROW_COUNT();
 		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',6, ID_NCM);
+		SELECT "TRIB_FEDE | 6 - DEVOLUCAO PARA FORNECEDOR	", ROW_COUNT();
+		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',8, ID_NCM);
 		SELECT "TRIB_FEDE | 8 - DEVOLUCAO DO CLIENTE", ROW_COUNT();
 		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',9, ID_NCM);
 		SELECT "TRIB_FEDE | 9 - DEVOLUCAO DO CLIENTE INTERESTADUAL", ROW_COUNT();
 		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',10, ID_NCM);
+		SELECT "TRIB_FEDE | 10 - OUTRAS SAIDA NAO ESPECIFICADAS", ROW_COUNT();
+		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',13, ID_NCM);
+		SELECT "TRIB_FEDE | 13 - TRANSFERENCIA DE SALDO DEVEDOR ART.98 DO RICMS ", ROW_COUNT();
+		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',14, ID_NCM);
+		SELECT "TRIB_FEDE | 14 - TRANSFERENCIA DE SALDO CREDOR  ART.98 DO RICMS", ROW_COUNT();
+		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',4, ID_NCM);	
 		SELECT "TRIB_FEDE | 4 - TRANSFERENCIA MONOFASICA", ROW_COUNT();
 
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',21, ID_NCM);
+		SELECT "TRIB_FEDE | 21 - REMESSA P/ CONSERTO", ROW_COUNT();
+		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',24, ID_NCM);	
 		SELECT "TRIB_FEDE | 24 - MOVIMENTO JA REGISTRA EM ECF", ROW_COUNT();
+		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',29, ID_NCM);
+		SELECT "TRIB_FEDE | 29 - OUTRAS SAIDAS NAO ESPECIFICADAS", ROW_COUNT();
+		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',30, ID_NCM);
+		SELECT "TRIB_FEDE | 30 - OUTRAS SAIDAS (SIMPLES REMESSA)", ROW_COUNT();
 		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',39, ID_NCM);	
 		SELECT "TRIB_FEDE | 39 - DEVOLUCAO PARA FORNECEDOR (TRIBUTADA)", ROW_COUNT();
