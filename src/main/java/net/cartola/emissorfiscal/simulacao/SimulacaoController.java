@@ -49,7 +49,7 @@ public class SimulacaoController {
 	private SimulacaoService simulacaoService;
 	
 //	@GetMapping("simulador")
-	@GetMapping({"", "home", "simulador/calculo"})
+	@GetMapping({"home", "simulador/calculo"})
 	public ModelAndView loadSimulacaoTeste() {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
 		

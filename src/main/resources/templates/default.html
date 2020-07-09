@@ -28,7 +28,7 @@
 
     <nav sec:authorize="isAuthenticated()" class="navbar navbar  navbar-expand-lg navbar-dark bg-dark fixed-top">
         <!-- <a class="navbar-brand mr-5" th:href="@{/}" style="color: azure; font-weight: bold">Emissor Fiscal</a> -->
-        <a class="navbar-brand mr-5" th:href="@{/}">
+        <a class="navbar-brand mr-5" th:href="@{/home}">
             <img th:src="@{/img/logo-autogeral.png}" width="135px" height="45px" alt="Logo">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado"
@@ -83,7 +83,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <!-- TODO: templates -->
-                    <a class="dropdown-item" th:href="@{/}">Simulacao de Calculo</a>
+                    <a class="dropdown-item" th:href="@{/home}">Simulacao de Calculo</a>
                </div>
             </div>
             
