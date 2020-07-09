@@ -1,6 +1,8 @@
 package net.cartola.emissorfiscal.usuario;
 
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,8 @@ import net.cartola.emissorfiscal.util.ApiUtil;
 @CrossOrigin(origins = "*")
 public class UsuarioApiController {
 	
+	private static final Logger LOG = Logger.getLogger(UsuarioApiController.class.getName());
+	
 	@Autowired
 	private UsuarioService usuarioService;
 	
@@ -33,19 +37,23 @@ public class UsuarioApiController {
 	
 	@PostMapping("/criar-usuario")
 	public ResponseEntity<Response<Usuario>> criarUsuario(@RequestBody Usuario usuario) {
+		LOG.log(Level.INFO, "Usuário {0} autenticando", usuario.getLogin());
 		usuario.setSenha(bCryptPasswordEncoder.encode(usuario.getSenha()));
 		Optional<Usuario> opUser = usuarioService.findByLogin(usuario.getLogin());
 		Response<Usuario> response;
 
 		if(opUser.isPresent()) {
+			LOG.log(Level.INFO, "O Usuario já existe no emissor-fiscal {0}", opUser.get());
 			response = ApiUtil.criaResponseDeErro("O usuário: " +opUser.get().getLogin()+ " já está cadastrado no EMISSOR-FISCAL");
 			return ResponseEntity.badRequest().body(response);
 		}
 		
 		Optional<Usuario> opUsuario = usuarioService.save(usuario);
 		if (opUsuario.isPresent()) {
+			LOG.log(Level.INFO, "Usuario: {0}, criado com sucesso! ", opUsuario.get().getLogin());
 			return ResponseEntity.ok().build();
 		} else {
+			LOG.log(Level.WARNING, "Erro ao tentar criar usuário! ");
 			response = ApiUtil.criaResponseDeErro("Ocorreu algum ERRO, ao tentar cadastrar o usuário no EMISSOR-FISCAL! Por favor, contate o setor de TI!");
 			return ResponseEntity.badRequest().body(response);
 		}
