@@ -72,6 +72,12 @@ public class Pessoa {
 	public void setPessoaTipo(PessoaTipo pessoaTipo) {
 		this.pessoaTipo = pessoaTipo;
 	}
+
+	@Override
+	public String toString() {
+		return "Pessoa [id=" + id + ", cnpj=" + cnpj + ", uf=" + uf + ", regimeTributario=" + regimeTributario
+				+ ", pessoaTipo=" + pessoaTipo + "]";
+	}
 	
 }
 

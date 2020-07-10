@@ -309,4 +309,17 @@ public class DocumentoFiscalItem implements Serializable {
 		this.documentoFiscal = documentoFiscal;
 	}
 
+	@Override
+	public String toString() {
+		return "DocumentoFiscalItem [id=" + id + ", finalidade=" + finalidade + ", origem=" + origem + ", quantidade="
+				+ quantidade + ", valorUnitario=" + valorUnitario + ", ncm=" + ncm + ", cfop=" + cfop + ", icmsCest="
+				+ icmsCest + ", icmsBase=" + icmsBase + ", icmsAliquota=" + icmsAliquota + ", icmsValor=" + icmsValor
+				+ ", icmsStBase=" + icmsStBase + ", icmsStValor=" + icmsStValor + ", icmsCst=" + icmsCst + ", pisBase="
+				+ pisBase + ", pisAliquota=" + pisAliquota + ", pisValor=" + pisValor + ", pisCst=" + pisCst
+				+ ", cofinsBase=" + cofinsBase + ", cofinsAliquota=" + cofinsAliquota + ", cofinsValor=" + cofinsValor
+				+ ", cofinsCst=" + cofinsCst + ", ipiBase=" + ipiBase + ", ipiAliquota=" + ipiAliquota + ", ipiValor="
+				+ ipiValor + ", ipiCst=" + ipiCst + ", valorTotalImposto=" + valorTotalImposto + "]";
+	}
+
+	
 }
