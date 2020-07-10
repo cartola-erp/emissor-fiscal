@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ import net.cartola.emissorfiscal.util.ValidationHelper;
 @Service
 public class DocumentoFiscalService {
 
+	private static final Logger LOG = Logger.getLogger(DocumentoFiscalService.class.getName());
+	
 	@Autowired
 	private DocumentoFiscalRepository documentoFiscalRepository;
 	
@@ -103,6 +107,7 @@ public class DocumentoFiscalService {
 	 * @return
 	 */
 	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
+		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o DocumentoFiscal {0} ", documentoFiscal);
 		Map<String, Boolean> map = new HashMap<>();
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());

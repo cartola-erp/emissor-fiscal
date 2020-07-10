@@ -1,6 +1,8 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,10 @@ import net.cartola.emissorfiscal.tributacao.Imposto;
 @Service
 public class CalculoIpi {
 	
+	private static final Logger LOG = Logger.getLogger(CalculoIpi.class.getName());
+	
 	public CalculoImposto calculaIpi(DocumentoFiscalItem di, TributacaoFederal tributacao) {
+		LOG.log(Level.INFO, "Calculando o IPI para o ITEM: {0} ", di);
 		CalculoImposto ipi = new CalculoImposto();
 		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
 		BigDecimal valorIpiBase = tributacao.getIpiBase().multiply(valorTotal);

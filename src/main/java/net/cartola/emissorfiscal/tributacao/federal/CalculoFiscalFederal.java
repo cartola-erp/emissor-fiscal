@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ import net.cartola.emissorfiscal.tributacao.Imposto;
 @Service
 public class CalculoFiscalFederal implements CalculoFiscal {
 
+	private static final Logger LOG = Logger.getLogger(CalculoFiscalFederal.class.getName());
+	
 	@Autowired
 	private TributacaoFederalService tributacaoFederalService;
 
@@ -32,6 +36,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	
 	@Override
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
+		LOG.log(Level.INFO, "Fazendo o calculo das TRIBUTAÇÕES FEDERAIS, para o DocumentoFiscal: {0} ", documentoFiscal);
 		List<CalculoImposto> listaImpostos = new LinkedList<>();
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm)
 				.collect(Collectors.toSet());
@@ -59,6 +64,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	}
 
 	private void setaPisBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
+		LOG.log(Level.INFO, "Totalizando o PIS BASE e o VALOR para o DocumentoFiscal: {0} ", documentoFiscal);
 		documentoFiscal.setPisBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getPisBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setPisValor(totaliza(listaImpostos.stream()
@@ -66,6 +72,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	}
 
 	private void setaCofinsBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
+		LOG.log(Level.INFO, "Totalizando o COFINS BASE e o VALOR para o DocumentoFiscal: {0} ", documentoFiscal);
 		documentoFiscal.setCofinsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getCofinsBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setCofinsValor(totaliza(listaImpostos.stream()
@@ -73,6 +80,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	}
 	
 	private void setaIpiBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
+		LOG.log(Level.INFO, "Totalizando o IPI BASE e o VALOR para o DocumentoFiscal: {0} ", documentoFiscal);
 		documentoFiscal.setIpiBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIpiBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setIpiValor(totaliza(listaImpostos.stream()

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
  */	
 @Service
 public class DeOlhoNoImpostoService {
+	
+	private static final Logger LOG = Logger.getLogger(DeOlhoNoImpostoService.class.getName());
 	
 	@Autowired
 	private DeOlhoNoImpostoRepository olhoNoImpostoRepository;

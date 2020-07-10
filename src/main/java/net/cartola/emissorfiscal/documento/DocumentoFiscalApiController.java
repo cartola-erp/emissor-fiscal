@@ -3,6 +3,8 @@ package net.cartola.emissorfiscal.documento;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.validation.Valid;
 
@@ -29,6 +31,8 @@ import net.cartola.emissorfiscal.util.ValidationHelper;
 @RestController
 @RequestMapping("api/v1/documento-fiscal")
 public class DocumentoFiscalApiController {
+
+	private static final Logger LOG = Logger.getLogger(DocumentoFiscalApiController.class.getName());
 	
 	@Autowired
 	private DocumentoFiscalService docFiscalService;
@@ -80,10 +84,12 @@ public class DocumentoFiscalApiController {
 
 	@PostMapping("/busca-calculo-federal")
 	public ResponseEntity<Response<DocumentoFiscal>> findCalculoFederal(@Valid @RequestBody DocumentoFiscal docFiscal) {
+		LOG.log(Level.INFO, "Buscando calculo de PIS/COFINS, para o DocumentoFiscal {0}", docFiscal);
 		Response<DocumentoFiscal> response = new Response<>();
 		// 1 - VALIDAR
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, false, true);
 		if (!ValidationHelper.collectionEmpty(erros)) {
+			LOG.log(Level.WARNING, "Houve algum erro na validação do DocumentoFiscal: {0} ", erros);
 			response.setErrors(erros);
 			return ResponseEntity.badRequest().body(response);
 		}
