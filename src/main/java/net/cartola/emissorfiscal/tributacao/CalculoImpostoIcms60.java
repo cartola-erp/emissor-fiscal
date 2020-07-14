@@ -11,10 +11,11 @@ public class CalculoImpostoIcms60 extends CalculoImposto {
 	private BigDecimal aliquotaPst;		// = ALIQUOTA ICMS_ST + FCP
 	// QUE EU me lembro é a msm coisa do campo "valor" da super class
 //	private BigDecimal vlrIcmsSubstituto 
-	private BigDecimal vlrBaseCalcFcpStRetido;
+	private BigDecimal vlrBaseCalcFcpStRetido;		
 	private BigDecimal aliqFcpStRetido;
 	private BigDecimal vlrFcpStRetido;
 	private BigDecimal aliqReducaoBaseEfet;
+	// Aparentemente esses valores abaixo são os mesmos que: baseDeCalculo, aliquota e Valor da superClass
 	private BigDecimal vlrBaseEfetiva;
 	private BigDecimal aliqIcmsEfetiva;
 	private BigDecimal vlrIcmsEfetivo;

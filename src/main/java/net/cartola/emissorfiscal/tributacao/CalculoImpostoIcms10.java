@@ -18,7 +18,7 @@ public class CalculoImpostoIcms10 extends CalculoImpostoFcp {
 //	protected BigDecimal fcpAliquota = BigDecimal.ZERO;
 //	protected BigDecimal valorFcp;
 	
-	private BigDecimal vlrBaseFcpSt;
+	private BigDecimal vlrBaseFcpSt;				 	// eh == a: baseDeCalculoSt
 	private BigDecimal aliquotaFcpSt;
 	private BigDecimal valorFcpSt;
 
