@@ -40,13 +40,18 @@ public class DocumentoFiscal implements Serializable {
 	private List<DocumentoFiscalItem> itens;
 	private BigDecimal icmsBase = BigDecimal.ZERO;
 	private BigDecimal icmsValor = BigDecimal.ZERO;
+	private BigDecimal icmsValorDesonerado = BigDecimal.ZERO;
+    private BigDecimal icmsFcpValor = BigDecimal.ZERO;
 	private BigDecimal icmsStBase = BigDecimal.ZERO;
 	private BigDecimal icmsStValor = BigDecimal.ZERO;
-	private BigDecimal pisBase = BigDecimal.ZERO;
+    private BigDecimal icmsFcpStValor = BigDecimal.ZERO;
+    private BigDecimal icmsFcpStRetidoValor = BigDecimal.ZERO;
+    private BigDecimal vlrTotalProduto = BigDecimal.ZERO;
+	private BigDecimal pisBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal pisValor = BigDecimal.ZERO;
-	private BigDecimal cofinsBase = BigDecimal.ZERO;
+	private BigDecimal cofinsBase = BigDecimal.ZERO;			// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal cofinsValor = BigDecimal.ZERO;
-	private BigDecimal ipiBase = BigDecimal.ZERO;
+	private BigDecimal ipiBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal ipiValor = BigDecimal.ZERO;
 	// Para "atender" a lei "De Olho No Imposto"
 	private BigDecimal valorImpostoFederal = BigDecimal.ZERO;
@@ -142,6 +147,15 @@ public class DocumentoFiscal implements Serializable {
 		this.icmsValor = icmsValor;
 	}
 
+    @Column(name = "icms_vlr_deson", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	public BigDecimal getIcmsValorDesonerado() {
+		return icmsValorDesonerado;
+	}
+
+	public void setIcmsValorDesonerado(BigDecimal icmsValorDesonerado) {
+		this.icmsValorDesonerado = icmsValorDesonerado;
+	}
+
 	public BigDecimal getIcmsStBase() {
 		return icmsStBase;
 	}
@@ -158,6 +172,42 @@ public class DocumentoFiscal implements Serializable {
 		this.icmsStValor = icmsStValor;
 	}
 	
+    @Column(name = "icms_fcp_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	public BigDecimal getIcmsFcpValor() {
+		return icmsFcpValor;
+	}
+
+	public void setIcmsFcpValor(BigDecimal icmsFcpValor) {
+		this.icmsFcpValor = icmsFcpValor;
+	}
+
+	@Column(name = "icms_fcp_st_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	public BigDecimal getIcmsFcpStValor() {
+		return icmsFcpStValor;
+	}
+
+	public void setIcmsFcpStValor(BigDecimal icmsFcpStValor) {
+		this.icmsFcpStValor = icmsFcpStValor;
+	}
+
+	@Column(name = "icms_fcp_st_ret_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	public BigDecimal getIcmsFcpStRetidoValor() {
+		return icmsFcpStRetidoValor;
+	}
+
+	public void setIcmsFcpStRetidoValor(BigDecimal icmsFcpStRetidoValor) {
+		this.icmsFcpStRetidoValor = icmsFcpStRetidoValor;
+	}
+
+    @Column(name = "vlr_tot_prod", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	public BigDecimal getVlrTotalProduto() {
+		return vlrTotalProduto;
+	}
+
+	public void setVlrTotalProduto(BigDecimal vlrTotalProduto) {
+		this.vlrTotalProduto = vlrTotalProduto;
+	}
+
 	public BigDecimal getPisBase() {
 		return pisBase;
 	}
