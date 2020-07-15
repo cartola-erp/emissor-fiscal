@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.27, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.11, for Win64 (x86_64)
 --
--- Host: localhost    Database: emissorfiscal_teste
+-- Host: localhost    Database: emissorfiscal
 -- ------------------------------------------------------
--- Server version	5.7.27-log
+-- Server version	5.7.11-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -68,6 +68,11 @@ CREATE TABLE `docu_fisc` (
   `vlr_imposto_esta` decimal(19,2) DEFAULT NULL,
   `vlr_imposto_fede` decimal(19,2) DEFAULT NULL,
   `vlr_imposto_muni` decimal(19,2) DEFAULT NULL,
+  `icms_fcp_st_ret_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_fcp_st_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_fcp_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_vlr_deson` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `vlr_tot_prod` decimal(7,6) NOT NULL DEFAULT '0.000000',
   PRIMARY KEY (`id`),
   KEY `fnk_docu_fisc_destinatario_id` (`destinatario_id`),
   KEY `fnk_docu_fisc_emitente_id` (`emitente_id`),
@@ -101,7 +106,7 @@ CREATE TABLE `docu_fisc_item` (
   `cofins_base` decimal(19,2) DEFAULT NULL,
   `cofins_cst` int(11) NOT NULL,
   `cofins_valor` decimal(19,2) DEFAULT NULL,
-  `finalidade` enum('COMERCIALIZACAO', 'BRINDE', 'DOACAO', 'PATRIMONIO', 'CONSUMO') default 'CONSUMO' not null,
+  `finalidade` enum('COMERCIALIZACAO','BRINDE','DOACAO','PATRIMONIO','CONSUMO') NOT NULL DEFAULT 'CONSUMO',
   `icms_aliquota` decimal(19,2) DEFAULT NULL,
   `icms_base` decimal(19,2) DEFAULT NULL,
   `icms_cest` int(11) DEFAULT NULL,
@@ -113,7 +118,7 @@ CREATE TABLE `docu_fisc_item` (
   `ipi_base` decimal(19,2) DEFAULT NULL,
   `ipi_cst` int(11) NOT NULL,
   `ipi_valor` decimal(19,2) DEFAULT NULL,
-  `origem` enum('NACIONAL', 'ESTRANGEIRA_IMPORTACAO_DIRETA', 'ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO', 'NACIONAL_CONTEUDO_IMPORTADO_MAIOR_40', 'NACIONAL_CONFORMIDADE_PROCESSOS', 'NACIONAL_CONTEUDO_IMPORTADO_MENOR_40', 'ESTRANGEIRA_IMPORTACAO_DIRETA_CAMEX', 'ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO_CAMEX', 'NACIONAL_CONTEUDO_IMPORTADO_MAIOR_70') default 'NACIONAL' not null,
+  `origem` enum('NACIONAL','ESTRANGEIRA_IMPORTACAO_DIRETA','ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO','NACIONAL_CONTEUDO_IMPORTADO_MAIOR_40','NACIONAL_CONFORMIDADE_PROCESSOS','NACIONAL_CONTEUDO_IMPORTADO_MENOR_40','ESTRANGEIRA_IMPORTACAO_DIRETA_CAMEX','ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO_CAMEX','NACIONAL_CONTEUDO_IMPORTADO_MAIOR_70') NOT NULL DEFAULT 'NACIONAL',
   `pis_aliquota` decimal(19,2) DEFAULT NULL,
   `pis_base` decimal(19,2) DEFAULT NULL,
   `pis_cst` int(11) NOT NULL,
@@ -123,6 +128,24 @@ CREATE TABLE `docu_fisc_item` (
   `vlr_tot_imposto` decimal(19,2) DEFAULT NULL,
   `docu_fisc_id` bigint(20) DEFAULT NULL,
   `ncm_id` bigint(20) NOT NULL,
+  `icms_st_aliq_fcp_st_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_aliq_dest` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_base_fcp_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_fcp_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_fcp_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_fcp_st_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_fcp_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_iva` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_redu_base_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_redu_base_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_aliq_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_base_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_base_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_vlr_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_vlr_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_vlr_fcp_st_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `item_qtd_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
   PRIMARY KEY (`id`),
   KEY `fnk_documento_fiscal` (`docu_fisc_id`),
   KEY `fnk_ncms` (`ncm_id`),
@@ -168,6 +191,29 @@ INSERT INTO `esta` VALUES (1,'ACRE','AC'),(2,'ALAGOAS','AL'),(3,'AMAZONAS','AM')
 UNLOCK TABLES;
 
 --
+-- Table structure for table `flyway_schema_history`
+--
+
+DROP TABLE IF EXISTS `flyway_schema_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `flyway_schema_history` (
+  `installed_rank` int(11) NOT NULL,
+  `version` varchar(50) DEFAULT NULL,
+  `description` varchar(200) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `script` varchar(1000) NOT NULL,
+  `checksum` int(11) DEFAULT NULL,
+  `installed_by` varchar(100) NOT NULL,
+  `installed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `execution_time` int(11) NOT NULL,
+  `success` tinyint(1) NOT NULL,
+  PRIMARY KEY (`installed_rank`),
+  KEY `flyway_schema_history_s_idx` (`success`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `ncms`
 --
 
@@ -203,10 +249,10 @@ DROP TABLE IF EXISTS `oper`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oper` (
   `oper_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `dscr` varchar(50) NOT NULL,
+  `dscr` varchar(250) NOT NULL,
   PRIMARY KEY (`oper_id`),
   UNIQUE KEY `unk_oper_dscr` (`dscr`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,6 +261,7 @@ CREATE TABLE `oper` (
 
 LOCK TABLES `oper` WRITE;
 /*!40000 ALTER TABLE `oper` DISABLE KEYS */;
+INSERT INTO `oper` VALUES (71,'AQUISICAO DE MERCADORIA EM COMODATO'),(32,'AQUISICAO DE MERCADORIAS DENTRO DO ESTADO PARA COMERCIALIZACAO'),(34,'AQUISICAO DE MERCADORIAS DENTRO DO ESTADO PARA CONSUMO'),(33,'AQUISICAO DE MERCADORIAS FORA DO ESTADO PARA COMERCIALIZACAO'),(35,'AQUISICAO DE MERCADORIAS FORA DO ESTADO PARA CONSUMO'),(43,'AQUISICAO DE SERVICO'),(36,'AQUISICAO/CONTRATACAO DE SERVICOS'),(64,'BAIXA PARA CONSUMO'),(15,'COMPLEMENTO'),(27,'COMPLEMENTO DE ICMS SUBST. TRIB.'),(74,'COMPLEMENTO INTERESTADUAL'),(18,'COMPRA DE ATIVO'),(73,'COMPRA DE SUCATA PARA COMERCIALIZACAO'),(17,'COMPRA PARA COMERCIALIZACAO'),(56,'DEVOLUCAO DE MERCADORIA REMETIDA ANTERIORMENTE PARA PRESTACAO DE SERVICOS'),(57,'DEVOLUCAO DE MERCADORIA REMETIDA ANTERIORMENTE PARA PRESTACAO DE SERVICOS INTERESTADUAL'),(8,'DEVOLUCAO DO CLIENTE'),(9,'DEVOLUCAO DO CLIENTE INTERESTADUAL'),(19,'DEVOLUCAO DO FORNECEDOR (GARANTIAS)'),(20,'DEVOLUCAO DO FORNECEDOR (INTERESTADUAL)'),(23,'DEVOLUCAO MATERIAL CONSUMO'),(28,'DEVOLUCAO MERC. DESTINADA A USO E CONSUMO EM OP. C/ST'),(6,'DEVOLUCAO PARA FORNECEDOR'),(39,'DEVOLUCAO PARA FORNECEDOR (TRIBUTADA)'),(7,'DEVOLUCAO PARA FORNECEDOR INTERESTADUAL'),(40,'DEVOLUCAO PARA FORNECEDOR INTERESTADUAL (TRIBUTADA)'),(65,'ENTRADA DE MATERIAL DE CONSUMO'),(24,'MOVIMENTO JA REGISTRA EM ECF'),(25,'MOVIMENTO JA REGISTRA EM ECF (INTERESTADUAL)'),(16,'OUTRAS ENTRADAS NAO ESPECIFICADAS'),(72,'OUTRAS ENTRADAS NAO ESPECIFICADAS(INTERESTADUAL)'),(10,'OUTRAS SAIDA NAO ESPECIFICADAS'),(30,'OUTRAS SAIDAS (SIMPLES REMESSA)'),(22,'OUTRAS SAIDAS E OUTRAS PREST. DE SERVICO'),(29,'OUTRAS SAIDAS NAO ESPECIFICADAS'),(54,'RECEPCAO DE MERCADORIAS DE TERCEIROS PARA UTILIZACAO EM SERVICOS ESTADUAL'),(55,'RECEPCAO DE MERCADORIAS DE TERCEIROS PARA UTILIZACAO EM SERVICOS INTERESTADUAL'),(53,'REMESSA DE AMOSTRA GRATIS'),(48,'REMESSA EM BONIFICACAO, DOACAO OU BRINDE'),(75,'REMESSA EM BONIFICACAO, DOACAO OU BRINDE (INTERESTADUAL)'),(76,'REMESSA EM BONIFICACAO, DOACAO OU BRINDE(INTERESTADUAL)'),(50,'REMESSA EM CONSIGNACAO'),(21,'REMESSA P/ CONSERTO'),(46,'REMESSA VINCULADA A VENDA DE ENTREGA FUTURA'),(51,'RETORNO DE CONSIGNACAO'),(52,'RETORNO DE CONSIGNACAO SIMBOLICO'),(44,'RETORNO DE LOCACAO'),(58,'RETORNO DE MERCADORIA OU BEM RECEBIDO PARA DEMONSTRACAO'),(49,'RETORNO DE REMESSA P/ CONSERTO'),(62,'RETORNO EM CONSIGNACAO PARA FORNCEDOR'),(11,'SAIDA REMESSA EM GARANTIA'),(47,'SIMPLES REMESSA'),(66,'TRANFERENCIA DE MATERIAL DE CONSUMO INTERESTADUAL'),(4,'TRANSFERENCIA'),(37,'TRANSFERENCIA (ENTRADA) - ESTADUAL'),(42,'TRANSFERENCIA (ENTRADA) - GARANTIA'),(41,'TRANSFERENCIA (SAIDA) - GARANTIA'),(26,'TRANSFERENCIA DE BEM DO ATIVO IMOBILIZADO'),(70,'TRANSFERENCIA DE BEM DO ATIVO IMOBILIZADO (ENTRADA)'),(67,'TRANSFERENCIA DE MATERIAL DE USO OU CONSUMO '),(14,'TRANSFERENCIA DE SALDO CREDOR  ART.98 DO RICMS'),(13,'TRANSFERENCIA DE SALDO DEVEDOR ART.98 DO RICMS'),(5,'TRANSFERENCIA INTERESTADUAL'),(1,'VENDA'),(12,'VENDA DE IMOBILIZADO'),(59,'VENDA DE MERCADORIA SUJEITA A ST, COM CONTRIB. SUBSTIT.'),(45,'VENDA DE PRODUTO PARA  ENTREGA FUTURA'),(63,'VENDA DE SUCATA'),(31,'VENDA IMOBILIZADO INTERESTADUAL'),(60,'VENDA INTER. DE MERCADORIA SUJEITA A ST. COM IMPOSTO RET. ANTER.'),(3,'VENDA INTERESTADUAL (FISICA)'),(2,'VENDA INTERESTADUAL (JURIDICA)');
 /*!40000 ALTER TABLE `oper` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -228,8 +275,8 @@ DROP TABLE IF EXISTS `pessoa`;
 CREATE TABLE `pessoa` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cnpj` bigint(20) DEFAULT NULL,
-  `pessoa_tipo` enum('FISICA', 'JURIDICA') default 'FISICA',
-  `regime_tributario` enum('SIMPLES', 'SIMPLES_EXCESSO', 'NORMAL'),
+  `pessoa_tipo` enum('FISICA','JURIDICA') DEFAULT 'FISICA',
+  `regime_tributario` enum('SIMPLES','SIMPLES_EXCESSO','NORMAL') DEFAULT NULL,
   `uf` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -254,7 +301,7 @@ DROP TABLE IF EXISTS `trib_esta`;
 CREATE TABLE `trib_esta` (
   `trib_esta_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cest` int(11) DEFAULT NULL,
-  `finalidade` enum('COMERCIALIZACAO', 'BRINDE', 'DOACAO', 'PATRIMONIO', 'CONSUMO') default 'CONSUMO' not null,
+  `finalidade` enum('COMERCIALIZACAO','BRINDE','DOACAO','PATRIMONIO','CONSUMO') NOT NULL DEFAULT 'CONSUMO',
   `icms_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_aliq_dest` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `fcp_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
@@ -262,12 +309,14 @@ CREATE TABLE `trib_esta` (
   `icms_cst` int(11) NOT NULL,
   `icms_iva` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `mens` varchar(255) DEFAULT NULL,
-  `regime_tributario` enum('SIMPLES', 'SIMPLES_EXCESSO', 'NORMAL'),
+  `regime_tributario` enum('SIMPLES','SIMPLES_EXCESSO','NORMAL') DEFAULT NULL,
   `esta_dest_id` bigint(20) NOT NULL,
   `esta_orig_id` bigint(20) NOT NULL,
   `ncm_id` bigint(20) NOT NULL,
   `oper_id` bigint(20) NOT NULL,
+  `icms_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   PRIMARY KEY (`trib_esta_id`),
+  UNIQUE KEY `unk_trib_esta_oper_ncm` (`oper_id`,`ncm_id`,`finalidade`,`regime_tributario`,`esta_orig_id`,`esta_dest_id`),
   KEY `fnk_trib_esta_dest_id` (`esta_dest_id`),
   KEY `fnk_trib_esta_orig_id` (`esta_orig_id`),
   KEY `fnk_trib_esta_ncm_id` (`ncm_id`),
@@ -300,7 +349,7 @@ CREATE TABLE `trib_fede` (
   `cofins_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `cofins_base` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `cofins_cst` int(11) NOT NULL,
-  `finalidade` enum('COMERCIALIZACAO', 'BRINDE', 'DOACAO', 'PATRIMONIO', 'CONSUMO') default 'CONSUMO' not null,
+  `finalidade` enum('COMERCIALIZACAO','BRINDE','DOACAO','PATRIMONIO','CONSUMO') NOT NULL DEFAULT 'CONSUMO',
   `ipi_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `ipi_base` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `ipi_cst` int(11) NOT NULL,
@@ -308,11 +357,11 @@ CREATE TABLE `trib_fede` (
   `pis_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `pis_base` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `pis_cst` int(11) NOT NULL,
-  `regime_tributario` enum('SIMPLES', 'SIMPLES_EXCESSO', 'NORMAL'),
+  `regime_tributario` enum('SIMPLES','SIMPLES_EXCESSO','NORMAL') DEFAULT NULL,
   `ncm_id` bigint(20) DEFAULT NULL,
   `oper_id` bigint(20) NOT NULL,
   PRIMARY KEY (`trib_fede_id`),
-  UNIQUE KEY `unk_trib_fede_oper_ncms` (`oper_id`,`ncm_id`, `finalidade`, `regime_tributario`),
+  UNIQUE KEY `unk_trib_fede_oper_ncms` (`oper_id`,`ncm_id`,`finalidade`,`regime_tributario`),
   KEY `fnk_trib_fede_ncms` (`ncm_id`),
   CONSTRAINT `fnk_trib_fede_ncms` FOREIGN KEY (`ncm_id`) REFERENCES `ncms` (`ncm_id`),
   CONSTRAINT `fnk_trib_fede_oper` FOREIGN KEY (`oper_id`) REFERENCES `oper` (`oper_id`)
@@ -326,6 +375,42 @@ CREATE TABLE `trib_fede` (
 LOCK TABLES `trib_fede` WRITE;
 /*!40000 ALTER TABLE `trib_fede` DISABLE KEYS */;
 /*!40000 ALTER TABLE `trib_fede` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `trib_olho_imposto`
+--
+
+DROP TABLE IF EXISTS `trib_olho_imposto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `trib_olho_imposto` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `aliq_esta` decimal(9,4) DEFAULT '0.0000',
+  `aliq_fede_importado` decimal(9,4) DEFAULT '0.0000',
+  `aliq_fede_nacional` decimal(9,4) DEFAULT '0.0000',
+  `aliq_municipal` decimal(9,4) DEFAULT '0.0000',
+  `chave` varchar(6) DEFAULT NULL,
+  `descricao_ibpt` varchar(1020) DEFAULT NULL,
+  `exce` varchar(2) DEFAULT NULL,
+  `fonte` varchar(6) DEFAULT NULL,
+  `ncm` int(11) NOT NULL,
+  `tabela` int(11) NOT NULL,
+  `versao` varchar(10) DEFAULT NULL,
+  `vigencia_inicio` date DEFAULT NULL,
+  `vigencia_termino` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unk_olho_imposto_id_ex` (`ncm`,`exce`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `trib_olho_imposto`
+--
+
+LOCK TABLES `trib_olho_imposto` WRITE;
+/*!40000 ALTER TABLE `trib_olho_imposto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `trib_olho_imposto` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -344,7 +429,7 @@ CREATE TABLE `usua` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_hhpk43mhs9uyt2ldai7w9u4mt` (`login`),
   UNIQUE KEY `UK_5i4wyij10irpsbblf4no78dy6` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -370,7 +455,7 @@ CREATE TABLE `usua_perf` (
   PRIMARY KEY (`id`),
   KEY `fnk_usua` (`usua_id`),
   CONSTRAINT `fnk_usua` FOREIGN KEY (`usua_id`) REFERENCES `usua` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -391,4 +476,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-21 14:43:56
+-- Dump completed on 2020-07-15 17:31:45
