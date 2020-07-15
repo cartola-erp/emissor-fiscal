@@ -41,7 +41,7 @@ public class Operacao implements Serializable {
 	@Column(name = "dscr", nullable = false)
 	@NotNull(message="A DESCRIÇÃO não pode ser NULA")
 	@NotBlank(message="A DESCRIÇÃO tem que ser preenchida")
-	@Length(message= "A DESCRIÇÃO deve ter entre 3 á 50 caracteres", min=3, max=50)
+	@Length(message= "A DESCRIÇÃO deve ter entre 3 á 150 caracteres", min=3, max=150)
 	public String getDescricao() {
 		return descricao;
 	}
