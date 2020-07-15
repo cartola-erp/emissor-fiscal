@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import net.cartola.emissorfiscal.documento.Finalidade;
@@ -27,7 +28,8 @@ import net.cartola.emissorfiscal.pessoa.RegimeTributario;
  * @author murilo
  */
 @Entity
-@Table(name = "trib_esta")
+@Table(name = "trib_esta", uniqueConstraints = @UniqueConstraint(name = "unk_trib_esta_oper_ncm", columnNames = {
+		"oper_id", "ncm_id", "finalidade", "regime_tributario", "esta_orig_id", "esta_dest_id" }))
 public class TributacaoEstadual implements Serializable {
 
     private static final long serialVersionUID = 970384982433L;
@@ -46,7 +48,8 @@ public class TributacaoEstadual implements Serializable {
     private BigDecimal icmsAliquota;
     private BigDecimal icmsIva = BigDecimal.ZERO;
     private BigDecimal icmsAliquotaDestino;
-    private BigDecimal fcpAliquota = BigDecimal.ZERO;
+    private BigDecimal fcpAliquota = BigDecimal.ZERO;		// se a pFCPST ("fcpStAliquota") for != dessa terei q add mais um campo
+    private BigDecimal icmsStAliquota = BigDecimal.ZERO;	// usado em:  ICMS10, ICMS30, ICMS70, ICMS90 etc
     private Integer cest;
     private String mensagem;
 
@@ -176,7 +179,16 @@ public class TributacaoEstadual implements Serializable {
 		this.fcpAliquota = fcpAliquota;
 	}
 
-//	@Column(name = "cest", scale = 7)
+    @Column(name = "icms_st_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	public BigDecimal getIcmsStAliquota() {
+		return icmsStAliquota;
+	}
+
+	public void setIcmsStAliquota(BigDecimal icmsStAliquota) {
+		this.icmsStAliquota = icmsStAliquota;
+	}
+
+	//	@Column(name = "cest", scale = 7)
     public Integer getCest() {
         return cest;
     }

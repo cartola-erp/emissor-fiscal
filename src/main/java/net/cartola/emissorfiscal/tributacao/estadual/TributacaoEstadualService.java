@@ -69,6 +69,8 @@ public class TributacaoEstadualService {
 		tributacaoEstadual.setIcmsAliquotaDestino(tributacaoEstadual.getIcmsAliquotaDestino().divide(new BigDecimal(100D)));
 		tributacaoEstadual.setIcmsBase(tributacaoEstadual.getIcmsBase().divide(new BigDecimal(100D)));
 		tributacaoEstadual.setIcmsIva(tributacaoEstadual.getIcmsIva().divide(new BigDecimal(100D)));
+		tributacaoEstadual.setFcpAliquota(tributacaoEstadual.getFcpAliquota().divide(new BigDecimal(100D)));
+		tributacaoEstadual.setIcmsStAliquota(tributacaoEstadual.getIcmsStAliquota().divide(new BigDecimal(100D)));
 	}
 	
 	public void multiplicaTributacaoEstadualPorCem(TributacaoEstadual tributacaoEstadual) {
@@ -76,6 +78,8 @@ public class TributacaoEstadualService {
 		tributacaoEstadual.setIcmsAliquotaDestino(tributacaoEstadual.getIcmsAliquotaDestino().multiply(new BigDecimal(100D)));
 		tributacaoEstadual.setIcmsBase(tributacaoEstadual.getIcmsBase().multiply(new BigDecimal(100D)));
 		tributacaoEstadual.setIcmsIva(tributacaoEstadual.getIcmsIva().multiply(new BigDecimal(100D)));
+		tributacaoEstadual.setFcpAliquota(tributacaoEstadual.getFcpAliquota().multiply(new BigDecimal(100D)));
+		tributacaoEstadual.setIcmsStAliquota(tributacaoEstadual.getIcmsStAliquota().multiply(new BigDecimal(100D)));
 	}
 	
 	// ====================  "VALIDAÇÕES" =================== 
