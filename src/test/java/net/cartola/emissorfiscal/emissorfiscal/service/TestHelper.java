@@ -154,7 +154,7 @@ public class TestHelper {
 
 	public List<Ncm> criarNcms() {
 		List<Ncm> ncms = new LinkedList<>();
-		String[][] data = { { NCM1, "43", "Essa é uma DESCRIÇÃO do PRIMEIRO NCM para o teste" },
+		String[][] data = { { NCM1, "0", "Varetas e perfis de borracha vulcan.n/alveol.n/endurec." },
 				{ NCM2, "32", "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste" },
 				{ NCM3, "54", "Essa é uma DESCRIÇÃO do TERCEIRO NCM para o teste" } };
 
@@ -186,6 +186,32 @@ public class TestHelper {
 			pessoas.add(pessoa);
 		}
 		return pessoaRepository.saveAll(pessoas);
+	}
+	
+	
+	public TributacaoEstadual criarTribEstaVenda(Ncm ncm, int cst, BigDecimal iva, BigDecimal icmsBase, BigDecimal fcpAliq, BigDecimal icmsStAliq) {
+		Estado estadoOrigem = estadoRepository.findEstadoBySigla(EstadoSigla.SP).get();
+		Operacao operacao = operacaoRepository.findOperacaoByDescricaoIgnoreCase(OPERACAO_VENDA).get();
+		TributacaoEstadual icms = new TributacaoEstadual();
+		
+		icms.setEstadoOrigem(estadoOrigem);
+		icms.setEstadoDestino(estadoOrigem);
+		icms.setOperacao(operacao);
+		icms.setNcm(ncm);
+		icms.setFinalidade(Finalidade.CONSUMO);
+		icms.setRegimeTributario(RegimeTributario.NORMAL);
+		icms.setIcmsCst(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CST);
+		icms.setIcmsBase(icmsBase);
+		
+		icms.setIcmsAliquota(new BigDecimal(0.18D));
+		icms.setIcmsIva(iva);
+		icms.setIcmsAliquotaDestino(new BigDecimal(0.18D));
+		icms.setFcpAliquota(fcpAliq);
+		icms.setIcmsStAliquota(icmsStAliq);
+		icms.setCest(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CEST);
+		icms.setMensagem(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM);
+
+		return icmsService.save(icms).get();
 	}
 	
 	//  Criar TRIBUTAÇÕES ESTADUAIS, CONFORME LISTA DE NCM e a OPERAÇÃO
