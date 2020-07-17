@@ -29,9 +29,9 @@ public class NcmServiceLogicTest {
 	@Autowired
 	private NcmService ncmService;
 	
-	public static int NCM_NUMERO_REGISTRO_1 = 38190000;
-	public static int NCM_EXCECAO_REGISTRO_1 = 43;
-	public static String NCM_DESCRICAO_REGISTRO_1 = "Essa é uma DESCRIÇÃO do PRIMEIRO NCM para o teste";
+	public static int NCM_NUMERO_REGISTRO_1 = 40082900;
+	public static int NCM_EXCECAO_REGISTRO_1 = 0;
+	public static String NCM_DESCRICAO_REGISTRO_1 = "Varetas e perfis de borracha vulcan.n/alveol.n/endurec.";
 	
 	public static int NCM_NUMERO_REGISTRO_2 = 85011019;
 	public static int NCM_EXCECAO_REGISTRO_2 = 32;

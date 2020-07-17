@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +15,7 @@ import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms51;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms60;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms70;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms90;
+import net.cartola.emissorfiscal.tributacao.Imposto;
 
 @Service
 public class CalculoIcms {
@@ -52,6 +54,22 @@ public class CalculoIcms {
 		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} ", di);
 		CalculoImposto icms00 = new CalculoImposto();
 		
+		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
+		BigDecimal valorIcmsBase = tributacao.getIcmsBase().multiply(valorTotal);
+		BigDecimal valorIcms = valorIcmsBase.multiply(tributacao.getIcmsAliquota());
+		
+		icms00.setImposto(Imposto.ICMS);
+		icms00.setAliquota(tributacao.getIcmsAliquota());
+		icms00.setBaseDeCalculo(valorIcms);
+//		pis.setOrdem(di.getId().intValue()); // -> mudar
+		icms00.setQuantidade(di.getQuantidade());
+		icms00.setValorUnitario(di.getValorUnitario());
+		icms00.setValor(valorIcms);
+		di.setIcmsAliquota(tributacao.getIcmsAliquota());
+		di.setIcmsBase(valorIcmsBase);
+		di.setIcmsValor(valorIcms);
+		di.setIcmsCst(tributacao.getIcmsCst());
+//		di.setIcmsCest(tributacao.getCest());
 		return icms00;
 	}
 	

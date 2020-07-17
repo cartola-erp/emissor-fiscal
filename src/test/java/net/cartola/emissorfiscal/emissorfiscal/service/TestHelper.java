@@ -63,14 +63,18 @@ public class TestHelper {
 	public static final String OPERACAO_REMESSA = "Remessa";
 	public static final String OPERACAO_REMESSA_CONSIGNADA = "Remessa consignada";
 
-	public static final String PESSOA_CNPJ = "12345678901234";
-	public static final String PESSOA_UF_SP = EstadoSigla.SP.toString();
-	public static final String PESSOA_REGIME_TRIBUTARIO_REAL = RegimeTributario.NORMAL.toString();
-	public static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
-	                
-	public static final String PESSOA_CNPJ_2 = "02329838429395";
-	public static final String PESSOA_UF_MG = EstadoSigla.MG.toString();
+	public static final String PESSOA_EMITENTE_CNPJ = "5437537000137";
+	public static final String PESSOA_EMITENTE_UF_SP = EstadoSigla.SP.toString();
+	public static final String PESSOA_EMITENTE_REGI_TRIBU_REAL = RegimeTributario.NORMAL.toString();
 	public static final String PESSOA_TIPO_JURIDICA = PessoaTipo.JURIDICA.toString();
+	                
+	public static final String PESSOA_DEST_CNPJ_SP = "53124228000150";
+	public static final String PESSOA_DEST_UF_SP = EstadoSigla.SP.toString();
+	public static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
+	
+	public static final String PESSOA_DEST_CNPJ_MG = "2737439000399";
+	public static final String PESSOA_DEST_UF_MG = EstadoSigla.MG.toString();
+//	public static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
 	                
 	public static final String DOC_FISCAL_SERIE_1 = "262265758";
 	private static final String DOC_FISCAL_SERIE_2 = "883591913";
@@ -171,10 +175,9 @@ public class TestHelper {
 	
 	public List<Pessoa> criarPessoa() {
 		List<Pessoa> pessoas = new LinkedList<>();
-		String[][] data = { {PESSOA_CNPJ, PESSOA_UF_SP, PESSOA_REGIME_TRIBUTARIO_REAL, PESSOA_TIPO_JURIDICA},
-							{PESSOA_CNPJ_2, PESSOA_UF_SP, PESSOA_REGIME_TRIBUTARIO_REAL, PESSOA_TIPO_FISICA},
-							{PESSOA_CNPJ, PESSOA_UF_MG, PESSOA_REGIME_TRIBUTARIO_REAL, PESSOA_TIPO_FISICA},
-							{PESSOA_CNPJ_2, PESSOA_UF_MG, PESSOA_REGIME_TRIBUTARIO_REAL, PESSOA_TIPO_JURIDICA} };
+		String[][] data = { {PESSOA_EMITENTE_CNPJ, PESSOA_EMITENTE_UF_SP, PESSOA_EMITENTE_REGI_TRIBU_REAL, PESSOA_TIPO_JURIDICA},
+							{PESSOA_DEST_CNPJ_SP, PESSOA_EMITENTE_UF_SP, PESSOA_EMITENTE_REGI_TRIBU_REAL, PESSOA_TIPO_JURIDICA},
+							{PESSOA_DEST_CNPJ_MG, PESSOA_DEST_UF_MG, PESSOA_EMITENTE_REGI_TRIBU_REAL, PESSOA_TIPO_JURIDICA}};
 		
 		for (String[] dados : data) {
 			int aux = 0;
@@ -203,9 +206,9 @@ public class TestHelper {
 		icms.setIcmsCst(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CST);
 		icms.setIcmsBase(icmsBase);
 		
-		icms.setIcmsAliquota(new BigDecimal(0.18D));
+		icms.setIcmsAliquota(new BigDecimal(18D));
 		icms.setIcmsIva(iva);
-		icms.setIcmsAliquotaDestino(new BigDecimal(0.18D));
+		icms.setIcmsAliquotaDestino(new BigDecimal(18D));
 		icms.setFcpAliquota(fcpAliq);
 		icms.setIcmsStAliquota(icmsStAliq);
 		icms.setCest(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CEST);
@@ -275,10 +278,10 @@ public class TestHelper {
 		List<Ncm> ncms = criarNcms();
 		List<Pessoa> pessoas = criarPessoa();
 		
-		String[][] data = { { "NFE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_1, DOC_FISCAL_NUMERO_1 },
-				{ "SAT", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_2, DOC_FISCAL_NUMERO_2 },
-				{ "CTE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_3, DOC_FISCAL_NUMERO_3 },
-				{ "ECF", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_FISICA, PESSOA_UF_MG, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_4, DOC_FISCAL_NUMERO_4 } };
+		String[][] data = { { "NFE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_EMITENTE_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_1, DOC_FISCAL_NUMERO_1 },
+				{ "SAT", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_EMITENTE_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_2, DOC_FISCAL_NUMERO_2 },
+				{ "CTE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_DEST_UF_SP, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_3, DOC_FISCAL_NUMERO_3 },
+				{ "ECF", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_DEST_UF_SP, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_4, DOC_FISCAL_NUMERO_4 } };
 
 		
 		for (String[] dados : data) {

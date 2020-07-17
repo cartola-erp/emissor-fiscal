@@ -79,7 +79,7 @@ public class DocumentoFiscalAPIControllerTest {
 	private ResponseEntity<Response<DocumentoFiscal>> buscarUmDocumentoFiscal() {
 		DocumentoFiscal docFiscal = new DocumentoFiscal();
 		docFiscal.setEmitente(new Pessoa());
-		docFiscal.getEmitente().setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ));
+		docFiscal.getEmitente().setCnpj(Long.parseLong(TestHelper.PESSOA_EMITENTE_CNPJ));
 		docFiscal.setTipo(TestHelper.DOC_FISCAL_TIPO_NFE);
 		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
 		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
@@ -116,8 +116,8 @@ public class DocumentoFiscalAPIControllerTest {
 	public void test02_tentaInserirDocumentoFiscalVendaInterEstadual() {
 		// POPULANDO OBJ
 		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA_INTERESTADUAL).get();
-		Pessoa emitente = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ)).get(0);
-		Pessoa destinatario = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ_2)).get(0);
+		Pessoa emitente = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_EMITENTE_CNPJ)).get(0);
+		Pessoa destinatario = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_DEST_CNPJ_SP)).get(0);
 		Ncm ncm = ncmService.findNcmByNumeroAndExcecao(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1, NcmServiceLogicTest.NCM_EXCECAO_REGISTRO_1).get();
 		
 		List<Ncm> listNcms = ncmService.findAll();
@@ -165,7 +165,7 @@ public class DocumentoFiscalAPIControllerTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		DocumentoFiscal docFiscal = response.getBody().getData();
 		assertNotNull(docFiscal);
-		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_CNPJ);
+		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_EMITENTE_CNPJ);
 		assertTrue(response.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON));
 		
 		System.out.println("\n" +this.getClass() + " test03_buscarUmDocumentoFiscal, ok");
@@ -178,7 +178,7 @@ public class DocumentoFiscalAPIControllerTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		DocumentoFiscal docFiscal = response.getBody().getData();
 		assertNotNull(docFiscal);
-		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_CNPJ);
+		assertEquals(docFiscal.getEmitente().getCnpj().toString(), TestHelper.PESSOA_EMITENTE_CNPJ);
 		assertTrue(response.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON));
 		
 		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA).get();
