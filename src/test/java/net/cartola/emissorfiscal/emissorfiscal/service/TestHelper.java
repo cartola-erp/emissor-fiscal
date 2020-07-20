@@ -159,8 +159,8 @@ public class TestHelper {
 	public List<Ncm> criarNcms() {
 		List<Ncm> ncms = new LinkedList<>();
 		String[][] data = { { NCM1, "0", "Varetas e perfis de borracha vulcan.n/alveol.n/endurec." },
-				{ NCM2, "32", "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste" },
-				{ NCM3, "54", "Essa é uma DESCRIÇÃO do TERCEIRO NCM para o teste" } };
+				{ NCM2, "0", "Peças para caixas de marchas p/veiculos automoveis" },
+				{ NCM3, "0", "Essa é uma DESCRIÇÃO do TERCEIRO NCM para o teste" } };
 
 		for (String[] dados : data) {
 			int aux = 0;
@@ -203,7 +203,7 @@ public class TestHelper {
 		icms.setNcm(ncm);
 		icms.setFinalidade(Finalidade.CONSUMO);
 		icms.setRegimeTributario(RegimeTributario.NORMAL);
-		icms.setIcmsCst(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CST);
+		icms.setIcmsCst(cst);
 		icms.setIcmsBase(icmsBase);
 		
 		icms.setIcmsAliquota(new BigDecimal(18D));

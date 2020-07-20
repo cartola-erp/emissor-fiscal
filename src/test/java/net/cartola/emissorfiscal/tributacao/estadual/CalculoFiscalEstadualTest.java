@@ -111,38 +111,84 @@ public class CalculoFiscalEstadualTest {
 		
 	// set()
 	
+	private static final BigDecimal ICMS_BASE_DOC_FISC_EXPECTED = new BigDecimal(100D);
+	private static final BigDecimal ICMS_VLR_DOC_FISC_EXPECTED = new BigDecimal(18D);
+//	private static final BigDecimal ICMS_FCP_VLR_DOC_FISC_EXPECTED = new BigDecimal(null);
+//	private static final BigDecimal ICMS_FCP_BASE_DOC_FISC_EXPECTED = new BigDecimal(null);
+
+	// ITEM 1 
 	private static final BigDecimal ICMS_ITEM_ALIQ_EXPECTED = new BigDecimal(18D);
 	private static final BigDecimal ICMS_ITEM_VLR_BASE_EXPECTED = new BigDecimal(100D);
 	private static final BigDecimal ICMS_ITEM_VLR_EXPECTED = new BigDecimal(18D);
 	
+	// colocar os valores do SEGUNDO ITEM aqui
+	
+	
+	private TributacaoEstadual criaTributaEstaVenda(int ncm, int cst, BigDecimal iva, BigDecimal icmsBase, BigDecimal fcpAliq, BigDecimal icmsStAliq) {
+		Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(ncm, 0);
+		assertTrue(opNcm.isPresent());
+//		Ncm ncm = opNcm.get();
+		TributacaoEstadual tribEstaICMS = testHelper.criarTribEstaVenda(opNcm.get(), cst, iva, icmsBase, fcpAliq, icmsStAliq);
+		assertNotNull(tribEstaICMS);
+		return tribEstaICMS;
+	}
+	
 	
 	@Test
 	public void test01_DeveCalcularVendaICMS00() {
-		Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1, 0);
-		assertTrue(opNcm.isPresent());
-		Ncm ncm = opNcm.get();
-		TributacaoEstadual tribEstaICMS00 = testHelper.criarTribEstaVenda(ncm, 00, IVA_ZERO, ICMS_BASE_CEM, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_ZERO);
-		assertNotNull(tribEstaICMS00);
+		TributacaoEstadual tribEstaICMS00 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1, 00, IVA_ZERO, ICMS_BASE_CEM, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_ZERO);
+		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS00.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR, ITEM_ICMS_ST_VLR_ULTIM_COMPR, QTD_ULTIM_COMP, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA);
 
-		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(ncm, ITEM_ICMS_ST_BASE_ULTIM_COMPR, ITEM_ICMS_ST_VLR_ULTIM_COMPR, QTD_ULTIM_COMP, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA);
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
 		LOG.log(Level.WARNING, "ERROS: {0} ", erros);
 		assertTrue(erros.isEmpty());
 	
 		calcFiscalEstadual.calculaImposto(docFiscal);
+
+		// DocumentoFiscal
+		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_BASE_DOC_FISC_EXPECTED) == 0);
+		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_VLR_DOC_FISC_EXPECTED) == 0);
 		
+		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
+		assertEquals(00, docFiscalItem.getIcmsCst());
 		assertTrue(docFiscalItem.getIcmsAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_ALIQ_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsValor().compareTo(ICMS_ITEM_VLR_EXPECTED) == 0);
-
-//		assertEquals(18D, docFiscalItem.getIcmsValor());
 		
 		LOG.log(Level.INFO, "DocFiscal calculado: {0} ", docFiscal);
-		
-		// aqui e faço os assert referentes ao ITEM e o DOCUMENTO como um todo, (dos valores q é para sair)
 	}
 	
+	@Test
+	public void test02_DeveCalcularVendaICMS10() {
+		TributacaoEstadual tribEstaICMS10 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2, 10, IVA_ZERO, ICMS_BASE_CEM, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_ZERO);
+		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS10.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR, ITEM_ICMS_ST_VLR_ULTIM_COMPR, QTD_ULTIM_COMP, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA);
+
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
+		LOG.log(Level.WARNING, "ERROS: {0} ", erros);
+		
+		assertTrue(erros.isEmpty());
+		
+		calcFiscalEstadual.calculaImposto(docFiscal);
+		
+		// DocumentoFiscal
+		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_BASE_DOC_FISC_EXPECTED) == 0);
+		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_VLR_DOC_FISC_EXPECTED) == 0);
+		
+		// DocumentoFiscalItem
+		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
+		assertEquals(10, docFiscalItem.getIcmsCst());
+		assertTrue(docFiscalItem.getIcmsAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_ALIQ_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsValor().compareTo(ICMS_ITEM_VLR_EXPECTED) == 0);
+	}
+	
+	public void test03_DeveCalcularVendaICMS20() {
+		
+	}
+	
+	
+
 	
 	private DocumentoFiscal criaDocumentoFiscalVenda(Ncm ncm, BigDecimal icmsStBaseUltimaCompra, BigDecimal icmsStValorUltimaCompra, 
 			BigDecimal itemQtdCompradaUltimaCompra, BigDecimal icmsStAliqUltimaCompra) {

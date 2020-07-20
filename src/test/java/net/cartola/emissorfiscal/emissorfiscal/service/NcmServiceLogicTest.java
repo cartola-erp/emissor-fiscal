@@ -33,8 +33,8 @@ public class NcmServiceLogicTest {
 	public static int NCM_EXCECAO_REGISTRO_1 = 0;
 	public static String NCM_DESCRICAO_REGISTRO_1 = "Varetas e perfis de borracha vulcan.n/alveol.n/endurec.";
 	
-	public static int NCM_NUMERO_REGISTRO_2 = 85011019;
-	public static int NCM_EXCECAO_REGISTRO_2 = 32;
+	public static int NCM_NUMERO_REGISTRO_2 = 87084090;
+	public static int NCM_EXCECAO_REGISTRO_2 = 0;
 	public static String NCM_DESCRICAO_REGISTRO_2 = "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste";
 	
 	public static int NCM_NUMERO_REGISTRO_3 = 32141010;
