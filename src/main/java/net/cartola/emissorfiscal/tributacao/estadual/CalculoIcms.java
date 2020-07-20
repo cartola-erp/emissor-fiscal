@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
+import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcp;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms20;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms30;
@@ -49,27 +50,60 @@ public class CalculoIcms {
 //		return icms;
 	}
 	
-	
-	private CalculoImposto calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
-		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} ", di);
-		CalculoImposto icms00 = new CalculoImposto();
-		
+	/**
+	 * Irá realizar calculo para a classe mãe: CalculoImposto, (Que são valores que tem em todos os GRUPOS de ICMS)
+	 * @param di
+	 * @param tributacao
+	 * @param calcIcms
+	 */
+	private void calculaImpostoBase(DocumentoFiscalItem di, TributacaoEstadual tributacao, CalculoImposto calcIcms) {
+		LOG.log(Level.INFO, "Calculando o ICMS BASE");
 		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
 		BigDecimal valorIcmsBase = tributacao.getIcmsBase().multiply(valorTotal);
 		BigDecimal valorIcms = valorIcmsBase.multiply(tributacao.getIcmsAliquota());
 		
-		icms00.setImposto(Imposto.ICMS);
-		icms00.setAliquota(tributacao.getIcmsAliquota());
-		icms00.setBaseDeCalculo(valorIcms);
-//		pis.setOrdem(di.getId().intValue()); // -> mudar
-		icms00.setQuantidade(di.getQuantidade());
-		icms00.setValorUnitario(di.getValorUnitario());
-		icms00.setValor(valorIcms);
-		di.setIcmsAliquota(tributacao.getIcmsAliquota());
+		calcIcms.setValorUnitario(di.getValorUnitario());
+		calcIcms.setQuantidade(di.getQuantidade());
+		calcIcms.setBaseDeCalculo(valorIcmsBase);
+		calcIcms.setAliquota(tributacao.getIcmsAliquota());
+//		calcIcms.setOrdem(di.getId().intValue()); // -> mudar
+		calcIcms.setValor(valorIcms);
+
+		di.setIcmsCst(tributacao.getIcmsCst());
 		di.setIcmsBase(valorIcmsBase);
 		di.setIcmsValor(valorIcms);
-		di.setIcmsCst(tributacao.getIcmsCst());
-//		di.setIcmsCest(tributacao.getCest());
+	}
+	
+	/**
+	 * Será feito o calculo do: FCP - Fundo de Combate a Pobreza,  para os grupos de ICMS que tiverem
+	 * @param di
+	 * @param tributacao
+	 * @param calcIcmsFcp
+	 */
+	private void calculaIcmsFcp(DocumentoFiscalItem di, TributacaoEstadual tributacao, CalculoImpostoFcp calcIcmsFcp) {
+		LOG.log(Level.INFO, "Calculando o FCP");
+		BigDecimal valorIcmsFcpBase = di.getIcmsBase();
+		BigDecimal valorFcp = valorIcmsFcpBase.multiply(tributacao.getFcpAliquota());
+		
+		calcIcmsFcp.setVlrBaseCalcFcp(valorIcmsFcpBase);
+		calcIcmsFcp.setFcpAliquota(tributacao.getFcpAliquota());
+		calcIcmsFcp.setValorFcp(valorFcp);
+
+		di.setIcmsFcpAliquota(tributacao.getFcpAliquota());
+		di.setIcmsFcpValor(valorFcp);
+	}
+	
+	
+	private CalculoImposto calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} ", di);
+		CalculoImposto icms00 = new CalculoImposto();
+
+		icms00.setImposto(Imposto.ICMS);
+		calculaImpostoBase(di, tributacao, icms00);
+		
+		di.setIcmsAliquota(tributacao.getIcmsAliquota());
+		di.setIcmsCst(tributacao.getIcmsCst());				
+		//		di.setIcmsCest(tributacao.getCest());
 		return icms00;
 	}
 	
@@ -77,10 +111,33 @@ public class CalculoIcms {
 		LOG.log(Level.INFO, "Calculando o ICMS 10 para o ITEM: {0} ", di);
 		CalculoImpostoIcms10 icms10 = new CalculoImpostoIcms10();
 		
+		icms10.setImposto(Imposto.ICMS_ST);
+		calculaImpostoBase(di, tributacao, icms10);
+		calculaIcmsFcp(di, tributacao, icms10);
+		
+		// ICMS_ST - CST 10
+		BigDecimal valorIcmsStBase = di.getIcmsBase().multiply(tributacao.getIcmsIva()); 
+		BigDecimal valorIcmsSt = valorIcmsStBase.multiply(tributacao.getIcmsStAliquota());
+		
+//		icms10.setModalidadeDaBaseCalculoSt("4");
+		icms10.setBaseDeCalculoSt(valorIcmsStBase);
+		icms10.setIva(tributacao.getIcmsIva());
+		icms10.setAliquotaIcmsSt(tributacao.getIcmsStAliquota());
+		icms10.setValorIcmsSt(valorIcmsSt);
+		icms10.setAliqReducaoBaseSt(tributacao.getIcmsBase());
+		
+		
+		// calcular o FCP ST aqui
+			// 
+		// setar no icms10 os valores referentes ao FCP ST
+//		icms10.setVl
+		
 		return icms10;
 	}
 
 	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+		LOG.log(Level.INFO, "Calculando o ICMS 20 para o ITEM: {0} ", di);
+
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -109,46 +166,5 @@ public class CalculoIcms {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-	
-//	public CalculoImposto calculaIcmsST(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
-//		CalculoImposto icmsSt = new CalculoImposto();
-//		CalculoImposto icms = calculaIcms(di, tributacao);
-//		
-//		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
-//		// base IcmsSt = (vlrProduto + IPI + Frete !? +  
-////		BigDecimal valorIcmsStBase = di.
-//		
-//		return null;
-//	}
-	
-	
-	
-//	public CalculoImposto calculaIcms(DocumentoFiscalItem docItem, TributacaoEstadual tributacao) {
-//	CalculoImposto icms = new CalculoImposto();
-////	calcImposto.setValor(di.getQuantidade().multiply(di.getValorUnitario())); // valor total
-////	calcImposto.setBaseDeCalculo(tributacao.getIcmsBase().multiply(calcImposto.getValor())); //valorIcmsBase
-//	
-//	BigDecimal valorTotal = docItem.getQuantidade().multiply(docItem.getValorUnitario());
-//	BigDecimal valorIcmsBase = tributacao.getIcmsBase().multiply(valorTotal);
-//	BigDecimal valorIcms = valorIcmsBase.multiply(tributacao.getIcmsAliquota());
-//	
-//	icms.setImposto(Imposto.ICMS);
-//	icms.setAliquota(tributacao.getIcmsAliquota());
-//	icms.setBaseDeCalculo(valorIcmsBase);
-////	calcImposto.setOrdem(ordem);
-//	icms.setQuantidade(docItem.getQuantidade());
-//	icms.setValorUnitario(docItem.getValorUnitario());  // --> vlr uni de icms para 1 item
-//
-//	icms.setValor(valorIcms); // valor total
-//	
-//	docItem.setIcmsCest(tributacao.getCest());
-//	docItem.setIcmsAliquota(tributacao.getIcmsAliquota());
-//	docItem.setIcmsBase(valorIcmsBase);
-//	docItem.setIcmsValor(valorIcms);
-//	docItem.setIcmsCst(tributacao.getIcmsCst());
-//	return icms;
-//}
 
 }
