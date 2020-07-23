@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
+import net.cartola.emissorfiscal.tributacao.CalculoImpostoDifal;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcp;
+import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms20;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms30;
@@ -27,7 +29,7 @@ public class CalculoIcms {
 
 		switch (tributacao.getIcmsCst()) {
 		case 00:
-			return calculaIcms00(docItem, tributacao);
+			return ((CalculoImpostoIcms00) calculaIcms00(docItem, tributacao));
 		case 10:
 			return ((CalculoImpostoIcms10) calculaIcms10(docItem, tributacao));
 		case 20:
@@ -52,7 +54,8 @@ public class CalculoIcms {
 	
 	/**
 	 * Irá realizar calculo para a classe mãe: CalculoImposto, (Que são valores que tem em todos os GRUPOS de ICMS)
-	 * @param di
+	 * E setar os valores necessários no DocumentoFiscalItem
+	 * @param di (DocumentoFiscalItem)
 	 * @param tributacao
 	 * @param calcIcms
 	 */
@@ -70,12 +73,15 @@ public class CalculoIcms {
 		calcIcms.setValor(valorIcms);
 
 		di.setIcmsCst(tributacao.getIcmsCst());
+		//		di.setIcmsCest(tributacao.getCest());
 		di.setIcmsBase(valorIcmsBase);
 		di.setIcmsValor(valorIcms);
+		di.setIcmsAliquota(tributacao.getIcmsAliquota());
 	}
 	
 	/**
 	 * Será feito o calculo do: FCP - Fundo de Combate a Pobreza,  para os grupos de ICMS que tiverem
+	 * E setar os valores necessários no DocumentoFiscalItem
 	 * @param di
 	 * @param tributacao
 	 * @param calcIcmsFcp
@@ -93,17 +99,38 @@ public class CalculoIcms {
 		di.setIcmsFcpValor(valorFcp);
 	}
 	
+	/**
+	 * Calcula o DIFAL para OPERAÇÃO INTERESTADUAL, e pessoa NÃO contribuinte (PF)
+	 * 
+	 * @param <T> extends CalculoImpostoDifal
+	 * @param di
+	 * @param tributacao
+	 * @param calcDifal
+	 */
+	private <T extends CalculoImpostoDifal> void calculaDifal(DocumentoFiscalItem di, TributacaoEstadual tributacao, T calcDifal) {
+		// Tbm tenho que verificar se é PF, para poder calcular
+		if (!tributacao.getEstadoOrigem().equals(tributacao.getEstadoDestino())) {
+			LOG.log(Level.INFO, "Calculando o DIFAL ");
+			BigDecimal valorBaseUfDest = di.getIcmsBase();
+			BigDecimal aliqInterDifal = tributacao.getIcmsAliquotaDestino().subtract(tributacao.getIcmsAliquota());
+			BigDecimal valorIcmsUfDest = valorBaseUfDest.multiply(aliqInterDifal);
+			
+			calcDifal.setAliquotaIcmsUfDest(tributacao.getIcmsAliquotaDestino());
+			calcDifal.setAliquotaIcmsInter(tributacao.getIcmsAliquota()); 			// -4% - Importada 
+			calcDifal.setVlrIcmsUfDest(valorIcmsUfDest);
+		}
+	}
 	
-	private CalculoImposto calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms00 calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} ", di);
-		CalculoImposto icms00 = new CalculoImposto();
+		CalculoImpostoIcms00 icms00 = new CalculoImpostoIcms00();
 
 		icms00.setImposto(Imposto.ICMS);
 		calculaImpostoBase(di, tributacao, icms00);
 		
-		di.setIcmsAliquota(tributacao.getIcmsAliquota());
 		di.setIcmsCst(tributacao.getIcmsCst());				
 		//		di.setIcmsCest(tributacao.getCest());
+		calculaDifal(di, tributacao, icms00.getCalcImpostoDifal());
 		return icms00;
 	}
 	
@@ -119,6 +146,7 @@ public class CalculoIcms {
 		BigDecimal valorIcmsStBase = di.getIcmsBase().multiply(tributacao.getIcmsIva()); 
 		BigDecimal valorIcmsSt = valorIcmsStBase.multiply(tributacao.getIcmsStAliquota());
 		
+		// ACREDITO QUE PARA CIMA ESTEJA OK
 //		icms10.setModalidadeDaBaseCalculoSt("4");
 		icms10.setBaseDeCalculoSt(valorIcmsStBase);
 		icms10.setIva(tributacao.getIcmsIva());
@@ -128,11 +156,24 @@ public class CalculoIcms {
 		
 		
 		// calcular o FCP ST aqui
-			// 
+			// Acho que é viavel criar um método para calcular o FCP ST, semelhante ao que fiz no ICMS BASE
+			// Daí acho que posso passar as referencias por ex do OBJ: icms10, referentes ao FCP ST
+				// vlrBaseFcpSt
+				// aliquotaFcpSt
+				// valorFcpSt
 		// setar no icms10 os valores referentes ao FCP ST
 //		icms10.setVl
-		
+		calculaIcmsFcpSt(di, tributacao, icms10.getVlrBaseFcpSt(), icms10.getAliquotaFcpSt(), icms10.getValorFcpSt());
 		return icms10;
+	}
+
+
+	private void calculaIcmsFcpSt(DocumentoFiscalItem di, TributacaoEstadual tributacao, BigDecimal vlrBaseFcpSt,
+			BigDecimal aliquotaFcpSt, BigDecimal valorFcpSt) {
+		LOG.log(Level.INFO, "Calculando o FCP ST");
+
+		// TODO Auto-generated method stub
+		
 	}
 
 	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
