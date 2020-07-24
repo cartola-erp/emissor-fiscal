@@ -101,7 +101,7 @@ public class CalculoIcms {
 	
 	/**
 	 * Calcula o DIFAL para OPERAÇÃO INTERESTADUAL, e pessoa NÃO contribuinte (PF)
-	 * 
+	 * Calculo referente aos cammpos da TAG: ICMSUFDest ("DIFAL") do XML
 	 * @param <T> extends CalculoImpostoDifal
 	 * @param di
 	 * @param tributacao
@@ -109,15 +109,31 @@ public class CalculoIcms {
 	 */
 	private <T extends CalculoImpostoDifal> void calculaDifal(DocumentoFiscalItem di, TributacaoEstadual tributacao, T calcDifal) {
 		// Tbm tenho que verificar se é PF, para poder calcular
-		if (!tributacao.getEstadoOrigem().equals(tributacao.getEstadoDestino())) {
-			LOG.log(Level.INFO, "Calculando o DIFAL ");
+		boolean ehEstadosDiferentes = !tributacao.getEstadoOrigem().equals(tributacao.getEstadoDestino());
+		if (ehEstadosDiferentes) {
+			LOG.log(Level.INFO, "Calculando o DIFAL da TAG (ICMSUFDest) ");
 			BigDecimal valorBaseUfDest = di.getIcmsBase();
 			BigDecimal aliqInterDifal = tributacao.getIcmsAliquotaDestino().subtract(tributacao.getIcmsAliquota());
 			BigDecimal valorIcmsUfDest = valorBaseUfDest.multiply(aliqInterDifal);
 			
+			calcDifal.setVlrBaseUfDest(valorBaseUfDest);
 			calcDifal.setAliquotaIcmsUfDest(tributacao.getIcmsAliquotaDestino());
-			calcDifal.setAliquotaIcmsInter(tributacao.getIcmsAliquota()); 			// -4% - Importada 
+			calcDifal.setAliquotaIcmsInter(tributacao.getIcmsAliquota()); 			// -4% - Importada (Ou seja, se ORIGEM = 1), isso vale também p/ o campo pICMS
 			calcDifal.setVlrIcmsUfDest(valorIcmsUfDest);
+			
+			di.setIcmsValorUfDestino(valorIcmsUfDest);
+		}
+		
+		// CASO, o calculo do FCP, seja também SOMENTE para A CST 00, basta eu fazer essa parada aqui (E os outros metodo de FCP eu não usaria)
+		// Se for ORIGEM != DESTINO, faça, o calculo;
+		if (ehEstadosDiferentes && !tributacao.getFcpAliquota().equals(BigDecimal.ZERO)) {
+			LOG.log(Level.INFO, "Calculando o FCP da TAG (ICMSUFDest)");
+			BigDecimal valorBaseFcpUfDest = calcDifal.getVlrBaseUfDest();
+			BigDecimal valorFcpUfDest = valorBaseFcpUfDest.multiply(tributacao.getFcpAliquota());
+			
+			calcDifal.setVlrBaseFcpUfDest(valorBaseFcpUfDest);
+			calcDifal.setAliquotaFcpUfDest(tributacao.getFcpAliquota());
+			calcDifal.setVlrFcpUfDest(valorFcpUfDest);
 		}
 	}
 	
