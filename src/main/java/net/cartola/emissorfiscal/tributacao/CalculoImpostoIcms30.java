@@ -15,9 +15,7 @@ public class CalculoImpostoIcms30 extends CalculoImposto {
 //	private BigDecimal aliquotaIcmsSt;			// aliquota
 //	private BigDecimal valorIcmsSt;				// valor
 	
-	private BigDecimal vlrBaseFcpSt;
-	private BigDecimal aliquotaFcpSt;
-	private BigDecimal valorFcpSt;
+	private CalculoImpostoFcpSt calcFcpSt = new CalculoImpostoFcpSt();
 
 	public String getModalidadeDaBaseCalculoSt() {
 		return modalidadeDaBaseCalculoSt;
@@ -43,28 +41,12 @@ public class CalculoImpostoIcms30 extends CalculoImposto {
 		this.aliqReducaoBaseSt = aliqReducaoBaseSt;
 	}
 
-	public BigDecimal getVlrBaseFcpSt() {
-		return vlrBaseFcpSt;
+	public CalculoImpostoFcpSt getCalcFcpSt() {
+		return calcFcpSt;
 	}
 
-	public void setVlrBaseFcpSt(BigDecimal vlrBaseFcpSt) {
-		this.vlrBaseFcpSt = vlrBaseFcpSt;
+	public void setCalcFcpSt(CalculoImpostoFcpSt calcFcpSt) {
+		this.calcFcpSt = calcFcpSt;
 	}
 
-	public BigDecimal getAliquotaFcpSt() {
-		return aliquotaFcpSt;
-	}
-
-	public void setAliquotaFcpSt(BigDecimal aliquotaFcpSt) {
-		this.aliquotaFcpSt = aliquotaFcpSt;
-	}
-
-	public BigDecimal getValorFcpSt() {
-		return valorFcpSt;
-	}
-
-	public void setValorFcpSt(BigDecimal valorFcpSt) {
-		this.valorFcpSt = valorFcpSt;
-	}
-	
 }
