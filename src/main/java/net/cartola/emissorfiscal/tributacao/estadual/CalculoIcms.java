@@ -75,9 +75,12 @@ public class CalculoIcms {
 
 		di.setIcmsCst(tributacao.getIcmsCst());
 		//		di.setIcmsCest(tributacao.getCest());
+		//		di.setCfop(tributacao.getCfop());
 		di.setIcmsBase(valorIcmsBase);
+		di.setIcmsReducaoBaseAliquota(tributacao.getIcmsBase());
 		di.setIcmsValor(valorIcms);
 		di.setIcmsAliquota(tributacao.getIcmsAliquota());
+		di.setIcmsAliquotaDestino(tributacao.getIcmsAliquotaDestino());
 	}
 	
 	/**
@@ -167,7 +170,7 @@ public class CalculoIcms {
 		calculaImpostoBase(di, tributacao, icms00);
 		
 		di.setIcmsCst(tributacao.getIcmsCst());				
-		//		di.setIcmsCest(tributacao.getCest());
+
 		calculaDifal(di, tributacao, icms00.getCalcImpostoDifal());
 		return icms00;
 	}
@@ -184,7 +187,6 @@ public class CalculoIcms {
 		BigDecimal valorIcmsStBase = di.getIcmsBase().multiply(tributacao.getIcmsIva()); 
 		BigDecimal valorIcmsSt = valorIcmsStBase.multiply(tributacao.getIcmsStAliquota());
 		
-		// ACREDITO QUE PARA CIMA ESTEJA OK
 //		icms10.setModalidadeDaBaseCalculoSt("4");
 		icms10.setBaseDeCalculoSt(valorIcmsStBase);
 		icms10.setIva(tributacao.getIcmsIva());
@@ -206,7 +208,9 @@ public class CalculoIcms {
 
 	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		LOG.log(Level.INFO, "Calculando o ICMS 20 para o ITEM: {0} ", di);
-
+		CalculoImpostoIcms20 icms20 = new CalculoImpostoIcms20();
+		
+		icms20.setImposto(Imposto.ICMS_20);
 		// TODO Auto-generated method stub
 		return null;
 	}
