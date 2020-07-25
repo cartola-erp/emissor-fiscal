@@ -87,7 +87,16 @@ public class CalculoFiscalEstadualTest {
 	private static final BigDecimal FCP_ALIQ_ZERO = BigDecimal.ZERO;
 	private static final BigDecimal ICMS_ST_ALIQ_ZERO = BigDecimal.ZERO;
 
+	private static final BigDecimal IVA_70 = new BigDecimal(70D);
+	private static final BigDecimal FCP_ALIQ_2_PERC = new BigDecimal(2D);
+	private static final BigDecimal ICMS_ST_ALIQ_18_PERC = new BigDecimal(18D);
 	
+	// ICMS ST EXPECTED
+	private static final BigDecimal ICMS_ST_BASE_ITEM_EXPECTED = new BigDecimal(70D);
+	private static final BigDecimal ICMS_ST_VLR_ITEM_EXPECTED = new BigDecimal(12.60D);
+	
+	private static final BigDecimal ICMS_ITEM_FCP_ST_ALIQ_EXPECTED = new BigDecimal(2D);
+	private static final BigDecimal ICMS_ITEM_FCP_ST_VLR_EXPECTED = new BigDecimal(1.4D);
 	@Test
 	public void test00_CleanUp() {
 		testHelper.limpaBanco();
@@ -115,11 +124,17 @@ public class CalculoFiscalEstadualTest {
 	private static final BigDecimal ICMS_VLR_DOC_FISC_EXPECTED = new BigDecimal(18D);
 //	private static final BigDecimal ICMS_FCP_VLR_DOC_FISC_EXPECTED = new BigDecimal(null);
 //	private static final BigDecimal ICMS_FCP_BASE_DOC_FISC_EXPECTED = new BigDecimal(null);
+//	private static final BigDecimal ICMS_ST_BASE_DOC_FISC_EXPECTED = new B
 
 	// ITEM 1 
 	private static final BigDecimal ICMS_ITEM_ALIQ_EXPECTED = new BigDecimal(18D);
 	private static final BigDecimal ICMS_ITEM_VLR_BASE_EXPECTED = new BigDecimal(100D);
 	private static final BigDecimal ICMS_ITEM_VLR_EXPECTED = new BigDecimal(18D);
+	
+	//FCP
+//	private static final BigDecimal ICMS_ITEM_FCP_VLR_BASE_EXPECTED = new BigDecimal(2D);
+	private static final BigDecimal ICMS_ITEM_FCP_ALIQ_EXPECTED = new BigDecimal(2D);
+	private static final BigDecimal ICMS_ITEM_FCP_VLR_EXPECTED = new BigDecimal(2D);
 	
 	// colocar os valores do SEGUNDO ITEM aqui
 	
@@ -161,7 +176,7 @@ public class CalculoFiscalEstadualTest {
 	
 	@Test
 	public void test02_DeveCalcularVendaICMS10() {
-		TributacaoEstadual tribEstaICMS10 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2, 10, IVA_ZERO, ICMS_BASE_CEM, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_ZERO);
+		TributacaoEstadual tribEstaICMS10 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2, 10, IVA_70, ICMS_BASE_CEM, FCP_ALIQ_2_PERC, ICMS_ST_ALIQ_18_PERC);
 		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS10.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR, ITEM_ICMS_ST_VLR_ULTIM_COMPR, QTD_ULTIM_COMP, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA);
 
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
@@ -175,12 +190,35 @@ public class CalculoFiscalEstadualTest {
 		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_BASE_DOC_FISC_EXPECTED) == 0);
 		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_VLR_DOC_FISC_EXPECTED) == 0);
 		
+		// DOC FISC FCP
+		assertTrue(docFiscal.getIcmsFcpValor().compareTo(ICMS_ITEM_FCP_VLR_EXPECTED) == 0);
+		
+		// DOC FISC FCP ST
+		assertTrue(docFiscal.getIcmsFcpStValor().compareTo(ICMS_ITEM_FCP_ST_VLR_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);	//ICMS_ITEM_FCP_ST_VLR_EXPECTED
+		
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
 		assertEquals(10, docFiscalItem.getIcmsCst());
 		assertTrue(docFiscalItem.getIcmsAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_ALIQ_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsValor().compareTo(ICMS_ITEM_VLR_EXPECTED) == 0);
+		
+		assertTrue(docFiscalItem.getIcmsStAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ST_ALIQ_18_PERC) == 0);
+		assertTrue(docFiscalItem.getIcmsIva().multiply(new BigDecimal(100D)).compareTo(IVA_70) == 0);
+		assertTrue(docFiscalItem.getIcmsStBase().compareTo(ICMS_ST_BASE_ITEM_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsStValor().compareTo(ICMS_ST_VLR_ITEM_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+//		assertTrue(condition);
+		/**
+		 *  FCP (O FCP - Está aqui mais para efeitos "ilustrativos", pois num cenário real é para ter somente para o RJ (ou seja VENDA INTERESTADUAL)
+		 *	conforme passado pela Gabriela. Portanto em todas as outras situações é para ser ZERO esse valor;
+		 *	 E é para ser caso a contabilidade cadastrarem corretamente a tributação para o NCM
+		 */
+		assertTrue(docFiscalItem.getIcmsFcpAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_FCP_ALIQ_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsFcpValor().compareTo(ICMS_ITEM_FCP_VLR_EXPECTED) == 0);
+
+		// FCP ST
+		assertTrue(docFiscalItem.getIcmsFcpStAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_FCP_ST_ALIQ_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsFcpStValor().compareTo(ICMS_ITEM_FCP_ST_VLR_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
 	}
 	
 	public void test03_DeveCalcularVendaICMS20() {
