@@ -46,6 +46,7 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal icmsStValor = BigDecimal.ZERO;
     private BigDecimal icmsFcpStValor = BigDecimal.ZERO;
     private BigDecimal icmsFcpStRetidoValor = BigDecimal.ZERO;
+    private BigDecimal icmsValorUfDestino = BigDecimal.ZERO;		// É a soma do DIFAL
     private BigDecimal vlrTotalProduto = BigDecimal.ZERO;
 	private BigDecimal pisBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal pisValor = BigDecimal.ZERO;
@@ -199,7 +200,16 @@ public class DocumentoFiscal implements Serializable {
 		this.icmsFcpStRetidoValor = icmsFcpStRetidoValor;
 	}
 
-    @Column(name = "vlr_tot_prod", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	@Column(name = "icms_vlr_uf_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    public BigDecimal getIcmsValorUfDestino() {
+		return icmsValorUfDestino;
+	}
+
+	public void setIcmsValorUfDestino(BigDecimal icmsValorUfDestino) {
+		this.icmsValorUfDestino = icmsValorUfDestino;
+	}
+
+	@Column(name = "vlr_tot_prod", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getVlrTotalProduto() {
 		return vlrTotalProduto;
 	}
@@ -294,16 +304,19 @@ public class DocumentoFiscal implements Serializable {
 	public void setValorImpostoMunicipal(BigDecimal valorImpostoMunicipal) {
 		this.valorImpostoMunicipal = valorImpostoMunicipal;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "DocumentoFiscal [id=" + id + ", operacao=" + operacao + ", tipo=" + tipo + ", serie=" + serie
 				+ ", numero=" + numero + ", emitente=" + emitente + ", destinatario=" + destinatario + ", itens="
-				+ itens + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor + ", pisBase=" + pisBase + ", pisValor="
-				+ pisValor + ", cofinsBase=" + cofinsBase + ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase
-				+ ", ipiValor=" + ipiValor + "]";
+				+ itens + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor + ", icmsValorDesonerado="
+				+ icmsValorDesonerado + ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase=" + icmsStBase
+				+ ", icmsStValor=" + icmsStValor + ", icmsFcpStValor=" + icmsFcpStValor + ", icmsFcpStRetidoValor="
+				+ icmsFcpStRetidoValor + ", icmsValorUfDestino=" + icmsValorUfDestino + ", vlrTotalProduto="
+				+ vlrTotalProduto + ", pisBase=" + pisBase + ", pisValor=" + pisValor + ", cofinsBase=" + cofinsBase
+				+ ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor=" + ipiValor
+				+ ", valorImpostoFederal=" + valorImpostoFederal + ", valorImpostoEstadual=" + valorImpostoEstadual
+				+ ", valorImpostoMunicipal=" + valorImpostoMunicipal + "]";
 	}
-
-	
 	
 }

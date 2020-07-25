@@ -64,6 +64,7 @@ public class DocumentoFiscalItem implements Serializable {
     private BigDecimal icmsAliqFcpStRetido = BigDecimal.ZERO;
     private BigDecimal icmsValorFcpStRetido = BigDecimal.ZERO;
 	private int icmsCst;
+    private BigDecimal icmsValorUfDestino = BigDecimal.ZERO;		// É o VALOR do DIFAL
     // Base do ICMS ST (ULTIMA COMPRA), que foi usado quando a AG comprou o produto, p/ usar no ICMS 60
 	private BigDecimal icmsStBaseUltimaCompra = BigDecimal.ZERO; 
 	private BigDecimal icmsStValorUltimaCompra = BigDecimal.ZERO;
@@ -339,6 +340,15 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsCst = icmsCst;
 	}
 
+	@Column(name = "icms_vlr_uf_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    public BigDecimal getIcmsValorUfDestino() {
+		return icmsValorUfDestino;
+	}
+
+	public void setIcmsValorUfDestino(BigDecimal icmsValorUfDestino) {
+		this.icmsValorUfDestino = icmsValorUfDestino;
+	}
+	
     @Column(name = "icms_st_base_ultim_comp", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIcmsStBaseUltimaCompra() {
 		return icmsStBaseUltimaCompra;
@@ -494,13 +504,22 @@ public class DocumentoFiscalItem implements Serializable {
 	public String toString() {
 		return "DocumentoFiscalItem [id=" + id + ", finalidade=" + finalidade + ", origem=" + origem + ", quantidade="
 				+ quantidade + ", valorUnitario=" + valorUnitario + ", ncm=" + ncm + ", cfop=" + cfop + ", icmsCest="
-				+ icmsCest + ", icmsBase=" + icmsBase + ", icmsAliquota=" + icmsAliquota + ", icmsValor=" + icmsValor
-				+ ", icmsStBase=" + icmsStBase + ", icmsStValor=" + icmsStValor + ", icmsCst=" + icmsCst + ", pisBase="
-				+ pisBase + ", pisAliquota=" + pisAliquota + ", pisValor=" + pisValor + ", pisCst=" + pisCst
-				+ ", cofinsBase=" + cofinsBase + ", cofinsAliquota=" + cofinsAliquota + ", cofinsValor=" + cofinsValor
-				+ ", cofinsCst=" + cofinsCst + ", ipiBase=" + ipiBase + ", ipiAliquota=" + ipiAliquota + ", ipiValor="
-				+ ipiValor + ", ipiCst=" + ipiCst + ", valorTotalImposto=" + valorTotalImposto + "]";
+				+ icmsCest + ", icmsBase=" + icmsBase + ", icmsReducaoBaseAliquota=" + icmsReducaoBaseAliquota
+				+ ", icmsReducaoBaseStAliquota=" + icmsReducaoBaseStAliquota + ", icmsAliquota=" + icmsAliquota
+				+ ", icmsAliquotaDestino=" + icmsAliquotaDestino + ", icmsValor=" + icmsValor + ", icmsFcpAliquota="
+				+ icmsFcpAliquota + ", icmsFcpValor=" + icmsFcpValor + ", icmsFcpStAliquota=" + icmsFcpStAliquota
+				+ ", icmsFcpStValor=" + icmsFcpStValor + ", icmsStBase=" + icmsStBase + ", icmsStAliquota="
+				+ icmsStAliquota + ", icmsStValor=" + icmsStValor + ", icmsIva=" + icmsIva + ", icmsStBaseRetido="
+				+ icmsStBaseRetido + ", icmsStValorRetido=" + icmsStValorRetido + ", icmsBaseFcpStRetido="
+				+ icmsBaseFcpStRetido + ", icmsAliqFcpStRetido=" + icmsAliqFcpStRetido + ", icmsValorFcpStRetido="
+				+ icmsValorFcpStRetido + ", icmsCst=" + icmsCst + ", icmsValorUfDestino=" + icmsValorUfDestino
+				+ ", icmsStBaseUltimaCompra=" + icmsStBaseUltimaCompra + ", icmsStValorUltimaCompra="
+				+ icmsStValorUltimaCompra + ", itemQtdCompradaUltimaCompra=" + itemQtdCompradaUltimaCompra
+				+ ", icmsStAliqUltimaCompra=" + icmsStAliqUltimaCompra + ", pisBase=" + pisBase + ", pisAliquota="
+				+ pisAliquota + ", pisValor=" + pisValor + ", pisCst=" + pisCst + ", cofinsBase=" + cofinsBase
+				+ ", cofinsAliquota=" + cofinsAliquota + ", cofinsValor=" + cofinsValor + ", cofinsCst=" + cofinsCst
+				+ ", ipiBase=" + ipiBase + ", ipiAliquota=" + ipiAliquota + ", ipiValor=" + ipiValor + ", ipiCst="
+				+ ipiCst + ", valorTotalImposto=" + valorTotalImposto + "]";
 	}
 
-	
 }
