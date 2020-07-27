@@ -75,12 +75,4 @@ public class CalculoImpostoIcms70 extends CalculoImpostoFcp {
 		this.vlrIcmsSt = vlrIcmsSt;
 	}
 
-//	public CalculoImpostoFcpSt getCalcFcpSt() {
-//		return calcFcpSt;
-//	}
-//
-//	public void setCalcFcpSt(CalculoImpostoFcpSt calcFcpSt) {
-//		this.calcFcpSt = calcFcpSt;
-//	}
-	
 }
