@@ -18,7 +18,9 @@ public class CalculoImpostoIcms10 extends CalculoImpostoFcp {
 //	protected BigDecimal fcpAliquota = BigDecimal.ZERO;
 //	protected BigDecimal valorFcp;
 	
-	private CalculoImpostoFcpSt calcFcpSt = new CalculoImpostoFcpSt();
+	
+//	 * A autogeral só utiliza o FCP normal
+//	private CalculoImpostoFcpSt calcFcpSt = new CalculoImpostoFcpSt();
 
 	public String getModalidadeDaBaseCalculoSt() {
 		return modalidadeDaBaseCalculoSt;
@@ -68,11 +70,4 @@ public class CalculoImpostoIcms10 extends CalculoImpostoFcp {
 		this.aliqReducaoBaseSt = aliqReducaoBaseSt;
 	}
 	
-	public CalculoImpostoFcpSt getCalcFcpSt() {
-		return calcFcpSt;
-	}
-	
-	public void setCalcFcpSt(CalculoImpostoFcpSt calcFcpSt) {
-		this.calcFcpSt = calcFcpSt;
-	}
 }

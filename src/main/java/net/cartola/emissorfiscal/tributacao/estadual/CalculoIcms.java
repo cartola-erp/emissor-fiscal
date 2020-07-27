@@ -10,7 +10,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoDifal;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcp;
-import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
+//import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms20;
@@ -111,18 +111,18 @@ public class CalculoIcms {
 	 * @param tributacao
 	 * @param calcFcpSt
 	 */
-	private <T extends CalculoImpostoFcpSt> void calculaIcmsFcpSt(DocumentoFiscalItem di, TributacaoEstadual tributacao, T calcFcpSt) {
-		LOG.log(Level.INFO, "Calculando o FCP ST");
-		BigDecimal valorIcmsFcpStBase = di.getIcmsStBase();
-		BigDecimal valorFcpSt = valorIcmsFcpStBase.multiply(tributacao.getFcpAliquota());
-		
-		calcFcpSt.setVlrBaseFcpSt(valorIcmsFcpStBase);
-		calcFcpSt.setAliquotaFcpSt(tributacao.getFcpAliquota());
-		calcFcpSt.setValorFcpSt(valorFcpSt);
-		
-		di.setIcmsFcpStAliquota(tributacao.getFcpAliquota());
-		di.setIcmsFcpStValor(valorFcpSt);
-	}
+//	private <T extends CalculoImpostoFcpSt> void calculaIcmsFcpSt(DocumentoFiscalItem di, TributacaoEstadual tributacao, T calcFcpSt) {
+//		LOG.log(Level.INFO, "Calculando o FCP ST");
+//		BigDecimal valorIcmsFcpStBase = di.getIcmsStBase();
+//		BigDecimal valorFcpSt = valorIcmsFcpStBase.multiply(tributacao.getFcpAliquota());
+//		
+//		calcFcpSt.setVlrBaseFcpSt(valorIcmsFcpStBase);
+//		calcFcpSt.setAliquotaFcpSt(tributacao.getFcpAliquota());
+//		calcFcpSt.setValorFcpSt(valorFcpSt);
+//		
+//		di.setIcmsFcpStAliquota(tributacao.getFcpAliquota());
+//		di.setIcmsFcpStValor(valorFcpSt);
+//	}
 	
 	/**
 	 * Calcula o DIFAL para OPERAÇÃO INTERESTADUAL, e pessoa NÃO contribuinte (PF)
@@ -200,7 +200,7 @@ public class CalculoIcms {
 		di.setIcmsStValor(valorIcmsSt);
 		di.setIcmsReducaoBaseStAliquota(tributacao.getIcmsBase());
 		
-		calculaIcmsFcpSt(di, tributacao, icms10.getCalcFcpSt());
+//		calculaIcmsFcpSt(di, tributacao, icms10.getCalcFcpSt());
 
 		return icms10;
 	}
