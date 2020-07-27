@@ -49,10 +49,15 @@ import net.cartola.emissorfiscal.usuario.UsuarioService;
 @Component
 public class TestHelper {
 
-	private static final String NCM1 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
-	private static final String NCM2 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
-	private static final String NCM3 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3); 
+	private static final String NCM_ICMS_00 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
+	private static final String NCM_ICMS_10 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
+	private static final String NCM_ICMS_20 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3); 
+	private static final String NCM_ICMS_30 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_4); 
+	private static final String NCM_ICMS_40 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_5); 
 
+	private static final String NCM_ICMS_60 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_6); 
+
+	
 	public static final String OPERACAO_VENDA = "Venda";
 	public static final String OPERACAO_VENDA_INTERESTADUAL = "Venda Interestadual";
 	public static final String OPERACAO_COMPRA = "Compra";
@@ -158,9 +163,12 @@ public class TestHelper {
 
 	public List<Ncm> criarNcms() {
 		List<Ncm> ncms = new LinkedList<>();
-		String[][] data = { { NCM1, "0", "Varetas e perfis de borracha vulcan.n/alveol.n/endurec." },
-				{ NCM2, "0", "Peças para caixas de marchas p/veiculos automoveis" },
-				{ NCM3, "0", "Essa é uma DESCRIÇÃO do TERCEIRO NCM para o teste" } };
+		String[][] data = { { NCM_ICMS_00, "0", "Varetas e perfis de borracha vulcan.n/alveol.n/endurec." },
+				{ NCM_ICMS_10, "0", "Peças para caixas de marchas p/veiculos automoveis" },
+				{ NCM_ICMS_20, "0", "Outras carnes,de suino,congeladas" },
+				{ NCM_ICMS_30, "0", "Outros suinos,vivos,de peso inferior a 50kg" },
+				{ NCM_ICMS_40, "0", "Outros suinos,vivos,de peso igual ou superior a 50kg" },
+				{ NCM_ICMS_60, "0", "Depurador por convers.catalitica de gases de escap.veic" }};
 
 		for (String[] dados : data) {
 			int aux = 0;
@@ -192,13 +200,15 @@ public class TestHelper {
 	}
 	
 	
-	public TributacaoEstadual criarTribEstaVenda(Ncm ncm, int cst, BigDecimal iva, BigDecimal icmsBase, BigDecimal fcpAliq, BigDecimal icmsStAliq) {
+	public TributacaoEstadual criarTribEstaVenda(Ncm ncm, int cst, EstadoSigla ufDestino, BigDecimal iva, BigDecimal icmsBase, BigDecimal fcpAliq, BigDecimal icmsStAliq) {
 		Estado estadoOrigem = estadoRepository.findEstadoBySigla(EstadoSigla.SP).get();
+		Estado estadoDestino = estadoRepository.findEstadoBySigla(ufDestino).get();
+
 		Operacao operacao = operacaoRepository.findOperacaoByDescricaoIgnoreCase(OPERACAO_VENDA).get();
 		TributacaoEstadual icms = new TributacaoEstadual();
 		
 		icms.setEstadoOrigem(estadoOrigem);
-		icms.setEstadoDestino(estadoOrigem);
+		icms.setEstadoDestino(estadoDestino);
 		icms.setOperacao(operacao);
 		icms.setNcm(ncm);
 		icms.setFinalidade(Finalidade.CONSUMO);
@@ -315,8 +325,8 @@ public class TestHelper {
 	private List<DocumentoFiscalItem> criarDocumentoFiscalItem(List<Ncm> ncms) {
 		List<DocumentoFiscalItem> documentoFiscalItens = new LinkedList<>();
 
-		String[][] data = { { "CONSUMO", "NACIONAL", "10", "5", "5102", NCM1 }, { "CONSUMO", "NACIONAL", "5", "5", "5105", NCM2 },
-				{ "CONSUMO", "NACIONAL", "10", "5", "5102", NCM3 } };
+		String[][] data = { { "CONSUMO", "NACIONAL", "10", "5", "5102", NCM_ICMS_00 }, { "CONSUMO", "NACIONAL", "5", "5", "5105", NCM_ICMS_10 },
+				{ "CONSUMO", "NACIONAL", "10", "5", "5102", NCM_ICMS_20 } };
 
 		for (String[] dados : data) {
 			int aux = 0;

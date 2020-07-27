@@ -37,8 +37,12 @@ public class NcmServiceLogicTest {
 	public static int NCM_EXCECAO_REGISTRO_2 = 0;
 	public static String NCM_DESCRICAO_REGISTRO_2 = "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste";
 	
-	public static int NCM_NUMERO_REGISTRO_3 = 32141010;
+	public static int NCM_NUMERO_REGISTRO_3 = 2032900;
+	public static String NCM_DESCRICAO_REGISTRO_3 = "Essa é uma DESCRIÇÃO do SEGUNDO NCM para o teste";
 
+	public static int NCM_NUMERO_REGISTRO_4 = 1039100;
+	public static int NCM_NUMERO_REGISTRO_5 = 1039200;
+	public static int NCM_NUMERO_REGISTRO_6 = 84213920;
 	
 	public static int NCM_NUMERO_ERRADO = 1234;
 	public static String NCM_DESCRICAO_REGISTRO_2_ALTERADA = "A descrição desse NCM foi ALTERADA";
