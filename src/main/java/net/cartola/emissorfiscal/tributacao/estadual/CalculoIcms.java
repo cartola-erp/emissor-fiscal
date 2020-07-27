@@ -84,7 +84,8 @@ public class CalculoIcms {
 	}
 	
 	/**
-	 * Será feito o calculo do: FCP - Fundo de Combate a Pobreza,  para os grupos de ICMS que tiverem
+	 * Será feito o calculo do: FCP - Fundo de Combate a Pobreza,  para o ICMS da CST 00 - VENDA INTERESTADUAL.
+	 * PS: Segundo a contabilidade, no caso da  AutoGeral, somente nessa CST é preciso calcular o FCP, p/ AG.
 	 * E setar os valores necessários no DocumentoFiscalItem
 	 * @param di
 	 * @param tributacao
@@ -102,27 +103,6 @@ public class CalculoIcms {
 		di.setIcmsFcpAliquota(tributacao.getFcpAliquota());
 		di.setIcmsFcpValor(valorFcp);
 	}
-	
-	/**
-	 * Calcula o FCP ST, para os Grupos de ICMS 10, 30, 70 e 90.
-	 * 
-	 * @param <T>
-	 * @param di
-	 * @param tributacao
-	 * @param calcFcpSt
-	 */
-//	private <T extends CalculoImpostoFcpSt> void calculaIcmsFcpSt(DocumentoFiscalItem di, TributacaoEstadual tributacao, T calcFcpSt) {
-//		LOG.log(Level.INFO, "Calculando o FCP ST");
-//		BigDecimal valorIcmsFcpStBase = di.getIcmsStBase();
-//		BigDecimal valorFcpSt = valorIcmsFcpStBase.multiply(tributacao.getFcpAliquota());
-//		
-//		calcFcpSt.setVlrBaseFcpSt(valorIcmsFcpStBase);
-//		calcFcpSt.setAliquotaFcpSt(tributacao.getFcpAliquota());
-//		calcFcpSt.setValorFcpSt(valorFcpSt);
-//		
-//		di.setIcmsFcpStAliquota(tributacao.getFcpAliquota());
-//		di.setIcmsFcpStValor(valorFcpSt);
-//	}
 	
 	/**
 	 * Calcula o DIFAL para OPERAÇÃO INTERESTADUAL, e pessoa NÃO contribuinte (PF)
@@ -162,6 +142,14 @@ public class CalculoIcms {
 		}
 	}
 	
+	/**
+	 * TODO: Tenho que verificar se nessa CST, os valores que referentes ao FCP são os que vão junto com o DIFAL TAG (ICMSUFDest). 
+	 * Pois para autogeral, o DIFAL e FCP somente iram sair nessa CST
+	 * 
+	 * @param di
+	 * @param tributacao
+	 * @return
+	 */
 	private CalculoImpostoIcms00 calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} ", di);
 		CalculoImpostoIcms00 icms00 = new CalculoImpostoIcms00();
@@ -181,7 +169,7 @@ public class CalculoIcms {
 		
 		icms10.setImposto(Imposto.ICMS_10);
 		calculaImpostoBase(di, tributacao, icms10);
-		calculaIcmsFcp(di, tributacao, icms10);
+//		calculaIcmsFcp(di, tributacao, icms10);
 		
 		// ICMS_ST - CST 10
 		BigDecimal valorIcmsStBase = di.getIcmsBase().multiply(tributacao.getIcmsIva()); 
@@ -201,7 +189,6 @@ public class CalculoIcms {
 		di.setIcmsReducaoBaseStAliquota(tributacao.getIcmsBase());
 		
 //		calculaIcmsFcpSt(di, tributacao, icms10.getCalcFcpSt());
-
 		return icms10;
 	}
 
@@ -209,14 +196,17 @@ public class CalculoIcms {
 	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		LOG.log(Level.INFO, "Calculando o ICMS 20 para o ITEM: {0} ", di);
 		CalculoImpostoIcms20 icms20 = new CalculoImpostoIcms20();
-		
 		icms20.setImposto(Imposto.ICMS_20);
-		// TODO Auto-generated method stub
-		return null;
+
+		calculaImpostoBase(di, tributacao, icms20);
+		icms20.setAliqReducaoBase(tributacao.getIcmsBase());
+		return icms20;
 	}
 
 	private CalculoImpostoIcms30 calculaIcms30(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		// TODO Auto-generated method stub
+		LOG.log(Level.INFO, "Calculando o ICMS 30 para o ITEM: {0} ", di);
+		
 		return null;
 	}
 
