@@ -97,12 +97,12 @@ public class CalculoFiscalEstadualTest {
 
 	private static final BigDecimal IVA_70 = new BigDecimal(70D);
 	private static final BigDecimal FCP_ALIQ_2_PERC = new BigDecimal(2D);
-	private static final BigDecimal ICMS_ST_ALIQ_18_PERC = new BigDecimal(18D);
-	private static final BigDecimal ICMS_PERC_RED_BC = new BigDecimal(60D);
+	private static final BigDecimal ICMS_ST_ALIQ_12_PERC = new BigDecimal(12D);
+	private static final BigDecimal ICMS_PERC_60_RED_BC = new BigDecimal(60D);
 	
 	// ICMS ST EXPECTED
 	private static final BigDecimal ICMS_ST_BASE_ITEM_EXPECTED = new BigDecimal(70D);
-	private static final BigDecimal ICMS_ST_VLR_ITEM_EXPECTED = new BigDecimal(12.60D);
+	private static final BigDecimal ICMS_ST_VLR_ITEM_EXPECTED = new BigDecimal(8.40D);
 	
 //	private static final BigDecimal ICMS_ITEM_FCP_ST_ALIQ_EXPECTED = new BigDecimal(2D);
 //	private static final BigDecimal ICMS_ITEM_FCP_ST_VLR_EXPECTED = new BigDecimal(1.4D);
@@ -131,17 +131,25 @@ public class CalculoFiscalEstadualTest {
 	
 	private static final BigDecimal ICMS_BASE_DOC_FISC_EXPECTED = new BigDecimal(100D);
 	private static final BigDecimal ICMS_VLR_DOC_FISC_EXPECTED = new BigDecimal(18D);
+	
+	// ICMS ST EXPECTED
+	private static final BigDecimal ICMS_ST_BASE_DOC_EXPECTED = new BigDecimal(70D);
+	private static final BigDecimal ICMS_ST_VLR_DOC_EXPECTED = new BigDecimal(8.40D);
 //	private static final BigDecimal ICMS_FCP_VLR_DOC_FISC_EXPECTED = new BigDecimal(null);
 //	private static final BigDecimal ICMS_FCP_BASE_DOC_FISC_EXPECTED = new BigDecimal(null);
 //	private static final BigDecimal ICMS_ST_BASE_DOC_FISC_EXPECTED = new B
 
 	// ITEM 1 
 	private static final BigDecimal ICMS_ITEM_ALIQ_EXPECTED = new BigDecimal(18D);
+	private static final BigDecimal ICMS_ST_ITEM_ALIQ_12_EXPECTED = new BigDecimal(12D);
 	private static final BigDecimal ICMS_ITEM_VLR_BASE_EXPECTED = new BigDecimal(100D);
 	private static final BigDecimal ICMS_ITEM_VLR_EXPECTED = new BigDecimal(18D);
 	
-	private static final BigDecimal ICMS_ITEM_VLR_BASE_RED_EXPECTED = new BigDecimal(60D);
+	private static final BigDecimal ICMS_ITEM_VLR_BASE_60_RED_EXPECTED = new BigDecimal(60D);
 	private static final BigDecimal ICMS_ITEM_VLR_RED_EXPECTED = new BigDecimal(10.8D);
+	
+	private static final BigDecimal ICMS_ST_ITEM_VLR_BASE_42_RED_EXPECTED = new BigDecimal(42D);
+	private static final BigDecimal ICMS_ST_ITEM_VLR_RED_EXPECTED = new BigDecimal(5.04D);
 	
 	//FCP
 //	private static final BigDecimal ICMS_ITEM_FCP_VLR_BASE_EXPECTED = new BigDecimal(2D);
@@ -191,7 +199,7 @@ public class CalculoFiscalEstadualTest {
 	
 	@Test
 	public void test02_DeveCalcularVendaICMS10() {
-		TributacaoEstadual tribEstaICMS10 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2, 10, EstadoSigla.SP, IVA_70, ICMS_BASE_CEM, FCP_ALIQ_2_PERC, ICMS_ST_ALIQ_18_PERC);
+		TributacaoEstadual tribEstaICMS10 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2, 10, EstadoSigla.SP, IVA_70, ICMS_BASE_CEM, FCP_ALIQ_2_PERC, ICMS_ST_ALIQ_12_PERC);
 		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS10.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR, ITEM_ICMS_ST_VLR_ULTIM_COMPR, QTD_ULTIM_COMP, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA);
 
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
@@ -204,7 +212,9 @@ public class CalculoFiscalEstadualTest {
 		// DocumentoFiscal
 		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_BASE_DOC_FISC_EXPECTED) == 0);
 		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_VLR_DOC_FISC_EXPECTED) == 0);
-		
+		assertTrue(docFiscal.getIcmsStBase().compareTo(ICMS_ST_BASE_DOC_EXPECTED) == 0);
+		assertTrue(docFiscal.getIcmsStValor().compareTo(ICMS_ST_VLR_DOC_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
 		assertEquals(10, docFiscalItem.getIcmsCst());
@@ -212,7 +222,7 @@ public class CalculoFiscalEstadualTest {
 		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsValor().compareTo(ICMS_ITEM_VLR_EXPECTED) == 0);
 		
-		assertTrue(docFiscalItem.getIcmsStAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ST_ALIQ_18_PERC) == 0);
+		assertTrue(docFiscalItem.getIcmsStAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ST_ALIQ_12_PERC) == 0);
 		assertTrue(docFiscalItem.getIcmsIva().multiply(new BigDecimal(100D)).compareTo(IVA_70) == 0);
 		assertTrue(docFiscalItem.getIcmsStBase().compareTo(ICMS_ST_BASE_ITEM_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsStValor().compareTo(ICMS_ST_VLR_ITEM_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
@@ -220,7 +230,7 @@ public class CalculoFiscalEstadualTest {
 	
 	@Test
 	public void test03_DeveCalcularVendaICMS20() {
-		TributacaoEstadual tribEstaICMS20 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3, 20, EstadoSigla.SP, IVA_ZERO, ICMS_PERC_RED_BC, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_ZERO);
+		TributacaoEstadual tribEstaICMS20 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3, 20, EstadoSigla.SP, IVA_ZERO, ICMS_PERC_60_RED_BC, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_ZERO);
 		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS20.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR, ITEM_ICMS_ST_VLR_ULTIM_COMPR, QTD_ULTIM_COMP, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA);
 
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
@@ -230,14 +240,14 @@ public class CalculoFiscalEstadualTest {
 		calcFiscalEstadual.calculaImposto(docFiscal);
 
 		// DocumentoFiscal
-		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_RED_EXPECTED) == 0);
+		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_60_RED_EXPECTED) == 0);
 		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
 		
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
 		assertEquals(20, docFiscalItem.getIcmsCst());
 		assertTrue(docFiscalItem.getIcmsAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_ALIQ_EXPECTED) == 0);
-		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_RED_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_60_RED_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsValor().compareTo(ICMS_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
 		
 		LOG.log(Level.INFO, "DocFiscal calculado: {0} ", docFiscal);
@@ -245,9 +255,37 @@ public class CalculoFiscalEstadualTest {
 	
 	@Test
 	public void test03_DeveCalcularVendaICMS30() {
+		TributacaoEstadual tribEstaICMS20 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_4, 30, EstadoSigla.SP, IVA_70, ICMS_PERC_60_RED_BC, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_12_PERC);
+		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS20.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR, ITEM_ICMS_ST_VLR_ULTIM_COMPR, QTD_ULTIM_COMP, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA);
+
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
+		LOG.log(Level.WARNING, "ERROS: {0} ", erros);
+		assertTrue(erros.isEmpty());
+		
+		calcFiscalEstadual.calculaImposto(docFiscal);
+		
+		// DocumentoFiscal
+		assertTrue(docFiscal.getIcmsStBase().compareTo(ICMS_ST_ITEM_VLR_BASE_42_RED_EXPECTED) == 0);
+		assertTrue(docFiscal.getIcmsStValor().compareTo(ICMS_ST_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		
+		// DocumentoFiscalItem
+		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
+		assertEquals(30, docFiscalItem.getIcmsCst());
+		assertTrue(docFiscalItem.getIcmsStAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ST_ITEM_ALIQ_12_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsStBase().compareTo(ICMS_ST_ITEM_VLR_BASE_42_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		assertTrue(docFiscalItem.getIcmsStValor().compareTo(ICMS_ST_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+	}
+	
+//	@Test
+//	public void test04_DeveCalcularVendaICMS51() {
+//		
+//	}
+
+	@Test
+	public void test05_DeveCalcularVendaICMS60() {
 		
 	}
-
+	
 	
 	private DocumentoFiscal criaDocumentoFiscalVenda(Ncm ncm, BigDecimal icmsStBaseUltimaCompra, BigDecimal icmsStValorUltimaCompra, 
 			BigDecimal itemQtdCompradaUltimaCompra, BigDecimal icmsStAliqUltimaCompra) {
