@@ -86,7 +86,7 @@ public class CalculoIcms {
 	
 	/**
 	 * Irá Calcular o ICMS ST, que PODEM ser usados nas CSTs do ICMS (10, 30, 70 e 90)
-	 * 
+	 * E setar os valores referente ao ICMS ST, no <strong>DocumentoFiscalItem</strong>
 	 * @param di
 	 * @param tributacao
 	 * @return {@link CalculoImpostoIcmsSt}
@@ -103,6 +103,12 @@ public class CalculoIcms {
 		icmsSt.setValorIcmsSt(valorIcmsSt);
 		icmsSt.setAliqReducaoBaseSt(tributacao.getIcmsBase());
 //		icmsSt.setModalidadeDaBaseCalculoSt("4");
+		
+		di.setIcmsStBase(icmsSt.getBaseDeCalculoSt());
+		di.setIcmsIva(tributacao.getIcmsIva());
+		di.setIcmsStAliquota(tributacao.getIcmsStAliquota());
+		di.setIcmsStValor(icmsSt.getValorIcmsSt());
+		di.setIcmsReducaoBaseStAliquota(tributacao.getIcmsBase());
 		return icmsSt;
 	}
 	
@@ -198,11 +204,6 @@ public class CalculoIcms {
 		icms10.setCalcIcmsSt(icmsSt);
 		icms10.setIva(tributacao.getIcmsIva());
 
-		di.setIcmsStBase(icmsSt.getBaseDeCalculoSt());
-		di.setIcmsIva(tributacao.getIcmsIva());
-		di.setIcmsStAliquota(tributacao.getIcmsStAliquota());
-		di.setIcmsStValor(icmsSt.getValorIcmsSt());
-		di.setIcmsReducaoBaseStAliquota(tributacao.getIcmsBase());
 //		calculaIcmsFcpSt(di, tributacao, icms10.getCalcFcpSt());
 		return icms10;
 	}
@@ -219,10 +220,16 @@ public class CalculoIcms {
 	}
 
 	private CalculoImpostoIcms30 calculaIcms30(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
-		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Calculando o ICMS 30 para o ITEM: {0} ", di);
-		
-		return null;
+		CalculoImpostoIcms30 icms30 = new CalculoImpostoIcms30();
+
+		icms30.setImposto(Imposto.ICMS_30);
+		calculaImpostoBase(di, tributacao, icms30);
+		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
+		icms30.setCalcIcmsSt(icmsSt);
+		icms30.setIva(tributacao.getIcmsIva());
+
+		return icms30;
 	}
 
 	private CalculoImpostoIcms51 calculaIcms51(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
