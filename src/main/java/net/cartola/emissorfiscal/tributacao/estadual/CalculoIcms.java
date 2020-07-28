@@ -19,6 +19,7 @@ import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms51;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms60;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms70;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms90;
+import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcmsSt;
 import net.cartola.emissorfiscal.tributacao.Imposto;
 
 @Service
@@ -81,6 +82,28 @@ public class CalculoIcms {
 		di.setIcmsValor(valorIcms);
 		di.setIcmsAliquota(tributacao.getIcmsAliquota());
 		di.setIcmsAliquotaDestino(tributacao.getIcmsAliquotaDestino());
+	}
+	
+	/**
+	 * Irá Calcular o ICMS ST, que PODEM ser usados nas CSTs do ICMS (10, 30, 70 e 90)
+	 * 
+	 * @param di
+	 * @param tributacao
+	 * @return {@link CalculoImpostoIcmsSt}
+	 */
+	private CalculoImpostoIcmsSt calculaIcmsSt(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+		LOG.log(Level.INFO, "Calculando o ICMS ST para o ITEM  ");
+		CalculoImpostoIcmsSt icmsSt = new CalculoImpostoIcmsSt();
+		
+		BigDecimal valorIcmsStBase = di.getIcmsBase().multiply(tributacao.getIcmsIva()); 
+		BigDecimal valorIcmsSt = valorIcmsStBase.multiply(tributacao.getIcmsStAliquota());
+		
+		icmsSt.setBaseDeCalculoSt(valorIcmsStBase);
+		icmsSt.setAliquotaIcmsSt(tributacao.getIcmsStAliquota());
+		icmsSt.setValorIcmsSt(valorIcmsSt);
+		icmsSt.setAliqReducaoBaseSt(tributacao.getIcmsBase());
+//		icmsSt.setModalidadeDaBaseCalculoSt("4");
+		return icmsSt;
 	}
 	
 	/**
@@ -171,28 +194,20 @@ public class CalculoIcms {
 		calculaImpostoBase(di, tributacao, icms10);
 //		calculaIcmsFcp(di, tributacao, icms10);
 		
-		// ICMS_ST - CST 10
-		BigDecimal valorIcmsStBase = di.getIcmsBase().multiply(tributacao.getIcmsIva()); 
-		BigDecimal valorIcmsSt = valorIcmsStBase.multiply(tributacao.getIcmsStAliquota());
-		
-//		icms10.setModalidadeDaBaseCalculoSt("4");
-		icms10.setBaseDeCalculoSt(valorIcmsStBase);
+		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
+		icms10.setCalcIcmsSt(icmsSt);
 		icms10.setIva(tributacao.getIcmsIva());
-		icms10.setAliquotaIcmsSt(tributacao.getIcmsStAliquota());
-		icms10.setValorIcmsSt(valorIcmsSt);
-		icms10.setAliqReducaoBaseSt(tributacao.getIcmsBase());
-		
-		di.setIcmsStBase(valorIcmsStBase);
+
+		di.setIcmsStBase(icmsSt.getBaseDeCalculoSt());
 		di.setIcmsIva(tributacao.getIcmsIva());
 		di.setIcmsStAliquota(tributacao.getIcmsStAliquota());
-		di.setIcmsStValor(valorIcmsSt);
+		di.setIcmsStValor(icmsSt.getValorIcmsSt());
 		di.setIcmsReducaoBaseStAliquota(tributacao.getIcmsBase());
-		
 //		calculaIcmsFcpSt(di, tributacao, icms10.getCalcFcpSt());
 		return icms10;
 	}
 
-
+	
 	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		LOG.log(Level.INFO, "Calculando o ICMS 20 para o ITEM: {0} ", di);
 		CalculoImpostoIcms20 icms20 = new CalculoImpostoIcms20();
