@@ -7,14 +7,8 @@ public class CalculoImpostoIcms70 extends CalculoImpostoFcp {
 	private static final long serialVersionUID = 3421434571361563907L;
 	
 	private BigDecimal aliqReducaoBase;
-
-	private String modalidadeDaBaseCalculoSt;
 	private BigDecimal iva;
-	private BigDecimal aliqReducaoBaseSt;
-	
-	private BigDecimal vlrBaseCalculoSt;
-	private BigDecimal aliquotaIcmsSt;
-	private BigDecimal vlrIcmsSt;
+	private CalculoImpostoIcmsSt calcIcmsSt;
 
 //	 * A autogeral só utiliza o FCP normal
 //	private CalculoImpostoFcpSt calcFcpSt = new CalculoImpostoFcpSt();
@@ -27,14 +21,6 @@ public class CalculoImpostoIcms70 extends CalculoImpostoFcp {
 		this.aliqReducaoBase = aliqReducaoBase;
 	}
 
-	public String getModalidadeDaBaseCalculoSt() {
-		return modalidadeDaBaseCalculoSt;
-	}
-
-	public void setModalidadeDaBaseCalculoSt(String modalidadeDaBaseCalculoSt) {
-		this.modalidadeDaBaseCalculoSt = modalidadeDaBaseCalculoSt;
-	}
-
 	public BigDecimal getIva() {
 		return iva;
 	}
@@ -43,36 +29,11 @@ public class CalculoImpostoIcms70 extends CalculoImpostoFcp {
 		this.iva = iva;
 	}
 
-	public BigDecimal getAliqReducaoBaseSt() {
-		return aliqReducaoBaseSt;
+	public CalculoImpostoIcmsSt getCalcIcmsSt() {
+		return calcIcmsSt;
 	}
-
-	public void setAliqReducaoBaseSt(BigDecimal aliqReducaoBaseSt) {
-		this.aliqReducaoBaseSt = aliqReducaoBaseSt;
+	
+	public void setCalcIcmsSt(CalculoImpostoIcmsSt calcIcmsSt) {
+		this.calcIcmsSt = calcIcmsSt;
 	}
-
-	public BigDecimal getVlrBaseCalculoSt() {
-		return vlrBaseCalculoSt;
-	}
-
-	public void setVlrBaseCalculoSt(BigDecimal vlrBaseCalculoSt) {
-		this.vlrBaseCalculoSt = vlrBaseCalculoSt;
-	}
-
-	public BigDecimal getAliquotaIcmsSt() {
-		return aliquotaIcmsSt;
-	}
-
-	public void setAliquotaIcmsSt(BigDecimal aliquotaIcmsSt) {
-		this.aliquotaIcmsSt = aliquotaIcmsSt;
-	}
-
-	public BigDecimal getVlrIcmsSt() {
-		return vlrIcmsSt;
-	}
-
-	public void setVlrIcmsSt(BigDecimal vlrIcmsSt) {
-		this.vlrIcmsSt = vlrIcmsSt;
-	}
-
 }
