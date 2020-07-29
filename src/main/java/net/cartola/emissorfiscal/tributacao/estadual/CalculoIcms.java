@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,31 +28,37 @@ public class CalculoIcms {
 	
 	private static final Logger LOG = Logger.getLogger(CalculoIcms.class.getName());
 	
-	public CalculoImposto calculaIcms(DocumentoFiscalItem docItem, TributacaoEstadual tributacao) {
-
+	public Optional<CalculoImposto> calculaIcms(DocumentoFiscalItem docItem, TributacaoEstadual tributacao) {
+		Optional<CalculoImposto> opCalcImposto;
 		switch (tributacao.getIcmsCst()) {
 		case 00:
-			return ((CalculoImpostoIcms00) calculaIcms00(docItem, tributacao));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms00) calculaIcms00(docItem, tributacao)));
+			break;
 		case 10:
-			return ((CalculoImpostoIcms10) calculaIcms10(docItem, tributacao));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms10) calculaIcms10(docItem, tributacao)));
+			break;
 		case 20:
-			return ((CalculoImpostoIcms20) calculaIcms20(docItem, tributacao));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms20) calculaIcms20(docItem, tributacao)));
+			break;
 		case 30:
-			return ((CalculoImpostoIcms30) calculaIcms30(docItem, tributacao));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms30) calculaIcms30(docItem, tributacao)));
+			break;
 		case 51:
-			return ((CalculoImpostoIcms51) calculaIcms51(docItem, tributacao));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms51) calculaIcms51(docItem, tributacao)));
+			break;
 		case 60:
-			return ((CalculoImpostoIcms60) calculaIcms60(docItem, tributacao));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms60) calculaIcms60(docItem, tributacao)));
+			break;
 		case 70: 
-			return ((CalculoImpostoIcms70) calculaIcms70(docItem, tributacao));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms70) calculaIcms70(docItem, tributacao)));
+			break;
 		case 90:
-			return ((CalculoImpostoIcms90) calculaIcms90(docItem, tributacao));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms90) calculaIcms90(docItem, tributacao)));
+			break;
 		default:
-			return null;
-//			break;
+			opCalcImposto = Optional.empty();
 		}
-
-//		return icms;
+		return opCalcImposto;
 	}
 	
 	/**

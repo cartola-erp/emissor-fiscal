@@ -66,7 +66,8 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		
 		documentoFiscal.getItens().forEach(docItem -> {
 			TributacaoEstadual tributacao = mapaTributacoes.get(docItem.getNcm());
-			listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
+			calculoIcms.calculaIcms(docItem, tributacao).ifPresent(calcIcms -> listCalculoImpostos.add(calcIcms));;
+//			listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
 		});
 
 		setaIcmsBaseEValor(documentoFiscal, listCalculoImpostos);
