@@ -290,18 +290,22 @@ public class CalculoIcms {
 		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
 		icms70.setCalcIcmsSt(icmsSt);
 		icms70.setIva(tributacao.getIcmsIva());
-		
+		icms70.setAliqReducaoBase(tributacao.getIcmsBase());
 		return icms70;
 	}
 
 	private CalculoImpostoIcms90 calculaIcms90(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
-		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Calculando o ICMS 90 para o ITEM ");
 		CalculoImpostoIcms90 icms90 = new CalculoImpostoIcms90();
 
 		icms90.setImposto(Imposto.ICMS_90);
-		
-		return null;
+		calculaImpostoBase(di, tributacao, icms90);
+		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
+		icms90.setCalcIcmsSt(icmsSt);
+		icms90.setIva(tributacao.getIcmsIva());
+		icms90.setAliqReducaoBase(tributacao.getIcmsBase());
+
+		return icms90;
 	}
 
 }
