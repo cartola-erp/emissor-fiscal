@@ -180,6 +180,7 @@ public class CalculoFiscalEstadualTest {
 		// DocumentoFiscal
 		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_BASE_DOC_FISC_EXPECTED_CEM) == 0);
 		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_VLR_DOC_FISC_EXPECTED_18) == 0);
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
 		
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
@@ -211,6 +212,7 @@ public class CalculoFiscalEstadualTest {
 		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_VLR_DOC_FISC_EXPECTED_18) == 0);
 		assertTrue(docFiscal.getIcmsStBase().compareTo(ICMS_ST_BASE_DOC_EXPECTED) == 0);
 		assertTrue(docFiscal.getIcmsStValor().compareTo(ICMS_ST_VLR_DOC_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
 
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
@@ -239,7 +241,8 @@ public class CalculoFiscalEstadualTest {
 		// DocumentoFiscal
 		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_60_RED_EXPECTED) == 0);
 		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
-		
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
+
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
 		assertEquals(20, docFiscalItem.getIcmsCst());
@@ -264,7 +267,8 @@ public class CalculoFiscalEstadualTest {
 		// DocumentoFiscal
 		assertTrue(docFiscal.getIcmsStBase().compareTo(ICMS_ST_ITEM_VLR_BASE_42_RED_EXPECTED) == 0);
 		assertTrue(docFiscal.getIcmsStValor().compareTo(ICMS_ST_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
-		
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
+
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
 		assertEquals(30, docFiscalItem.getIcmsCst());
@@ -291,7 +295,8 @@ public class CalculoFiscalEstadualTest {
 		calcFiscalEstadual.calculaImposto(docFiscal);
 		
 		// DocumentoFiscal
-		
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
+
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
 		assertEquals(60, docFiscalItem.getIcmsCst());
@@ -322,7 +327,8 @@ public class CalculoFiscalEstadualTest {
 		
 		calcFiscalEstadual.calculaImposto(docFiscal);
 		// DocumentoFiscal
-		
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
+
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
 		assertEquals(60, docFiscalItem.getIcmsCst());
@@ -351,6 +357,7 @@ public class CalculoFiscalEstadualTest {
 		//ICMS ST
 		assertTrue(docFiscal.getIcmsStBase().compareTo(ICMS_ST_ITEM_VLR_BASE_42_RED_EXPECTED) == 0);
 		assertTrue(docFiscal.getIcmsStValor().compareTo(ICMS_ST_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
 
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
@@ -384,6 +391,7 @@ public class CalculoFiscalEstadualTest {
 		//ICMS ST
 		assertTrue(docFiscal.getIcmsStBase().compareTo(ICMS_ST_ITEM_VLR_BASE_42_RED_EXPECTED) == 0);
 		assertTrue(docFiscal.getIcmsStValor().compareTo(ICMS_ST_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
 
 		// DocumentoFiscalItem
 		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
@@ -391,6 +399,7 @@ public class CalculoFiscalEstadualTest {
 		assertTrue(docFiscalItem.getIcmsAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_ALIQ_EXPECTED_18) == 0);
 		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_60_RED_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsValor().compareTo(ICMS_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		
 
 		assertTrue(docFiscalItem.getIcmsStAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ST_ALIQ_12_PERC) == 0);
 		assertTrue(docFiscalItem.getIcmsIva().multiply(new BigDecimal(100D)).compareTo(IVA_70) == 0);

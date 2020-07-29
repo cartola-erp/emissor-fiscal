@@ -74,6 +74,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 //		setaFcpValor(documentoFiscal, listCalculoImpostos);
 //		setaFcpStValor(documentoFiscal, listCalculoImpostos);
 		setaIcmsStBaseEValor(documentoFiscal, listCalculoImpostos);
+		documentoFiscal.setVlrTotalProduto(totalizaVlrProdutos(documentoFiscal));
 	}
 
 
@@ -183,10 +184,9 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	}
 	
 	/**
-	 * Calcula o valor total para os Produtos
+	 * Soma o valor de todos os produtois para o DocumentoFiscal
 	 */
-	private BigDecimal totalizaProdutos(DocumentoFiscal docFiscal) {
-		// TODO the implementation
-		return null;
+	private BigDecimal totalizaVlrProdutos(DocumentoFiscal docFiscal) {
+		return docFiscal.getItens().stream().map(item -> item.getValorUnitario().multiply(item.getQuantidade())).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 }
