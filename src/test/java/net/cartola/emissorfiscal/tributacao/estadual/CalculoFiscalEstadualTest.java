@@ -337,14 +337,12 @@ public class CalculoFiscalEstadualTest {
 	public void test07_DeveCalcularVendaICMS70() {
 		final BigDecimal ICMS_ITEM_VLR_RED_E_IVA_EXPECTED = new BigDecimal(5.04D);
 		final BigDecimal ICMS_ITEM_VLR_BASE_RED_E_IVA_EXPECTED = new BigDecimal(42D);
-
 		TributacaoEstadual tribEstaICMS70 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_7, 70, EstadoSigla.SP, IVA_70, ICMS_PERC_60_RED_BC, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_12_PERC);
 		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS70.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR_0, ITEM_ICMS_ST_VLR_ULTIM_COMPR_0, QTD_ULTIM_COMP_0, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA_0);
 
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
 		LOG.log(Level.WARNING, "ERROS: {0} ", erros);
 		assertTrue(erros.isEmpty());
-		
 		calcFiscalEstadual.calculaImposto(docFiscal);
 		
 		// DocumentoFiscal
@@ -367,16 +365,38 @@ public class CalculoFiscalEstadualTest {
 		assertTrue(docFiscalItem.getIcmsStValor().compareTo(ICMS_ITEM_VLR_RED_E_IVA_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
 	}
 	
-//	public void test08_DeveCalcularVendaICMS90() {
-//		TributacaoEstadual tribEstaICMS90 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_8, 90, EstadoSigla.SP, IVA_ZERO, ICMS_BASE_CEM, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_ZERO);
-//		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS90.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR_0, ITEM_ICMS_ST_VLR_ULTIM_COMPR_0, QTD_ULTIM_COMP_0, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA_0);
-//
-//		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
-//		LOG.log(Level.WARNING, "ERROS: {0} ", erros);
-//		assertTrue(erros.isEmpty());
-//		
-//		calcFiscalEstadual.calculaImposto(docFiscal);
-//	}
+	@Test
+	public void test08_DeveCalcularVendaICMS90() {
+		final BigDecimal ICMS_ITEM_VLR_RED_E_IVA_EXPECTED = new BigDecimal(5.04D);
+		final BigDecimal ICMS_ITEM_VLR_BASE_RED_E_IVA_EXPECTED = new BigDecimal(42D);
+		TributacaoEstadual tribEstaICMS90 = criaTributaEstaVenda(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_8, 90, EstadoSigla.SP, IVA_70, ICMS_PERC_60_RED_BC, FCP_ALIQ_ZERO, ICMS_ST_ALIQ_12_PERC);
+		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(tribEstaICMS90.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR_0, ITEM_ICMS_ST_VLR_ULTIM_COMPR_0, QTD_ULTIM_COMP_0, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA_0);
+		
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
+		LOG.log(Level.WARNING, "ERROS: {0} ", erros);
+		assertTrue(erros.isEmpty());
+		
+		calcFiscalEstadual.calculaImposto(docFiscal);
+		
+		// DocumentoFiscal
+		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_60_RED_EXPECTED) == 0);
+		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		//ICMS ST
+		assertTrue(docFiscal.getIcmsStBase().compareTo(ICMS_ST_ITEM_VLR_BASE_42_RED_EXPECTED) == 0);
+		assertTrue(docFiscal.getIcmsStValor().compareTo(ICMS_ST_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+
+		// DocumentoFiscalItem
+		DocumentoFiscalItem docFiscalItem = docFiscal.getItens().get(0);
+		assertEquals(90, docFiscalItem.getIcmsCst());
+		assertTrue(docFiscalItem.getIcmsAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_ALIQ_EXPECTED_18) == 0);
+		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_60_RED_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsValor().compareTo(ICMS_ITEM_VLR_RED_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+
+		assertTrue(docFiscalItem.getIcmsStAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ST_ALIQ_12_PERC) == 0);
+		assertTrue(docFiscalItem.getIcmsIva().multiply(new BigDecimal(100D)).compareTo(IVA_70) == 0);
+		assertTrue(docFiscalItem.getIcmsStBase().compareTo(ICMS_ITEM_VLR_BASE_RED_E_IVA_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsStValor().compareTo(ICMS_ITEM_VLR_RED_E_IVA_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+	}
 	
 	private DocumentoFiscal criaDocumentoFiscalVenda(Ncm ncm, BigDecimal icmsStBaseUltimaCompra, BigDecimal icmsStValorUltimaCompra, 
 			BigDecimal itemQtdCompradaUltimaCompra, BigDecimal icmsStAliqUltimaCompra) {
