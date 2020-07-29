@@ -237,18 +237,70 @@ public class CalculoIcms {
 		return null;
 	}
 
-	private CalculoImpostoIcms60 calculaIcms60(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Caso TODOS os valores sejam > 0, é pq encontrou a ultima compra no ERP;
+	 * @param di
+	 * @return
+	 */
+	private boolean achouUltimaCompra(DocumentoFiscalItem di) {
+		return (!di.getIcmsStBaseUltimaCompra().equals(BigDecimal.ZERO) && !di.getIcmsStValorUltimaCompra().equals(BigDecimal.ZERO) 
+				&& !di.getItemQtdCompradaUltimaCompra().equals(BigDecimal.ZERO) && !di.getIcmsStAliqUltimaCompra().equals(BigDecimal.ZERO));
 	}
-
+	
+	private CalculoImpostoIcms60 calculaIcms60(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+		LOG.log(Level.INFO, "Calculando o ICMS 60 para o ITEM ");
+		CalculoImpostoIcms60 icms60 = new CalculoImpostoIcms60();
+		BigDecimal valorBaseIcmsStRet = BigDecimal.ZERO;
+		BigDecimal vlrIcmsStRetido = BigDecimal.ZERO;
+		
+		icms60.setImposto(Imposto.ICMS_60);
+		calculaImpostoBase(di, tributacao, icms60);
+		
+		if (achouUltimaCompra(di)) {
+			valorBaseIcmsStRet = di.getIcmsStBaseUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra())
+					.multiply(di.getQuantidade());
+			vlrIcmsStRetido = di.getIcmsStValorUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra())
+					.multiply(di.getQuantidade());
+		} else {
+			valorBaseIcmsStRet = di.getIcmsBase();
+			vlrIcmsStRetido = di.getIcmsValor();
+		}
+		
+		icms60.setVlrBaseCalcIcmsStRetido(valorBaseIcmsStRet);
+		icms60.setVlrIcmsStRetido(vlrIcmsStRetido);
+		icms60.setAliquotaPst(tributacao.getIcmsAliquota());
+		icms60.setVlrIcmsSubstituto(di.getIcmsValor());
+		
+		di.setIcmsCst(tributacao.getIcmsCst());
+//		di.setCfop(cfop);
+//		di.setIcmsCest(icmsCest);
+		di.setIcmsStBaseRetido(valorBaseIcmsStRet);
+		di.setIcmsStValorRetido(vlrIcmsStRetido);
+		di.setIcmsAliquota(tributacao.getIcmsAliquota());
+		di.setIcmsStAliquota(tributacao.getIcmsAliquota());
+		return icms60;
+	}
+	
 	private CalculoImpostoIcms70 calculaIcms70(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
-		// TODO Auto-generated method stub
-		return null;
+		LOG.log(Level.INFO, "Calculando o ICMS 70 para o ITEM ");
+		CalculoImpostoIcms70 icms70 = new CalculoImpostoIcms70();
+		
+		icms70.setImposto(Imposto.ICMS_70);
+		calculaImpostoBase(di, tributacao, icms70);
+		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
+		icms70.setCalcIcmsSt(icmsSt);
+		icms70.setIva(tributacao.getIcmsIva());
+		
+		return icms70;
 	}
 
 	private CalculoImpostoIcms90 calculaIcms90(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		// TODO Auto-generated method stub
+		LOG.log(Level.INFO, "Calculando o ICMS 90 para o ITEM ");
+		CalculoImpostoIcms90 icms90 = new CalculoImpostoIcms90();
+
+		icms90.setImposto(Imposto.ICMS_90);
+		
 		return null;
 	}
 

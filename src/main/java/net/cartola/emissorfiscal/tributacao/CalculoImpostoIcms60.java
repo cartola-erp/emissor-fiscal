@@ -10,13 +10,8 @@ public class CalculoImpostoIcms60 extends CalculoImposto {
 	private BigDecimal vlrIcmsStRetido;
 	private BigDecimal aliquotaPst;		// = ALIQUOTA ICMS_ST + FCP
 	// QUE EU me lembro é a msm coisa do campo "valor" da super class
-//	private BigDecimal vlrIcmsSubstituto 
-	
-	// A Auto Geral, NÃO usa o FCP ST RETIDO
-//	private BigDecimal vlrBaseCalcFcpStRetido;		
-//	private BigDecimal aliqFcpStRetido;
-//	private BigDecimal vlrFcpStRetido;
-	
+	private BigDecimal vlrIcmsSubstituto;		// E esse campos é o mesmo que vICMS (valorIcms), que tem em outras CSTs
+
 	private BigDecimal aliqReducaoBaseEfet;
 	// Aparentemente esses valores abaixo são os mesmos que: baseDeCalculo, aliquota e Valor da superClass
 	private BigDecimal vlrBaseEfetiva;
@@ -47,6 +42,14 @@ public class CalculoImpostoIcms60 extends CalculoImposto {
 		this.aliquotaPst = aliquotaPst;
 	}
 
+	public BigDecimal getVlrIcmsSubstituto() {
+		return vlrIcmsSubstituto;
+	}
+	
+	public void setVlrIcmsSubstituto(BigDecimal vlrIcmsSubstituto) {
+		this.vlrIcmsSubstituto = vlrIcmsSubstituto;
+	}
+	
 	public BigDecimal getAliqReducaoBaseEfet() {
 		return aliqReducaoBaseEfet;
 	}

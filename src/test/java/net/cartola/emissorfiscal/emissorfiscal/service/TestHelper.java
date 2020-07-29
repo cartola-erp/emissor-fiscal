@@ -56,7 +56,8 @@ public class TestHelper {
 	private static final String NCM_ICMS_40 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_5); 
 
 	private static final String NCM_ICMS_60 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_6); 
-
+	private static final String NCM_ICMS_70 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_7);
+	private static final String NCM_ICMS_90 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_8);
 	
 	public static final String OPERACAO_VENDA = "Venda";
 	public static final String OPERACAO_VENDA_INTERESTADUAL = "Venda Interestadual";
@@ -168,8 +169,10 @@ public class TestHelper {
 				{ NCM_ICMS_20, "0", "Outras carnes,de suino,congeladas" },
 				{ NCM_ICMS_30, "0", "Outros suinos,vivos,de peso inferior a 50kg" },
 				{ NCM_ICMS_40, "0", "Outros suinos,vivos,de peso igual ou superior a 50kg" },
-				{ NCM_ICMS_60, "0", "Depurador por convers.catalitica de gases de escap.veic" }};
-
+				{ NCM_ICMS_60, "0", "Depurador por convers.catalitica de gases de escap.veic" },
+				{ NCM_ICMS_70, "0", "Outros (motores diesel/semidiesel,p/veic.cap.87)" },
+				{ NCM_ICMS_90, "0", "Estacionários, de potência normal iso superior a 412,5kw (550hp), segundo norma iso 3046/1" }};
+		
 		for (String[] dados : data) {
 			int aux = 0;
 			Ncm ncm = new Ncm();

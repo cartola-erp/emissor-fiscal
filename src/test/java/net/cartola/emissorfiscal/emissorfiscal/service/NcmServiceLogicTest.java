@@ -44,6 +44,9 @@ public class NcmServiceLogicTest {
 	public static int NCM_NUMERO_REGISTRO_5 = 1039200;
 	public static int NCM_NUMERO_REGISTRO_6 = 84213920;
 	
+	public static int NCM_NUMERO_REGISTRO_7 = 84082090;
+	public static int NCM_NUMERO_REGISTRO_8 = 84089010;
+	
 	public static int NCM_NUMERO_ERRADO = 1234;
 	public static String NCM_DESCRICAO_REGISTRO_2_ALTERADA = "A descrição desse NCM foi ALTERADA";
 	
