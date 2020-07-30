@@ -241,7 +241,7 @@ public class CalculoIcms {
 
 	private CalculoImpostoIcms51 calculaIcms51(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		// TODO Auto-generated method stub
-		return null;
+		return new CalculoImpostoIcms51();
 	}
 
 	/**

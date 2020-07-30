@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -407,6 +408,37 @@ public class CalculoFiscalEstadualTest {
 		assertTrue(docFiscalItem.getIcmsStValor().compareTo(ICMS_ITEM_VLR_RED_E_IVA_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
 	}
 	
+	@Test
+	public void test09_DeveCalcularVendaComQuatroItens() {
+		final BigDecimal ICMS_BASE_DOC_FISC_EXPECTED_360 = new BigDecimal(360D);
+		final BigDecimal ICMS_VLR_DOC_FISC_EXPECTED = new BigDecimal(64.8D);
+		
+		final BigDecimal ICMS_ST_BASE_DOC_FISC_EXPECTED_112 = new BigDecimal(112D);
+		final BigDecimal ICMS_ST_VLR_DOC_FISC_EXPECTED = new BigDecimal(13.44D);
+		final BigDecimal DOC_FISC_VLR_TOTAL_PROD_EXPECTED = new BigDecimal(400D);
+		
+		DocumentoFiscal docFiscal = criaDocumentoFiscalVendaComQUATROItens(ITEM_ICMS_ST_BASE_ULTIM_COMPR_0, ITEM_ICMS_ST_VLR_ULTIM_COMPR_0, QTD_ULTIM_COMP_0, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA_0);
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, false);
+		LOG.log(Level.WARNING, "ERROS: {0} ", erros);
+		assertTrue(erros.isEmpty());
+		
+		calcFiscalEstadual.calculaImposto(docFiscal);
+		
+		// DocumentoFiscal
+		assertTrue(docFiscal.getIcmsBase().compareTo(ICMS_BASE_DOC_FISC_EXPECTED_360) == 0);
+		assertTrue(docFiscal.getIcmsValor().compareTo(ICMS_VLR_DOC_FISC_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		//ICMS ST
+		assertTrue(docFiscal.getIcmsStBase().compareTo(ICMS_ST_BASE_DOC_FISC_EXPECTED_112) == 0);
+		assertTrue(docFiscal.getIcmsStValor().compareTo(ICMS_ST_VLR_DOC_FISC_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
+		assertTrue(docFiscal.getVlrTotalProduto().compareTo(DOC_FISC_VLR_TOTAL_PROD_EXPECTED) == 0);
+		// DocumentoFiscalItem
+			/**
+			 * Como os Testes acima já testam esses valores referentes ao ITEM, só testei os TOTAIS do DocumentoFiscal, com QUATRO itens,
+			 * De CSTs diferentes (00, 10, 30 e 60);
+			 * 
+			 */
+	}
+	
 	private DocumentoFiscal criaDocumentoFiscalVenda(Ncm ncm, BigDecimal icmsStBaseUltimaCompra, BigDecimal icmsStValorUltimaCompra, 
 			BigDecimal itemQtdCompradaUltimaCompra, BigDecimal icmsStAliqUltimaCompra) {
 		
@@ -444,5 +476,26 @@ public class CalculoFiscalEstadualTest {
 		docFiscal.setItens(listItens);
 		return docFiscal;
 	}
+	
+	private DocumentoFiscal criaDocumentoFiscalVendaComQUATROItens(BigDecimal icmsStBaseUltimaCompra, BigDecimal icmsStValorUltimaCompra, 
+			BigDecimal itemQtdCompradaUltimaCompra, BigDecimal icmsStAliqUltimaCompra) {
+		Ncm ncm00 = ncmService.findNcmByNumeroAndExcecao(Integer.parseInt(TestHelper.NCM_ICMS_00), 0).get();
+		Ncm ncm10 = ncmService.findNcmByNumeroAndExcecao(Integer.parseInt(TestHelper.NCM_ICMS_10), 0).get();
+		Ncm ncm30 = ncmService.findNcmByNumeroAndExcecao(Integer.parseInt(TestHelper.NCM_ICMS_30), 0).get();
+		Ncm ncm60 = ncmService.findNcmByNumeroAndExcecao(Integer.parseInt(TestHelper.NCM_ICMS_60), 0).get();
+		List<Ncm> listNcms = Arrays.asList(ncm10, ncm30, ncm60);
+		
+		DocumentoFiscal docFiscal = criaDocumentoFiscalVenda(ncm00, icmsStBaseUltimaCompra, icmsStValorUltimaCompra, itemQtdCompradaUltimaCompra, icmsStAliqUltimaCompra);
+		List<DocumentoFiscalItem>  listItens = docFiscal.getItens();
+		
+		listNcms.stream().forEach(ncm -> {
+			DocumentoFiscal documentoFiscal = criaDocumentoFiscalVenda(ncm, icmsStBaseUltimaCompra, icmsStValorUltimaCompra, itemQtdCompradaUltimaCompra, icmsStAliqUltimaCompra);
+			listItens.add(documentoFiscal.getItens().get(0));
+		});
+		
+		docFiscal.setItens(listItens);
+		return docFiscal;
+	}
+		
 }
 

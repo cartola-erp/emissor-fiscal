@@ -49,13 +49,13 @@ import net.cartola.emissorfiscal.usuario.UsuarioService;
 @Component
 public class TestHelper {
 
-	private static final String NCM_ICMS_00 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
-	private static final String NCM_ICMS_10 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
+	public static final String NCM_ICMS_00 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
+	public static final String NCM_ICMS_10 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
 	private static final String NCM_ICMS_20 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3); 
-	private static final String NCM_ICMS_30 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_4); 
+	public static final String NCM_ICMS_30 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_4); 
 	private static final String NCM_ICMS_40 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_5); 
 
-	private static final String NCM_ICMS_60 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_6); 
+	public static final String NCM_ICMS_60 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_6); 
 	private static final String NCM_ICMS_70 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_7);
 	private static final String NCM_ICMS_90 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_8);
 	
