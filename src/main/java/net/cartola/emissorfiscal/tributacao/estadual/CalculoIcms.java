@@ -7,10 +7,12 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.PessoaTipo;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoDifal;
-import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcp;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
@@ -28,11 +30,12 @@ public class CalculoIcms {
 	
 	private static final Logger LOG = Logger.getLogger(CalculoIcms.class.getName());
 	
-	public Optional<CalculoImposto> calculaIcms(DocumentoFiscalItem docItem, TributacaoEstadual tributacao) {
+	public Optional<CalculoImposto> calculaIcms(DocumentoFiscalItem docItem, TributacaoEstadual tributacao, DocumentoFiscal documentoFiscal) {
 		Optional<CalculoImposto> opCalcImposto;
 		switch (tributacao.getIcmsCst()) {
 		case 00:
-			opCalcImposto = Optional.of(((CalculoImpostoIcms00) calculaIcms00(docItem, tributacao)));
+			Pessoa destinatario = documentoFiscal.getDestinatario();
+			opCalcImposto = Optional.of(((CalculoImpostoIcms00) calculaIcms00(docItem, tributacao, destinatario)));
 			break;
 		case 10:
 			opCalcImposto = Optional.of(((CalculoImpostoIcms10) calculaIcms10(docItem, tributacao)));
@@ -64,6 +67,7 @@ public class CalculoIcms {
 	/**
 	 * Irá realizar calculo para a classe mãe: CalculoImposto, (Que são valores que tem em todos os GRUPOS de ICMS)
 	 * E setar os valores necessários no DocumentoFiscalItem
+	 * 
 	 * @param di (DocumentoFiscalItem)
 	 * @param tributacao
 	 * @param calcIcms
@@ -94,6 +98,7 @@ public class CalculoIcms {
 	/**
 	 * Irá Calcular o ICMS ST, que PODEM ser usados nas CSTs do ICMS (10, 30, 70 e 90)
 	 * E setar os valores referente ao ICMS ST, no <strong>DocumentoFiscalItem</strong>
+	 * 
 	 * @param di
 	 * @param tributacao
 	 * @return {@link CalculoImpostoIcmsSt}
@@ -120,38 +125,18 @@ public class CalculoIcms {
 	}
 	
 	/**
-	 * Será feito o calculo do: FCP - Fundo de Combate a Pobreza,  para o ICMS da CST 00 - VENDA INTERESTADUAL.
-	 * PS: Segundo a contabilidade, no caso da  AutoGeral, somente nessa CST é preciso calcular o FCP, p/ AG.
-	 * E setar os valores necessários no DocumentoFiscalItem
-	 * @param di
-	 * @param tributacao
-	 * @param calcIcmsFcp
-	 */
-	private void calculaIcmsFcp(DocumentoFiscalItem di, TributacaoEstadual tributacao, CalculoImpostoFcp calcIcmsFcp) {
-		LOG.log(Level.INFO, "Calculando o FCP");
-		BigDecimal valorIcmsFcpBase = di.getIcmsBase();
-		BigDecimal valorFcp = valorIcmsFcpBase.multiply(tributacao.getFcpAliquota());
-		
-		calcIcmsFcp.setVlrBaseCalcFcp(valorIcmsFcpBase);
-		calcIcmsFcp.setFcpAliquota(tributacao.getFcpAliquota());
-		calcIcmsFcp.setValorFcp(valorFcp);
-
-		di.setIcmsFcpAliquota(tributacao.getFcpAliquota());
-		di.setIcmsFcpValor(valorFcp);
-	}
-	
-	/**
 	 * Calcula o DIFAL para OPERAÇÃO INTERESTADUAL, e pessoa NÃO contribuinte (PF)
-	 * Calculo referente aos cammpos da TAG: ICMSUFDest ("DIFAL") do XML
+	 * Calculo referente aos campos da TAG: ICMSUFDest ("DIFAL") do XML. Para a AG (é somente na CST 00)
+	 * 
 	 * @param <T> extends CalculoImpostoDifal
 	 * @param di
 	 * @param tributacao
 	 * @param calcDifal
 	 */
-	private <T extends CalculoImpostoDifal> void calculaDifal(DocumentoFiscalItem di, TributacaoEstadual tributacao, T calcDifal) {
+	private <T extends CalculoImpostoDifal> void calculaDifal(DocumentoFiscalItem di, TributacaoEstadual tributacao, Pessoa destinatario, T calcDifal) {
 		// Tbm tenho que verificar se é PF, para poder calcular
 		boolean ehEstadosDiferentes = !tributacao.getEstadoOrigem().equals(tributacao.getEstadoDestino());
-		if (ehEstadosDiferentes) {
+		if (ehEstadosDiferentes && destinatario.getPessoaTipo().equals(PessoaTipo.FISICA)) {
 			LOG.log(Level.INFO, "Calculando o DIFAL da TAG (ICMSUFDest) ");
 			BigDecimal valorBaseUfDest = di.getIcmsBase();
 			BigDecimal aliqInterDifal = tributacao.getIcmsAliquotaDestino().subtract(tributacao.getIcmsAliquota());
@@ -163,11 +148,26 @@ public class CalculoIcms {
 			calcDifal.setVlrIcmsUfDest(valorIcmsUfDest);
 			
 			di.setIcmsValorUfDestino(valorIcmsUfDest);
+			
+			calculaIcmsFcp(di, tributacao, calcDifal);
 		}
-		
-		// CASO, o calculo do FCP, seja também SOMENTE para A CST 00, basta eu fazer essa parada aqui (E os outros metodo de FCP eu não usaria)
-		// Se for ORIGEM != DESTINO, faça, o calculo;
-		if (ehEstadosDiferentes && !tributacao.getFcpAliquota().equals(BigDecimal.ZERO)) {
+	}
+	
+	
+	/**
+	 * Será feito o calculo do: FCP - Fundo de Combate a Pobreza,  para o ICMS da CST 00 - VENDA INTERESTADUAL.
+	 * PS: Segundo a contabilidade, no caso da  AutoGeral, somente nessa CST é preciso calcular o FCP, p/ AG.
+	 * Ou seja, se o destino, for para algum estado que tenha FCP, será calculado junto com o "DIFAL", já que ambos nesse caso,
+	 * fazem parte da tag "ICMSUFDest", no .XML! Caso NÃO tenha FCP, será calculado somente o "DIFAL".
+	 * E setar os valores necessários no DocumentoFiscalItem
+	 * 
+	 * @param di
+	 * @param tributacao
+	 * @param calcIcmsFcp
+	 */
+	private void calculaIcmsFcp(DocumentoFiscalItem di, TributacaoEstadual tributacao, CalculoImpostoDifal calcDifal) {
+//		LOG.log(Level.INFO, "Calculando o FCP");
+		if (!tributacao.getFcpAliquota().equals(BigDecimal.ZERO)) {
 			LOG.log(Level.INFO, "Calculando o FCP da TAG (ICMSUFDest)");
 			BigDecimal valorBaseFcpUfDest = calcDifal.getVlrBaseUfDest();
 			BigDecimal valorFcpUfDest = valorBaseFcpUfDest.multiply(tributacao.getFcpAliquota());
@@ -175,18 +175,33 @@ public class CalculoIcms {
 			calcDifal.setVlrBaseFcpUfDest(valorBaseFcpUfDest);
 			calcDifal.setAliquotaFcpUfDest(tributacao.getFcpAliquota());
 			calcDifal.setVlrFcpUfDest(valorFcpUfDest);
+			
+			di.setIcmsFcpAliquota(tributacao.getFcpAliquota());
+			di.setIcmsFcpValor(valorFcpUfDest);
 		}
+		
+		// ============
+//		BigDecimal valorIcmsFcpBase = di.getIcmsBase();
+//		BigDecimal valorFcp = valorIcmsFcpBase.multiply(tributacao.getFcpAliquota());
+//		
+//		calcIcmsFcp.setVlrBaseCalcFcp(valorIcmsFcpBase);
+//		calcIcmsFcp.setFcpAliquota(tributacao.getFcpAliquota());
+//		calcIcmsFcp.setValorFcp(valorFcp);
+//
+//		di.setIcmsFcpAliquota(tributacao.getFcpAliquota());
+//		di.setIcmsFcpValor(valorFcp);
 	}
 	
+	
 	/**
-	 * TODO: Tenho que verificar se nessa CST, os valores que referentes ao FCP são os que vão junto com o DIFAL TAG (ICMSUFDest). 
-	 * Pois para autogeral, o DIFAL e FCP somente iram sair nessa CST
+	 * Para autogeral, o DIFAL e FCP somente iram sair nessa CST (Segundo Gabriela da Contabilidade). 
+	 * Por isso, não foi feito o calculo de FCP e DIFAL, nas outras CSTs
 	 * 
 	 * @param di
 	 * @param tributacao
 	 * @return
 	 */
-	private CalculoImpostoIcms00 calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms00 calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao, Pessoa destinatario) {
 		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} ", di);
 		CalculoImpostoIcms00 icms00 = new CalculoImpostoIcms00();
 
@@ -195,7 +210,7 @@ public class CalculoIcms {
 		
 		di.setIcmsCst(tributacao.getIcmsCst());				
 
-		calculaDifal(di, tributacao, icms00.getCalcImpostoDifal());
+		calculaDifal(di, tributacao, destinatario, icms00.getCalcImpostoDifal());
 		return icms00;
 	}
 	

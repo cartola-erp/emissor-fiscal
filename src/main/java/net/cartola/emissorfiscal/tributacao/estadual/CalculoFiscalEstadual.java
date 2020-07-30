@@ -1,8 +1,9 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import static java.util.stream.Collectors.toList;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import static java.util.stream.Collectors.toList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
-import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcp;
+import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms30;
@@ -66,11 +66,12 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		
 		documentoFiscal.getItens().forEach(docItem -> {
 			TributacaoEstadual tributacao = mapaTributacoes.get(docItem.getNcm());
-			calculoIcms.calculaIcms(docItem, tributacao).ifPresent(calcIcms -> listCalculoImpostos.add(calcIcms));;
+			calculoIcms.calculaIcms(docItem, tributacao, documentoFiscal).ifPresent(calcIcms -> listCalculoImpostos.add(calcIcms));;
 //			listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
 		});
 
 		setaIcmsBaseEValor(documentoFiscal, listCalculoImpostos);
+		setaIcmsFcpEDifal(documentoFiscal, listCalculoImpostos);
 //		setaFcpValor(documentoFiscal, listCalculoImpostos);
 //		setaFcpStValor(documentoFiscal, listCalculoImpostos);
 		setaIcmsStBaseEValor(documentoFiscal, listCalculoImpostos);
@@ -100,23 +101,35 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		documentoFiscal.setIcmsStValor(totalizaIcmsSt(listCalculoIcmsSt.stream().collect(toList())));
 	}
 	
-	private void setaFcpValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
-		LOG.log(Level.INFO, "Setando o VALOR do FCP : DocFiscal, NUMERO = {0} ", documentoFiscal.getNumero());
-//		List<Imposto> cstFcp = Arrays.asList(Imposto.ICMS_10, Imposto.ICMS_20, Imposto.ICMS_70, Imposto.ICMS_90);
-		List<Imposto> cstFcp = Arrays.asList(Imposto.ICMS_00);
-		List<CalculoImpostoFcp> listCalculoImpostoFcp = new ArrayList<>();
-
-//		listCalculoImpostos.stream().
-//		filter(calcImposto -> calcImposto.getClass().isInstance(CalculoImpostoFcp.class))
-//		.findAny().ifPresent(calcFcp -> listCalculoImpostoFcp.add((CalculoImpostoFcp) calcFcp));
-
-		listCalculoImpostos.stream().
-		filter(calcImp -> cstFcp.contains(calcImp.getImposto()))
-		.findAny().ifPresent(calcFcp -> listCalculoImpostoFcp.add((CalculoImpostoFcp) calcFcp));
+	private void setaIcmsFcpEDifal(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
+		LOG.log(Level.INFO, "SETANDO o ICMS FCP e DIFAL : {0} ", documentoFiscal);
 		
-		documentoFiscal.setIcmsFcpValor(totalizaFcp(listCalculoImpostoFcp.stream().collect(toList())));
+		List<CalculoImposto> listCalculoIcms = listCalculoImpostos.stream().filter(calcImp -> calcImp.getImposto().equals(Imposto.ICMS_00)).collect(toList());
+		List<CalculoImpostoIcms00> listCalculoIcms00 = new ArrayList<>();
+		listCalculoIcms.forEach(calcIcms -> listCalculoIcms00.add((CalculoImpostoIcms00) calcIcms));
+		
+		documentoFiscal.setIcmsFcpValor(totalizaFcp(listCalculoIcms00));
+		documentoFiscal.setIcmsValorUfDestino(totalizaDifal(listCalculoIcms00));
 	}
+
 	
+//	private void setaFcpValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
+//		LOG.log(Level.INFO, "Setando o VALOR do FCP : DocFiscal, NUMERO = {0} ", documentoFiscal.getNumero());
+////		List<Imposto> cstFcp = Arrays.asList(Imposto.ICMS_10, Imposto.ICMS_20, Imposto.ICMS_70, Imposto.ICMS_90);
+//		List<Imposto> cstFcp = Arrays.asList(Imposto.ICMS_00);
+//		List<CalculoImpostoFcp> listCalculoImpostoFcp = new ArrayList<>();
+//
+////		listCalculoImpostos.stream().
+////		filter(calcImposto -> calcImposto.getClass().isInstance(CalculoImpostoFcp.class))
+////		.findAny().ifPresent(calcFcp -> listCalculoImpostoFcp.add((CalculoImpostoFcp) calcFcp));
+//
+//		listCalculoImpostos.stream().
+//		filter(calcImp -> cstFcp.contains(calcImp.getImposto()))
+//		.findAny().ifPresent(calcFcp -> listCalculoImpostoFcp.add((CalculoImpostoFcp) calcFcp));
+//		
+//		documentoFiscal.setIcmsFcpValor(totalizaFcp(listCalculoImpostoFcp.stream().collect(toList())));
+//	}
+//	
 
 	
 	/**
@@ -165,24 +178,29 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		return lisCalculoIcmsSt.stream().map(CalculoImpostoIcmsSt::getValorIcmsSt).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 	
-	private <T extends CalculoImpostoFcp> BigDecimal totalizaFcp(List<T> listCalculoImpostoFcp) {
-		return listCalculoImpostoFcp.stream().map(CalculoImpostoFcp::getValorFcp).reduce(BigDecimal.ZERO, BigDecimal::add);
+	
+	private BigDecimal totalizaDifal(List<CalculoImpostoIcms00> listCalculoImpostoIcms00) {
+		BigDecimal totalDifal;
+		try {
+			totalDifal = listCalculoImpostoIcms00.stream().map(icms00 -> icms00.getCalcImpostoDifal().getVlrIcmsUfDest())
+					.reduce(BigDecimal.ZERO, BigDecimal::add);
+		} catch (NullPointerException ex) {
+			totalDifal = BigDecimal.ZERO;
+		}
+		return totalDifal;
+	}
+	
+	private BigDecimal totalizaFcp(List<CalculoImpostoIcms00> listCalculoImpostoIcms00) {
+		BigDecimal totalFcp;
+		try {
+			totalFcp =  listCalculoImpostoIcms00.stream().map(icms00 -> icms00.getCalcImpostoDifal().getVlrFcpUfDest()).reduce(BigDecimal.ZERO, BigDecimal::add);
+		} catch (NullPointerException ex) {
+			totalFcp = BigDecimal.ZERO;
+		}
+		return totalFcp;
 	}
 	
 
-//	private BigDecimal totalizaIcmsSt(List<CalculoImposto> listCalculoImpostos) {
-//		// TODO the implementation
-//		
-////		return listCalculoImpostos.stream().map(CalculoImposto::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
-//		
-//		return null;
-//	}
-
-	private BigDecimal totalizaDifal(DocumentoFiscal docFiscal) {
-		//TODO the implemetentantion
-		return null;
-	}
-	
 	/**
 	 * Soma o valor de todos os produtois para o DocumentoFiscal
 	 */
