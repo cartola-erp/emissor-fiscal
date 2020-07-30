@@ -139,7 +139,7 @@ public class CalculoIcms {
 		if (ehEstadosDiferentes && destinatario.getPessoaTipo().equals(PessoaTipo.FISICA)) {
 			LOG.log(Level.INFO, "Calculando o DIFAL da TAG (ICMSUFDest) ");
 			BigDecimal valorBaseUfDest = di.getIcmsBase();
-			BigDecimal aliqInterDifal = tributacao.getIcmsAliquotaDestino().subtract(tributacao.getIcmsAliquota());
+			BigDecimal aliqInterDifal = tributacao.getIcmsAliquota().subtract(tributacao.getIcmsAliquotaDestino());
 			BigDecimal valorIcmsUfDest = valorBaseUfDest.multiply(aliqInterDifal);
 			
 			calcDifal.setVlrBaseUfDest(valorBaseUfDest);

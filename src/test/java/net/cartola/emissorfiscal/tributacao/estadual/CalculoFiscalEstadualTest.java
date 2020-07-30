@@ -39,6 +39,7 @@ import net.cartola.emissorfiscal.pessoa.PessoaService;
 
 import static net.cartola.emissorfiscal.emissorfiscal.service.TestHelper.PESSOA_EMITENTE_CNPJ;
 import static net.cartola.emissorfiscal.emissorfiscal.service.TestHelper.PESSOA_DEST_CNPJ_SP;
+import static net.cartola.emissorfiscal.emissorfiscal.service.TestHelper.PESSOA_DEST_CNPJ_RJ;
 
 /**
  * DISCLAIMER: Apesar de estar usando na maioria dos casos, NCM, ALIQ etc que existem de verdade.
@@ -407,9 +408,51 @@ public class CalculoFiscalEstadualTest {
 		assertTrue(docFiscalItem.getIcmsStBase().compareTo(ICMS_ITEM_VLR_BASE_RED_E_IVA_EXPECTED) == 0);
 		assertTrue(docFiscalItem.getIcmsStValor().compareTo(ICMS_ITEM_VLR_RED_E_IVA_EXPECTED.setScale(2, BigDecimal.ROUND_HALF_UP)) == 0);
 	}
+
+	
 	
 	@Test
-	public void test09_DeveCalcularVendaComQuatroItens() {
+	public void test09_DeveCalcularVendaInterestadualRjICMS00ComDIFALeFCP() {
+		final BigDecimal ICMS_DIFAL_DOC_UF_DEST_EXPECTED_6 = new BigDecimal(6D);
+		final BigDecimal ICMS_FCP_VLR_DOC_EXPECTED_2 = new BigDecimal(2D);
+		final BigDecimal ICMS_ITEM_ALIQ_DEST_EXPECTED_12 = new BigDecimal(12D);
+		
+		TributacaoEstadual tribEstaVendaInterICMS00 = criaTributaEstaVenda(Integer.parseInt(TestHelper.NCM_ICMS_00_DIFAL_FCP), 00, EstadoSigla.RJ, IVA_ZERO, ICMS_BASE_CEM, FCP_ALIQ_2_PERC, ICMS_ST_ALIQ_ZERO);
+		DocumentoFiscal docFiscalRJ = criaDocumentoFiscalVenda(tribEstaVendaInterICMS00.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR_0, ITEM_ICMS_ST_VLR_ULTIM_COMPR_0, QTD_ULTIM_COMP_0, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA_0);
+	
+		Pessoa destinatarioRj = pessoaService.findByCnpj(Long.valueOf(PESSOA_DEST_CNPJ_RJ)).get(0);
+		docFiscalRJ.setDestinatario(destinatarioRj);
+		
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscalRJ, true, false);
+		LOG.log(Level.WARNING, "ERROS: {0} ", erros);
+		assertTrue(erros.isEmpty());
+		
+		calcFiscalEstadual.calculaImposto(docFiscalRJ);
+
+		// DocumentoFiscal
+		assertTrue(docFiscalRJ.getIcmsBase().compareTo(ICMS_BASE_DOC_FISC_EXPECTED_CEM) == 0);
+		assertTrue(docFiscalRJ.getIcmsValor().compareTo(ICMS_VLR_DOC_FISC_EXPECTED_18) == 0);
+		assertTrue(docFiscalRJ.getIcmsValorUfDestino().compareTo(ICMS_DIFAL_DOC_UF_DEST_EXPECTED_6) == 0);
+		assertTrue(docFiscalRJ.getIcmsFcpValor().compareTo(ICMS_FCP_VLR_DOC_EXPECTED_2) == 0);
+		assertTrue(docFiscalRJ.getVlrTotalProduto().compareTo(DOC_FISC_ITEM_VALOR_UNITARIO) == 0);
+		
+		// DocumentoFiscalItem
+		DocumentoFiscalItem docFiscalItem = docFiscalRJ.getItens().get(0);
+		assertEquals(00, docFiscalItem.getIcmsCst());
+		assertTrue(docFiscalItem.getIcmsAliquota().multiply(new BigDecimal(100D)).compareTo(ICMS_ITEM_ALIQ_EXPECTED_18) == 0);
+		assertTrue(docFiscalItem.getIcmsAliquotaDestino().multiply(new BigDecimal(100)).compareTo(ICMS_ITEM_ALIQ_DEST_EXPECTED_12) == 0);
+		assertTrue(docFiscalItem.getIcmsBase().compareTo(ICMS_ITEM_VLR_BASE_EXPECTED) == 0);
+		assertTrue(docFiscalItem.getIcmsValor().compareTo(ICMS_ITEM_VLR_EXPECTED) == 0);
+		
+		assertTrue(docFiscalItem.getIcmsValorUfDestino().compareTo(ICMS_DIFAL_DOC_UF_DEST_EXPECTED_6) == 0);
+		assertTrue(docFiscalItem.getIcmsFcpValor().compareTo(ICMS_FCP_VLR_DOC_EXPECTED_2) == 0);
+
+//		LOG.log(Level.INFO, "DocFiscal calculado: {0} ", docFiscal);
+	}
+	
+	
+	@Test
+	public void test10_DeveCalcularVendaComQuatroItens() {
 		final BigDecimal ICMS_BASE_DOC_FISC_EXPECTED_360 = new BigDecimal(360D);
 		final BigDecimal ICMS_VLR_DOC_FISC_EXPECTED = new BigDecimal(64.8D);
 		

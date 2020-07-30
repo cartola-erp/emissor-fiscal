@@ -50,6 +50,8 @@ import net.cartola.emissorfiscal.usuario.UsuarioService;
 public class TestHelper {
 
 	public static final String NCM_ICMS_00 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
+	public static final String NCM_ICMS_00_DIFAL_FCP = Integer.toString(7089000);
+
 	public static final String NCM_ICMS_10 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_2);
 	private static final String NCM_ICMS_20 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_3); 
 	public static final String NCM_ICMS_30 = Integer.toString(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_4); 
@@ -78,8 +80,8 @@ public class TestHelper {
 	public static final String PESSOA_DEST_UF_SP = EstadoSigla.SP.toString();
 	public static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
 	
-	public static final String PESSOA_DEST_CNPJ_MG = "2737439000399";
-	public static final String PESSOA_DEST_UF_MG = EstadoSigla.MG.toString();
+	public static final String PESSOA_DEST_CNPJ_RJ = "2737439000399";
+	public static final String PESSOA_DEST_UF_RJ = EstadoSigla.RJ.toString();
 //	public static final String PESSOA_TIPO_FISICA = PessoaTipo.FISICA.toString();
 	                
 	public static final String DOC_FISCAL_SERIE_1 = "262265758";
@@ -134,7 +136,7 @@ public class TestHelper {
 	public void criarEstados() {
 		List<Estado> estados = new LinkedList<>();
 		String[][] data = { { "SP", "São Paulo" }, { "MG", "Minas Gerais" }, { "RS", "Rio Grande do Sul" },
-				{ "PR", "Paraná" } };
+				{ "RJ", "Rio de Janeiro" } };
 
 		for (String[] dados : data) {
 			int aux = 0;
@@ -165,6 +167,7 @@ public class TestHelper {
 	public List<Ncm> criarNcms() {
 		List<Ncm> ncms = new LinkedList<>();
 		String[][] data = { { NCM_ICMS_00, "0", "Varetas e perfis de borracha vulcan.n/alveol.n/endurec." },
+				{ NCM_ICMS_00_DIFAL_FCP, "0", "Outros legumes de vagem,frescos ou refrigerados" },
 				{ NCM_ICMS_10, "0", "Peças para caixas de marchas p/veiculos automoveis" },
 				{ NCM_ICMS_20, "0", "Outras carnes,de suino,congeladas" },
 				{ NCM_ICMS_30, "0", "Outros suinos,vivos,de peso inferior a 50kg" },
@@ -188,7 +191,7 @@ public class TestHelper {
 		List<Pessoa> pessoas = new LinkedList<>();
 		String[][] data = { {PESSOA_EMITENTE_CNPJ, PESSOA_EMITENTE_UF_SP, PESSOA_EMITENTE_REGI_TRIBU_REAL, PESSOA_TIPO_JURIDICA},
 							{PESSOA_DEST_CNPJ_SP, PESSOA_EMITENTE_UF_SP, PESSOA_EMITENTE_REGI_TRIBU_REAL, PESSOA_TIPO_JURIDICA},
-							{PESSOA_DEST_CNPJ_MG, PESSOA_DEST_UF_MG, PESSOA_EMITENTE_REGI_TRIBU_REAL, PESSOA_TIPO_JURIDICA}};
+							{PESSOA_DEST_CNPJ_RJ, PESSOA_DEST_UF_RJ, PESSOA_EMITENTE_REGI_TRIBU_REAL, PESSOA_TIPO_FISICA}};
 		
 		for (String[] dados : data) {
 			int aux = 0;
@@ -221,7 +224,7 @@ public class TestHelper {
 		
 		icms.setIcmsAliquota(new BigDecimal(18D));
 		icms.setIcmsIva(iva);
-		icms.setIcmsAliquotaDestino(new BigDecimal(18D));
+		icms.setIcmsAliquotaDestino(new BigDecimal(12D));
 		icms.setFcpAliquota(fcpAliq);
 		icms.setIcmsStAliquota(icmsStAliq);
 		icms.setCest(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CEST);
