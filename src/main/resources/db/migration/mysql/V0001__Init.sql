@@ -27,12 +27,13 @@ CREATE TABLE `cfop` (
   `descricao` varchar(255) DEFAULT NULL,
   `numero` int(11) NOT NULL,
   PRIMARY KEY (`cfop_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=512 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `cfop`
 --
+
 
 LOCK TABLES `cfop` WRITE;
 /*!40000 ALTER TABLE `cfop` DISABLE KEYS */;
@@ -52,9 +53,12 @@ CREATE TABLE `docu_fisc` (
   `cofins_base` decimal(19,2) DEFAULT NULL,
   `cofins_valor` decimal(19,2) DEFAULT NULL,
   `icms_base` decimal(19,2) DEFAULT NULL,
-  `icms_valor` decimal(19,2) DEFAULT NULL,
+  `icms_fcp_vlr` decimal(19,2) NOT NULL,
   `icms_st_base` decimal(19,2) DEFAULT NULL,
   `icms_st_valor` decimal(19,2) DEFAULT NULL,
+  `icms_valor` decimal(19,2) DEFAULT NULL,
+  `icms_vlr_deson` decimal(19,2) NOT NULL,
+  `icms_vlr_uf_dest` decimal(19,2) NOT NULL,
   `ipi_base` decimal(19,2) DEFAULT NULL,
   `ipi_valor` decimal(19,2) DEFAULT NULL,
   `numero` bigint(20) DEFAULT NULL,
@@ -62,17 +66,13 @@ CREATE TABLE `docu_fisc` (
   `pis_valor` decimal(19,2) DEFAULT NULL,
   `serie` bigint(20) DEFAULT NULL,
   `tipo` varchar(255) DEFAULT NULL,
-  `destinatario_id` bigint(20) NOT NULL,
-  `emitente_id` bigint(20) NOT NULL,
-  `operacao_id` bigint(20) NOT NULL,
   `vlr_imposto_esta` decimal(19,2) DEFAULT NULL,
   `vlr_imposto_fede` decimal(19,2) DEFAULT NULL,
   `vlr_imposto_muni` decimal(19,2) DEFAULT NULL,
-  `icms_fcp_st_ret_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_fcp_st_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_fcp_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_vlr_deson` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `vlr_tot_prod` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `vlr_tot_prod` decimal(19,2) NOT NULL,
+  `destinatario_id` bigint(20) NOT NULL,
+  `emitente_id` bigint(20) NOT NULL,
+  `operacao_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fnk_docu_fisc_destinatario_id` (`destinatario_id`),
   KEY `fnk_docu_fisc_emitente_id` (`emitente_id`),
@@ -80,7 +80,7 @@ CREATE TABLE `docu_fisc` (
   CONSTRAINT `fnk_docu_fisc_destinatario_id` FOREIGN KEY (`destinatario_id`) REFERENCES `pessoa` (`id`),
   CONSTRAINT `fnk_docu_fisc_emitente_id` FOREIGN KEY (`emitente_id`) REFERENCES `pessoa` (`id`),
   CONSTRAINT `fnk_docu_fisc_operacao_id` FOREIGN KEY (`operacao_id`) REFERENCES `oper` (`oper_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,50 +108,46 @@ CREATE TABLE `docu_fisc_item` (
   `cofins_valor` decimal(19,2) DEFAULT NULL,
   `finalidade` enum('COMERCIALIZACAO','BRINDE','DOACAO','PATRIMONIO','CONSUMO') NOT NULL DEFAULT 'CONSUMO',
   `icms_aliquota` decimal(19,2) DEFAULT NULL,
+  `icms_aliq_dest` decimal(19,2) DEFAULT NULL,
   `icms_base` decimal(19,2) DEFAULT NULL,
   `icms_cest` int(11) DEFAULT NULL,
   `icms_cst` int(11) NOT NULL,
-  `icms_valor` decimal(19,2) DEFAULT NULL,
+  `icms_fcp_aliq` decimal(19,2) DEFAULT NULL,
+  `icms_fcp_vlr` decimal(19,2) DEFAULT NULL,
+  `icms_iva` decimal(19,2) DEFAULT NULL,
+  `icms_redu_base_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_redu_base_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_aliq_ultim_comp` decimal(19,2) DEFAULT NULL,
+  `icms_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_st_base` decimal(19,2) DEFAULT NULL,
+  `icms_st_base_ret` decimal(19,2) DEFAULT NULL,
+  `icms_st_base_ultim_comp` decimal(19,2) DEFAULT NULL,
   `icms_st_valor` decimal(19,2) DEFAULT NULL,
+  `icms_st_vlr_ret` decimal(19,2) DEFAULT NULL,
+  `icms_st_vlr_ultim_comp` decimal(19,2) DEFAULT NULL,
+  `icms_valor` decimal(19,2) DEFAULT NULL,
+  `icms_vlr_uf_dest` decimal(19,2) DEFAULT NULL,
   `ipi_aliquota` decimal(19,2) DEFAULT NULL,
   `ipi_base` decimal(19,2) DEFAULT NULL,
   `ipi_cst` int(11) NOT NULL,
   `ipi_valor` decimal(19,2) DEFAULT NULL,
+  `item_qtd_ultim_comp` decimal(19,2) DEFAULT NULL,
   `origem` enum('NACIONAL','ESTRANGEIRA_IMPORTACAO_DIRETA','ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO','NACIONAL_CONTEUDO_IMPORTADO_MAIOR_40','NACIONAL_CONFORMIDADE_PROCESSOS','NACIONAL_CONTEUDO_IMPORTADO_MENOR_40','ESTRANGEIRA_IMPORTACAO_DIRETA_CAMEX','ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO_CAMEX','NACIONAL_CONTEUDO_IMPORTADO_MAIOR_70') NOT NULL DEFAULT 'NACIONAL',
   `pis_aliquota` decimal(19,2) DEFAULT NULL,
   `pis_base` decimal(19,2) DEFAULT NULL,
   `pis_cst` int(11) NOT NULL,
   `pis_valor` decimal(19,2) DEFAULT NULL,
   `quantidade` decimal(19,2) NOT NULL,
-  `valor_unitario` decimal(19,2) NOT NULL,
   `vlr_tot_imposto` decimal(19,2) DEFAULT NULL,
+  `valor_unitario` decimal(19,2) NOT NULL,
   `docu_fisc_id` bigint(20) DEFAULT NULL,
   `ncm_id` bigint(20) NOT NULL,
-  `icms_st_aliq_fcp_st_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_aliq_dest` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_st_base_fcp_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_fcp_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_fcp_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_fcp_st_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_fcp_vlr` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_iva` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_redu_base_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_redu_base_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_st_aliq_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_st_base_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_st_base_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_st_vlr_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_st_vlr_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `icms_vlr_fcp_st_ret` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `item_qtd_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
   PRIMARY KEY (`id`),
   KEY `fnk_documento_fiscal` (`docu_fisc_id`),
   KEY `fnk_ncms` (`ncm_id`),
   CONSTRAINT `fnk_documento_fiscal` FOREIGN KEY (`docu_fisc_id`) REFERENCES `docu_fisc` (`id`),
   CONSTRAINT `fnk_ncms` FOREIGN KEY (`ncm_id`) REFERENCES `ncms` (`ncm_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -177,7 +173,7 @@ CREATE TABLE `esta` (
   PRIMARY KEY (`esta_id`),
   UNIQUE KEY `unk_esta_nome` (`nome`),
   UNIQUE KEY `unk_esta_sigla` (`sigla`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,6 +210,15 @@ CREATE TABLE `flyway_schema_history` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `flyway_schema_history`
+--
+
+LOCK TABLES `flyway_schema_history` WRITE;
+/*!40000 ALTER TABLE `flyway_schema_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `flyway_schema_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `ncms`
 --
 
@@ -222,12 +227,12 @@ DROP TABLE IF EXISTS `ncms`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ncms` (
   `ncm_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `descricao` varchar(1024) DEFAULT NULL,
+  `descricao` varchar(255) NOT NULL,
   `exce` int(11) NOT NULL,
   `nume` int(11) NOT NULL,
   PRIMARY KEY (`ncm_id`),
   UNIQUE KEY `unk_ncms_nume_exce` (`nume`,`exce`)
-) ENGINE=InnoDB AUTO_INCREMENT=16511 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,10 +254,10 @@ DROP TABLE IF EXISTS `oper`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oper` (
   `oper_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `dscr` varchar(250) NOT NULL,
+  `dscr` varchar(150) NOT NULL,
   PRIMARY KEY (`oper_id`),
   UNIQUE KEY `unk_oper_dscr` (`dscr`)
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -279,7 +284,7 @@ CREATE TABLE `pessoa` (
   `regime_tributario` enum('SIMPLES','SIMPLES_EXCESSO','NORMAL') DEFAULT NULL,
   `uf` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -301,31 +306,30 @@ DROP TABLE IF EXISTS `trib_esta`;
 CREATE TABLE `trib_esta` (
   `trib_esta_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cest` int(11) DEFAULT NULL,
+  `fcp_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `finalidade` enum('COMERCIALIZACAO','BRINDE','DOACAO','PATRIMONIO','CONSUMO') NOT NULL DEFAULT 'CONSUMO',
   `icms_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_aliq_dest` decimal(7,6) NOT NULL DEFAULT '0.000000',
-  `fcp_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_base` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_cst` int(11) NOT NULL,
   `icms_iva` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `mens` varchar(255) DEFAULT NULL,
   `regime_tributario` enum('SIMPLES','SIMPLES_EXCESSO','NORMAL') DEFAULT NULL,
   `esta_dest_id` bigint(20) NOT NULL,
   `esta_orig_id` bigint(20) NOT NULL,
   `ncm_id` bigint(20) NOT NULL,
   `oper_id` bigint(20) NOT NULL,
-  `icms_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   PRIMARY KEY (`trib_esta_id`),
   UNIQUE KEY `unk_trib_esta_oper_ncm` (`oper_id`,`ncm_id`,`finalidade`,`regime_tributario`,`esta_orig_id`,`esta_dest_id`),
   KEY `fnk_trib_esta_dest_id` (`esta_dest_id`),
   KEY `fnk_trib_esta_orig_id` (`esta_orig_id`),
   KEY `fnk_trib_esta_ncm_id` (`ncm_id`),
-  KEY `fnk_trib_esta_oper_id` (`oper_id`),
   CONSTRAINT `fnk_trib_esta_dest_id` FOREIGN KEY (`esta_dest_id`) REFERENCES `esta` (`esta_id`),
   CONSTRAINT `fnk_trib_esta_ncm_id` FOREIGN KEY (`ncm_id`) REFERENCES `ncms` (`ncm_id`),
   CONSTRAINT `fnk_trib_esta_oper_id` FOREIGN KEY (`oper_id`) REFERENCES `oper` (`oper_id`),
   CONSTRAINT `fnk_trib_esta_orig_id` FOREIGN KEY (`esta_orig_id`) REFERENCES `esta` (`esta_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +369,7 @@ CREATE TABLE `trib_fede` (
   KEY `fnk_trib_fede_ncms` (`ncm_id`),
   CONSTRAINT `fnk_trib_fede_ncms` FOREIGN KEY (`ncm_id`) REFERENCES `ncms` (`ncm_id`),
   CONSTRAINT `fnk_trib_fede_oper` FOREIGN KEY (`oper_id`) REFERENCES `oper` (`oper_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -429,7 +433,7 @@ CREATE TABLE `usua` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_hhpk43mhs9uyt2ldai7w9u4mt` (`login`),
   UNIQUE KEY `UK_5i4wyij10irpsbblf4no78dy6` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -455,7 +459,7 @@ CREATE TABLE `usua_perf` (
   PRIMARY KEY (`id`),
   KEY `fnk_usua` (`usua_id`),
   CONSTRAINT `fnk_usua` FOREIGN KEY (`usua_id`) REFERENCES `usua` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -476,4 +480,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-15 17:31:45
+-- Dump completed on 2020-08-04 16:14:38

@@ -52,17 +52,17 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal icmsValor = BigDecimal.ZERO;
     private BigDecimal icmsFcpAliquota = BigDecimal.ZERO;
     private BigDecimal icmsFcpValor = BigDecimal.ZERO;
-    private BigDecimal icmsFcpStAliquota = BigDecimal.ZERO;
-    private BigDecimal icmsFcpStValor = BigDecimal.ZERO;
+//    private BigDecimal icmsFcpStAliquota = BigDecimal.ZERO;
+//    private BigDecimal icmsFcpStValor = BigDecimal.ZERO;
 	private BigDecimal icmsStBase = BigDecimal.ZERO;
 	private BigDecimal icmsStAliquota = BigDecimal.ZERO;
 	private BigDecimal icmsStValor = BigDecimal.ZERO;
     private BigDecimal icmsIva = BigDecimal.ZERO;
     private BigDecimal icmsStBaseRetido = BigDecimal.ZERO;
     private BigDecimal icmsStValorRetido = BigDecimal.ZERO;
-    private BigDecimal icmsBaseFcpStRetido = BigDecimal.ZERO;
-    private BigDecimal icmsAliqFcpStRetido = BigDecimal.ZERO;
-    private BigDecimal icmsValorFcpStRetido = BigDecimal.ZERO;
+//    private BigDecimal icmsBaseFcpStRetido = BigDecimal.ZERO;
+//    private BigDecimal icmsAliqFcpStRetido = BigDecimal.ZERO;
+//    private BigDecimal icmsValorFcpStRetido = BigDecimal.ZERO;
 	private int icmsCst;
     private BigDecimal icmsValorUfDestino = BigDecimal.ZERO;		// É o VALOR do DIFAL
     // Base do ICMS ST (ULTIMA COMPRA), que foi usado quando a AG comprou o produto, p/ usar no ICMS 60
@@ -200,7 +200,8 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsAliquota = icmsAliquota;
 	}
 
-    @Column(name = "icms_aliq_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//    @Column(name = "icms_aliq_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_aliq_dest")
 	public BigDecimal getIcmsAliquotaDestino() {
 		return icmsAliquotaDestino;
 	}
@@ -217,7 +218,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsValor = icmsValor;
 	}
 	
-    @Column(name = "icms_fcp_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_fcp_aliq")
 	public BigDecimal getIcmsFcpAliquota() {
 		return icmsFcpAliquota;
 	}
@@ -226,7 +227,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsFcpAliquota = icmsFcpAliquota;
 	}
 
-    @Column(name = "icms_fcp_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_fcp_vlr")
 	public BigDecimal getIcmsFcpValor() {
 		return icmsFcpValor;
 	}
@@ -235,23 +236,23 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsFcpValor = icmsFcpValor;
 	}
 	
-    @Column(name = "icms_fcp_st_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
-	public BigDecimal getIcmsFcpStAliquota() {
-		return icmsFcpStAliquota;
-	}
-
-	public void setIcmsFcpStAliquota(BigDecimal icmsFcpStAliquota) {
-		this.icmsFcpStAliquota = icmsFcpStAliquota;
-	}
-
-	@Column(name = "icms_fcp_st_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
-	public BigDecimal getIcmsFcpStValor() {
-		return icmsFcpStValor;
-	}
-
-	public void setIcmsFcpStValor(BigDecimal icmsStFcpValor) {
-		this.icmsFcpStValor = icmsStFcpValor;
-	}
+//    @Column(name = "icms_fcp_st_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//	public BigDecimal getIcmsFcpStAliquota() {
+//		return icmsFcpStAliquota;
+//	}
+//
+//	public void setIcmsFcpStAliquota(BigDecimal icmsFcpStAliquota) {
+//		this.icmsFcpStAliquota = icmsFcpStAliquota;
+//	}
+//
+//	@Column(name = "icms_fcp_st_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//	public BigDecimal getIcmsFcpStValor() {
+//		return icmsFcpStValor;
+//	}
+//
+//	public void setIcmsFcpStValor(BigDecimal icmsStFcpValor) {
+//		this.icmsFcpStValor = icmsStFcpValor;
+//	}
 	
     @Column(name = "icms_st_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIcmsStAliquota() {
@@ -278,7 +279,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsStValor = icmsStValor;
 	}
 
-	@Column(name = "icms_iva", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	@Column(name = "icms_iva")
     public BigDecimal getIcmsIva() {
         return icmsIva;
     }
@@ -287,7 +288,7 @@ public class DocumentoFiscalItem implements Serializable {
         this.icmsIva = icmsIva;
     }
 	
-    @Column(name = "icms_st_base_ret", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_st_base_ret")
 	public BigDecimal getIcmsStBaseRetido() {
 		return icmsStBaseRetido;
 	}
@@ -296,7 +297,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsStBaseRetido = icmsStBaseRetido;
 	}
 
-    @Column(name = "icms_st_vlr_ret", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_st_vlr_ret")
 	public BigDecimal getIcmsStValorRetido() {
 		return icmsStValorRetido;
 	}
@@ -305,32 +306,32 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsStValorRetido = icmsStValorRetido;
 	}
 
-    @Column(name = "icms_st_base_fcp_ret", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
-	public BigDecimal getIcmsBaseFcpStRetido() {
-		return icmsBaseFcpStRetido;
-	}
+//    @Column(name = "icms_st_base_fcp_ret", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//	public BigDecimal getIcmsBaseFcpStRetido() {
+//		return icmsBaseFcpStRetido;
+//	}
+//
+//	public void setIcmsBaseFcpStRetido(BigDecimal icmsBaseFcpStRetido) {
+//		this.icmsBaseFcpStRetido = icmsBaseFcpStRetido;
+//	}
+//
+//    @Column(name = "icms_st_aliq_fcp_st_ret", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//	public BigDecimal getIcmsAliqFcpStRetido() {
+//		return icmsAliqFcpStRetido;
+//	}
+//
+//	public void setIcmsAliqFcpStRetido(BigDecimal icmsAliqFcpStRetido) {
+//		this.icmsAliqFcpStRetido = icmsAliqFcpStRetido;
+//	}
 
-	public void setIcmsBaseFcpStRetido(BigDecimal icmsBaseFcpStRetido) {
-		this.icmsBaseFcpStRetido = icmsBaseFcpStRetido;
-	}
-
-    @Column(name = "icms_st_aliq_fcp_st_ret", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
-	public BigDecimal getIcmsAliqFcpStRetido() {
-		return icmsAliqFcpStRetido;
-	}
-
-	public void setIcmsAliqFcpStRetido(BigDecimal icmsAliqFcpStRetido) {
-		this.icmsAliqFcpStRetido = icmsAliqFcpStRetido;
-	}
-
-    @Column(name = "icms_vlr_fcp_st_ret", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
-	public BigDecimal getIcmsValorFcpStRetido() {
-		return icmsValorFcpStRetido;
-	}
-
-	public void setIcmsValorFcpStRetido(BigDecimal icmsValorFcpStRetido) {
-		this.icmsValorFcpStRetido = icmsValorFcpStRetido;
-	}
+//    @Column(name = "icms_vlr_fcp_st_ret", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//	public BigDecimal getIcmsValorFcpStRetido() {
+//		return icmsValorFcpStRetido;
+//	}
+//
+//	public void setIcmsValorFcpStRetido(BigDecimal icmsValorFcpStRetido) {
+//		this.icmsValorFcpStRetido = icmsValorFcpStRetido;
+//	}
 
 	public int getIcmsCst() {
 		return icmsCst;
@@ -340,7 +341,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsCst = icmsCst;
 	}
 
-	@Column(name = "icms_vlr_uf_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	@Column(name = "icms_vlr_uf_dest")
     public BigDecimal getIcmsValorUfDestino() {
 		return icmsValorUfDestino;
 	}
@@ -349,7 +350,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsValorUfDestino = icmsValorUfDestino;
 	}
 	
-    @Column(name = "icms_st_base_ultim_comp", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_st_base_ultim_comp")
 	public BigDecimal getIcmsStBaseUltimaCompra() {
 		return icmsStBaseUltimaCompra;
 	}
@@ -358,7 +359,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsStBaseUltimaCompra = icmsStBaseUltimaCompra;
 	}
 
-	@Column(name = "icms_st_vlr_ultim_comp", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	@Column(name = "icms_st_vlr_ultim_comp")
 	public BigDecimal getIcmsStValorUltimaCompra() {
 		return icmsStValorUltimaCompra;
 	}
@@ -367,7 +368,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsStValorUltimaCompra = icmsStValorUltimaCompra;
 	}
 	
-    @Column(name = "item_qtd_ultim_comp", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "item_qtd_ultim_comp")
 	public BigDecimal getItemQtdCompradaUltimaCompra() {
 		return itemQtdCompradaUltimaCompra;
 	}
@@ -376,7 +377,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.itemQtdCompradaUltimaCompra = itemQtdCompradaUltimaCompra;
 	}
   
-	@Column(name = "icms_st_aliq_ultim_comp", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	@Column(name = "icms_st_aliq_ultim_comp")
 	public BigDecimal getIcmsStAliqUltimaCompra() {
 		return icmsStAliqUltimaCompra;
 	}
@@ -507,13 +508,10 @@ public class DocumentoFiscalItem implements Serializable {
 				+ icmsCest + ", icmsBase=" + icmsBase + ", icmsReducaoBaseAliquota=" + icmsReducaoBaseAliquota
 				+ ", icmsReducaoBaseStAliquota=" + icmsReducaoBaseStAliquota + ", icmsAliquota=" + icmsAliquota
 				+ ", icmsAliquotaDestino=" + icmsAliquotaDestino + ", icmsValor=" + icmsValor + ", icmsFcpAliquota="
-				+ icmsFcpAliquota + ", icmsFcpValor=" + icmsFcpValor + ", icmsFcpStAliquota=" + icmsFcpStAliquota
-				+ ", icmsFcpStValor=" + icmsFcpStValor + ", icmsStBase=" + icmsStBase + ", icmsStAliquota="
+				+ icmsFcpAliquota + ", icmsFcpValor=" + icmsFcpValor + ",  icmsStBase=" + icmsStBase + ", icmsStAliquota="
 				+ icmsStAliquota + ", icmsStValor=" + icmsStValor + ", icmsIva=" + icmsIva + ", icmsStBaseRetido="
-				+ icmsStBaseRetido + ", icmsStValorRetido=" + icmsStValorRetido + ", icmsBaseFcpStRetido="
-				+ icmsBaseFcpStRetido + ", icmsAliqFcpStRetido=" + icmsAliqFcpStRetido + ", icmsValorFcpStRetido="
-				+ icmsValorFcpStRetido + ", icmsCst=" + icmsCst + ", icmsValorUfDestino=" + icmsValorUfDestino
-				+ ", icmsStBaseUltimaCompra=" + icmsStBaseUltimaCompra + ", icmsStValorUltimaCompra="
+				+ icmsStBaseRetido + ", icmsStValorRetido=" + icmsStValorRetido + ", icmsCst=" + icmsCst + ", icmsValorUfDestino=" 
+				+ icmsValorUfDestino + ", icmsStBaseUltimaCompra=" + icmsStBaseUltimaCompra + ", icmsStValorUltimaCompra="
 				+ icmsStValorUltimaCompra + ", itemQtdCompradaUltimaCompra=" + itemQtdCompradaUltimaCompra
 				+ ", icmsStAliqUltimaCompra=" + icmsStAliqUltimaCompra + ", pisBase=" + pisBase + ", pisAliquota="
 				+ pisAliquota + ", pisValor=" + pisValor + ", pisCst=" + pisCst + ", cofinsBase=" + cofinsBase

@@ -44,8 +44,8 @@ public class DocumentoFiscal implements Serializable {
     private BigDecimal icmsFcpValor = BigDecimal.ZERO;
 	private BigDecimal icmsStBase = BigDecimal.ZERO;
 	private BigDecimal icmsStValor = BigDecimal.ZERO;
-    private BigDecimal icmsFcpStValor = BigDecimal.ZERO;
-    private BigDecimal icmsFcpStRetidoValor = BigDecimal.ZERO;
+//    private BigDecimal icmsFcpStValor = BigDecimal.ZERO;
+//    private BigDecimal icmsFcpStRetidoValor = BigDecimal.ZERO;
     private BigDecimal icmsValorUfDestino = BigDecimal.ZERO;		// É a soma do DIFAL
     private BigDecimal vlrTotalProduto = BigDecimal.ZERO;
 	private BigDecimal pisBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
@@ -148,7 +148,7 @@ public class DocumentoFiscal implements Serializable {
 		this.icmsValor = icmsValor;
 	}
 
-    @Column(name = "icms_vlr_deson", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_vlr_deson", precision = 19, scale = 2, nullable = false, columnDefinition = "Numeric(19,2)")
 	public BigDecimal getIcmsValorDesonerado() {
 		return icmsValorDesonerado;
 	}
@@ -173,7 +173,7 @@ public class DocumentoFiscal implements Serializable {
 		this.icmsStValor = icmsStValor;
 	}
 	
-    @Column(name = "icms_fcp_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+    @Column(name = "icms_fcp_vlr", precision = 19, scale = 2, nullable = false, columnDefinition = "Numeric(19,2)")
 	public BigDecimal getIcmsFcpValor() {
 		return icmsFcpValor;
 	}
@@ -182,25 +182,25 @@ public class DocumentoFiscal implements Serializable {
 		this.icmsFcpValor = icmsFcpValor;
 	}
 
-	@Column(name = "icms_fcp_st_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
-	public BigDecimal getIcmsFcpStValor() {
-		return icmsFcpStValor;
-	}
+//	@Column(name = "icms_fcp_st_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//	public BigDecimal getIcmsFcpStValor() {
+//		return icmsFcpStValor;
+//	}
+//
+//	public void setIcmsFcpStValor(BigDecimal icmsFcpStValor) {
+//		this.icmsFcpStValor = icmsFcpStValor;
+//	}
 
-	public void setIcmsFcpStValor(BigDecimal icmsFcpStValor) {
-		this.icmsFcpStValor = icmsFcpStValor;
-	}
+//	@Column(name = "icms_fcp_st_ret_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//	public BigDecimal getIcmsFcpStRetidoValor() {
+//		return icmsFcpStRetidoValor;
+//	}
+//
+//	public void setIcmsFcpStRetidoValor(BigDecimal icmsFcpStRetidoValor) {
+//		this.icmsFcpStRetidoValor = icmsFcpStRetidoValor;
+//	}
 
-	@Column(name = "icms_fcp_st_ret_vlr", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
-	public BigDecimal getIcmsFcpStRetidoValor() {
-		return icmsFcpStRetidoValor;
-	}
-
-	public void setIcmsFcpStRetidoValor(BigDecimal icmsFcpStRetidoValor) {
-		this.icmsFcpStRetidoValor = icmsFcpStRetidoValor;
-	}
-
-	@Column(name = "icms_vlr_uf_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	@Column(name = "icms_vlr_uf_dest", precision = 19, scale = 2, nullable = false, columnDefinition = "Numeric(19,2)")
     public BigDecimal getIcmsValorUfDestino() {
 		return icmsValorUfDestino;
 	}
@@ -209,7 +209,8 @@ public class DocumentoFiscal implements Serializable {
 		this.icmsValorUfDestino = icmsValorUfDestino;
 	}
 
-	@Column(name = "vlr_tot_prod", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+//	@Column(name = "vlr_tot_prod", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
+	@Column(name = "vlr_tot_prod", precision = 19, scale = 2, nullable = false, columnDefinition = "Numeric(19,2)")
 	public BigDecimal getVlrTotalProduto() {
 		return vlrTotalProduto;
 	}
@@ -311,8 +312,7 @@ public class DocumentoFiscal implements Serializable {
 				+ ", numero=" + numero + ", emitente=" + emitente + ", destinatario=" + destinatario + ", itens="
 				+ itens + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor + ", icmsValorDesonerado="
 				+ icmsValorDesonerado + ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase=" + icmsStBase
-				+ ", icmsStValor=" + icmsStValor + ", icmsFcpStValor=" + icmsFcpStValor + ", icmsFcpStRetidoValor="
-				+ icmsFcpStRetidoValor + ", icmsValorUfDestino=" + icmsValorUfDestino + ", vlrTotalProduto="
+				+ ", icmsStValor=" + icmsStValor + ", icmsValorUfDestino=" + icmsValorUfDestino + ", vlrTotalProduto="
 				+ vlrTotalProduto + ", pisBase=" + pisBase + ", pisValor=" + pisValor + ", cofinsBase=" + cofinsBase
 				+ ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor=" + ipiValor
 				+ ", valorImpostoFederal=" + valorImpostoFederal + ", valorImpostoEstadual=" + valorImpostoEstadual
