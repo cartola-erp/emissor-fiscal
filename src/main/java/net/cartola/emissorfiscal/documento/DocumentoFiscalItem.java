@@ -192,6 +192,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsReducaoBaseStAliquota = icmsReducaoBaseStAliquota;
 	}
 
+	@Column(name = "icms_aliquota", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIcmsAliquota() {
 		return icmsAliquota;
 	}
@@ -201,7 +202,7 @@ public class DocumentoFiscalItem implements Serializable {
 	}
 
 //    @Column(name = "icms_aliq_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
-    @Column(name = "icms_aliq_dest")
+    @Column(name = "icms_aliq_dest", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIcmsAliquotaDestino() {
 		return icmsAliquotaDestino;
 	}
@@ -218,7 +219,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsValor = icmsValor;
 	}
 	
-    @Column(name = "icms_fcp_aliq")
+    @Column(name = "icms_fcp_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIcmsFcpAliquota() {
 		return icmsFcpAliquota;
 	}
@@ -279,7 +280,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsStValor = icmsStValor;
 	}
 
-	@Column(name = "icms_iva")
+	@Column(name = "icms_iva", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
     public BigDecimal getIcmsIva() {
         return icmsIva;
     }
@@ -377,7 +378,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.itemQtdCompradaUltimaCompra = itemQtdCompradaUltimaCompra;
 	}
   
-	@Column(name = "icms_st_aliq_ultim_comp")
+	@Column(name = "icms_st_aliq_ultim_comp", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIcmsStAliqUltimaCompra() {
 		return icmsStAliqUltimaCompra;
 	}
@@ -394,6 +395,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.pisBase = pisBase;
 	}
 
+	@Column(name = "pis_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getPisAliquota() {
 		return pisAliquota;
 	}
@@ -426,6 +428,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.cofinsBase = cofinsBase;
 	}
 
+	@Column(name = "cofins_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getCofinsAliquota() {
 		return cofinsAliquota;
 	}
@@ -458,6 +461,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.ipiBase = ipiBase;
 	}
 
+	@Column(name = "ipi_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIpiAliquota() {
 		return ipiAliquota;
 	}
