@@ -65,14 +65,19 @@ public class SimulacaoController {
 	public ModelAndView calculaTributacaoEstadual(@Valid DocumentoFiscal documentoFiscal, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, String regimeTributario, BindingResult result, RedirectAttributes attributes) {
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
 		StringBuffer erros = new StringBuffer("Não existe nenhuma tributação cadastrada, para os dados informados");
+		StringBuffer sbResultCalculo = null;
+		Integer qtdLinhas = null;
 		try {
 			simulacaoService.setValuesForCalc(documentoFiscal, ufOrigemId, ufDestinoId, operacaoId, ncmId, regimeTributario);
 			
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			
-			erros = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
-			System.out.println("ERROS AO CALCULAR: " +erros);
+//			erros = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
+//			System.out.println("ERROS AO CALCULAR: " +erros);
+			
+			sbResultCalculo = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal, qtdLinhas);
+
 			addObjetosNaView(mv, documentoFiscal);
 		} catch (Exception ex) {
 //			mv.addObject("mensagemErro", "Algo inesperado aconteceu ao tentar salvar/editar, essa tributação federal ");
@@ -81,11 +86,11 @@ public class SimulacaoController {
 			mv.addObject("resultadoCalculo", erros.toString());
 			return mv;
 		}
-		final StringBuffer sbResultCalculo = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
-		int qtdLinhas = simulacaoService.getListMsgResultadoCalculo(documentoFiscal).size();
+//		final StringBuffer sbResultCalculo = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
+//		int qtdLinhas = simulacaoService.getListMsgResultadoCalculo(documentoFiscal).size();
 
 		mv.addObject("resultadoCalculo", sbResultCalculo.toString());
-		mv.addObject("qtdLinhas", qtdLinhas + 2);
+		mv.addObject("qtdLinhas", (qtdLinhas == null) ? 55 : qtdLinhas);
 
 		System.out.println("RESULTADO DO CALCULO: " + sbResultCalculo.toString());
 

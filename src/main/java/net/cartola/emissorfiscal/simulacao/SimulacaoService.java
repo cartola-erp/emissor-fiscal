@@ -76,6 +76,9 @@ public class SimulacaoService {
 		listResult.add("ICMS BASE (NFE): " +documentoFiscal.getIcmsBase().toPlainString());
 		listResult.add("ICMS VALOR (NFE): " +documentoFiscal.getIcmsValor().toPlainString());
 //		listResult.add("ICMS ALIQ.: " +documentoFiscal.getIcmsValor());
+		listResult.add("ICMS ST BASE (NFE): " +documentoFiscal.getIcmsStBase().toPlainString());
+		listResult.add("ICMS ST VALOR (NFE): " +documentoFiscal.getIcmsStValor().toPlainString());
+		
 		listResult.add("PIS BASE (NFE): " +documentoFiscal.getPisBase().toPlainString());
 		listResult.add("PIS VALOR (NFE): " +documentoFiscal.getPisValor().toPlainString());
 		listResult.add("COFINS BASE (NFE): " +documentoFiscal.getCofinsBase().toPlainString());
@@ -84,26 +87,41 @@ public class SimulacaoService {
 		listResult.add("IPI VALOR (NFE): " +documentoFiscal.getIpiValor());
 		listResult.add(" =========================================== VALORES ITEM =========================================== ");
 		listResult.add(" ----------------------------------- ICMS ----------------------------------- ");
+		listResult.add("ICMS CST.: (ITEM): " +item.getIcmsCst());
 		listResult.add("ICMS BASE (ITEM): " +item.getIcmsBase().toPlainString());
 		listResult.add("ICMS VALOR (ITEM): " +item.getIcmsValor().toPlainString());
 		listResult.add("ICMS ALIQ.: (ITEM): " +item.getIcmsAliquota().toPlainString());
-		listResult.add("ICMS CST.: (ITEM): " +item.getIcmsCst());
+		listResult.add("ICMS ALIQ. Destino: (ITEM): " +item.getIcmsAliquotaDestino().toPlainString());
+		listResult.add("ICMS REDUCAO BASE ALIQ.: (ITEM): " +item.getIcmsReducaoBaseAliquota().toPlainString());
 		listResult.add("ICMS CEST.: (ITEM): " +item.getIcmsCest());
+		listResult.add(" ----------------------------------- ICMS_ST ----------------------------------- ");
+		listResult.add("ICMS ST BASE (ITEM): " +item.getIcmsStBase().toPlainString());
+		listResult.add("ICMS ST VALOR (ITEM): " +item.getIcmsStValor().toPlainString());
+		listResult.add("ICMS ST ALIQ.: (ITEM): " +item.getIcmsStAliquota().toPlainString());
+		listResult.add("ICMS ST IVA/MVA.: (ITEM): " +item.getIcmsIva().toPlainString());
+		listResult.add("ICMS ST BASE RETIDO (ITEM): " +item.getIcmsStBaseRetido().toPlainString());
+		listResult.add("ICMS ST VALOR VALOR RETIDO (ITEM): " +item.getIcmsStValorRetido().toPlainString());
+		listResult.add("ICMS ST REDUCAO BASE ALIQ.: (ITEM): " +item.getIcmsReducaoBaseStAliquota().toPlainString());
+		listResult.add(" ----------------------------------- FCP ----------------------------------- ");
+		listResult.add("ICMS FCP ALIQ.: (ITEM): " +item.getIcmsFcpAliquota().toPlainString());
+		listResult.add("ICMS FCP VALOR: (ITEM): " +item.getIcmsFcpValor().toPlainString());
+		listResult.add(" ----------------------------------- DIFAL ----------------------------------- ");
+		listResult.add("ICMS VALOR UF DESTINO: (ITEM): " +item.getIcmsValorUfDestino().toPlainString());
 		listResult.add(" ----------------------------------- PIS ----------------------------------- ");
+		listResult.add("PIS CST (ITEM): " +item.getPisCst());
 		listResult.add("PIS BASE (ITEM): " +item.getPisBase().toPlainString());
 		listResult.add("PIS VALOR (ITEM): " +item.getPisValor().toPlainString());
 		listResult.add("PIS ALIQ. (ITEM): " +item.getPisAliquota().toPlainString());
-		listResult.add("PIS CST (ITEM): " +item.getPisCst());
 		listResult.add(" ----------------------------------- COFINS ----------------------------------- ");
+		listResult.add("COFINS CST (ITEM): " +item.getCofinsCst());
 		listResult.add("COFINS BASE (ITEM): " +item.getCofinsBase().toPlainString());
 		listResult.add("COFINS VALOR (ITEM): " +item.getCofinsValor().toPlainString());
 		listResult.add("COFINS ALIQ. (ITEM): " +item.getCofinsAliquota().toPlainString());
-		listResult.add("COFINS CST (ITEM): " +item.getCofinsCst());
 		listResult.add(" ----------------------------------- IPI ----------------------------------- ");
+		listResult.add("IPI CST (ITEM): " +item.getIpiCst());
 		listResult.add("IPI BASE (ITEM): " +item.getIpiBase());
 		listResult.add("IPI VALOR (ITEM): " +item.getIpiValor());
 		listResult.add("IPI ALIQ. (ITEM): " +item.getIpiAliquota());
-		listResult.add("IPI CST (ITEM): " +item.getIpiCst());
 
 		
 		if (listResult.isEmpty()) {
@@ -117,13 +135,14 @@ public class SimulacaoService {
 	 * @param documentoFiscal
 	 * @return 
 	 */
-	public StringBuffer getStrbuffMsgResultadoCalculo(DocumentoFiscal documentoFiscal) {
+	public StringBuffer getStrbuffMsgResultadoCalculo(DocumentoFiscal documentoFiscal, Integer qtdLinhas) {
 		final StringBuffer sb = new StringBuffer();
 		List<String> listMsgResultado = getListMsgResultadoCalculo(documentoFiscal);
 		
 		listMsgResultado.forEach(msg -> {
 			sb.append(msg).append("\n");
 		});
+		qtdLinhas = Integer.valueOf(listMsgResultado.size());
 		return sb;
 	}
 	
@@ -182,7 +201,7 @@ public class SimulacaoService {
 	
 	private void setRegimeTributario(Pessoa pessoa, String regimeTributario) {
 		for(RegimeTributario regimeTributa : RegimeTributario.values()) {
-			if(regimeTributa.getDescricao().equalsIgnoreCase(regimeTributario)) {
+			if(regimeTributa.toString().equalsIgnoreCase(regimeTributario)) {
 				pessoa.setRegimeTributario(regimeTributa);
 			}
 		}
