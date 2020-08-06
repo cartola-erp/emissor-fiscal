@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.documento;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,7 +76,7 @@ public class DocumentoFiscalService {
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
 		calcFiscalEstadual.calculaImposto(documentoFiscal);
 		calcFiscalFederal.calculaImposto(documentoFiscal);
-		olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(documentoFiscal));
+//		olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(documentoFiscal));
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
@@ -108,7 +110,7 @@ public class DocumentoFiscalService {
 	 */
 	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
 		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o DocumentoFiscal {0} ", documentoFiscal);
-		Map<String, Boolean> map = new HashMap<>();
+		Map<String, Boolean> map = new HashMap<>(); // FALSE == TEM ERRO | TRUE == Não tem
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());
 		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
@@ -131,12 +133,11 @@ public class DocumentoFiscalService {
 		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", opDestinatario.isPresent());
 		
 		if (validaTribuEsta) {
-			map.put("Não existe a tributação estadual para essa OPERAÇÃO e os NCMS dos itens", !tributacoesEstaduais.isEmpty());
+			validaTributosEstaduais(ncms, tributacoesEstaduais, map);
 		}
+		
 		if (validaTribuFede) {
-			boolean temTributosParaTodosNcms = isTamanhoSetNcmEqTribFede(ncms, tributacoesFederais);
-//			map.put("Não existe a tributação federal para essa OPERAÇÃO e os NCMS dos itens", !tributacoesFederais.isEmpty());
-			map.put("Não existe a tributação federal para essa OPERAÇÃO e os NCMS dos itens", temTributosParaTodosNcms);
+			validaTributosFederais(ncms, tributacoesFederais, map);
 		}
 		
 		if (!map.containsValue(false)) {
@@ -145,6 +146,8 @@ public class DocumentoFiscalService {
 		return ValidationHelper.processaErros(map);
 	}
 	
+
+
 	/**
 	 * Seta os NCMS para os Itens
 	 * E adiciona Msg no Map, caso o NCM, não exista
@@ -165,14 +168,6 @@ public class DocumentoFiscalService {
 		return ncms;
 	}
 	
-//	private void verificaTributos(Optional<Operacao> opOperacao, Set<Ncm> ncms, Estado estaOrigem, Estado estaDestino, emitente, finalidade ncm, verTributEsta, verTribuFede) {
-		
-//	}
-	
-//	private void verificaTributos(Optional<Operacao> opOperacao, Set<Ncm> ncms, Estado estaOrigem, Estado estaDestino, emitente, finalidade ncm, verTributEsta, verTribuFede) {
-	
-//	}
-	
 	private void setValoresNecessariosParaODocumentoFiscal(DocumentoFiscal documentoFiscal, Optional<Operacao> opOperacao, Optional<Pessoa> opEmitente, Optional<Pessoa> opDestinatario) {
 		if (opOperacao.isPresent() && opEmitente.isPresent() && opDestinatario.isPresent()) {
 			documentoFiscal.setOperacao(opOperacao.get());
@@ -181,13 +176,57 @@ public class DocumentoFiscalService {
 		}
 	}
 	
-	// O ideal é usar generics para Tributacao (p/ poder usar na tributacao estadual tbm)
-	private boolean isTamanhoSetNcmEqTribFede(Set<Ncm> ncms, Set<TributacaoFederal> tributacoesFederais) {
-		if(ncms.size() == tributacoesFederais.size()) {
-			return true;
-		}
-		return false;
+	// ================================================ VALIDA TRIBUTOS FEDERAIS ================================================
+	private void validaTributosFederais(Set<Ncm> ncms, Set<TributacaoFederal> tributacoesFederais, Map<String, Boolean> mapErros) {
+		Map<Ncm, Boolean> mapTribuFedeAchadasPorNcm = getMapaTribuFedeAchadasPorNcm(ncms, tributacoesFederais);
+		mapTribuFedeAchadasPorNcm.forEach((kNcm, achouTributacao) -> {
+			if(!achouTributacao) {
+				mapErros.put("Não existe TRIBUTAÇÃO FEDERAL para essa OPERAÇÃO e o NCM: " +kNcm.getNumero() + " | EX: " +kNcm.getExcecao(), false);
+			}
+		});
 	}
+	
+	/**
+	 * Retorna
+	 * @param ncmsDocumento
+	 * @param tributacoesFederais
+	 * @return Map<Ncm, Boolean> - QUe é um mapa com no qual o value irá informar se achou ou não (true or false) a tributação federal para aquele para os Ncms que tem no DocumentoFiscal
+	 */
+	private Map<Ncm, Boolean> getMapaTribuFedeAchadasPorNcm(Set<Ncm> ncmsDocumento, Set<TributacaoFederal> tributacoesFederais) {
+		Map<Ncm, Boolean> mapaTributacoesAchadasPorNcm = ncmsDocumento.stream()
+				.collect(toMap(ncm -> ncm, 
+						ncm -> tributacoesFederais.stream()
+						.filter(tribuFede -> tribuFede.getNcm().getId().equals(ncm.getId()))
+						.findAny().isPresent()));
+		return mapaTributacoesAchadasPorNcm;
+	}
+	
+	// ================================================  VALIDA TRIBUTOS ESTADUAIS ================================================
+	private void validaTributosEstaduais(Set<Ncm> ncms, List<TributacaoEstadual> tributacoesEstaduais, Map<String, Boolean> mapErros) {
+		Map<Ncm, Boolean> mapaTribuEstaPorNcm = getMapaTribuEstaAchadaPorNcm(ncms, tributacoesEstaduais);
+			mapaTribuEstaPorNcm.forEach((kNcm, achouTributacao) -> {
+				if(!achouTributacao) {
+					mapErros.put("Não existe TRIBUTAÇÃO ESTADUAL para essa OPERAÇÃO e o NCM: " +kNcm.getNumero() + " | EX: " +kNcm.getExcecao(), false);
+				}
+			});
+	}
+	
+	/**
+	 * Irá Retornar um Map<Ncm, Boolean>, onde caso o value, boolean seja true -> Achou a tributação estadual para aquele NCM
+	 * false -> NÃO achou
+	 * @param ncmsDocumento
+	 * @param tributacoesEstaduais
+	 * @return
+	 */
+	private Map<Ncm, Boolean> getMapaTribuEstaAchadaPorNcm(Set<Ncm> ncmsDocumento, List<TributacaoEstadual> tributacoesEstaduais) {
+		Map<Ncm, Boolean> mapaTributacoesPorNcm = ncmsDocumento.stream()
+			.collect(toMap(ncm -> ncm, 
+					ncm -> tributacoesEstaduais.stream()
+						.filter(tributaEstadual -> tributaEstadual.getNcm().getId().equals(ncm.getId()))
+						.findAny().isPresent()));
+		return mapaTributacoesPorNcm;
+	}
+	// ==================================================================================================================================
 	
 	
 }
