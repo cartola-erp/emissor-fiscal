@@ -68,10 +68,10 @@ public class NcmController {
 	}
 
 	@PostMapping("/consulta")
-	public ModelAndView findByNumero(@RequestParam("numeroNcm") String numeroNcm, Model model) {
+	public ModelAndView findByNumero(@RequestParam("numeroNcm") String numeroNcm, Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("ncm/consulta");
 		try {
-			mv.addObject("listNcm", ncmService.findByNumero(Integer.parseInt(numeroNcm)));
+			mv.addObject("listNcm", ncmService.findNcmByNumero(Integer.parseInt(numeroNcm), PageRequest.of(page, 20)));
 		} catch (NumberFormatException ex) {
 			mv.addObject("mensagemErro", "Erro ao tentar buscar o NCM com o número informado ");
 		}

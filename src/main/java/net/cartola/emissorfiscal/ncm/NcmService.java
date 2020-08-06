@@ -37,6 +37,10 @@ public class NcmService {
 		return ncmRepository.findNcmByNumero(numeroNcm);
 	}
 	
+	public Page<Ncm> findNcmByNumero(int numero, PageRequest pr) {
+		return ncmRepository.findNcmByNumero(numero, pr);
+	}
+	
 	public Optional<Ncm> findNcmByNumeroAndExcecao(int numero, int excecao) {
 		return ncmRepository.findNumeroAndExcecao(numero, excecao);
 	}
