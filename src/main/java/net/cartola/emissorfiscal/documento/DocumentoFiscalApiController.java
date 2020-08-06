@@ -71,17 +71,22 @@ public class DocumentoFiscalApiController {
 	
 	@PostMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
-		Response<DocumentoFiscal> response = new Response<>();
+//		Response<DocumentoFiscal> response = new Response<>();
 		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
-
+//
 		if(opDocFiscal.isPresent()) {
-			response.setData(opDocFiscal.get());
-			return ResponseEntity.ok(response);
+//			response.setData(opDocFiscal.get());
+//			return ResponseEntity.ok(response);
+			docFiscal.setId(opDocFiscal.get().getId());
 		}
 		return saveOrEditDocumentoFiscal(docFiscal);
 	}
 	
-
+	/**
+	 * DEPOIS QUE TERMINAR DE IMPLANTAR O ICMS (save(...) ), APAGAR ESSE MÉTODO
+	 * @param docFiscal
+	 * @return
+	 */
 	@PostMapping("/busca-calculo-federal")
 	public ResponseEntity<Response<DocumentoFiscal>> findCalculoFederal(@Valid @RequestBody DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Buscando calculo de PIS/COFINS, para o DocumentoFiscal {0}", docFiscal);
@@ -111,6 +116,7 @@ public class DocumentoFiscalApiController {
 			response.setErrors(Arrays.asList("O documento fiscal que você está tentando editar, NÃO existe!"));
 			return ResponseEntity.badRequest().body(response);
 		}
+		opDocFiscal.ifPresent(oldDocFiscal -> docFiscal.setId(oldDocFiscal.getId()));
 		return saveOrEditDocumentoFiscal(docFiscal);
 	}
 	
