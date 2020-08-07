@@ -6,9 +6,9 @@ package net.cartola.emissorfiscal.pessoa;
  */
 public enum RegimeTributario {
 	
-	SIMPLES("Simples"),
-	SIMPLES_EXCESSO("Presumido"),
-	NORMAL("Real");
+	SIMPLES("Simples Nacional"),
+	SIMPLES_EXCESSO("Lucro Presumido"),
+	NORMAL("Lucro Real");
 	
 	private String descricao;
 	 
