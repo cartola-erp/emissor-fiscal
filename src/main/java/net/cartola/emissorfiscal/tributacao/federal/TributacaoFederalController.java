@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -76,33 +78,35 @@ public class TributacaoFederalController {
 	}
 		
 	@GetMapping("/consulta")
-	public ModelAndView findAll() {
+	public ModelAndView findAll(Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("tributacao-federal/consulta");
-		List<TributacaoFederal> listTributacaoFederal = tributacaoFederalService.findAll();
-		
-		if (!listTributacaoFederal.isEmpty()) {
-			listTributacaoFederal.forEach(tributacaoFederal -> {
+//		List<TributacaoFederal> listTributacaoFederal = tributacaoFederalService.findAll();
+			
+		Page<TributacaoFederal> pageTribuFede = tributacaoFederalService.findAll(PageRequest.of(page, 30));
+		if (!pageTribuFede.isEmpty()) {
+			pageTribuFede.forEach(tributacaoFederal -> {
 				tributacaoFederalService.multiplicaTributacaoFederalPorCem(tributacaoFederal);
 			});
 		}
-		mv.addObject("listTributacaoFederal", listTributacaoFederal);
-		
+		mv.addObject("listTributacaoFederal", pageTribuFede);
+		model.addAttribute("paginaAtual",page);
+
 		return mv;
 	}
 
 	@PostMapping("/consulta")
-	public ModelAndView findByNumero(@RequestParam("ncm") String numeroNcm, Model model) {
+	public ModelAndView findByNumero(@RequestParam("ncm") String numeroNcm, Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("tributacao-federal/consulta");
 		try {
 			List<Ncm> listNcm = ncmService.findByNumero(Integer.parseInt(numeroNcm));
-			List<TributacaoFederal> listTributacaoFederal = tributacaoFederalService.findTributacaoFederalByVariosNcms(listNcm);
+			Page<TributacaoFederal> pageTribuFede = tributacaoFederalService.findTributacaoFederalByVariosNcms(listNcm, PageRequest.of(page, 30));
 			
-			if (!listTributacaoFederal.isEmpty()) {
-				listTributacaoFederal.forEach(tributacaoFederal -> {
+			if (!pageTribuFede.isEmpty()) {
+				pageTribuFede.forEach(tributacaoFederal -> {
 					tributacaoFederalService.multiplicaTributacaoFederalPorCem(tributacaoFederal );
 				});
 			}
-			mv.addObject("listTributacaoFederal", listTributacaoFederal);
+			mv.addObject("listTributacaoFederal", pageTribuFede);
 		} catch (Exception ex) {
 			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação federal pelo NCM informado");
 		} 

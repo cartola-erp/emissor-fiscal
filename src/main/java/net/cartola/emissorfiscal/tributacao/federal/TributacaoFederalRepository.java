@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.cartola.emissorfiscal.documento.Finalidade;
@@ -26,7 +28,10 @@ public interface TributacaoFederalRepository extends JpaRepository<TributacaoFed
 
 	List<TributacaoFederal> findByOperacaoIn(Collection<Operacao> operacoes);
 
+	Page<TributacaoFederal> findByNcmIn(Collection<Ncm> ncms, Pageable pr);
+
 	Set<TributacaoFederal> findByOperacaoAndRegimeTributarioAndFinalidadeInAndNcmIn(Operacao operacao, RegimeTributario regimeTributario, 
 			Collection<Finalidade> finalidade, Collection<Ncm> ncms);
+
 
 }

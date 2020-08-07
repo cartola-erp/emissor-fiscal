@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -25,6 +28,10 @@ public class TributacaoEstadualService {
 	
 	public List<TributacaoEstadual> findAll() {
 		return repository.findAll();
+	}
+	
+	public Page<TributacaoEstadual> findAll(PageRequest pr) {
+		return repository.findAll(pr);
 	}
 	
 	public Optional<TributacaoEstadual> save(TributacaoEstadual tributacaoEstadual) {
@@ -46,13 +53,17 @@ public class TributacaoEstadualService {
 	public List<TributacaoEstadual> findTributacaoEstadualByNcm(Ncm ncm) {
 		return repository.findByNcm(ncm);
 	}
-
+	
 	public Optional<TributacaoEstadual> findOne(Long id) {
 		return repository.findById(id); 
 	}
 	
 	public List<TributacaoEstadual> findTributacaoEstadualByNcms(Collection<Ncm> ncms) {
 		return repository.findByNcmIn(ncms);
+	}
+	
+	public Page<TributacaoEstadual> findTributacaoEstadualByNcms(List<Ncm> ncms, PageRequest pr) {
+		return repository.findByNcmIn(ncms, pr);
 	}
 	
 	public List<TributacaoEstadual> findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(Operacao operacao, Estado estadoOrigem, Estado estadoDestino, RegimeTributario regimeTributario,
@@ -94,6 +105,6 @@ public class TributacaoEstadualService {
 		}
 		return msg;
 	}
-	
+
 
 }

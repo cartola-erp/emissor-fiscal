@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.Finalidade;
@@ -29,6 +31,10 @@ public class TributacaoFederalService {
 	public List<TributacaoFederal> findAll() {
 		return tributacaoFederalRepository.findAll();
 	}
+	
+	public Page<TributacaoFederal> findAll(PageRequest pr) {
+		return tributacaoFederalRepository.findAll(pr);
+	}
 
 	public Optional<TributacaoFederal> save(TributacaoFederal tributacaoFederal) {
 //		if (tributacaoFederal.getId() == null) {
@@ -50,9 +56,13 @@ public class TributacaoFederalService {
 	public List<TributacaoFederal> findTributacaoFederalByNcm(Ncm ncm) {
 		return tributacaoFederalRepository.findByNcm(ncm);
 	}
-
+	
 	public List<TributacaoFederal> findTributacaoFederalByVariosNcms(Collection<Ncm> ncms) {
 		return tributacaoFederalRepository.findByNcmIn(ncms);
+	}
+	
+	public Page<TributacaoFederal> findTributacaoFederalByVariosNcms(Collection<Ncm> ncms, PageRequest pr) {
+		return tributacaoFederalRepository.findByNcmIn(ncms, pr);
 	}
 	
 	public Set<TributacaoFederal> findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(Operacao operacao,RegimeTributario regimeTributario,

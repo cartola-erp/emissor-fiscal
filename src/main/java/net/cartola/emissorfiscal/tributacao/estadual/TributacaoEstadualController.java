@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -86,32 +88,35 @@ public class TributacaoEstadualController {
 	}
 		
 	@GetMapping("/consulta")
-	public ModelAndView findAll() {
+	public ModelAndView findAll(Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("tributacao-estadual/consulta");
-		List<TributacaoEstadual> listTributacaoEstadual = icmsService.findAll();
+		Page<TributacaoEstadual> pageTribuEsta = icmsService.findAll(PageRequest.of(page, 30));
 		
-		if (!listTributacaoEstadual.isEmpty()) {
-			listTributacaoEstadual.forEach(tributacaoEstadual -> {
+		if (!pageTribuEsta.isEmpty()) {
+			pageTribuEsta.forEach(tributacaoEstadual -> {
 				icmsService.multiplicaTributacaoEstadualPorCem(tributacaoEstadual);
 			});
 		}
-		mv.addObject("listTributacaoEstadual", listTributacaoEstadual);
+		mv.addObject("listTributacaoEstadual", pageTribuEsta);
+		model.addAttribute("paginaAtual",page);
+
 		return mv;
 	}
 
 	@PostMapping("/consulta")
-	public ModelAndView findByNumero(@RequestParam("ncm") String numeroNcm, Model model) {
+	public ModelAndView findByNumero(@RequestParam("ncm") String numeroNcm, Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("tributacao-estadual/consulta");
 		try {
+			PageRequest pr = PageRequest.of(page, 30);
 			List<Ncm> listNcm = ncmService.findByNumero(Integer.parseInt(numeroNcm));
-			List<TributacaoEstadual> listTributacaoEstadual = icmsService.findTributacaoEstadualByNcms(listNcm);
+			Page<TributacaoEstadual> pageTribuEsta = icmsService.findTributacaoEstadualByNcms(listNcm, PageRequest.of(page, 30));
 			
-			if (!listTributacaoEstadual.isEmpty()) {
-				listTributacaoEstadual.forEach(tributacaoEstadual -> {
+			if (!pageTribuEsta.isEmpty()) {
+				pageTribuEsta.forEach(tributacaoEstadual -> {
 					icmsService.multiplicaTributacaoEstadualPorCem(tributacaoEstadual);
 				});
 			}
-			mv.addObject("listTributacaoEstadual", listTributacaoEstadual);
+			mv.addObject("listTributacaoEstadual", pageTribuEsta);
 		} catch (Exception ex) {
 			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação informada");
 		} 

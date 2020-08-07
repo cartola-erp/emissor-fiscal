@@ -120,15 +120,13 @@
 						-->
 				</table>
 						
-						<!-- 
-						<ul class="nav nav-pills ">
-							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listConsultorios.totalPages)}">
-								 <a th:href="@{/consultorio/consultar/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
-									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
-								 </a>
-							</li>	
-						</ul>
-						-->
+				<ul class="nav nav-pills ">
+					<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listTributacaoEstadual.totalPages)}">
+						 <a th:href="@{/tributacao-estadual/consulta/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+							 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
+						 </a>
+					</li>	
+				</ul>
 
 
 
