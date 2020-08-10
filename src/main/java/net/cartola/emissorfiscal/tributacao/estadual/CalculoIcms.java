@@ -86,8 +86,8 @@ public class CalculoIcms {
 		calcIcms.setValor(valorIcms);
 
 		di.setIcmsCst(tributacao.getIcmsCst());
-		//		di.setIcmsCest(tributacao.getCest());
-		//		di.setCfop(tributacao.getCfop());
+		di.setIcmsCest(tributacao.getCest());
+		di.setCfop(tributacao.getCfop());
 		di.setIcmsBase(valorIcmsBase);
 		di.setIcmsReducaoBaseAliquota(tributacao.getIcmsBase());
 		di.setIcmsValor(valorIcms);

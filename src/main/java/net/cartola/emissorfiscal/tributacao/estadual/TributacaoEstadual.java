@@ -51,6 +51,7 @@ public class TributacaoEstadual implements Serializable {
     private BigDecimal fcpAliquota = BigDecimal.ZERO;		// se a pFCPST ("fcpStAliquota") for != dessa terei q add mais um campo
     private BigDecimal icmsStAliquota = BigDecimal.ZERO;	// usado em:  ICMS10, ICMS30, ICMS70, ICMS90 etc
     private Integer cest;
+    private int cfop;
     private String mensagem;
 
     @Id
@@ -197,7 +198,16 @@ public class TributacaoEstadual implements Serializable {
         this.cest = cest;
     }
 
-    @Column(name="mens")
+    @Column(name = "cfop", scale = 4, nullable = false)
+    public int getCfop() {
+		return cfop;
+	}
+    
+	public void setCfop(int cfop) {
+		this.cfop = cfop;
+	}
+
+	@Column(name="mens")
     public String getMensagem() {
         return mensagem;
     }
