@@ -60,7 +60,7 @@ public class TributacaoEstadualLogicTest {
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA = new BigDecimal(18D);
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_IVA = new BigDecimal(2);
 	public static BigDecimal TRIBUTACAO_ESTADUAL_ICMS_ALIQUOTA_DESTINO = new BigDecimal(18D);
-	public static int TRIBUTACAO_ESTADUAL_ICMS_CEST = 100100;
+	public static int TRIBUTACAO_ESTADUAL_ICMS_CEST = 101010;
 	public static String TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM = " Essa é uma mensagem fake";
 	
 	

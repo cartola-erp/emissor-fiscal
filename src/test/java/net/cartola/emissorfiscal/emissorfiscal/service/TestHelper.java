@@ -206,7 +206,8 @@ public class TestHelper {
 	}
 	
 	
-	public TributacaoEstadual criarTribEstaVenda(Ncm ncm, int cst, EstadoSigla ufDestino, BigDecimal iva, BigDecimal icmsBase, BigDecimal fcpAliq, BigDecimal icmsStAliq) {
+	public TributacaoEstadual criarTribEstaVenda(Ncm ncm, int cst, EstadoSigla ufDestino, BigDecimal iva, BigDecimal icmsBase, 
+			BigDecimal fcpAliq, BigDecimal icmsStAliq, int cfop) {
 		Estado estadoOrigem = estadoRepository.findEstadoBySigla(EstadoSigla.SP).get();
 		Estado estadoDestino = estadoRepository.findEstadoBySigla(ufDestino).get();
 
@@ -228,6 +229,8 @@ public class TestHelper {
 		icms.setFcpAliquota(fcpAliq);
 		icms.setIcmsStAliquota(icmsStAliq);
 		icms.setCest(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_CEST);
+		icms.setCfop(cfop);
+//		icms.setCest(101010);			// Nem sei se existe, qql valor somente para testar
 		icms.setMensagem(TributacaoEstadualLogicTest.TRIBUTACAO_ESTADUAL_ICMS_MENSAGEM);
 
 		return icmsService.save(icms).get();
