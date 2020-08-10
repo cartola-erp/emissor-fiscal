@@ -100,13 +100,13 @@
 					<!-- ALIQ DO IMPOSTO -->
 					<div class="form-row">
 
-						<div class="form-group col-md-1">
+						<div class="form-group col-md-2">
 							<label for="txtIcmsCst"><strong>ICMS CST</strong></label>
 							<input type="text" class="form-control somenteNumeros" id="txtIcmsCst" th:field="*{icmsCst}" name="icmsCst" placeholder="ICMS CST..." minlength="1" maxlength="3" required />
 						</div> 
 
-						<div class="form-group col-md-1">
-							<label for="txtIcmsBase"><strong>ICMS Base</strong></label>
+						<div class="form-group col-md-2">
+							<label for="txtIcmsBase"><strong>ICMS Base Red. (%)</strong></label>
 							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsBase" th:field="*{icmsBase}" name="icmsBase" placeholder="ICMS Base..." maxlength="5" required />
 						</div> 
 
@@ -116,7 +116,7 @@
 						</div> 
 
 						<div class="form-group col-md-2">
-							<label for="txtIcmsIva"><strong>ICMS IVA/MVA</strong></label>
+							<label for="txtIcmsIva"><strong>ICMS IVA/MVA (%)</strong></label>
 							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsIva" th:field="*{icmsIva}" name="icmsIva" placeholder="ICMS IVA/MVA." maxlength="5" />
 						</div> 
 
@@ -135,21 +135,28 @@
 							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmStAliquota" th:field="*{icmsStAliquota}" name="icmsStAliquota" placeholder="ICMS ST ALIQ." maxlength="5" required />
 						</div> 
 
-						<div class="form-group col-md-12">
+						<div class="form-group col-md-2">
 							<label for="txtCest"><strong>CEST</strong></label>
 							<input type="text" class="form-control somenteNumeros" id="txtCest" th:field="*{cest}" name="cest" placeholder="Cest..." minlength="1" maxlength="10" required>
 						</div> 
 
+						<div class="form-group col-md-2">
+							<label for="txtCfop"><strong>CFOP</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtCfop" th:field="*{cfop}" name="cfop" placeholder="CFOP..." minlength="4" maxlength="4" required>
+						</div> 
+
+							<!-- Mensagem -->
+						<!-- <div class="form-row"> -->
+							<div class="form-group col-md-6">
+								<label for="txtDescricao">Mensagem</label>
+								<i class="fas fa-pencil-alt prefix"></i>
+								<textarea id="txtMensagem" th:field="*{mensagem}" name="mensagem" class="md-textarea form-control " rows="1"  maxlength="250"></textarea>
+							</div>
+						<!-- </div>	 -->
+
 					</div>
 
-					<!-- Mensagem -->
-					<div class="form-row">
-						<div class="form-group col-md-12">
-							<label for="txtDescricao">Mensagem</label>
-							<i class="fas fa-pencil-alt prefix"></i>
-							<textarea id="txtMensagem" th:field="*{mensagem}" name="mensagem" class="md-textarea form-control " rows="2" required></textarea>
-						</div>
-					</div>	
+				
 
 					<!-- BTN ALTERAR/CADASTRAR -->
 					<div class="form-row">
