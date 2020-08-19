@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import java.util.Date;
 
+import com.ancientprogramming.fixedformat4j.annotation.Field;
 import com.ancientprogramming.fixedformat4j.annotation.Record;
 
 import net.cartola.emissorfiscal.sped.fiscal.FinalidadeDoArquivo;
@@ -19,7 +20,7 @@ import net.cartola.emissorfiscal.sped.fiscal.VersaoDoLayout;
 @Record
 public class Reg0000AberturaArquivoDigital {
 	
-	private String reg;
+	private String reg = "0000";
 	private VersaoDoLayout codVer;
 	private FinalidadeDoArquivo codFin = FinalidadeDoArquivo.REMESSA_ARQUIVO_ORIGINAL;
 	private Date dtIni;
@@ -35,6 +36,7 @@ public class Reg0000AberturaArquivoDigital {
 	private PerfilEnquadramento indPerfil = PerfilEnquadramento.A;
 	private TipoDeAtividade indAtiv = TipoDeAtividade.OUTROS;
 	
+	@Field(offset = 1, length = 4)
 	public String getReg() {
 		return reg;
 	}
@@ -43,6 +45,7 @@ public class Reg0000AberturaArquivoDigital {
 		this.reg = reg;
 	}
 
+	@Field(offset = 5, length = 3)
 	public VersaoDoLayout getCodVer() {
 		return codVer;
 	}

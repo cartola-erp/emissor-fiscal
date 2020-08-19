@@ -8,4 +8,6 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
  */
 public class Bloco0 {
 	
+	private Reg0000AberturaArquivoDigital reg0000;
+	
 }
