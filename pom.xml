@@ -110,7 +110,14 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 		</dependency>
-
+		
+		<!-- Para trabalhar com os arquivos do SPED -->
+		<dependency>
+			<groupId>com.ancientprogramming.fixedformat4j</groupId>
+			<artifactId>fixedformat4j</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		
 		<!-- Testes -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
