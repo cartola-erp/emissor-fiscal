@@ -2,9 +2,8 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import java.util.Date;
 
-import com.ancientprogramming.fixedformat4j.annotation.Field;
-import com.ancientprogramming.fixedformat4j.annotation.Record;
-
+import coffeepot.bean.wr.annotation.Field;
+import coffeepot.bean.wr.annotation.Record;
 import net.cartola.emissorfiscal.sped.fiscal.FinalidadeDoArquivo;
 import net.cartola.emissorfiscal.sped.fiscal.PerfilEnquadramento;
 import net.cartola.emissorfiscal.sped.fiscal.TipoDeAtividade;
@@ -17,7 +16,10 @@ import net.cartola.emissorfiscal.sped.fiscal.VersaoDoLayout;
  * Registro 0000 - abertura do arquivo digital e indentificação da entidade
  */
 
-@Record
+@Record(fields = {
+		@Field(name = "reg"),
+		@Field(name = "codVer")
+})
 public class Reg0000AberturaArquivoDigital {
 	
 	private String reg = "0000";
@@ -36,7 +38,6 @@ public class Reg0000AberturaArquivoDigital {
 	private PerfilEnquadramento indPerfil = PerfilEnquadramento.A;
 	private TipoDeAtividade indAtiv = TipoDeAtividade.OUTROS;
 	
-	@Field(offset = 1, length = 4)
 	public String getReg() {
 		return reg;
 	}
@@ -45,7 +46,6 @@ public class Reg0000AberturaArquivoDigital {
 		this.reg = reg;
 	}
 
-	@Field(offset = 5, length = 3)
 	public VersaoDoLayout getCodVer() {
 		return codVer;
 	}
