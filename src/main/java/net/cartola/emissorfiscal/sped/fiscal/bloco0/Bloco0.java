@@ -12,27 +12,27 @@ import coffeepot.bean.wr.annotation.Record;
  * Bloco 0 - Identificação e referências (registros de tabelas)
  */
 @Record(fields = {
-		@Field(name = "reg0000"),
-		@Field(name = "reg0001"),
-		@Field(name = "reg0005"),
-		@Field(name = "reg0015"),
-		@Field(name = "reg0100"),
-		@Field(name = "reg0150"),
-		@Field(name = "reg0175"),
-		@Field(name = "reg0190"),
-		@Field(name = "reg0200"),
-		@Field(name = "reg0205"),
-		@Field(name = "reg0206"),
-		@Field(name = "reg0210"),
-		@Field(name = "reg0220"),
-		@Field(name = "reg0300"),
-		@Field(name = "reg0305"),
-		@Field(name = "reg0400"),
-		@Field(name = "reg0450"),
-		@Field(name = "reg0460"),
-		@Field(name = "reg0500"),
-        @Field(name = "reg0600"),
-		@Field(name = "reg0990")
+	@Field(name = "reg0000"),
+	@Field(name = "reg0001"),
+	@Field(name = "reg0005"),
+	@Field(name = "reg0015"),
+	@Field(name = "reg0100"),
+	@Field(name = "reg0150"),
+	@Field(name = "reg0175"),
+	@Field(name = "reg0190"),
+	@Field(name = "reg0200"),
+	@Field(name = "reg0205"),
+	@Field(name = "reg0206"),
+	@Field(name = "reg0210"),
+	@Field(name = "reg0220"),
+	@Field(name = "reg0300"),
+	@Field(name = "reg0305"),
+	@Field(name = "reg0400"),
+	@Field(name = "reg0450"),
+	@Field(name = "reg0460"),
+	@Field(name = "reg0500"),
+    @Field(name = "reg0600"),
+	@Field(name = "reg0990")
 })    
 public class Bloco0 {
 	
@@ -45,24 +45,25 @@ public class Bloco0 {
 	
 	private Reg0000AberturaArquivoDigital reg0000;
 	private Reg0001AberturaDoBloco reg0001;
+//	private Reg0002 reg0002;
 	private Reg0005 reg0005;
-	private Reg0015 reg0015;
+	private List<Reg0015> reg0015;
 	private Reg0100 reg0100;
-	private Reg0150 reg0150;
-	private Reg0175 reg0175;
-	private Reg0190 reg0190;
-	private Reg0200 reg0200;
-	private Reg0205 reg0205;
+	private List<Reg0150> reg0150;
+	private List<Reg0175> reg0175;
+	private List<Reg0190> reg0190;
+	private List<Reg0200> reg0200;
+	private List<Reg0205> reg0205;
 	private Reg0206 reg0206;
-	private Reg0210 reg0210;
-	private Reg0220 reg0220;
-	private Reg0300 reg0300;
+	private List<Reg0210> reg0210;
+	private List<Reg0220> reg0220;
+	private List<Reg0300> reg0300;
 	private Reg0305 reg0305;
-	private Reg0400 reg0400;
-	private Reg0450 reg0450;
-	private Reg0460 reg0460;
-	private Reg0500 reg0500;
-	private Reg0600 reg0600;
+	private List<Reg0400> reg0400;
+	private List<Reg0450> reg0450;
+	private List<Reg0460> reg0460;
+	private List<Reg0500> reg0500;
+	private List<Reg0600> reg0600;
 	private Reg0990EncerramentoDoBloco reg0990;
 	
 	public Reg0000AberturaArquivoDigital getReg0000() {
@@ -89,11 +90,11 @@ public class Bloco0 {
 		this.reg0005 = reg0005;
 	}
 
-	public Reg0015 getReg0015() {
+	public List<Reg0015> getReg0015() {
 		return reg0015;
 	}
 
-	public void setReg0015(Reg0015 reg0015) {
+	public void setReg0015(List<Reg0015> reg0015) {
 		this.reg0015 = reg0015;
 	}
 
@@ -105,43 +106,43 @@ public class Bloco0 {
 		this.reg0100 = reg0100;
 	}
 
-	public Reg0150 getReg0150() {
+	public List<Reg0150> getReg0150() {
 		return reg0150;
 	}
 
-	public void setReg0150(Reg0150 reg0150) {
+	public void setReg0150(List<Reg0150> reg0150) {
 		this.reg0150 = reg0150;
 	}
 
-	public Reg0175 getReg0175() {
+	public List<Reg0175> getReg0175() {
 		return reg0175;
 	}
 
-	public void setReg0175(Reg0175 reg0175) {
+	public void setReg0175(List<Reg0175> reg0175) {
 		this.reg0175 = reg0175;
 	}
 
-	public Reg0190 getReg0190() {
+	public List<Reg0190> getReg0190() {
 		return reg0190;
 	}
 
-	public void setReg0190(Reg0190 reg0190) {
+	public void setReg0190(List<Reg0190> reg0190) {
 		this.reg0190 = reg0190;
 	}
 
-	public Reg0200 getReg0200() {
+	public List<Reg0200> getReg0200() {
 		return reg0200;
 	}
 
-	public void setReg0200(Reg0200 reg0200) {
+	public void setReg0200(List<Reg0200> reg0200) {
 		this.reg0200 = reg0200;
 	}
 
-	public Reg0205 getReg0205() {
+	public List<Reg0205> getReg0205() {
 		return reg0205;
 	}
 
-	public void setReg0205(Reg0205 reg0205) {
+	public void setReg0205(List<Reg0205> reg0205) {
 		this.reg0205 = reg0205;
 	}
 
@@ -153,27 +154,27 @@ public class Bloco0 {
 		this.reg0206 = reg0206;
 	}
 
-	public Reg0210 getReg0210() {
+	public List<Reg0210> getReg0210() {
 		return reg0210;
 	}
 
-	public void setReg0210(Reg0210 reg0210) {
+	public void setReg0210(List<Reg0210> reg0210) {
 		this.reg0210 = reg0210;
 	}
 
-	public Reg0220 getReg0220() {
+	public List<Reg0220> getReg0220() {
 		return reg0220;
 	}
 
-	public void setReg0220(Reg0220 reg0220) {
+	public void setReg0220(List<Reg0220> reg0220) {
 		this.reg0220 = reg0220;
 	}
 
-	public Reg0300 getReg0300() {
+	public List<Reg0300> getReg0300() {
 		return reg0300;
 	}
 
-	public void setReg0300(Reg0300 reg0300) {
+	public void setReg0300(List<Reg0300> reg0300) {
 		this.reg0300 = reg0300;
 	}
 
@@ -185,43 +186,43 @@ public class Bloco0 {
 		this.reg0305 = reg0305;
 	}
 
-	public Reg0400 getReg0400() {
+	public List<Reg0400> getReg0400() {
 		return reg0400;
 	}
 
-	public void setReg0400(Reg0400 reg0400) {
+	public void setReg0400(List<Reg0400> reg0400) {
 		this.reg0400 = reg0400;
 	}
 
-	public Reg0450 getReg0450() {
+	public List<Reg0450> getReg0450() {
 		return reg0450;
 	}
 
-	public void setReg0450(Reg0450 reg0450) {
+	public void setReg0450(List<Reg0450> reg0450) {
 		this.reg0450 = reg0450;
 	}
 
-	public Reg0460 getReg0460() {
+	public List<Reg0460> getReg0460() {
 		return reg0460;
 	}
 
-	public void setReg0460(Reg0460 reg0460) {
+	public void setReg0460(List<Reg0460> reg0460) {
 		this.reg0460 = reg0460;
 	}
 
-	public Reg0500 getReg0500() {
+	public List<Reg0500> getReg0500() {
 		return reg0500;
 	}
 
-	public void setReg0500(Reg0500 reg0500) {
+	public void setReg0500(List<Reg0500> reg0500) {
 		this.reg0500 = reg0500;
 	}
 
-	public Reg0600 getReg0600() {
+	public List<Reg0600> getReg0600() {
 		return reg0600;
 	}
 
-	public void setReg0600(Reg0600 reg0600) {
+	public void setReg0600(List<Reg0600> reg0600) {
 		this.reg0600 = reg0600;
 	}
 
@@ -232,5 +233,4 @@ public class Bloco0 {
 	public void setReg0990(Reg0990EncerramentoDoBloco reg0990) {
 		this.reg0990 = reg0990;
 	}
-	
 }

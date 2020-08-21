@@ -1,6 +1,6 @@
 package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
@@ -17,16 +17,29 @@ import net.cartola.emissorfiscal.sped.fiscal.VersaoDoLayout;
  */
 
 @Record(fields = {
-		@Field(name = "reg"),
-		@Field(name = "codVer")
+		@Field(name = "reg", maxLength = 4),	    
+		@Field(name = "codVer"),
+	    @Field(name = "codFin"),
+	    @Field(name = "dtIni"),
+	    @Field(name = "dtFin"),
+	    @Field(name = "nome", maxLength = 100),
+	    @Field(name = "cnpj"),
+	    @Field(name = "cpf"),
+	    @Field(name = "uf"),
+	    @Field(name = "ie"),
+	    @Field(name = "codMun", length = 7),
+	    @Field(name = "im"),
+	    @Field(name = "suframa", length = 9),
+	    @Field(name = "indPerfil"),
+	    @Field(name = "indAtiv")
 })
 public class Reg0000AberturaArquivoDigital {
 	
-	private String reg = "0000";
+	private final String reg = "0000";
 	private VersaoDoLayout codVer;
 	private FinalidadeDoArquivo codFin = FinalidadeDoArquivo.REMESSA_ARQUIVO_ORIGINAL;
-	private Date dtIni;
-	private Date dtFin;
+	private LocalDate dtIni;
+	private LocalDate dtFin;
 	private String nome;
 	private Long cnpj;
 	private Long cpf;
@@ -42,10 +55,6 @@ public class Reg0000AberturaArquivoDigital {
 		return reg;
 	}
 	
-	public void setReg(String reg) {
-		this.reg = reg;
-	}
-
 	public VersaoDoLayout getCodVer() {
 		return codVer;
 	}
@@ -62,19 +71,19 @@ public class Reg0000AberturaArquivoDigital {
 		this.codFin = codFin;
 	}
 
-	public Date getDtIni() {
+	public LocalDate getDtIni() {
 		return dtIni;
 	}
 
-	public void setDtIni(Date dtIni) {
+	public void setDtIni(LocalDate dtIni) {
 		this.dtIni = dtIni;
 	}
 
-	public Date getDtFin() {
+	public LocalDate getDtFin() {
 		return dtFin;
 	}
 
-	public void setDtFin(Date dtFin) {
+	public void setDtFin(LocalDate dtFin) {
 		this.dtFin = dtFin;
 	}
 
