@@ -50,15 +50,15 @@ public class Bloco0 {
 	private List<Reg0015> reg0015;
 	private Reg0100 reg0100;
 	private List<Reg0150> reg0150;
-	private List<Reg0175> reg0175;
-	private List<Reg0190> reg0190;
+	private List<Reg0175> reg0175;		// Filho do Reg0150
+	private List<Reg0190> reg0190;		
 	private List<Reg0200> reg0200;
-	private List<Reg0205> reg0205;
-	private Reg0206 reg0206;
-	private List<Reg0210> reg0210;
-	private List<Reg0220> reg0220;
+	private List<Reg0205> reg0205;		// Filho do Reg0200
+	private Reg0206 reg0206;			// Filho do Reg0200
+	private List<Reg0210> reg0210;		// Filho do Reg0200
+	private List<Reg0220> reg0220;		// Filho do Reg0200
 	private List<Reg0300> reg0300;
-	private Reg0305 reg0305;
+	private Reg0305 reg0305;			// Filho do Reg0300
 	private List<Reg0400> reg0400;
 	private List<Reg0450> reg0450;
 	private List<Reg0460> reg0460;
