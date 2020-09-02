@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
-import net.cartola.emissorfiscal.sped.fiscal.FinalidadeDoArquivo;
-import net.cartola.emissorfiscal.sped.fiscal.PerfilEnquadramento;
-import net.cartola.emissorfiscal.sped.fiscal.TipoDeAtividade;
-import net.cartola.emissorfiscal.sped.fiscal.VersaoDoLayout;
+import net.cartola.emissorfiscal.sped.fiscal.enums.FinalidadeDoArquivo;
+import net.cartola.emissorfiscal.sped.fiscal.enums.PerfilEnquadramento;
+import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeAtividade;
+import net.cartola.emissorfiscal.sped.fiscal.enums.VersaoDoLayout;
 
 /**
  * 19/08/2020

@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.sped.fiscal;
+package net.cartola.emissorfiscal.sped.fiscal.enums;
 
 /**
  * 31/08/2020

@@ -4,7 +4,7 @@ import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
-import net.cartola.emissorfiscal.sped.fiscal.TipoDoItem;
+import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
 
 /**
  * 19/08/2020

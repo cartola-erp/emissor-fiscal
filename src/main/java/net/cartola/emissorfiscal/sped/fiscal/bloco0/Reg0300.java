@@ -2,7 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
-import net.cartola.emissorfiscal.sped.fiscal.IdentificacaoTipoDeMercadoria;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IdentificacaoTipoDeMercadoria;
 
 /**
  * 19/08/2020

@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
-import net.cartola.emissorfiscal.sped.fiscal.GrupoDeConta;
-import net.cartola.emissorfiscal.sped.fiscal.IndicadorDoTipoDeConta;
+import net.cartola.emissorfiscal.sped.fiscal.enums.GrupoDeConta;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoTipoDeConta;
 
 /**
  * 19/08/2020
