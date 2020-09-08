@@ -23,5 +23,14 @@ public class BlocoB {
 	public RegB990EncerramentoDoBlocoB getRegB990() {
 		return regB990;
 	}
+
+	public void setRegB001(RegB001AberturaDoBloco regB001) {
+		this.regB001 = regB001;
+	}
+
+	public void setRegB990(RegB990EncerramentoDoBlocoB regB990) {
+		this.regB990 = regB990;
+	}
+	
 	
 }

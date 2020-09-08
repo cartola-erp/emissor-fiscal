@@ -16,18 +16,18 @@ import coffeepot.bean.wr.annotation.Record;
 public class RegB990EncerramentoDoBlocoB {
 	
 	private final String reg = "B990";
-	private Long qtdLin0;
+	private Long qtdLinB;
 
 	public RegB990EncerramentoDoBlocoB() {
-		this.qtdLin0 = 2L;
+		this.qtdLinB = 2L;
 	}
 
 	public String getReg() {
 		return reg;
 	}
 
-	public Long getQtdLin0() {
-		return qtdLin0;
+	public Long getQtdLinB() {
+		return qtdLinB;
 	}
 
 	
