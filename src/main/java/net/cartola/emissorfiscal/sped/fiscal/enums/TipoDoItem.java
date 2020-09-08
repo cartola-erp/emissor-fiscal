@@ -4,7 +4,7 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
  * 21/08/2020
  * @author robson.costa
  */
-public enum TipoDoItem {
+public enum TipoDoItem implements EnumCodificado {
 
 	MERCADORIA_PARA_REVENDA("00"),
 	MATÉRIA_PRIMA("01"),
@@ -25,7 +25,8 @@ public enum TipoDoItem {
         this.tipoDoItem = tipoDoItem;
     }
  
-    public String getTipoDoItem() {
+	@Override
+    public String getCodigo() {
         return tipoDoItem;
     }
 }

@@ -4,19 +4,20 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
  * 02/09/2020
  * @author robson.costa
  */
-public enum IndicadorDePagamento {
+public enum IndicadorDePagamento implements EnumCodificado {
 	
-	A_VISTA(0),
-	A_PRAZO(1),
-	OUTROS(2);
+	A_VISTA("0"),
+	A_PRAZO("1"),
+	OUTROS("2");
 
-	private int indPgto;
+	private String indPgto;
 	 
-	IndicadorDePagamento(int indPgto) {
+	IndicadorDePagamento(String indPgto) {
         this.indPgto = indPgto;
     }
- 
-    public int getIndPgto() {
+	
+	@Override
+    public String getCodigo() {
         return indPgto;
     }
 }

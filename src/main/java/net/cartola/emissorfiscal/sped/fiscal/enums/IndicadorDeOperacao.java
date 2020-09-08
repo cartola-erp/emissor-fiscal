@@ -4,18 +4,19 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
  * 21/08/2020
  * @author robson.costa
  */
-public enum IndicadorDeOperacao {
+public enum IndicadorDeOperacao implements EnumCodificado {
 
-	ENTRADA(0),
-	SAIDA(1);
+	ENTRADA("0"),
+	SAIDA("1");
 
-	private int indOper;
+	private String indOper;
 	 
-	IndicadorDeOperacao(int indOper) {
+	IndicadorDeOperacao(String indOper) {
         this.indOper = indOper;
     }
- 
-    public int getIndOper() {
+	
+	@Override
+    public String getCodigo() {
         return indOper;
     }
 }

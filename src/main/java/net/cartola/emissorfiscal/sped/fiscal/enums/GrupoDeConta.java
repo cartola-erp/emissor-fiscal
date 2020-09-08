@@ -4,7 +4,7 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
  * 31/08/2020
  * @author robson.costa
  */
-public enum GrupoDeConta {
+public enum GrupoDeConta implements EnumCodificado {
 	
 	CONTAS_DE_ATIVO("01"),
 	CONTAS_DE_PASSIVO("02"),
@@ -18,8 +18,9 @@ public enum GrupoDeConta {
 	GrupoDeConta(String codNaturezaDaConta) {
         this.codNaturezaDaConta = codNaturezaDaConta;
     }
- 
-    public String getCodNaturezaDaConta() {
+	
+	@Override
+    public String getCodigo() {
         return codNaturezaDaConta;
     }
     

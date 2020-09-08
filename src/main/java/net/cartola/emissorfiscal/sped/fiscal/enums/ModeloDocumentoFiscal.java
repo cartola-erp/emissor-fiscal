@@ -4,7 +4,7 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
  * 02/09/2020
  * @author robson.costa
  */
-public enum ModeloDocumentoFiscal {
+public enum ModeloDocumentoFiscal implements EnumCodificado {
 	
     _1("Nota Fiscal", "01"),
     _1B("Nota Fiscal Avulsa", "1B"),
@@ -45,7 +45,8 @@ public enum ModeloDocumentoFiscal {
         this.codigo = codigo;
         this.descricao = descricao;
     }
-
+	
+	@Override
     public String getCodigo() {
         return codigo;
     }

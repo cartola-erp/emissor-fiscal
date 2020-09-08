@@ -4,7 +4,7 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
  * 19/08/2020
  * @author robson.costa
  */
-public enum PerfilEnquadramento {
+public enum PerfilEnquadramento implements EnumCodificado {
 	
 	A("A"),
 	B("B"),
@@ -15,8 +15,9 @@ public enum PerfilEnquadramento {
 	PerfilEnquadramento(String descricao) {
         this.descricao = descricao;
     }
- 
-    public String getDescricao() {
+	
+	@Override
+    public String getCodigo() {
         return descricao;
     }
     

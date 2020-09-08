@@ -4,7 +4,7 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
  * 02/09/2020
  * @author robson.costa
  */
-public enum SituacaoDoDocumento {
+public enum SituacaoDoDocumento implements EnumCodificado {
 	
 	DOCUMENTO_REGULAR("00"),	
 	ESCRITURAÇÃO_EXTEMPORÂNEA_DE_DOCUMENTO_REGULAR("01"),
@@ -21,7 +21,8 @@ public enum SituacaoDoDocumento {
 	private SituacaoDoDocumento(String codigo) {
 		this.codigo = codigo;
 	}
-
+	
+	@Override
 	public String getCodigo() {
 		return codigo;
 	}

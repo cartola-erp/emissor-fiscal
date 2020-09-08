@@ -4,7 +4,7 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
  * 31/08/2020
  * @author robson.costa
  */
-public enum IndicadorDoTipoDeConta {
+public enum IndicadorDoTipoDeConta implements EnumCodificado {
 	
 	SINTETICA_GRUPO_DE_CONTA("S"),
 	ANALITICA_CONTA("A");
@@ -14,8 +14,9 @@ public enum IndicadorDoTipoDeConta {
 	IndicadorDoTipoDeConta(String indicadorTipoDeConta) {
         this.indicadorTipoDeConta = indicadorTipoDeConta;
     }
- 
-    public String getCodNaturezaDaConta() {
+	
+	@Override
+    public String getCodigo() {
         return indicadorTipoDeConta;
     }
     
