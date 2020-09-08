@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import coffeepot.bean.wr.annotation.Field;
@@ -27,7 +28,7 @@ public class RegC112 {
     private String uf;
     private String numDa;
     private String codAut;
-    private Double vlDa;
+    private BigDecimal vlDa;
     private LocalDate dtVcto;
     private LocalDate dtPgto;
 	
@@ -67,11 +68,11 @@ public class RegC112 {
 		this.codAut = codAut;
 	}
 
-	public Double getVlDa() {
+	public BigDecimal getVlDa() {
 		return vlDa;
 	}
 
-	public void setVlDa(Double vlDa) {
+	public void setVlDa(BigDecimal vlDa) {
 		this.vlDa = vlDa;
 	}
 
