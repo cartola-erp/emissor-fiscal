@@ -3,6 +3,8 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
 /**
  * 02/09/2020
  * @author robson.costa
+ * 
+ * 4.1.1 - Tabela Documentos Fiscais do ICMS
  */
 public enum ModeloDocumentoFiscal implements EnumCodificado {
 	
