@@ -13,10 +13,10 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.ResponsavelRetencaoIcmsSt;
  * 02/09/2020
  * @author robson.costa
  */
-@Record(fields = { 
-	@Field(name = "reg", maxLength = 4),
-
-})
+//@Record(fields = { 
+//	@Field(name = "reg", maxLength = 4),
+//
+//})
 public class RegC185 {
 	
 //	private final String reg = "C185";

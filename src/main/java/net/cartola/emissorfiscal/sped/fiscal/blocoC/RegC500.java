@@ -2,12 +2,12 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import net.cartola.emissorfiscal.sped.fiscal.enums.CodConsumoEnergiaOuGas;
 import net.cartola.emissorfiscal.sped.fiscal.enums.CodTipoDeLigacao;
-import net.cartola.emissorfiscal.sped.fiscal.enums.FinalidadeDoArquivo;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
@@ -54,7 +54,12 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
 	@Field(name = "chvDOCeRef"),
 	@Field(name = "indDest"),
 	@Field(name = "codMunDest"),
-	@Field(name = "codCta")
+	@Field(name = "codCta"),
+	// ==================== FILHO ====================
+	@Field(name = "regC510"),
+	@Field(name = "regC590"),
+	@Field(name = "regC595")
+
 })
 public class RegC500 {
 	
@@ -91,7 +96,12 @@ public class RegC500 {
 	private String indDest;
 	private String codMunDest;
 	private String codCta;
-	
+
+	// ==================== FILHO ====================
+	private List<RegC510> regC510;
+	private List<RegC590> regC590;
+	private List<RegC595> regC595;
+
 	public String getReg() {
 		return reg;
 	}
@@ -350,6 +360,30 @@ public class RegC500 {
 
 	public void setCodCta(String codCta) {
 		this.codCta = codCta;
+	}
+
+	public List<RegC510> getRegC510() {
+		return regC510;
+	}
+
+	public void setRegC510(List<RegC510> regC510) {
+		this.regC510 = regC510;
+	}
+
+	public List<RegC590> getRegC590() {
+		return regC590;
+	}
+
+	public void setRegC590(List<RegC590> regC590) {
+		this.regC590 = regC590;
+	}
+
+	public List<RegC595> getRegC595() {
+		return regC595;
+	}
+
+	public void setRegC595(List<RegC595> regC595) {
+		this.regC595 = regC595;
 	}
 	
 }	
