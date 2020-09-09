@@ -3,6 +3,8 @@ package net.cartola.emissorfiscal.sped.fiscal.enums;
 /**
  * 02/09/2020
  * @author robson.costa
+ * 
+ *  Código da Situação do Documento (tabela 4.1.2)
  */
 public enum SituacaoDoDocumento implements EnumCodificado {
 	
