@@ -7,10 +7,12 @@ import coffeepot.bean.wr.annotation.Record;
  * 02/09/2020
  * @author robson.costa
  */
-@Record(fields = { 
-	@Field(name = "reg", maxLength = 4),
-
-})
+//@Record(fields = { 
+//	@Field(name = "reg", maxLength = 4),
+//
+//})
 public class RegC600 {
+	
+//	private final String reg = "C600";
 
 }
