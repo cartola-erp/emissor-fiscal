@@ -12,5 +12,13 @@ import coffeepot.bean.wr.annotation.Record;
 //
 //})
 public class RegC700 {
-
+	
+	
+	 /**
+	  *  PARA O PERFIL A NÃO é preciso na entrada (AO menos a MATRIZ é ESSE PERFIL) 
+	  *  e na saída é opcional.
+	  *  
+	  *  Como nos arquivos SPED que a Gabriela me passou (foram gerados pelo Sage), não vi nenhuma vez esses campos 
+	  *  acredito que não sejam preciso pará nós o C700 e seus filhos
+	  **/
 }

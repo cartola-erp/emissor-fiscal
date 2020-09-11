@@ -14,5 +14,9 @@ import coffeepot.bean.wr.annotation.Record;
 public class RegC600 {
 	
 //	private final String reg = "C600";
-
+	
+	 /**
+	  *  PARA O PERFIL A NÃO é preciso (AO menos a MATRIZ é ESSE PERFIL) 
+	  *  
+	  **/
 }

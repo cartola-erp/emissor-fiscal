@@ -1,7 +1,6 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
@@ -29,7 +28,6 @@ import coffeepot.bean.wr.annotation.Record;
 	@Field(name = "codObs"),
 	// ==================== FILHO ====================
 	@Field(name = "regC591"),
-	@Field(name = "regC597")
 })
 public class RegC590 {
 	
@@ -46,7 +44,6 @@ public class RegC590 {
 	private String codObs;
 	// ==================== FILHO ====================
 	private RegC591 regC591;
-	private List<RegC597> regC597;
 	
 	public String getReg() {
 		return reg;
@@ -130,6 +127,14 @@ public class RegC590 {
 
 	public void setCodObs(String codObs) {
 		this.codObs = codObs;
+	}
+
+	public RegC591 getRegC591() {
+		return regC591;
+	}
+
+	public void setRegC591(RegC591 regC591) {
+		this.regC591 = regC591;
 	}
 	
 }

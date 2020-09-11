@@ -12,5 +12,8 @@ import coffeepot.bean.wr.annotation.Record;
 //
 //})
 public class RegC870 {
-
+	
+	
+    // ==================== FILHO ====================
+	private RegC880 regC880;
 }
