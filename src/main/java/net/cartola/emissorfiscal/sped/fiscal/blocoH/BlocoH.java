@@ -11,6 +11,9 @@ import coffeepot.bean.wr.annotation.Field;
  * @author robson.costa
  * 
  * BLOCO H - INVENTÁRIO FÍSICO
+ * 
+ * <b> IMPORTANTE: </b> Deixar somente Registros, cujo o nivel seja até o "NÍVEL == 2", acima disso (registros filhos), 
+ * deveram ser preenchidos através de seu "REGISTRO PAI"  
  */
 @Record(fields = {
 	    @Field(name = "regH001"),
