@@ -8,6 +8,11 @@ import coffeepot.bean.wr.annotation.Record;
 /**
  * 19/08/2020
  * @author robson.costa
+ * 
+ * BLOCO E: APURAÇÃO DO ICMS E DO IPI
+ * 
+ * <b> IMPORTANTE: </b> Deixar somente Registros, cujo o nivel seja até o "NÍVEL == 2", acima disso (registros filhos), 
+ * deveram ser preenchidos através de seu "REGISTRO PAI"  
  */
 @Record(fields = {
 	    @Field(name = "regE001"),

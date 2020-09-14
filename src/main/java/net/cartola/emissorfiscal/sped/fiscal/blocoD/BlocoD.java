@@ -9,6 +9,8 @@ import coffeepot.bean.wr.annotation.Record;
  * 19/08/2020
  * @author robson.costa
  * 
+ * BLOCO D - DOCUMENTOS FISCAIS II - SERVIÇOS (ICMS)
+ * 
  *  <b> IMPORTANTE: </b> Deixar somente Registros, cujo o nivel seja até o "NÍVEL == 2", acima disso (registros filhos), 
  * deveram ser preenchidos através de seu "REGISTRO PAI"  
  */
