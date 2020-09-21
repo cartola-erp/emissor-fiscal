@@ -1,0 +1,12 @@
+
+
+- Esse pacote será responsavel pelas services dos blocos:
+
+	 - B - Escrituração e Apuração do ISS 
+	 - G - Controle do Crédito de ICMS do Ativo Permanente - CIAP
+	 - H - Inventário Físico
+	 - K - Controle da Produção e do Estoque
+	 - 1 - Outras Informações
+	 
+- Pois atualmente NÃO precisamos de informar eles (além do necessário que é Basicamente a abertura e fechamento)
+- Caso passe, a ser necessário de informar algum acima de forma mais detalhada, crie um pacote para o mesmo (semelhante ao que é feito com os dos blocos 0, C, D etc)
