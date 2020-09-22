@@ -18,7 +18,7 @@ public class MovimentacoesMensalIcmsIpi {
 	 * Caso eu pensei em um nome melhor, basta eu mudar aqui, já que criei apenas para colocar nos
 	 * generics das interface que irei usar nas Services
 	 * 
-	 * PS: Tbm tenho que ver se esse é o melhor pacote para ficar essa model ( @DadosParaEfdPisCofins)
+	 * PS: Tbm tenho que ver se esse é o melhor pacote para ficar essa model ( @MovimentacoesMensalIcmsIpi)
 	 */
 	
 	
