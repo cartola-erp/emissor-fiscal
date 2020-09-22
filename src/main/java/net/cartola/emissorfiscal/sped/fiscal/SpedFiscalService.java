@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.service.Bloco0Service;
+import net.cartola.emissorfiscal.sped.fiscal.bloco9.Bloco9;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.service.BlocoCService;
 import net.cartola.emissorfiscal.sped.fiscal.blocoD.service.BlocoDService;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.service.BlocoEService;
@@ -60,8 +61,28 @@ public class SpedFiscalService implements MontaArquivoSpedFiscal<SpedFiscal, Mov
 	public SpedFiscal criarArquivoSpedFiscal(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o arquivo do SPED FISCAL (Icms IPI) ");
-
-		return null;
+		/** 
+		 * @Todo 
+		 * Iterar dentro de um for, de lojas? mas onde? aqui ou no controller? 
+		 * acho que o ideal será no controller.
+		 * Porém o importante de saber é que caso 1 loja de certo tenho que salvar o seu arquivo no banco, e apenas retornar 
+		 * as que deram errado;
+		 */
+		
+		SpedFiscal spedFiscal = new SpedFiscal();
+		
+		spedFiscal.setBloco0(bloco0Service.criarBloco(movimentacoesMensalIcmsIpi));
+		spedFiscal.setBlocoB(blocoBService.criarBloco(movimentacoesMensalIcmsIpi));
+		spedFiscal.setBlocoC(blocoCService.criarBloco(movimentacoesMensalIcmsIpi));
+		spedFiscal.setBlocoD(blocoDService.criarBloco(movimentacoesMensalIcmsIpi));
+		spedFiscal.setBlocoE(blocoEService.criarBloco(movimentacoesMensalIcmsIpi));
+		spedFiscal.setBlocoG(blocoGService.criarBloco(movimentacoesMensalIcmsIpi));
+		spedFiscal.setBlocoH(blocoHService.criarBloco(movimentacoesMensalIcmsIpi));
+		spedFiscal.setBlocoK(blocoKService.criarBloco(movimentacoesMensalIcmsIpi));
+		spedFiscal.setBloco1(bloco1Service.criarBloco(movimentacoesMensalIcmsIpi));
+//		spedFiscal.setBloco9(bloco9Service.criarBloco(movimentacoesMensalIcmsIpi));
+		
+		return spedFiscal;
 	}
 
 

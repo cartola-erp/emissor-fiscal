@@ -1,0 +1,4 @@
+- Somente registros que são de NIVEL <= 2, devem ter services.
+- Registros que são de niveis maiores que esses, devem ser preenchidos na SERVICE, de seu RESPECTIVO pai;
+
+Ex.: o REGISTRO 0175, deve ser preenchido obrigatoriamente pelo seu pai, que no caso é o, REGISTRO 0150;

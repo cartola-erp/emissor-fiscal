@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
-import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistro;
+import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0150;
 
@@ -15,7 +15,7 @@ import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0150;
  * @author robson.costa
  */
 @Service
-class Reg0150Service implements MontaGrupoDeRegistro<Reg0150, MovimentacoesMensalIcmsIpi> {
+class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentacoesMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(Reg0150Service.class.getName());
 
