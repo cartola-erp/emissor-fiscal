@@ -1,7 +1,5 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
-import org.springframework.stereotype.Service;
-
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Bloco0;
@@ -43,7 +41,6 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoK.BlocoK;
 		@Field(name = "bloco1"),
 		@Field(name = "bloco9")
 })
-@Service
 public class SpedFiscal {
 	
 	private Bloco0 bloco0;

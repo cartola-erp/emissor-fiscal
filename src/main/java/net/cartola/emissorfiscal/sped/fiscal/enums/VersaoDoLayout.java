@@ -23,5 +23,8 @@ public enum VersaoDoLayout implements EnumCodificado {
         return descricao;
     }
     
+    public static VersaoDoLayout getUltimaVersao() {
+    	return VersaoDoLayout.values()[VersaoDoLayout.values().length - 1];
+    }
     
 }
