@@ -27,9 +27,9 @@ public class SpedFiscalApiController {
 	
 	
 	@PostMapping(value = "/gerar-arquivo")
-	public ResponseEntity<Response<MovimentacoesMensalIcmsIpi>> gerarDocumentoFiscal(@RequestBody MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public ResponseEntity<Response<SpedFiscalArquivo>> gerarArquivoSpedFiscal(@RequestBody MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
 		LOG.log(Level.INFO, "Gerando Arquivo SPED FISCAL (ICMS IPI) ");
-		Response<MovimentacoesMensalIcmsIpi> response = new Response<>();
+		Response<SpedFiscalArquivo> response = new Response<>();
 		
 		/**
 		 * TODO 
