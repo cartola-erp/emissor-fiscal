@@ -19,5 +19,17 @@ public enum RegimeTributario {
     public String getDescricao() {
         return descricao;
     }
+    
+    /**
+     * retorna o código do regime tributario para a NFe
+     * 1 – Simples Nacional;
+     * 2 – Simples Nacional – excesso de sublimite de receita bruta;
+     * 3 – Regime Normal. (v2.0).
+     * @return
+     */
+	
+    public int getCrt() {
+        return this.ordinal()+1;
+    }
 }
 
