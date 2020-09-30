@@ -1,12 +1,37 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import net.cartola.emissorfiscal.cadastro.CadastroAlteradoSped;
+import net.cartola.emissorfiscal.cadastro.CadastroDTO;
+import net.cartola.emissorfiscal.compra.Compra;
+import net.cartola.emissorfiscal.contador.DadosContador;
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
+import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 
 /**
  * 21/09/2020
  * @author robson.costa
  */
+@Getter
+@Setter
 public class MovimentacoesMensalIcmsIpi {
+	
+	private List<Compra> listCompras;
+	private List<DocumentoFiscal> listDocumentoFiscal;
+	private List<CadastroDTO> listCadastros;
+	private List<CadastroAlteradoSped> listCadastrosAlteradosSped;
+	
+	private List<ProdutoAlteradoSped> listProdutoAlteradoSped;
+	private List<ProdutoUnidade> listProdutoUnidade;
+	private Loja loja;
+	private DadosContador dadosContador;
+	
 	
 	private LocalDate dataInicio;
 	private LocalDate dataFim;
@@ -15,7 +40,7 @@ public class MovimentacoesMensalIcmsIpi {
 	 * 
 	 * Essa classe deverá encapsular os objetos, que tem no ERP (banco autogeral)
 	 * Pois será a responsavel de receber o JSON no Controller, e gerar o ARQUIVO do SPED FISCAL
-	 * Caso eu pensei em um nome melhor, basta eu mudar aqui, já que criei apenas para colocar nos
+	 * Caso eu pense em um nome melhor, basta eu mudar aqui, já que criei apenas para colocar nos
 	 * generics das interface que irei usar nas Services
 	 * 
 	 * PS: Tbm tenho que ver se esse é o melhor pacote para ficar essa model ( @MovimentacoesMensalIcmsIpi)
