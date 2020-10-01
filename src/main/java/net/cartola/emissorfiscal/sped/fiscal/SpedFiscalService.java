@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.service.Bloco0Service;
 import net.cartola.emissorfiscal.sped.fiscal.bloco9.Bloco9;
@@ -20,6 +21,7 @@ import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK1.service.BlocoKService;
  * 21/09/2020
  * @author robson.costa
  */
+@Service
 public class SpedFiscalService implements MontaArquivoSpedFiscal<SpedFiscal, MovimentacoesMensalIcmsIpi> {
 	
 	private static final Logger LOG = Logger.getLogger(SpedFiscalService.class.getName());
