@@ -15,8 +15,10 @@ BEGIN
     
     DECLARE terminou INTEGER DEFAULT 0;
     DECLARE ID_NCM INT;
-    DECLARE CUR_NCMS_MONO_EXCE_0 CURSOR FOR SELECT n.ncm_id FROM ncms n WHERE n.nume IN (SELECT m.ncm FROM NCMS_MONOFASICOS m) GROUP BY nume HAVING COUNT(nume) = 1; 
-		
+    
+	-- "Selecione todos os IDs de NCMS que SÃO monofásicos
+	DECLARE CUR_NCMS_MONO_EXCE_0 CURSOR FOR SELECT n.ncm_id FROM ncms n INNER JOIN ncms_monofasicos m ON (n.NUME = m.NCM AND n.EXCE = m.EXCECAO);
+	
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET terminou = 1;
 	
     OPEN CUR_NCMS_MONO_EXCE_0;

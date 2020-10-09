@@ -13,11 +13,11 @@ BEGIN
     
     DECLARE terminou INTEGER DEFAULT 0;
     DECLARE ID_NCM INT;
-
 	
-    DECLARE CUR_NCMS_JA_USADOS CURSOR FOR SELECT n.ncm_id FROM ncms n WHERE n.nume IN (SELECT v.ncm FROM TODOS_NCMS_USADOS v WHERE v.NCM 
-		NOT IN(SELECT m.NCM FROM ncms_monofasicos m));
-
+	-- "Selecione, todos os IDs de NCMS que estejam nos NCMS USADOS e NÃO SEJA (NOT IN) MONOFASICO
+	DECLARE CUR_NCMS_JA_USADOS CURSOR FOR SELECT distinct(n.ncm_id) FROM ncms n INNER JOIN TODOS_NCMS_USADOS v ON (n.NUME = v.NCM AND n.EXCE = v.EXCECAO) 
+	WHERE v.CODIGO NOT IN (select t.codigo from todos_ncms_usados t INNER JOIN ncms_monofasicos m ON (t.NCM = m.NCM AND t.EXCECAO = m.EXCECAO));
+	
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET terminou = 1;
 	
     OPEN CUR_NCMS_JA_USADOS;
