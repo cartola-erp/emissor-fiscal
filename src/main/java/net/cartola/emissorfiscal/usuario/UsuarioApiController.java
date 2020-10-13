@@ -60,21 +60,20 @@ public class UsuarioApiController {
 	}	
 
 	@PutMapping("/alterar-usuario")
-	public ResponseEntity<Response<Usuario>> edit (@RequestBody Usuario usuario) {
-		usuario.setSenha(bCryptPasswordEncoder.encode(usuario.getSenha()));
-		Optional<Usuario> opUser = usuarioService.findByLogin(usuario.getLogin());
+	public ResponseEntity<Response<Usuario>> edit (@RequestBody Usuario usuarioToUpdate) {
+		LOG.log(Level.INFO, "Alterando o Usuário {0} ", usuarioToUpdate.getLogin());
+		usuarioToUpdate.setSenha(bCryptPasswordEncoder.encode(usuarioToUpdate.getSenha()));
+		Optional<Usuario> opUser = usuarioService.findByLogin(usuarioToUpdate.getLogin());
 		Response<Usuario> response;
-		Optional<Usuario> opUserUpdated;
+		Optional<Usuario> opUserUpdated = Optional.empty();
 		if(opUser.isPresent()) {
-			opUserUpdated =  usuarioService.edit(opUser, usuario);
-		} else {
-			response = ApiUtil.criaResponseDeErro("O usuário: " +usuario.getLogin()+ " NÃO está cadastrado no EMISSOR-FISCAL");
-			return ResponseEntity.badRequest().body(response);
+			opUserUpdated =  usuarioService.edit(opUser, usuarioToUpdate);
 		}
 		if (opUserUpdated.isPresent()) {
 			return ResponseEntity.ok().build();
 		} else {
-			response = ApiUtil.criaResponseDeErro("Ocorreu algum ERRO, ao tentar ATUALIZAR o usuário no EMISSOR-FISCAL! Por favor, contate o setor de TI!");
+			LOG.log(Level.WARNING, "O Usuário {0}, NÃO está cadastrado no emissor-fiscal ", usuarioToUpdate.getLogin());
+			response = ApiUtil.criaResponseDeErro("O usuário não existe no EMISSOR-FISCAL, para ser atualizado! Por favor, contate o setor de TI!");
 			return ResponseEntity.badRequest().body(response);
 		}
 	
