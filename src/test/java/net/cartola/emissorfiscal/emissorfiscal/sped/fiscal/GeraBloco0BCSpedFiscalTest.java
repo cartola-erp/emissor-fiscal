@@ -112,7 +112,7 @@ public class GeraBloco0BCSpedFiscalTest {
 		// PREENCHER REGISTRO
 
 		blocoC.setRegC001(regC001);
-		blocoC.setRegC100(regC100);
+//		blocoC.setRegC100(regC100);
 		blocoC.setRegC990(regC990);
 		
 		return blocoC;
