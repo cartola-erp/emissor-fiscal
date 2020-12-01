@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.documento;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,6 +39,7 @@ public class DocumentoFiscal implements Serializable {
 	private Pessoa emitente;
 	private Pessoa destinatario;
 	private List<DocumentoFiscalItem> itens;
+    private Set<DocumentoFiscalReferencia> referencias;
 	private BigDecimal icmsBase = BigDecimal.ZERO;
 	private BigDecimal icmsValor = BigDecimal.ZERO;
 	private BigDecimal icmsValorDesonerado = BigDecimal.ZERO;
