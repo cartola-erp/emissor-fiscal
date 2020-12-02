@@ -3,6 +3,14 @@
   <version>1</version>
   <threadsafe>true</threadsafe>
   <runtime>java8</runtime>
+  <instance-class>F2</instance-class>
+<!--   Para manter a instancia do GAE ativa, quando nao tiver requisicao -->
+  <automatic-scaling>
+		<target-cpu-utilization>0.65</target-cpu-utilization>
+		<min-instances>1</min-instances>
+		<max-idle-instances>1</max-idle-instances>
+		<min-idle-instances>1</min-idle-instances>
+  </automatic-scaling>
   <system-properties>
     <property name="spring.profiles.active" value="producao"/>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
