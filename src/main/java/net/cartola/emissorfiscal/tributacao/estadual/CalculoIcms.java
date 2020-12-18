@@ -279,9 +279,9 @@ public class CalculoIcms {
 		calculaImpostoBase(di, tributacao, icms60);
 		
 		if (achouUltimaCompra(di)) {
-			valorBaseIcmsStRet = di.getIcmsStBaseUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra())
+			valorBaseIcmsStRet = di.getIcmsStBaseUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra(), BigDecimal.ROUND_UP)
 					.multiply(di.getQuantidade());
-			vlrIcmsStRetido = di.getIcmsStValorUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra())
+			vlrIcmsStRetido = di.getIcmsStValorUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra(), BigDecimal.ROUND_UP)
 					.multiply(di.getQuantidade());
 		} else {
 			valorBaseIcmsStRet = di.getIcmsBase();
