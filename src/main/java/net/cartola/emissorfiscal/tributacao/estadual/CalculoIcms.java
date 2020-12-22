@@ -276,6 +276,12 @@ public class CalculoIcms {
 		BigDecimal vlrIcmsStRetido = BigDecimal.ZERO;
 		
 		icms60.setImposto(Imposto.ICMS_60);
+		
+		/**
+		 * Considerando a ALIQ. 18% (de SP), na CST 60, quando for calcular o ICMS RET.
+		 * Mas o ideal é já salvar essa ALIQ na TRIBUTACAO. E pegar de lá.
+		 */
+		tributacao.setIcmsAliquota(new BigDecimal(0.18D));
 		calculaImpostoBase(di, tributacao, icms60);
 		
 		if (achouUltimaCompra(di)) {
