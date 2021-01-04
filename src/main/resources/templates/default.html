@@ -51,7 +51,6 @@
                     <a class="dropdown-item" id="dropDownCadastroOperacao" th:href="@{/operacao/cadastro}">Operação</a>
                     <a class="dropdown-item" id="dropDownCadastroTributacaoEstadual" th:href="@{/tributacao-estadual/cadastro}">Tributacao estadual (ICMS) </a>
                     <a class="dropdown-item" id="dropDownCadastroTributacaoFederal" th:href="@{/tributacao-federal/cadastro}">Tributacao federal </a>
-                   <!--  <a class="dropdown-item" th:href="@{/equipe}">Equipe</a> -->
                 </div>
             </div>
 
@@ -62,18 +61,49 @@
                     Consultar
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownConsulta">
-                <!-- TODO: templates -->
                     <a class="dropdown-item" id="dropDownConsultaCfop" th:href="@{/cfop/consulta}">CFOP</a>
                     <a class="dropdown-item" id="dropDownConsultaNcm" th:href="@{/ncm/consulta}">NCM</a>
                     <a class="dropdown-item" id="dropDownConsultaEstado" th:href="@{/estado/consulta}">Estado</a>
                     <a class="dropdown-item" id="dropDownConsultaOperacao" th:href="@{/operacao/consulta}">Operação</a>
                     <a class="dropdown-item" id="dropDownConsultaTributacaoEstadual" th:href="@{/tributacao-estadual/consulta}">Tributacao estadual - (ICMS)</a>
                     <a class="dropdown-item" id="dropDownConsultaTributacaoFederal" th:href="@{/tributacao-federal/consulta}">Tributacao federal</a>
-                    <!--  <a class="dropdown-item" th:href="@{/equipe}">Equipe</a> -->
-            
                </div>
             </div>
-           <!--  <a class="ml-5" th:href="@{/assistencia}" id="navbar-a">Assistências</a> -->     
+
+            <!-- Documentos Fiscais -->
+            <div class="nav-item dropdown ml-5">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownDocFisc" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                        Documentos Fiscais
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownDocFisc">
+                    <a class="dropdown-item" id="dropDownDocFiscConsultaSaida" th:href="@{/doc-fiscal/saida/consulta}">Consultar saídas</a>
+                    <a class="dropdown-item" id="dropDownDocFiscConsultaEntrada" th:href="@{/doc-fiscal/entrada/consulta}">Consultar entradas</a>
+                </div>
+            </div>
+
+            <!-- SPED -->
+            <div class="nav-item dropdown ml-5">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSped" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    SPED
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownSped">
+                    <a class="dropdown-item" id="dropDownSpedIcmsIpiGerar" th:href="@{/sped/icms-ipi/gerar}">Gerar SPED FISCAL ICMS/IPI</a>
+                    <a class="dropdown-item" id="dropDownSpedIcmsIpiConsulta" th:href="@{/sped/icms-ipi/consultar}">Consultar SPED FISCAL ICMS/IPI</a>
+                </div>
+            </div>
+
+            <!-- Menu administrativo -->
+            <div class="nav-item dropdown ml-5">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuAdmin" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Menu admnistrativo
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuAdmin">
+                    <a class="dropdown-item" id="dropDownMenuAdminUsuariosConsulta" th:href="@{/menu-admin/usuarios/consulta}">Consultar usuários</a>
+                </div>
+            </div>
 
            <!-- SIMULACAO -->
             <div class="nav-item dropdown ml-5">
@@ -82,7 +112,6 @@
                     Simulação
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <!-- TODO: templates -->
                     <a class="dropdown-item" th:href="@{/home}">Simulacao de Calculo</a>
                </div>
             </div>
