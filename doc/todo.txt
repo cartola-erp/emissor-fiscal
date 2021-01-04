@@ -1,0 +1,10 @@
+Incluir os menus
+Menu Documentos fiscais (Pesquisa pelos CNPJs do emitente e destinatário, período da data de emissão e operação)
+SPED (menu de geração dos arquivos e listagem dos arquivos gerados).
+Menu administrativo para consultar e administrar os usuários.
+
+
+Ingestão dos dados de compras a partir da API.
+
+Invetários ... qual o impacto deles no SPED?
+Invetário

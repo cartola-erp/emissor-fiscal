@@ -95,6 +95,11 @@ public class Usuario implements Serializable {
 	public void setPerfis(List<UsuarioPerfil> perfis) {
 		this.perfis = perfis;
 	}
+
+	@Override
+	public String toString() {
+		return "Usuario [id=" + id + ", login=" + login + ", nome=" + nome + "]";
+	}
 	
 }
 
