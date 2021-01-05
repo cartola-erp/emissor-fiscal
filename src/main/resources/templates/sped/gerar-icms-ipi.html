@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Gerar o Sped Fiscal ICMS IPI </title>
+	</head>
+
+	<body>
+		<section id="sped-icms-ipi-gerar">
+
+			<!-- BREADCRUMB -->
+			<div>
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb breadcrumb-personalizado">
+								<li class="breadcrumb-item"><a href="/home" class="breadcrumb-item-personalizado">Home</a></li>
+								<li class="breadcrumb-item"><a href="/sped/icms-ipi/gerar" class="breadcrumb-item-personalizado">Sped</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">Gerar ICMS IPI</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+			</div>
+
+			<div>
+
+				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
+				<form th:action="@{/sped/icms-ipi/gerar}" th:object="${moviMensalIcmsIpi}" method="POST"  >
+					
+					<!-- Data inicio, Fim e Lojas -->
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<label for="txtDtFim"><strong>Inicio</strong></label>
+							<input type="date" class="form-control" id="txtDtInicio" name="dataInicio" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
+						</div>
+
+						<div class="form-group col-md-3">
+							<label for="txtDtFim"><strong>Fim</strong></label>
+							<input type="date" class="form-control" id="txtDtFim" name="dataFim" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
+						</div>
+
+						<div class="form-group col-md-4">
+							<label for="cmbLojas"><strong>Loja</strong></label>
+							<select class="custom-select" name="ufLojaId">
+								<option selected id="opLoja"> </option>
+								<!-- <option th:each="estado : ${listEstado}" th:value="${estado.id}" th:id="${estado.sigla}" th:selected="${estado.id == ufOrigemIdSelecionado}" th:text="${estado.sigla}" ></option> -->
+							</select>
+						</div>
+						
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" id="chkTodasLojas" value="true">
+							<label class="form-check-label" for="chkTodasLojas">Todas as Lojas</label>
+						</div>
+					</div> 
+
+					<!-- <div class="form-row">
+					</div>  -->
+
+						<!-- BTN ALTERAR/CADASTRAR -->
+					<div class="form-row">
+						<!-- <input type="text" class="form-control" id="txtId" th:field="*{id}" name="id" hidden="true" > -->
+							<div class = "form-group col-md-12">
+							<button type="submit" id="btnGerarSpedIcmsIpi" class="btn btn-outline-primary ajusta-margin-btn col-md-12"><strong>Gerar SPED FISCAL</strong></button>
+						</div>
+					</div>
+	
+				</form>
+
+			</div>
+		</section>
+
+	</body>
+
+</html>
