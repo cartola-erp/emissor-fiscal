@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.cadastro;
+package net.cartola.emissorfiscal.pessoa;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CadastroAlteradoSped {
+public class PessoaAlteradoSped {
 
 	private Long id;
 

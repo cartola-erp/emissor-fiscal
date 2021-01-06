@@ -5,12 +5,12 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cartola.emissorfiscal.cadastro.CadastroAlteradoSped;
-import net.cartola.emissorfiscal.cadastro.CadastroDTO;
 import net.cartola.emissorfiscal.compra.Compra;
 import net.cartola.emissorfiscal.contador.DadosContador;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 
@@ -24,8 +24,8 @@ public class MovimentacoesMensalIcmsIpi {
 	
 	private List<Compra> listCompras;
 	private List<DocumentoFiscal> listDocumentoFiscal;
-	private List<CadastroDTO> listCadastros;
-	private List<CadastroAlteradoSped> listCadastrosAlteradosSped;
+	private List<Pessoa> listCadastros;
+	private List<PessoaAlteradoSped> listCadastrosAlteradosSped;
 	
 	private List<ProdutoAlteradoSped> listProdutoAlteradoSped;
 	private List<ProdutoUnidade> listProdutoUnidade;
