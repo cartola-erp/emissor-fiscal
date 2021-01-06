@@ -78,6 +78,7 @@ public class DocumentoFiscalApiController {
 //			response.setData(opDocFiscal.get());
 //			return ResponseEntity.ok(response);
 			docFiscal.setId(opDocFiscal.get().getId());
+			docFiscalService.deleteById(opDocFiscal.get().getId());
 		}
 		return saveOrEditDocumentoFiscal(docFiscal);
 	}

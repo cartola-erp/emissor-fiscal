@@ -81,10 +81,15 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 
 	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
 		LOG.log(Level.INFO, "SETANDO o ICMS BASE e o VALOR para : {0} ", documentoFiscal);
-		documentoFiscal.setIcmsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsBase)
-				.reduce(BigDecimal.ZERO, BigDecimal::add));
+//		documentoFiscal.setIcmsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsBase)
+//				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		
-		documentoFiscal.setIcmsValor(totaliza(listCalculoImpostos.stream().collect(toList())));
+		// Foi colocado dessa forma pois no momento está rodando apenas VENDA e TRANSFERENCIA (Que no momento são CST 00 e 60 apenas, nas duas operacoes)
+		documentoFiscal.setIcmsBase(listCalculoImpostos.stream().filter(calcImp -> 
+			!calcImp.getImposto().equals(Imposto.ICMS_60)).map(CalculoImposto::getBaseDeCalculo).reduce(BigDecimal.ZERO, BigDecimal::add));
+		 
+		documentoFiscal.setIcmsValor(totaliza(listCalculoImpostos.stream()
+				.filter(calcImp -> !calcImp.getImposto().equals(Imposto.ICMS_60)).collect(toList())));
 	}
 
 	private void setaIcmsStBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {

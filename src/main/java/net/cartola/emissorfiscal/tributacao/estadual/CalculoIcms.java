@@ -276,30 +276,38 @@ public class CalculoIcms {
 		BigDecimal vlrIcmsStRetido = BigDecimal.ZERO;
 		
 		icms60.setImposto(Imposto.ICMS_60);
-		calculaImpostoBase(di, tributacao, icms60);
+		
+		/**
+		 * Considerando a ALIQ. 18% (de SP), na CST 60, quando for calcular o ICMS RET.
+		 * Mas o ideal é já salvar essa ALIQ na TRIBUTACAO. E pegar de lá.
+		 */
+		tributacao.setIcmsStAliquota(new BigDecimal(0.18D));
+//		calculaImpostoBase(di, tributacao, icms60);
 		
 		if (achouUltimaCompra(di)) {
-			valorBaseIcmsStRet = di.getIcmsStBaseUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra())
+			valorBaseIcmsStRet = di.getIcmsStBaseUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra(), BigDecimal.ROUND_UP)
 					.multiply(di.getQuantidade());
-			vlrIcmsStRetido = di.getIcmsStValorUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra())
+			vlrIcmsStRetido = di.getIcmsStValorUltimaCompra().divide(di.getItemQtdCompradaUltimaCompra(), BigDecimal.ROUND_UP)
 					.multiply(di.getQuantidade());
 		} else {
-			valorBaseIcmsStRet = di.getIcmsBase();
-			vlrIcmsStRetido = di.getIcmsValor();
+			valorBaseIcmsStRet = di.getQuantidade().multiply(di.getValorUnitario());
+			vlrIcmsStRetido = valorBaseIcmsStRet.multiply(tributacao.getIcmsStAliquota());
 		}
 		
 		icms60.setVlrBaseCalcIcmsStRetido(valorBaseIcmsStRet);
 		icms60.setVlrIcmsStRetido(vlrIcmsStRetido);
-		icms60.setAliquotaPst(tributacao.getIcmsAliquota());
-		icms60.setVlrIcmsSubstituto(di.getIcmsValor());
+		// o correto da aliquotaPst é = icmsStAliquota + fcpAliquota
+		icms60.setAliquotaPst(tributacao.getIcmsStAliquota());
+		icms60.setVlrIcmsSubstituto(vlrIcmsStRetido);
 		
 		di.setIcmsCst(tributacao.getIcmsCst());
-//		di.setCfop(cfop);
-//		di.setIcmsCest(icmsCest);
+		di.setIcmsCest(tributacao.getCest());
+		di.setCfop(tributacao.getCfop());
+		
 		di.setIcmsStBaseRetido(valorBaseIcmsStRet);
 		di.setIcmsStValorRetido(vlrIcmsStRetido);
-		di.setIcmsAliquota(tributacao.getIcmsAliquota());
-		di.setIcmsStAliquota(tributacao.getIcmsAliquota());
+//		di.setIcmsAliquota(tributacao.getIcmsAliquota());
+		di.setIcmsStAliquota(tributacao.getIcmsStAliquota());
 		return icms60;
 	}
 	

@@ -130,12 +130,15 @@ Para corrigir isso deverá realizar o cadastro de uma nova tributação, que se 
 Já os campos abaixo do formulário, é o que de fato será usado no calculo, para o item, que se encaixe nas combinações acima.
 
 7. **ICMS CST** - Código da substitução tributária do icms.
-8. **ICMS BASE** - Porcentagem de redução na base de calculo.
+8. **ICMS BASE RED.** - Porcentagem de redução na base de calculo. Ex.: Se informar 20% O sistema irá reduzir a base do produto em 80%, ou seja, apenas será considerado 20% do valor do produto, para realizar os calculos dos impostos estaduais. (
 9. **ICMS Aliq.** - **Alíquota** do estado de **origem**
-10. **ICMS IVA/MVA** - Porcentagem(referente ao estado de origem) de IVA/MVA do item que está sendo cadastrado
-11. **ICMS Aliq. Destino** - **Alíquota** do estado de **destino**
-12. **ICMS CEST** - Código especificador da substituição tributária
-13. **Mensagem** Uma observação/mensagem, para essa tributação. (não há interferência no cálculo)
+10. **ICMS IVA/MVA** - Porcentagem(referente ao estado de origem) de IVA/MVA do item que está sendo cadastrado. Ex.: Se informar 70%, nesse campo, o sistema irá considerar 70% do valor do produto. (Mesmo funcionamento que o campo:  **ICMS BASE RED.**). 
+11. **Aliq. Interna Destino** - **Alíquota** do estado de **destino**
+12. **FCP Aliq.** Alíquota do Fundo de combate a pobreza, do estado de destino.
+13. **ICMS ST Aliq.** Alíquota do icms de substituição tributária.
+14. **CEST** - Código especificador da substituição tributária. (Relacionado ao NCM)
+15. **CFOP** - Qual a CFOP, deverá sair para o item/produto, conforme as 6 primeiras opções preenchidas? (uf origem, destino, operação, ncm, finalidade, e regime tributário do emitente).
+16. **Mensagem** Uma observação/mensagem, para essa tributação. (não há interferência no cálculo)
 
 ![Cadastrar uma tributação estadual](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/07%20-%20Cadastrar%20Tributacao%20Estadual%20-%20(ICMS).png?raw=true)
 **Figura 06** - Cadastrar uma TRIBUTAÇÃO ESTADUAL 
@@ -155,10 +158,10 @@ Na tela de cadastro de **tributação federal**, vale a mesma regra das **combin
 Já nesses abaixo, são os valores que serão usados nos cálculos:
 
 5. **PIS CST** - Código da substitução tributária do PIS.
-6. **PIS Base** - Porcentagem de redução na base de calculo do PIS.
+6. **PIS Base Red.** - Porcentagem de redução na base de calculo do PIS. Funciona da mesma forma que o campo **ICMS BASE RED.**, no cadastro de tributação estadual.  Ex.: Se informar 20% O sistema irá reduzir a base do produto em 80%, ou seja, apenas será considerado 20% do valor do produto, para realizar os calculos dos impostos federais.
 7. **PIS Alíquota** - A alíquota do PIS. (GERALMENTE **1,65%**)
 8. **COFINS CST** - Código da substitução tributária do COFINS. (GERALMENTE, é o mesmo que o do PIS)
-9. **COFINS Base** - Porcentagem de redução na base de calculo do COFINS. (GERALMENTE, é o mesmo que o do PIS)
+9. **COFINS Base Red.** - Porcentagem de redução na base de calculo do COFINS. (GERALMENTE, é o mesmo que o do PIS). Mesmo funcionamento que o campo: **PIS Base Red.**
 10. **COFINS Alíquota** - A alíquota do COFINS. (GERALMENTE **7,60%**)
 11. **IPI CST** - Código da substitução tributária do IPI.
 12. **IPI Base** - Porcentagem de redução na base de calculo do IPI.
