@@ -80,6 +80,10 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
+	public Optional<DocumentoFiscal> saveCompra(DocumentoFiscal documentoFiscal){
+		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
+	}
+	
 	public List<DocumentoFiscal> findDocumentoFiscalByOperacao(Operacao operacao) {
 		return documentoFiscalRepository.findByOperacao(operacao);
 	}

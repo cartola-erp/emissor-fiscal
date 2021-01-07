@@ -37,6 +37,13 @@ public class DocumentoFiscalItem implements Serializable {
 	private static final String VALOR_INVALIDO = "Atenção! O valor inserida é inválido!!";
 
 	private Long id;
+	private int item;
+	/** Serão somente usada em ENTRADAS/COMPRAS, as info abaixo? Não sei, mas acredito que sim !!!**/
+	private Long codigoX;
+	private String codigoSequencia;
+	private String codigoBarras;
+	private String descricaoEmpresa;
+	
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
 	private BigDecimal quantidade = BigDecimal.ZERO;
@@ -82,6 +89,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal ipiAliquota = BigDecimal.ZERO;
 	private BigDecimal ipiValor = BigDecimal.ZERO;
 	private int ipiCst;
+	
 	// Para "atender" a lei "De Olho No Imposto"
 	private BigDecimal valorTotalImposto = BigDecimal.ZERO;
 	
@@ -95,6 +103,46 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public int getItem() {
+		return item;
+	}
+
+	public void setItem(int item) {
+		this.item = item;
+	}
+
+	public Long getCodigoX() {
+		return codigoX;
+	}
+
+	public void setCodigoX(Long codigoX) {
+		this.codigoX = codigoX;
+	}
+
+	public String getCodigoSequencia() {
+		return codigoSequencia;
+	}
+
+	public void setCodigoSequencia(String codigoSequencia) {
+		this.codigoSequencia = codigoSequencia;
+	}
+
+	public String getCodigoBarras() {
+		return codigoBarras;
+	}
+
+	public void setCodigoBarras(String codigoBarras) {
+		this.codigoBarras = codigoBarras;
+	}
+
+	public String getDescricaoEmpresa() {
+		return descricaoEmpresa;
+	}
+
+	public void setDescricaoEmpresa(String descricaoEmpresa) {
+		this.descricaoEmpresa = descricaoEmpresa;
 	}
 
 	@NotNull(message = FINALIDADE_OBRIGATORIA)

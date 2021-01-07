@@ -2,6 +2,8 @@ package net.cartola.emissorfiscal.documento;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -18,8 +20,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.util.LocalDateDeserializer;
+import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
 
 @Entity
 @Table(name = "docu_fisc")
@@ -56,6 +63,13 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal cofinsValor = BigDecimal.ZERO;
 	private BigDecimal ipiBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal ipiValor = BigDecimal.ZERO;
+
+	private LocalDate emissao;
+	private LocalDateTime cadastro;
+	private String criadoPor;
+	private LocalDateTime alterado;
+	private String alteradoPor;
+	
 	// Para "atender" a lei "De Olho No Imposto"
 	private BigDecimal valorImpostoFederal = BigDecimal.ZERO;
 	private BigDecimal valorImpostoEstadual = BigDecimal.ZERO;
@@ -269,6 +283,52 @@ public class DocumentoFiscal implements Serializable {
 		this.ipiValor = ipiValor;
 	}
 	
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	public LocalDate getEmissao() {
+		return emissao;
+	}
+
+	public void setEmissao(LocalDate emissao) {
+		this.emissao = emissao;
+	}
+	
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+	public LocalDateTime getCadastro() {
+		return cadastro;
+	}
+
+	public void setCadastro(LocalDateTime cadastro) {
+		this.cadastro = cadastro;
+	}
+	
+	public String getCriadoPor() {
+		return criadoPor;
+	}
+
+	public void setCriadoPor(String criadoPor) {
+		this.criadoPor = criadoPor;
+	}
+
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+	public LocalDateTime getAlterado() {
+		return alterado;
+	}
+
+	public void setAlterado(LocalDateTime alterado) {
+		this.alterado = alterado;
+	}
+
+	public String getAlteradoPor() {
+		return alteradoPor;
+	}
+
+	public void setAlteradoPor(String alteradoPor) {
+		this.alteradoPor = alteradoPor;
+	}
+
 	@Column(name = "vlr_imposto_fede")
 	public BigDecimal getValorImpostoFederal() {
 		return valorImpostoFederal;
@@ -312,13 +372,16 @@ public class DocumentoFiscal implements Serializable {
 	public String toString() {
 		return "DocumentoFiscal [id=" + id + ", operacao=" + operacao + ", tipo=" + tipo + ", serie=" + serie
 				+ ", numero=" + numero + ", emitente=" + emitente + ", destinatario=" + destinatario + ", itens="
-				+ itens + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor + ", icmsValorDesonerado="
-				+ icmsValorDesonerado + ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase=" + icmsStBase
-				+ ", icmsStValor=" + icmsStValor + ", icmsValorUfDestino=" + icmsValorUfDestino + ", vlrTotalProduto="
-				+ vlrTotalProduto + ", pisBase=" + pisBase + ", pisValor=" + pisValor + ", cofinsBase=" + cofinsBase
-				+ ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor=" + ipiValor
-				+ ", valorImpostoFederal=" + valorImpostoFederal + ", valorImpostoEstadual=" + valorImpostoEstadual
-				+ ", valorImpostoMunicipal=" + valorImpostoMunicipal + "]";
+				+ itens + ", referencias=" + referencias + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor
+				+ ", icmsValorDesonerado=" + icmsValorDesonerado + ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase="
+				+ icmsStBase + ", icmsStValor=" + icmsStValor + ", icmsValorUfDestino=" + icmsValorUfDestino
+				+ ", vlrTotalProduto=" + vlrTotalProduto + ", pisBase=" + pisBase + ", pisValor=" + pisValor
+				+ ", cofinsBase=" + cofinsBase + ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor="
+				+ ipiValor + ", emissao=" + emissao + ", cadastro=" + cadastro + ", criadoPor=" + criadoPor
+				+ ", alterado=" + alterado + ", alteradoPor=" + alteradoPor + ", valorImpostoFederal="
+				+ valorImpostoFederal + ", valorImpostoEstadual=" + valorImpostoEstadual + ", valorImpostoMunicipal="
+				+ valorImpostoMunicipal + "]";
 	}
+
 	
 }

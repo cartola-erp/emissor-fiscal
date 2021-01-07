@@ -23,7 +23,7 @@ public class EmissorFiscalApplication {
 	}
 	
 	@Bean
-	@Profile({"homologacao"})
+	@Profile({"homologacao", "test"})
 	CommandLineRunner initDev(UsuarioService usuarioService,
 			BCryptPasswordEncoder bcryptEncoder) {
 
@@ -55,6 +55,22 @@ public class EmissorFiscalApplication {
 				u.setLogin("robson.costa");
 				u.setNome("Robson");
 				u.setSenha(bcryptEncoder.encode("123123"));
+				u.setPerfis(Arrays.asList(upa, upu));
+				usuarioService.save(u);
+				System.out.printf("Usuario criado : %s", u);
+			}
+			
+			Optional<Usuario> opUserErpjWs = usuarioService.findByLogin("erpj-ws");
+			if (!opUserErpjWs.isPresent()) {
+				UsuarioPerfil upa = new UsuarioPerfil();
+				upa.setPerfil(Perfil.ROLE_CONTADOR);
+
+				UsuarioPerfil upu = new UsuarioPerfil();
+				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
+				Usuario u = new Usuario();
+				u.setLogin("erpj-ws");
+				u.setNome("erpj-ws");
+				u.setSenha(bcryptEncoder.encode("erpj-ws"));
 				u.setPerfis(Arrays.asList(upa, upu));
 				usuarioService.save(u);
 				System.out.printf("Usuario criado : %s", u);
