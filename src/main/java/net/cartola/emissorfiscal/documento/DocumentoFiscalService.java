@@ -114,7 +114,7 @@ public class DocumentoFiscalService {
 	 */
 	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
 		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o DocumentoFiscal {0} ", documentoFiscal);
-		Map<String, Boolean> map = new HashMap<>(); // FALSE == TEM ERRO | TRUE == Não tem
+		Map<String, Boolean> map = new HashMap<>(); // FALSE == Não tem | TRUE == TEM ERRO
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());
 		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
@@ -132,9 +132,9 @@ public class DocumentoFiscalService {
 			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(opOperacao.get(),opEmitente.get().getRegimeTributario(), finalidades, ncms);
 		}
 		
-		map.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", opOperacao.isPresent());
-		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , opEmitente.isPresent());
-		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", opDestinatario.isPresent());
+		map.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", !opOperacao.isPresent());
+		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
+		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
 		
 		if (validaTribuEsta) {
 			validaTributosEstaduais(ncms, tributacoesEstaduais, map);
@@ -144,12 +144,35 @@ public class DocumentoFiscalService {
 			validaTributosFederais(ncms, tributacoesFederais, map);
 		}
 		
-		if (!map.containsValue(false)) {
+		if (!map.containsValue(true)) {
 			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario);
 		}
 		return ValidationHelper.processaErros(map);
 	}
 	
+	
+	/**
+	 * Método para setar os valores necessários, referente a um DocumentoFiscal, de entrada vindo do ERP.
+	 * E quem sabe no futuro, para validar, também caso calcule a entrada por aqui rs.
+	 * @param documentoFiscal
+	 * @return
+	 */
+	public List<String> setaValoresNecessariosCompra(DocumentoFiscal documentoFiscal) {
+		LOG.log(Level.INFO, "Setando os Valores necessarios para (compra) o DocumentoFiscal {0} " ,documentoFiscal);
+		Map<String, Boolean> mapErros = new HashMap<>(); // FALSE == TEM ERRO | TRUE == Não tem
+		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
+		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());
+		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
+		
+		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
+		
+		if (!mapErros.containsValue(true)) {
+			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario);
+		}
+		
+		return ValidationHelper.processaErros(mapErros);
+	}
+
 
 
 	/**
@@ -166,7 +189,7 @@ public class DocumentoFiscalService {
 			if(opNcm.isPresent()) {
 				docItem.setNcm(opNcm.get());
 			}
-			map.put("O NCM: " +docItem.getNcm().getNumero()+ " NÃO existe", opNcm.isPresent());
+			map.put("O NCM: " +docItem.getNcm().getNumero()+ " NÃO existe", !opNcm.isPresent());
 		});
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
 		return ncms;
@@ -185,7 +208,7 @@ public class DocumentoFiscalService {
 		Map<Ncm, Boolean> mapTribuFedeAchadasPorNcm = getMapaTribuFedeAchadasPorNcm(ncms, tributacoesFederais);
 		mapTribuFedeAchadasPorNcm.forEach((kNcm, achouTributacao) -> {
 			if(!achouTributacao) {
-				mapErros.put("Não existe TRIBUTAÇÃO FEDERAL para essa OPERAÇÃO e o NCM: " +kNcm.getNumero() + " | EX: " +kNcm.getExcecao(), false);
+				mapErros.put("Não existe TRIBUTAÇÃO FEDERAL para essa OPERAÇÃO e o NCM: " +kNcm.getNumero() + " | EX: " +kNcm.getExcecao(), true);
 			}
 		});
 	}
@@ -210,7 +233,7 @@ public class DocumentoFiscalService {
 		Map<Ncm, Boolean> mapaTribuEstaPorNcm = getMapaTribuEstaAchadaPorNcm(ncms, tributacoesEstaduais);
 			mapaTribuEstaPorNcm.forEach((kNcm, achouTributacao) -> {
 				if(!achouTributacao) {
-					mapErros.put("Não existe TRIBUTAÇÃO ESTADUAL para essa OPERAÇÃO e o NCM: " +kNcm.getNumero() + " | EX: " +kNcm.getExcecao(), false);
+					mapErros.put("Não existe TRIBUTAÇÃO ESTADUAL para essa OPERAÇÃO e o NCM: " +kNcm.getNumero() + " | EX: " +kNcm.getExcecao(), true);
 				}
 			});
 	}
