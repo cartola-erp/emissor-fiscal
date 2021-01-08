@@ -38,7 +38,7 @@ public abstract class ValidationHelper {
 	}
 
 	private static Predicate<Boolean> criaPredicateProcessaErros() {
-		Predicate<Boolean> predicate = p -> !p;
+		Predicate<Boolean> predicate = p -> p;
 		return predicate;
 	}
 }
