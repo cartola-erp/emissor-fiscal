@@ -72,6 +72,7 @@ public class DocumentoFiscalApiController {
 	@PostMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
 //		Response<DocumentoFiscal> response = new Response<>();
+		LOG.log(Level.INFO, "Salvando o DocumentoFiscal {0} " ,docFiscal);
 		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
 //
 		if(opDocFiscal.isPresent()) {
@@ -81,6 +82,19 @@ public class DocumentoFiscalApiController {
 			docFiscalService.deleteById(opDocFiscal.get().getId());
 		}
 		return saveOrEditDocumentoFiscal(docFiscal);
+	}
+	
+	@PostMapping(value = "/salvar-compra") 
+	public ResponseEntity<Response<DocumentoFiscal>> saveCompra(@RequestBody DocumentoFiscal docFiscal) {
+		LOG.log(Level.INFO, "Salvando a Compra {0} " ,docFiscal);
+		Response<DocumentoFiscal> response = new Response<>();
+		// Nessa linha abaixo busco se o DocumentoFiscal existe;
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
+		if(opDocFiscal.isPresent()) {
+			docFiscal.setId(opDocFiscal.get().getId());
+			docFiscalService.deleteById(opDocFiscal.get().getId());
+		}
+		return saveOrEditDocumentoFiscalEntrada(docFiscal);
 	}
 	
 	/**
@@ -138,6 +152,25 @@ public class DocumentoFiscalApiController {
 			return ResponseEntity.noContent().build();
 		}
 	}
+	
+	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscalEntrada(DocumentoFiscal docFiscal) {
+		Response<DocumentoFiscal> response = new Response<>();
+		
+		List<String> erros = docFiscalService.setaValoresNecessariosCompra(docFiscal);
+		if(!ValidationHelper.collectionEmpty(erros)) {
+			return ResponseEntity.noContent().build();
+		}
+		
+		Optional<DocumentoFiscal> opDocFiscalEntrada = docFiscalService.saveCompra(docFiscal);
+		if(opDocFiscalEntrada.isPresent()) {
+			response.setData(opDocFiscalEntrada.get());
+			return ResponseEntity.ok(response);
+		} else {
+			return ResponseEntity.noContent().build();
+		}
+		
+	}
+
 }
 
 
