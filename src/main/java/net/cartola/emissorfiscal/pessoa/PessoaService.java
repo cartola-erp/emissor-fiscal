@@ -17,11 +17,16 @@ public class PessoaService {
 	@Autowired
 	private PessoaRepository pessoaRepository;
 	
+	@Autowired
+	private PessoaEnderecoService pessoaEnderecoService;
+	
 	public List<Pessoa> findAll() {
 		return pessoaRepository.findAll();
 	}
 	
 	public Optional<Pessoa> save(Pessoa pessoa) {
+		Optional<PessoaEndereco> opEndereco = pessoaEnderecoService.save(pessoa.getEndereco());			
+		pessoa.setEndereco(opEndereco.get());
 		return Optional.ofNullable(pessoaRepository.saveAndFlush(pessoa));
 	}
 		
@@ -29,7 +34,7 @@ public class PessoaService {
 		return pessoaRepository.findById(id);
 	}
 	
-	public List<Pessoa> findByCnpj(Long cnpj) {
+	public Optional<Pessoa> findByCnpj(Long cnpj) {
 		return pessoaRepository.findPessoaByCnpj(cnpj);
 	}
 	
@@ -44,11 +49,11 @@ public class PessoaService {
 	 * @return {@link Optional} <{@link Pessoa}>
 	 */
 	public Optional<Pessoa> verificaSePessoaExiste(Pessoa pessoa) {
-		List<Pessoa> listPessoa = findByCnpj(pessoa.getCnpj());
-		if (listPessoa.isEmpty()) {
+		Optional<Pessoa> opPessoa = findByCnpj(pessoa.getCnpj());
+		if (!opPessoa.isPresent()) {
 			return save(pessoa);
 		}
-		return Optional.ofNullable(listPessoa.get(0));
+		return opPessoa;
 	}
 }
 

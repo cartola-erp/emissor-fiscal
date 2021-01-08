@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.cartola.emissorfiscal.estado.EstadoSigla;
 
 /**
  * 
@@ -64,6 +65,11 @@ public class PessoaEndereco implements Serializable {
 	private String complementoEndereco;
 	
 	private String bairro;
+	private String cidade;
+
+	@Enumerated(EnumType.STRING)
+	private EstadoSigla uf = EstadoSigla.SP;
+
 //	private Double latitude;
 //	private Double longitude;
 //	private String googlePlaceId;

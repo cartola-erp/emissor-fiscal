@@ -13,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import net.cartola.emissorfiscal.estado.EstadoSigla;
-
 /**
  *  Tabela populada pela -> cadastros | Do ERP
  *	22 de nov de 2019
@@ -23,11 +21,11 @@ import net.cartola.emissorfiscal.estado.EstadoSigla;
 
 @Entity
 @Table(name = "pessoa")
+//@Table(name = "pess")
 public class Pessoa {
 	
 	private Long id;
 	private Long cnpj;
-	private EstadoSigla uf = EstadoSigla.SP;
 	private RegimeTributario regimeTributario;
 	private PessoaTipo pessoaTipo = PessoaTipo.FISICA;
 	private Long ie;
@@ -51,16 +49,6 @@ public class Pessoa {
 
 	public void setCnpj(Long cnpj) {
 		this.cnpj = cnpj;
-	}
-
-	//	@NotNull(message = ESTADO_EMITENTE_OBRIGATORIO)
-	@Enumerated(EnumType.STRING)
-	public EstadoSigla getUf() {
-		return uf;
-	}
-
-	public void setUf(EstadoSigla uf) {
-		this.uf = uf;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -129,7 +117,7 @@ public class Pessoa {
 
 	@Override
 	public String toString() {
-		return "Pessoa [id=" + id + ", cnpj=" + cnpj + ", uf=" + uf + ", regimeTributario=" + regimeTributario
+		return "Pessoa [id=" + id + ", cnpj=" + cnpj + ", regimeTributario=" + regimeTributario
 				+ ", pessoaTipo=" + pessoaTipo + "]";
 	}
 	
