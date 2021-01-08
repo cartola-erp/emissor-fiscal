@@ -63,7 +63,8 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal cofinsValor = BigDecimal.ZERO;
 	private BigDecimal ipiBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal ipiValor = BigDecimal.ZERO;
-
+    private String nfeChaveAcesso;
+	
 	private LocalDate emissao;
 	private LocalDateTime cadastro;
 	private String criadoPor;
@@ -283,6 +284,15 @@ public class DocumentoFiscal implements Serializable {
 		this.ipiValor = ipiValor;
 	}
 	
+	@Column(length = 44)
+	public String getNfeChaveAcesso() {
+		return nfeChaveAcesso;
+	}
+
+	public void setNfeChaveAcesso(String nfeChaveAcesso) {
+		this.nfeChaveAcesso = nfeChaveAcesso;
+	}
+
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	public LocalDate getEmissao() {
