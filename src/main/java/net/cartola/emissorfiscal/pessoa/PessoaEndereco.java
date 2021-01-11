@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
 
 /**
@@ -28,6 +29,7 @@ import net.cartola.emissorfiscal.estado.EstadoSigla;
 @Table(name = "pess_end")
 @Getter
 @Setter
+@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PessoaEndereco implements Serializable {
 	

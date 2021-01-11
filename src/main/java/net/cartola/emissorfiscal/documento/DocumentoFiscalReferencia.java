@@ -1,92 +1,71 @@
 package net.cartola.emissorfiscal.documento;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.time.LocalDate;
+
+import javax.annotation.Nullable;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import net.cartola.emissorfiscal.util.LocalDateDeserializer;
 
 /**
  * 25/09/2020
  * @author robson.costa
  */
-public class DocumentoFiscalReferencia {
+@Getter
+@Setter
+@ToString
+@Entity
+@Table(name = "docu_fisc_ref")
+public class DocumentoFiscalReferencia implements Serializable {
 	
+	private static final long serialVersionUID = 2949833005905966630L;
+	
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 //	private int loja;
-	private int nfe;
+	private Long numero;
+	private int item;
+	private DocumentoReferenciaTipo tipo;
+	private Long cnpjEmitente;
+	private Integer ufEmitente;
+	private Long ecf;
+	private Integer numDocumentoCoo;
+	private String serieModelo;
 	private String chave;
-	private String modeloEcf;
-	private Integer ecf;
-	private Integer coo;
-//	private Date cadastro;
-//	private Date alterado;
+	private String modelo;
+//	private Integer lojaVinculada;
+//	private Integer compraVinculada;
+	
+//	@Column(name = "icms_cst", scale = 4, nullable = false)
+	@Nullable
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "docu_fisc_id", unique = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc"))
+	private DocumentoFiscal documentoFiscal;
 
-	public Long getId() {
-		return id;
-	}
+	
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private LocalDate cadastro;
+	
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private LocalDate alterado;
+	
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-//	public int getLoja() {
-//		return this.loja;
-//	}
-//
-//	public void setLoja (int loja) {
-//		this.loja = loja;
-//	}
-
-	public int getNfe() {
-		return this.nfe;
-	}
-
-	public void setNfe (int nfe) {
-		this.nfe = nfe;
-	}
-
-	public String getChave() {
-		return this.chave;
-	}
-
-	public void setChave (String chave) {
-		this.chave = chave;
-	}
-
-	public String getModeloEcf() {
-		return this.modeloEcf;
-	}
-
-	public void setModeloEcf (String modeloEcf) {
-		this.modeloEcf = modeloEcf;
-	}
-
-	public Integer getEcf() {
-		return this.ecf;
-	}
-
-	public void setEcf (Integer ecf) {
-		this.ecf = ecf;
-	}
-
-	public Integer getCoo() {
-		return this.coo;
-	}
-
-	public void setCoo (Integer coo) {
-		this.coo = coo;
-	}
-
-//	public Date getCadastro() {
-//		return this.cadastro;
-//	}
-//
-//	public void setCadastro (Date cadastro) {
-//		this.cadastro = cadastro;
-//	}
-//
-//	public Date getAlterado() {
-//		return this.alterado;
-//	}
-//
-//	public void setAlterado (Date alterado) {
-//		this.alterado = alterado;
-//	}
+	
 }
