@@ -20,8 +20,10 @@ import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.ToString;
 import net.cartola.emissorfiscal.ncm.Ncm;
 
+@ToString
 @Entity
 @Table(name = "docu_fisc_item")
 @JsonIgnoreProperties(value = { "documentoFiscal" })
@@ -113,6 +115,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.item = item;
 	}
 
+	@Column(name = "codigo_x")
 	public Long getCodigoX() {
 		return codigoX;
 	}
@@ -551,25 +554,6 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setDocumentoFiscal(DocumentoFiscal documentoFiscal) {
 		this.documentoFiscal = documentoFiscal;
-	}
-
-	@Override
-	public String toString() {
-		return "DocumentoFiscalItem [id=" + id + ", finalidade=" + finalidade + ", origem=" + origem + ", quantidade="
-				+ quantidade + ", valorUnitario=" + valorUnitario + ", ncm=" + ncm + ", cfop=" + cfop + ", icmsCest="
-				+ icmsCest + ", icmsBase=" + icmsBase + ", icmsReducaoBaseAliquota=" + icmsReducaoBaseAliquota
-				+ ", icmsReducaoBaseStAliquota=" + icmsReducaoBaseStAliquota + ", icmsAliquota=" + icmsAliquota
-				+ ", icmsAliquotaDestino=" + icmsAliquotaDestino + ", icmsValor=" + icmsValor + ", icmsFcpAliquota="
-				+ icmsFcpAliquota + ", icmsFcpValor=" + icmsFcpValor + ",  icmsStBase=" + icmsStBase + ", icmsStAliquota="
-				+ icmsStAliquota + ", icmsStValor=" + icmsStValor + ", icmsIva=" + icmsIva + ", icmsStBaseRetido="
-				+ icmsStBaseRetido + ", icmsStValorRetido=" + icmsStValorRetido + ", icmsCst=" + icmsCst + ", icmsValorUfDestino=" 
-				+ icmsValorUfDestino + ", icmsStBaseUltimaCompra=" + icmsStBaseUltimaCompra + ", icmsStValorUltimaCompra="
-				+ icmsStValorUltimaCompra + ", itemQtdCompradaUltimaCompra=" + itemQtdCompradaUltimaCompra
-				+ ", icmsStAliqUltimaCompra=" + icmsStAliqUltimaCompra + ", pisBase=" + pisBase + ", pisAliquota="
-				+ pisAliquota + ", pisValor=" + pisValor + ", pisCst=" + pisCst + ", cofinsBase=" + cofinsBase
-				+ ", cofinsAliquota=" + cofinsAliquota + ", cofinsValor=" + cofinsValor + ", cofinsCst=" + cofinsCst
-				+ ", ipiBase=" + ipiBase + ", ipiAliquota=" + ipiAliquota + ", ipiValor=" + ipiValor + ", ipiCst="
-				+ ipiCst + ", valorTotalImposto=" + valorTotalImposto + "]";
 	}
 
 }

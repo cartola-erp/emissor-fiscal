@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cartola.emissorfiscal.compra.Compra;
 import net.cartola.emissorfiscal.contador.DadosContador;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.loja.Loja;
@@ -22,7 +21,7 @@ import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 @Setter
 public class MovimentacoesMensalIcmsIpi {
 	
-	private List<Compra> listCompras;
+	private List<DocumentoFiscal> listCompras;
 	private List<DocumentoFiscal> listDocumentoFiscal;
 	private List<Pessoa> listCadastros;
 	private List<PessoaAlteradoSped> listCadastrosAlteradosSped;

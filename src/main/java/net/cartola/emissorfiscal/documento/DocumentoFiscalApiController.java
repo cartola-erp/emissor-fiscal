@@ -84,6 +84,21 @@ public class DocumentoFiscalApiController {
 		return saveOrEditDocumentoFiscal(docFiscal);
 	}
 	
+	@PutMapping()
+	public ResponseEntity<Response<DocumentoFiscal>> update(@Valid @RequestBody DocumentoFiscal docFiscal) {
+		LOG.log(Level.INFO, "Atualizando o DocumentoFiscal {0} " ,docFiscal);
+		Response<DocumentoFiscal> response = new Response<>();
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
+
+		if (!opDocFiscal.isPresent()) {
+			return ResponseEntity.noContent().build();
+		}
+		docFiscal.setId(opDocFiscal.get().getId());
+		docFiscalService.update(docFiscal).ifPresent(updatedDocFiscal -> response.setData(updatedDocFiscal));
+		return ResponseEntity.ok(response);
+	}
+	
+	
 	@PostMapping(value = "/salvar-compra") 
 	public ResponseEntity<Response<DocumentoFiscal>> saveCompra(@RequestBody DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Salvando a Compra {0} " ,docFiscal);
@@ -122,18 +137,18 @@ public class DocumentoFiscalApiController {
 	}
 	
 	
-	@PutMapping()
-	public ResponseEntity<Response<DocumentoFiscal>> edit (@Valid @RequestBody DocumentoFiscal docFiscal) {
-		Response<DocumentoFiscal> response = new Response<>();
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findOne(docFiscal.getId());
-
-		if(!opDocFiscal.isPresent()) {
-			response.setErrors(Arrays.asList("O documento fiscal que você está tentando editar, NÃO existe!"));
-			return ResponseEntity.badRequest().body(response);
-		}
-		opDocFiscal.ifPresent(oldDocFiscal -> docFiscal.setId(oldDocFiscal.getId()));
-		return saveOrEditDocumentoFiscal(docFiscal);
-	}
+//	@PutMapping()
+//	public ResponseEntity<Response<DocumentoFiscal>> edit (@Valid @RequestBody DocumentoFiscal docFiscal) {
+//		Response<DocumentoFiscal> response = new Response<>();
+//		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findOne(docFiscal.getId());
+//
+//		if(!opDocFiscal.isPresent()) {
+//			response.setErrors(Arrays.asList("O documento fiscal que você está tentando editar, NÃO existe!"));
+//			return ResponseEntity.badRequest().body(response);
+//		}
+//		opDocFiscal.ifPresent(oldDocFiscal -> docFiscal.setId(oldDocFiscal.getId()));
+//		return saveOrEditDocumentoFiscal(docFiscal);
+//	}
 	
 	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {
 		Response<DocumentoFiscal> response = new Response<>();

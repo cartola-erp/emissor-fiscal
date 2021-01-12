@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -46,7 +48,7 @@ public class DocumentoFiscal implements Serializable {
 	private Pessoa emitente;
 	private Pessoa destinatario;
 	private List<DocumentoFiscalItem> itens;
-    private Set<DocumentoFiscalReferencia> referencias;
+	private Set<DocumentoFiscalReferencia> referencias;
 	private BigDecimal icmsBase = BigDecimal.ZERO;
 	private BigDecimal icmsValor = BigDecimal.ZERO;
 	private BigDecimal icmsValorDesonerado = BigDecimal.ZERO;
@@ -63,8 +65,9 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal cofinsValor = BigDecimal.ZERO;
 	private BigDecimal ipiBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal ipiValor = BigDecimal.ZERO;
-    private String nfeChaveAcesso;
-	
+    
+    private NFeStatus status;
+	private String nfeChaveAcesso;
 	private LocalDate emissao;
 	private LocalDateTime cadastro;
 	private String criadoPor;
@@ -147,6 +150,15 @@ public class DocumentoFiscal implements Serializable {
 
 	public void setItens(List<DocumentoFiscalItem> itens) {
 		this.itens = itens;
+	}
+
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "documentoFiscal")
+	public Set<DocumentoFiscalReferencia> getReferencias() {
+		return referencias;
+	}
+
+	public void setReferencias(Set<DocumentoFiscalReferencia> referencias) {
+		this.referencias = referencias;
 	}
 
 	public BigDecimal getIcmsBase() {
@@ -284,6 +296,16 @@ public class DocumentoFiscal implements Serializable {
 		this.ipiValor = ipiValor;
 	}
 	
+	@Enumerated(EnumType.STRING)
+	@Column(columnDefinition="enum('DIGITACAO', 'VALIDADA', 'ASSINADA', 'PROCESSAMENTO', 'AUTORIZADA', 'CANCELADA', 'INUTILIZADA', 'DENEGADA') ")
+	public NFeStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(NFeStatus status) {
+		this.status = status;
+	}
+
 	@Column(length = 44)
 	public String getNfeChaveAcesso() {
 		return nfeChaveAcesso;
@@ -382,11 +404,11 @@ public class DocumentoFiscal implements Serializable {
 	public String toString() {
 		return "DocumentoFiscal [id=" + id + ", operacao=" + operacao + ", tipo=" + tipo + ", serie=" + serie
 				+ ", numero=" + numero + ", emitente=" + emitente + ", destinatario=" + destinatario + ", itens="
-				+ itens + ", referencias=" + referencias + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor
-				+ ", icmsValorDesonerado=" + icmsValorDesonerado + ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase="
-				+ icmsStBase + ", icmsStValor=" + icmsStValor + ", icmsValorUfDestino=" + icmsValorUfDestino
-				+ ", vlrTotalProduto=" + vlrTotalProduto + ", pisBase=" + pisBase + ", pisValor=" + pisValor
-				+ ", cofinsBase=" + cofinsBase + ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor="
+				+ itens + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor + ", icmsValorDesonerado=" + icmsValorDesonerado 
+				+ ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase=" + icmsStBase + ", icmsStValor=" + icmsStValor 
+				+ ", icmsValorUfDestino=" + icmsValorUfDestino + ", vlrTotalProduto=" + vlrTotalProduto 
+				+ ", pisBase=" + pisBase + ", pisValor=" + pisValor + ", cofinsBase=" + cofinsBase 
+				+ ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor="
 				+ ipiValor + ", emissao=" + emissao + ", cadastro=" + cadastro + ", criadoPor=" + criadoPor
 				+ ", alterado=" + alterado + ", alteradoPor=" + alteradoPor + ", valorImpostoFederal="
 				+ valorImpostoFederal + ", valorImpostoEstadual=" + valorImpostoEstadual + ", valorImpostoMunicipal="

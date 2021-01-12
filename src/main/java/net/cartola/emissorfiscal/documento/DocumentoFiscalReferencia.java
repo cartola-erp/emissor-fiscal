@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Getter;
@@ -31,6 +32,7 @@ import net.cartola.emissorfiscal.util.LocalDateDeserializer;
 @ToString
 @Entity
 @Table(name = "docu_fisc_ref")
+@JsonIgnoreProperties(value = { "documentoFiscal" })
 public class DocumentoFiscalReferencia implements Serializable {
 	
 	private static final long serialVersionUID = 2949833005905966630L;
