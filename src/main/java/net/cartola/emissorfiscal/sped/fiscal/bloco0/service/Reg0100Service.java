@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoRegistroSimples;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0100;
@@ -19,11 +20,27 @@ class Reg0100Service implements MontaGrupoRegistroSimples<Reg0100, Movimentacoes
 	private static final Logger LOG = Logger.getLogger(Reg0100Service.class.getName());
 
 	@Override
-	public Reg0100 montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
-		// TODO Auto-generated method stub
+	public Reg0100 montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0100 ");
-
-		return null;
+		Reg0100 reg0100 = new Reg0100();
+		Contador contador = movimentosIcmsIpi.getContador();
+		
+		reg0100.setNome(contador.getNome());
+		reg0100.setCpf(contador.getCpf());
+		reg0100.setCrc(contador.getCrc().toString());
+		reg0100.setCnpj(contador.getCnpj());
+		reg0100.setCep(contador.getCep());
+		reg0100.setEnd(contador.getEndereco());
+		reg0100.setNum(contador.getNumImovel());
+		reg0100.setCompl(contador.getComplementoEndereco());
+		reg0100.setBairro(contador.getBairroDoImovel());
+		reg0100.setFone(contador.getTelefone());
+		reg0100.setFax(contador.getNumFax());
+		reg0100.setEmail(contador.getEmail());
+		reg0100.setCodMun(contador.getCodMunicipio());
+		
+		LOG.log(Level.INFO, "Registro 0100, terminado. REG 0100: {0} " ,reg0100);
+		return reg0100;
 	}
 
 }

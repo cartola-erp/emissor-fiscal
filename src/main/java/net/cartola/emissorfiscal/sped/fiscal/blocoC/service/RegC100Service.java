@@ -21,7 +21,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentacoesM
 
 	
 	@Override
-	public List<RegC100> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public List<RegC100> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C100");
 		

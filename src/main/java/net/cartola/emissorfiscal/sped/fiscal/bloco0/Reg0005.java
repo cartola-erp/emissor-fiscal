@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import lombok.ToString;
 
 /**
  * 19/08/2020
@@ -11,7 +12,7 @@ import coffeepot.bean.wr.annotation.Record;
  */
 @Record(fields = {
 		@Field(name = "reg", maxLength = 4),	    
-		@Field(name = "fantansia"),
+		@Field(name = "fantasia"),
 		@Field(name = "cep"),	    
 		@Field(name = "end"),
 		@Field(name = "num"),	    
@@ -21,10 +22,11 @@ import coffeepot.bean.wr.annotation.Record;
 		@Field(name = "fax"),	    
 		@Field(name = "email")
 })
+@ToString
 public class Reg0005 {
 
 	private final String reg = "0005";
-	private String fantansia;
+	private String fantasia;
 	private Long cep;
 	private String end;
 	private int num;
@@ -38,12 +40,12 @@ public class Reg0005 {
 		return reg;
 	}
 	
-	public String getFantansia() {
-		return fantansia;
+	public String getFantasia() {
+		return fantasia;
 	}
 
-	public void setFantansia(String fantansia) {
-		this.fantansia = fantansia;
+	public void setFantasia(String fantasia) {
+		this.fantasia = fantasia;
 	}
 
 	public Long getCep() {

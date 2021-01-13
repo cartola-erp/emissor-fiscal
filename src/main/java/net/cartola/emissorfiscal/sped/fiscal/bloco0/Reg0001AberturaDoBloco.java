@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import lombok.ToString;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeMovimento;
 
 /**
@@ -14,6 +15,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeMovimento;
 		@Field(name = "reg", maxLength = 4),	    
 		@Field(name = "indMov")
 })
+@ToString
 public class Reg0001AberturaDoBloco {
 	
 	private final String reg = "0001";
