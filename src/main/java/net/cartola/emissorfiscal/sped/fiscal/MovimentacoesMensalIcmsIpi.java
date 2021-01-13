@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cartola.emissorfiscal.contador.DadosContador;
+import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
@@ -29,7 +29,8 @@ public class MovimentacoesMensalIcmsIpi {
 	private List<ProdutoAlteradoSped> listProdutoAlteradoSped;
 	private List<ProdutoUnidade> listProdutoUnidade;
 	private Loja loja;
-	private DadosContador dadosContador;
+//	private Pessoa loja;			// CONFESSO que ainda tou na duvida se pego a loja de "CADASTROS" ou da tbl "LOJA" msm
+	private Contador contador;
 	
 	
 	private LocalDate dataInicio;

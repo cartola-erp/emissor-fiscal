@@ -20,7 +20,7 @@ class RegC990Service implements MontaGrupoRegistroSimples<RegC990EncerramentoDoB
 	
 	
 	@Override
-	public RegC990EncerramentoDoBlocoC montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public RegC990EncerramentoDoBlocoC montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o encerramento do bloco C ");
 

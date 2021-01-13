@@ -21,7 +21,7 @@ class Reg0400Service implements MontaGrupoDeRegistroList<Reg0400, MovimentacoesM
 	private static final Logger LOG = Logger.getLogger(Reg0400Service.class.getName());
 	
 	@Override
-	public List<Reg0400> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public List<Reg0400> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0400 ");
 

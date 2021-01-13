@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface MontaGrupoDeRegistroList <T, R extends MovimentacoesMensalIcmsIpi> {
 	
-	List<T> montarGrupoDeRegistro(R movimentacoesMensalIcmsIpi);
+	List<T> montarGrupoDeRegistro(R movimentosIcmsIpi);
 	
 }

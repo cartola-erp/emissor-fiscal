@@ -21,7 +21,7 @@ class RegC800Service implements MontaGrupoDeRegistroList<RegC800, MovimentacoesM
 
 
 	@Override
-	public List<RegC800> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public List<RegC800> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C800");
 		

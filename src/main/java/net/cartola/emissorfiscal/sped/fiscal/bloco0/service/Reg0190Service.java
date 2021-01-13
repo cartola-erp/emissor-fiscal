@@ -20,7 +20,7 @@ class Reg0190Service implements MontaGrupoDeRegistroList<Reg0190, MovimentacoesM
 	private static final Logger LOG = Logger.getLogger(Reg0190Service.class.getName());
 	
 	@Override
-	public List<Reg0190> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public List<Reg0190> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0190 ");
 

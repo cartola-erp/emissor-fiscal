@@ -20,7 +20,7 @@ class RegC001Service implements MontaGrupoRegistroSimples<RegC001AberturaDoBloco
 	
 	
 	@Override
-	public RegC001AberturaDoBlocoC montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public RegC001AberturaDoBlocoC montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando a abertura do bloco C ");
 

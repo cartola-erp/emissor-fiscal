@@ -20,7 +20,7 @@ class Reg0990Service implements MontaGrupoRegistroSimples<Reg0990EncerramentoDoB
 	private static final Logger LOG = Logger.getLogger(Reg0990Service.class.getName());
 	
 	@Override
-	public Reg0990EncerramentoDoBloco montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public Reg0990EncerramentoDoBloco montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0990 (Encerramento do Bloco 0) ");
 

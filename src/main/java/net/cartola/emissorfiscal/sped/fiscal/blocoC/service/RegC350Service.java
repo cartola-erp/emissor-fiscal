@@ -21,7 +21,7 @@ class RegC350Service implements MontaGrupoDeRegistroList<RegC350, MovimentacoesM
 
 
 	@Override
-	public List<RegC350> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public List<RegC350> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C350");
 		

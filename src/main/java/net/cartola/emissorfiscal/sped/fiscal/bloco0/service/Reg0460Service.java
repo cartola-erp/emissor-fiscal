@@ -21,7 +21,7 @@ class Reg0460Service implements MontaGrupoDeRegistroList<Reg0460, MovimentacoesM
 	private static final Logger LOG = Logger.getLogger(Reg0460Service.class.getName());
 	
 	@Override
-	public List<Reg0460> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public List<Reg0460> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0460 ");
 

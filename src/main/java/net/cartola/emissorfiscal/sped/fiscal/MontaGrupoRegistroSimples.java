@@ -9,6 +9,6 @@ package net.cartola.emissorfiscal.sped.fiscal;
  */
 public interface MontaGrupoRegistroSimples <T, R extends MovimentacoesMensalIcmsIpi> {
 	
-	T montarGrupoDeRegistroSimples(R movimentacoesMensalIcmsIpi);
+	T montarGrupoDeRegistroSimples(R movimentosIcmsIpi);
 	
 }
