@@ -9,7 +9,8 @@ public enum VersaoDoLayout implements EnumCodificado {
 	/**
 	 *  Leiaute válido de 01/01/2020 a 31/12/2020 - publicado pelo Ato Cotepe nº 65/2019.
 	 */
-	V_014("014");
+	V_014("014"),
+	V_015("015");
 	
 	
 	private String descricao;

@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import lombok.ToString;
 
 /**
  * 19/08/2020
@@ -26,6 +27,7 @@ import coffeepot.bean.wr.annotation.Record;
 		@Field(name = "email"),
 		@Field(name = "codMun", length = 7)
 })
+@ToString
 public class Reg0100 {
 	
 	private final String reg = "0100";

@@ -76,6 +76,7 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentacoesMensalIcms
 		bloco0.setReg0460(reg0460Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
 		bloco0.setReg0990(reg0990Service.montarGrupoDeRegistroSimples(movimentacoesMensalIcmsIpi));
 		
+		LOG.log(Level.INFO, "Montagem do BLOCO 0, TEMINADA! {0} " ,bloco0);
 		return bloco0;
 	}
 	

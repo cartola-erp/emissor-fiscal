@@ -20,9 +20,9 @@ public class BlocoDService implements MontaBloco<BlocoD, MovimentacoesMensalIcms
 	private static final Logger LOG = Logger.getLogger(BlocoDService.class.getName());
 	
 	@Override
-	public BlocoD criarBloco(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public BlocoD criarBloco(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o bloco D, com INICIO em: {0} e TERMINO: {1} ", movimentacoesMensalIcmsIpi.getDataInicio());
+		LOG.log(Level.INFO, "Montando o bloco D, com INICIO em: {0} e TERMINO: {1} ", movimentosIcmsIpi.getDataInicio());
 
 		return null;
 	}

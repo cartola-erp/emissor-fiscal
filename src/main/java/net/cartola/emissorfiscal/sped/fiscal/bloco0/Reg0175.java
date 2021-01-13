@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import lombok.ToString;
 
 /**
  * 19/08/2020
@@ -18,6 +19,7 @@ import coffeepot.bean.wr.annotation.Record;
 	@Field(name = "nrCamp"),
 	@Field(name = "contAnt")
 })		
+@ToString
 public class Reg0175 {
 	
 	private final String reg = "0175";

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import lombok.ToString;
 import net.cartola.emissorfiscal.sped.fiscal.enums.FinalidadeDoArquivo;
 import net.cartola.emissorfiscal.sped.fiscal.enums.PerfilEnquadramento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeAtividade;
@@ -33,6 +34,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.VersaoDoLayout;
 	    @Field(name = "indPerfil"),
 	    @Field(name = "indAtiv")
 })
+@ToString
 public class Reg0000AberturaArquivoDigital {
 	
 	private final String reg = "0000";

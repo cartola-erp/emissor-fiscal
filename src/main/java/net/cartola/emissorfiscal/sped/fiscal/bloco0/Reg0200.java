@@ -4,6 +4,7 @@ import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import lombok.ToString;
 import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
 
 /**
@@ -31,6 +32,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
     @Field(name = "reg0210"),
     @Field(name = "reg0220")
 })	
+@ToString
 public class Reg0200 {
 	
 	private final String reg = "0200";

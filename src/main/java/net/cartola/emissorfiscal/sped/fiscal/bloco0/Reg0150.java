@@ -4,6 +4,7 @@ import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import lombok.ToString;
 
 /**
  * 19/08/2020
@@ -27,6 +28,7 @@ import coffeepot.bean.wr.annotation.Record;
 	@Field(name = "bairro", maxLength = 60),
 	@Field(name = "reg0175")
 })		
+@ToString
 public class Reg0150 {
 	
 	private final String reg = "0150";
