@@ -80,6 +80,15 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
+	public Optional<DocumentoFiscal> update(DocumentoFiscal documentoFiscal) {
+		
+		/**
+		 * VER O QUE EU PRECISO FAZER PARA ATUALIZAR O DOCUMENTO FISCAL
+		 * */
+		
+		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
+	}
+	
 	public Optional<DocumentoFiscal> saveCompra(DocumentoFiscal documentoFiscal){
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
@@ -114,40 +123,40 @@ public class DocumentoFiscalService {
 	 */
 	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
 		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o DocumentoFiscal {0} ", documentoFiscal);
-		Map<String, Boolean> map = new HashMap<>(); // FALSE == Não tem | TRUE == TEM ERRO
+		Map<String, Boolean> mapErros = new HashMap<>(); // FALSE == NÃO TEM ERRO | TRUE == TEM ERRO
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());
 		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
-		Estado estadoOrigem = estadoService.findBySigla(opEmitente.get().getUf()).get();
-		Estado estadoDestino = estadoService.findBySigla(opDestinatario.get().getUf()).get();
+		Estado estadoOrigem = estadoService.findBySigla(opEmitente.get().getEndereco().getUf()).get();
+		Estado estadoDestino = estadoService.findBySigla(opDestinatario.get().getEndereco().getUf()).get();
 
-		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, map);
+		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
 		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
 		
-		if (opOperacao.isPresent() && !ncms.isEmpty() && opEmitente.get().getRegimeTributario() != null && !map.containsValue(false) ) {
+		if (opOperacao.isPresent() && !ncms.isEmpty() && opEmitente.get().getRegimeTributario() != null && !mapErros.containsValue(true) ) {
 			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(),estadoOrigem, estadoDestino,
 					opEmitente.get().getRegimeTributario(), finalidades, ncms);
 			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(opOperacao.get(),opEmitente.get().getRegimeTributario(), finalidades, ncms);
 		}
 		
-		map.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", !opOperacao.isPresent());
-		map.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
-		map.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
+		mapErros.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", !opOperacao.isPresent());
+		mapErros.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
+		mapErros.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
 		
 		if (validaTribuEsta) {
-			validaTributosEstaduais(ncms, tributacoesEstaduais, map);
+			validaTributosEstaduais(ncms, tributacoesEstaduais, mapErros);
 		}
 		
 		if (validaTribuFede) {
-			validaTributosFederais(ncms, tributacoesFederais, map);
+			validaTributosFederais(ncms, tributacoesFederais, mapErros);
 		}
 		
-		if (!map.containsValue(true)) {
+		if (!mapErros.containsValue(true)) {
 			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario);
 		}
-		return ValidationHelper.processaErros(map);
+		return ValidationHelper.processaErros(mapErros);
 	}
 	
 	
@@ -191,6 +200,7 @@ public class DocumentoFiscalService {
 			}
 			map.put("O NCM: " +docItem.getNcm().getNumero()+ " NÃO existe", !opNcm.isPresent());
 		});
+		
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
 		return ncms;
 	}
@@ -201,6 +211,9 @@ public class DocumentoFiscalService {
 			documentoFiscal.setEmitente(opEmitente.get());
 			documentoFiscal.setDestinatario(opDestinatario.get());
 		}
+		documentoFiscal.getReferencias().forEach(referencia -> {
+			referencia.setDocumentoFiscal(documentoFiscal);
+		});
 	}
 	
 	// ================================================ VALIDA TRIBUTOS FEDERAIS ================================================
