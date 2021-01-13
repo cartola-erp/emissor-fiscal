@@ -22,6 +22,7 @@ import net.cartola.emissorfiscal.ncm.NcmService;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.PessoaEndereco;
 import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
@@ -65,8 +66,8 @@ public class SimulacaoService {
 		
 		listResult.add(" =========================================== DADOS INFORMADOS =========================================== ");
 		listResult.add("Operação: " +documentoFiscal.getOperacao().getDescricao());
-		listResult.add("Uf Origem: " +documentoFiscal.getEmitente().getUf() );
-		listResult.add("Uf Destino: " +documentoFiscal.getDestinatario().getUf() );
+		listResult.add("Uf Origem: " +documentoFiscal.getEmitente().getEndereco().getUf() );
+		listResult.add("Uf Destino: " +documentoFiscal.getDestinatario().getEndereco().getUf() );
 		listResult.add("QTD ITEM: " + item.getQuantidade() );
 		listResult.add("VALOR DO ITEM: " + item.getValorUnitario() );
 		listResult.add("FINALIDADE: " +item.getFinalidade() );
@@ -154,8 +155,8 @@ public class SimulacaoService {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
-		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getUf()).get();
-		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getUf()).get();
+		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getEndereco().getUf()).get();
+		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();
 
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
 		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
@@ -183,13 +184,17 @@ public class SimulacaoService {
 		Ncm ncm = ncmService.findOne(ncmId).get();
 		
 		Pessoa emitente = new Pessoa();
+		PessoaEndereco enderecoEmitente = new PessoaEndereco();
 		emitente.setCnpj(123456789012L);
-		emitente.setUf(estadoOrigem.getSigla());
 		setRegimeTributario(emitente, regimeTributario);
+		enderecoEmitente.setUf(estadoOrigem.getSigla());
+		emitente.setEndereco(enderecoEmitente);
 		
 		Pessoa destinatario = new Pessoa();
+		PessoaEndereco enderecoDest = new PessoaEndereco();
 		destinatario.setCnpj(98765432102L);
-		destinatario.setUf(estadoDestino.getSigla());;
+		enderecoDest.setUf(estadoDestino.getSigla());
+		destinatario.setEndereco(enderecoDest);
 		
 		documentoFiscal.setEmitente(emitente);
 		documentoFiscal.setDestinatario(destinatario);

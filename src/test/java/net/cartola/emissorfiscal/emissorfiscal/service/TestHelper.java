@@ -26,6 +26,7 @@ import net.cartola.emissorfiscal.ncm.NcmRepository;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoRepository;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.PessoaEndereco;
 import net.cartola.emissorfiscal.pessoa.PessoaRepository;
 import net.cartola.emissorfiscal.pessoa.PessoaTipo;
 import net.cartola.emissorfiscal.pessoa.RegimeTributario;
@@ -197,7 +198,9 @@ public class TestHelper {
 			int aux = 0;
 			Pessoa pessoa = new Pessoa();
 			pessoa.setCnpj(Long.valueOf(dados[aux++]));
-			pessoa.setUf(EstadoSigla.valueOf(dados[aux++]));
+			PessoaEndereco endereco = new PessoaEndereco();
+			endereco.setUf(EstadoSigla.valueOf(dados[aux++]));
+			pessoa.setEndereco(endereco);
 			pessoa.setRegimeTributario(RegimeTributario.valueOf(dados[aux++]));
 			pessoa.setPessoaTipo(PessoaTipo.valueOf(dados[aux++]));
 			pessoas.add(pessoa);
@@ -314,7 +317,7 @@ public class TestHelper {
 			String destinatarioUf = dados[aux++];
 			docFiscal.setDestinatario(pessoas.stream()
 					.filter(p -> p.getPessoaTipo().toString().equals(destinatarioTipo))
-					.filter(p -> p.getUf().toString().equals(destinatarioUf)).findAny().get());
+					.filter(p -> p.getEndereco().getUf().toString().equals(destinatarioUf)).findAny().get());
 			String operacaoDescricao = dados[aux++];
 			docFiscal.setOperacao(operacoes.stream()
 					.filter(operacao -> operacao.getDescricao().equals(operacaoDescricao)).findAny().get());
