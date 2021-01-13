@@ -1,10 +1,23 @@
 package net.cartola.emissorfiscal.contador;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * 25/09/2020
  * @author robson.costa
  */
-public class DadosContador {
+@Entity
+@Table(name = "contador")
+public class Contador implements Serializable {
+
+	private static final long serialVersionUID = -829857136477567741L;
 
 	/**
 	 * Na tabela cadastros, do DB -> Autogeral, tem alguns funcionarios cadastrados inclusive contadores, então na hora de preencher
@@ -12,7 +25,8 @@ public class DadosContador {
 	 * para preencher/editar (isso lá no ERP, no momento que selecionar as lojas que serão buscadas as movimentações mensais) 
 	 * 
 	 */
-	
+
+	private Long id;
 	private String nome;
 	private Long cpf;
 	private Long crc;
@@ -20,13 +34,23 @@ public class DadosContador {
 	private Long cep;
 	private String endereco;
 	private int numImovel;
-	private String dadosComplementares;
+	private String complementoEndereco;
 	private String bairroDoImovel;
-	private String numTelefone;
+	private String telefone;
 	private String numFax;
 	private String email;
 	private Long codMunicipio;
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getNome() {
 		return nome;
 	}
@@ -83,14 +107,16 @@ public class DadosContador {
 		this.numImovel = numImovel;
 	}
 
-	public String getDadosComplementares() {
-		return dadosComplementares;
+	@Column(name = "compl_end")
+	public String getComplementoEndereco() {
+		return complementoEndereco;
 	}
 
-	public void setDadosComplementares(String dadosComplementares) {
-		this.dadosComplementares = dadosComplementares;
+	public void setComplementoEndereco(String complementoEndereco) {
+		this.complementoEndereco = complementoEndereco;
 	}
 
+	@Column(name = "bairro_imov")
 	public String getBairroDoImovel() {
 		return bairroDoImovel;
 	}
@@ -99,12 +125,13 @@ public class DadosContador {
 		this.bairroDoImovel = bairroDoImovel;
 	}
 
-	public String getNumTelefone() {
-		return numTelefone;
+	@Column(name = "tele")
+	public String getTelefone() {
+		return telefone;
 	}
 
-	public void setNumTelefone(String numTelefone) {
-		this.numTelefone = numTelefone;
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 
 	public String getNumFax() {
