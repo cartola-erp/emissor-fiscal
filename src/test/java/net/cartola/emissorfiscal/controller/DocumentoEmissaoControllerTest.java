@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.controller;
+package net.cartola.emissorfiscal.controller;
 
 import static org.junit.Assert.assertNotNull;
 

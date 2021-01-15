@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.api.controller;
+package net.cartola.emissorfiscal.api.controller;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;

@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.sped.fiscal;
+package net.cartola.emissorfiscal.sped.fiscal;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
