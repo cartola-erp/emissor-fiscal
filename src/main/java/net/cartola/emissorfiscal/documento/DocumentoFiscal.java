@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.util.LocalDateDeserializer;
 import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
 
@@ -66,6 +67,7 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal ipiBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal ipiValor = BigDecimal.ZERO;
     
+	private ModeloDocumentoFiscal modelo = ModeloDocumentoFiscal._55;
     private NFeStatus status;
 	private String nfeChaveAcesso;
 	private LocalDate emissao;
@@ -297,6 +299,15 @@ public class DocumentoFiscal implements Serializable {
 	}
 	
 	@Enumerated(EnumType.STRING)
+	public ModeloDocumentoFiscal getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(ModeloDocumentoFiscal modelo) {
+		this.modelo = modelo;
+	}
+
+	@Enumerated(EnumType.STRING)
 	@Column(columnDefinition="enum('DIGITACAO', 'VALIDADA', 'ASSINADA', 'PROCESSAMENTO', 'AUTORIZADA', 'CANCELADA', 'INUTILIZADA', 'DENEGADA') ")
 	public NFeStatus getStatus() {
 		return status;
@@ -404,16 +415,16 @@ public class DocumentoFiscal implements Serializable {
 	public String toString() {
 		return "DocumentoFiscal [id=" + id + ", operacao=" + operacao + ", tipo=" + tipo + ", serie=" + serie
 				+ ", numero=" + numero + ", emitente=" + emitente + ", destinatario=" + destinatario + ", itens="
-				+ itens + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor + ", icmsValorDesonerado=" + icmsValorDesonerado 
-				+ ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase=" + icmsStBase + ", icmsStValor=" + icmsStValor 
-				+ ", icmsValorUfDestino=" + icmsValorUfDestino + ", vlrTotalProduto=" + vlrTotalProduto 
-				+ ", pisBase=" + pisBase + ", pisValor=" + pisValor + ", cofinsBase=" + cofinsBase 
-				+ ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor="
-				+ ipiValor + ", emissao=" + emissao + ", cadastro=" + cadastro + ", criadoPor=" + criadoPor
-				+ ", alterado=" + alterado + ", alteradoPor=" + alteradoPor + ", valorImpostoFederal="
-				+ valorImpostoFederal + ", valorImpostoEstadual=" + valorImpostoEstadual + ", valorImpostoMunicipal="
-				+ valorImpostoMunicipal + "]";
+				+ itens + ", referencias=" + referencias + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor
+				+ ", icmsValorDesonerado=" + icmsValorDesonerado + ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase="
+				+ icmsStBase + ", icmsStValor=" + icmsStValor + ", icmsValorUfDestino=" + icmsValorUfDestino
+				+ ", vlrTotalProduto=" + vlrTotalProduto + ", pisBase=" + pisBase + ", pisValor=" + pisValor
+				+ ", cofinsBase=" + cofinsBase + ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor="
+				+ ipiValor + ", modelo=" + modelo + ", status=" + status + ", nfeChaveAcesso=" + nfeChaveAcesso
+				+ ", emissao=" + emissao + ", cadastro=" + cadastro + ", criadoPor=" + criadoPor + ", alterado="
+				+ alterado + ", alteradoPor=" + alteradoPor + ", valorImpostoFederal=" + valorImpostoFederal
+				+ ", valorImpostoEstadual=" + valorImpostoEstadual + ", valorImpostoMunicipal=" + valorImpostoMunicipal
+				+ "]";
 	}
-
 	
 }

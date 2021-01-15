@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.compra;
+package net.cartola.emissorfiscal.documento;
 
 /**
 *
