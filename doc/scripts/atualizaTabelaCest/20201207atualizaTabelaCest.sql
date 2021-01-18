@@ -1,0 +1,70 @@
+/**
+ * Author:  robson.costa
+ * Created: 07/12/2020
+ *
+ * Atualizando os CESTS/NCM de Autopeças, com base na planilha que a Gabi passou.
+ * @see https://blog.oobj.com.br/tabela-cest-atualizada/
+ * 
+ * Tentei fazer o dowload de um arquivo .csv, mas não consegui no link acima e nem achei nos sites da SEFAZ/ CONFAZ
+ */
+
+-- ORIGINAL
+-- CREATE TABLE `CESTS` (
+--   `CODIGO` int(5) NOT NULL AUTO_INCREMENT,
+--   `ITEM` float(9,2) NOT NULL DEFAULT 0.00,
+--   `CEST` int(11) NOT NULL,
+--   `DESCRICAO` varchar(1023) NOT NULL,
+--   `CADASTRO` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   `ALTERADO` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--   PRIMARY KEY (`CODIGO`),
+--   UNIQUE KEY `CEST` (`CEST`, `ITEM`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- RECRIANDO AS TABELAS
+DROP TABLE IF EXISTS `CESTS_NCMS` ;
+
+DROP TABLE IF EXISTS `CESTS`;
+
+CREATE TABLE `CESTS` (
+  `CODIGO` int(5) NOT NULL AUTO_INCREMENT,
+  `ITEM` float(9,2) NOT NULL DEFAULT 0.00,
+  `CEST` int(11) NOT NULL,
+  `DESCRICAO` varchar(1023) NOT NULL,
+  `CADASTRO` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ALTERADO` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`CODIGO`),
+  UNIQUE KEY `CEST` (`CEST`, `ITEM`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `CESTS_NCMS` (
+  `CODIGO` int(5) NOT NULL AUTO_INCREMENT,
+  `CEST_CODIGO` int(11) NOT NULL,
+  `NCM_SH` varchar(12) NOT NULL,  
+  `CADASTRO` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ALTERADO` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`CODIGO`),
+  UNIQUE KEY `NCM_SH` (`NCM_SH`, `CEST_CODIGO`),
+  CONSTRAINT `FK_CEST_CODIGO_CEST` FOREIGN KEY (`CEST_CODIGO`) REFERENCES `cests` (`CEST`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- =================== Importando os arquivos .csv para as tabelas ACIMA ========================
+-- Abra o mysql, no direttório que estiver os arquivos .csv abaixo
+LOAD DATA LOCAL INFILE '20201207cests.csv' INTO TABLE cests 
+ CHARACTER SET latin1 
+FIELDS TERMINATED BY ';' 
+OPTIONALLY ENCLOSED BY '\"' 
+LINES TERMINATED BY '\r\n' 
+IGNORE 1 LINES 
+(item,CEST,descricao);
+
+
+LOAD DATA LOCAL INFILE '20201207cests_ncms.csv' INTO TABLE cests_ncms  
+ CHARACTER SET latin1 
+FIELDS TERMINATED BY ';' 
+OPTIONALLY ENCLOSED BY '\"' 
+LINES TERMINATED BY '\r\n' 
+IGNORE 1 LINES 
+(CEST_CODIGO,NCM); 
+

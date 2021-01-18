@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.engine;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CestNcmRepository extends JpaRepository<CestNcmModel, Integer>{
 
-	List<CestNcmModel> findByNcmIn(List<Integer> ncms);
+	List<CestNcmModel> findByNcmIn(Collection<Integer> ncms);
 
+//	List<CestNcmModel> findByNcmIn(List<String> ncms);
+	
+	
 }
+
