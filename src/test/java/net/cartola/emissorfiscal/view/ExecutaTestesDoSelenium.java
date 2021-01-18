@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.view;
+package net.cartola.emissorfiscal.view;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;

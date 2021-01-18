@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.model;
+package net.cartola.emissorfiscal.model;
 
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoSigla;

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +18,17 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
-import net.cartola.emissorfiscal.emissorfiscal.model.TributacaoFederalBuilder;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoRepository;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
+import net.cartola.emissorfiscal.model.TributacaoFederalBuilder;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.ncm.NcmRepository;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoRepository;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaEndereco;
+import net.cartola.emissorfiscal.pessoa.PessoaEnderecoRepository;
 import net.cartola.emissorfiscal.pessoa.PessoaRepository;
 import net.cartola.emissorfiscal.pessoa.PessoaTipo;
 import net.cartola.emissorfiscal.pessoa.RegimeTributario;
@@ -109,6 +111,9 @@ public class TestHelper {
 
 	@Autowired
 	private PessoaRepository pessoaRepository;
+	
+	@Autowired
+	private PessoaEnderecoRepository pessoaEndRepository;
 	
 	@Autowired
 	private DocumentoFiscalRepository docFiscalRepository;
@@ -205,6 +210,14 @@ public class TestHelper {
 			pessoa.setPessoaTipo(PessoaTipo.valueOf(dados[aux++]));
 			pessoas.add(pessoa);
 		}
+//		documentosFiscais.stream().forEach(docFiscal -> {
+//			docFiscal.getItens().stream().forEach(docItem -> {
+//				docItem.setDocumentoFiscal(docFiscal);
+//			});
+//		});
+	
+
+		
 		return pessoaRepository.saveAll(pessoas);
 	}
 	

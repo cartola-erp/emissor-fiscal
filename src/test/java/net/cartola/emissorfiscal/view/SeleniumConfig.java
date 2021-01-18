@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.view;
+package net.cartola.emissorfiscal.view;
 
 import java.util.concurrent.TimeUnit;
 

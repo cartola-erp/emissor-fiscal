@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.api.controller;
+package net.cartola.emissorfiscal.api.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

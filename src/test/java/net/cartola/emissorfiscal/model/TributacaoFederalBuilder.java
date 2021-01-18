@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.model;
+package net.cartola.emissorfiscal.model;
 
 import java.math.BigDecimal;
 

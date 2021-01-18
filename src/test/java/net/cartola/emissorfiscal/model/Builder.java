@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.emissorfiscal.model;
+package net.cartola.emissorfiscal.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
