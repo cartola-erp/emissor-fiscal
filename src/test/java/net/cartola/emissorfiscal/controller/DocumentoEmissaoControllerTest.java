@@ -18,6 +18,7 @@ import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.PessoaEndereco;
 import net.cartola.emissorfiscal.pessoa.PessoaTipo;
 import net.cartola.emissorfiscal.pessoa.RegimeTributario;
 
@@ -47,7 +48,10 @@ public class DocumentoEmissaoControllerTest {
 		DocumentoFiscal docFiscal = new DocumentoFiscal();
 		Operacao operacao = new Operacao();
 		Pessoa emitente = new Pessoa();
+		PessoaEndereco enderecoEmitente = new PessoaEndereco();
 		Pessoa destinatario = new Pessoa();
+		PessoaEndereco enderecoDestinatario = new PessoaEndereco();
+
 		Ncm ncm = new Ncm();
 		List<DocumentoFiscalItem> listItens = new ArrayList<>();
 		DocumentoFiscalItem item = new DocumentoFiscalItem(); 
@@ -55,16 +59,21 @@ public class DocumentoEmissaoControllerTest {
 		operacao.setDescricao(TestHelper.OPERACAO_VENDA);
 		
 		// EMITENTE
-		emitente.setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ));
-		emitente.setUf(EstadoSigla.SP);
+		emitente.setCnpj(Long.parseLong(TestHelper.PESSOA_EMITENTE_CNPJ));
+//		emitente.setUf(EstadoSigla.SP);
 		emitente.setRegimeTributario(RegimeTributario.NORMAL);
 		emitente.setPessoaTipo(PessoaTipo.JURIDICA);
 		
+		enderecoEmitente.setUf(EstadoSigla.SP);
+		emitente.setEndereco(enderecoEmitente);
 		// DESTINATARIO
-		destinatario.setCnpj(Long.parseLong(TestHelper.PESSOA_CNPJ_2));
-		destinatario.setUf(EstadoSigla.SP);
+		destinatario.setCnpj(Long.parseLong(TestHelper.PESSOA_DEST_CNPJ_SP));
+//		destinatario.setUf(EstadoSigla.SP);
 		destinatario.setRegimeTributario(RegimeTributario.NORMAL);
 		destinatario.setPessoaTipo(PessoaTipo.FISICA);
+		
+		enderecoDestinatario.setUf(EstadoSigla.SP);
+		destinatario.setEndereco(enderecoDestinatario);
 		
 		// NCM
 		ncm.setNumero(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1);
