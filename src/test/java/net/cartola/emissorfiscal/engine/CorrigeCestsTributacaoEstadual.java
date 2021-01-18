@@ -18,19 +18,26 @@ import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualRepository;
 
 /**
+ * Essa classe deve ser rodada no LOCALHOST, para CORRIGIR os CESTs das tributações estaduais.
+ * Com base nas tabelas: cests e cests_ncms (rodar script: /doc/scripts/atualizaTabelaCest/20201207atualizaTabelaCest.sql"), 
+ * para popular as tabelas com os CESTS apenas do SEGMENTO de AUTOPEÇAS;
+ * 
+ * É preciso fazer isso pq, quando rodo a classe: EmissorFiscalCadastroIcmsEstadualTest (no ERP), para inserir as tributações estaduais,
+ * o cest que ele obtem, é o que eu li da PLANILHA do KOLOSSUS, porém vários são de outros segmentos que NÃO são de AUTOPEÇAS;
+ * 
+ * Portanto é preciso rodar essa classe abaixo
+ * 
  * @date 15 de jan. de 2021
  * @author robson.costa
  */
 //@SpringBootApplication
 //@Component
-
-
 //@ActiveProfiles("homologacao")
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DefineCestsParaTributacaoEstadual {
+public class CorrigeCestsTributacaoEstadual {
 
 //	@Autowired
 //	private CestNcmRepository cestNcmRepository;
