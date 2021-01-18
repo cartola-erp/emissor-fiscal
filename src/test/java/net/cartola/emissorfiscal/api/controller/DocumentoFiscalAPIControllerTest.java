@@ -116,8 +116,8 @@ public class DocumentoFiscalAPIControllerTest {
 	public void test02_tentaInserirDocumentoFiscalVendaInterEstadual() {
 		// POPULANDO OBJ
 		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA_INTERESTADUAL).get();
-		Pessoa emitente = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_EMITENTE_CNPJ)).get(0);
-		Pessoa destinatario = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_DEST_CNPJ_SP)).get(0);
+		Pessoa emitente = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_EMITENTE_CNPJ)).get();
+		Pessoa destinatario = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_DEST_CNPJ_SP)).get();
 		Ncm ncm = ncmService.findNcmByNumeroAndExcecao(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1, NcmServiceLogicTest.NCM_EXCECAO_REGISTRO_1).get();
 		
 		List<Ncm> listNcms = ncmService.findAll();
