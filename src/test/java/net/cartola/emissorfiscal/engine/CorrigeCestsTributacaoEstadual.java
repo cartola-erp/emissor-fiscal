@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,9 @@ public class CorrigeCestsTributacaoEstadual {
 		
 		System.out.println("A quantidade ATUALIZADA da TRIBUTACAO ESTADUAL foi de: " +listTribEstaUpdated.size());
 		assertEquals(listTribEsta.size(), listTribEstaUpdated.size());
+		assertNotEquals(0, listTribEsta.size());
+		assertNotEquals(0, listTribEstaUpdated.size());
+
 	}
 	
 	/* Busca o Codigo CEST para o NCM da tributacao estadual, e atualiza o mesmo */
