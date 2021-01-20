@@ -27,7 +27,7 @@ public class DocumentoFiscalItemService {
 		return documentoFiscalItemRepository.findByNcm(ncm);
 	}
 
-	public List<DocumentoFiscalItem> findDocumentoFiscalByVariasOperacoes(Collection<Ncm> ncms) {
+	public List<DocumentoFiscalItem> findDocumentoFiscalByVariosNcms(Collection<Ncm> ncms) {
 		return documentoFiscalItemRepository.findByNcmIn(ncms);
 	}
 
