@@ -24,7 +24,8 @@ public class Reg0175 {
 	
 	private final String reg = "0175";
     private LocalDate dtAlt;
-    private int nrCamp;
+//    private int nrCamp;
+    private Reg0175CamposAlterados nrCamp;
     private String contAnt;
 	
     public String getReg() {
@@ -39,11 +40,11 @@ public class Reg0175 {
 		this.dtAlt = dtAlt;
 	}
 
-	public int getNrCamp() {
+	public Reg0175CamposAlterados getNrCamp() {
 		return nrCamp;
 	}
 
-	public void setNrCamp(int nrCamp) {
+	public void setNrCamp(Reg0175CamposAlterados nrCamp) {
 		this.nrCamp = nrCamp;
 	}
 

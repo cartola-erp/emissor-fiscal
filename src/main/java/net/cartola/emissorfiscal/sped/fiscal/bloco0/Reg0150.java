@@ -41,7 +41,7 @@ public class Reg0150 {
     private int codMun;
     private String suframa;
     private String end;
-    private String num;
+    private int num;
     private String compl;
     private String bairro;
     private List<Reg0175> reg0175;
@@ -122,11 +122,11 @@ public class Reg0150 {
 		this.end = end;
 	}
 
-	public String getNum() {
+	public int getNum() {
 		return num;
 	}
 
-	public void setNum(String num) {
+	public void setNum(int num) {
 		this.num = num;
 	}
 

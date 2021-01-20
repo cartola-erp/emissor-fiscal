@@ -1,0 +1,29 @@
+/**
+ * Author:  robson.costa
+ * Created: 07/12/2020
+ */
+
+-- TABELA "AUXLIAR", com todos os NCMS já USADOS pela AG
+DROP TABLE IF EXISTS TODOS_NCMS_USADOS;
+
+CREATE TABLE IF NOT EXISTS TODOS_NCMS_USADOS(
+    CODIGO INT(11) AUTO_INCREMENT NOT NULL,
+    NCM VARCHAR(11) NOT NULL,
+    EXCECAO INT(11) DEFAULT 0 NOT NULL,
+	CEST INT(11) DEFAULT NULL, 
+    PRIMARY KEY(CODIGO)
+);
+
+-- IMPORTANTEN DE LEMBRAR QUE ALGUNS NCMS PODEM TER MAIS DE UMA EXCECAO, 
+-- E alguma dela na VENDA PODERÁ NÃO SER MONOFASICA
+-- LEMBRA DISSO QUANDO CRIAR A PROCEDURE PARA CADASTRAR AAS TRIBUTACOES para TESTE NO EMISSOR
+
+-- Apenas ncms de COMERCIALIZACAO, BRINDE e DOACAO
+INSERT INTO TODOS_NCMS_USADOS (NCM)	
+	SELECT distinct(p.classe_fiscal) FROM autogeral.produtos_dbf p WHERE finalidade_codigo IN (1,2,3);
+
+-- INSERT INTO TODOS_NCMS_USADOS (NCM)
+--		-- SELECT distinct(p.classe_fiscal) FROM autogeral.produtos_dbf p;
+
+-- Deletando ncms com menos que 8 caracteres (Ncms Invalidos_
+DELETE FROM todos_ncms_usados WHERE LENGTH(ncm) <= 7;

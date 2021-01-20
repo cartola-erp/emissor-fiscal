@@ -28,8 +28,10 @@ public class PessoaAlteradoSped {
 	private String nomeNovo;
 	private int codPaisAnt;
 	private int codPaisNovo;
-	private Long cpfCnpjAnt;
-	private Long cpfCnpjNovo;
+	private String CnpjAnt;
+	private String CnpjNovo;
+	private String cpfAnt;
+	private String cpfNovo;
 	private int codMunAnt;		// no erpj ibgeCodigo em tbl cidades
 	private int codMunNovo;
 	private String suframaAnt;

@@ -185,14 +185,14 @@ public class SimulacaoService {
 		
 		Pessoa emitente = new Pessoa();
 		PessoaEndereco enderecoEmitente = new PessoaEndereco();
-		emitente.setCnpj(123456789012L);
+		emitente.setCnpj("0123456789012");
 		setRegimeTributario(emitente, regimeTributario);
 		enderecoEmitente.setUf(estadoOrigem.getSigla());
 		emitente.setEndereco(enderecoEmitente);
 		
 		Pessoa destinatario = new Pessoa();
 		PessoaEndereco enderecoDest = new PessoaEndereco();
-		destinatario.setCnpj(98765432102L);
+		destinatario.setCnpj("9876543210");
 		enderecoDest.setUf(estadoDestino.getSigla());
 		destinatario.setEndereco(enderecoDest);
 		
