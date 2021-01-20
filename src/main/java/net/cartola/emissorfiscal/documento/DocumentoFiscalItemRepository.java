@@ -15,4 +15,6 @@ public interface DocumentoFiscalItemRepository extends JpaRepository<DocumentoFi
 
 	List<DocumentoFiscalItem> findByNcmIn(Collection<Ncm> ncms);
 
+	List<DocumentoFiscalItem> findByDocumentoFiscalIn(Collection<DocumentoFiscal> listDocumentosFiscais);
+
 }

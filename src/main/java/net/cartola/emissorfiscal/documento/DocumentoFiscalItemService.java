@@ -23,14 +23,18 @@ public class DocumentoFiscalItemService {
 		return Optional.ofNullable(documentoFiscalItemRepository.saveAndFlush(documentoFiscalItem));
 	}
 
-	public List<DocumentoFiscalItem> findDocumentoFiscalByOperacao(Ncm ncm) {
+	public List<DocumentoFiscalItem> findDocuFiscItemByNcm(Ncm ncm) {
 		return documentoFiscalItemRepository.findByNcm(ncm);
 	}
 
-	public List<DocumentoFiscalItem> findDocumentoFiscalByVariosNcms(Collection<Ncm> ncms) {
+	public List<DocumentoFiscalItem> findDocuFiscItemByVariosNcms(Collection<Ncm> ncms) {
 		return documentoFiscalItemRepository.findByNcmIn(ncms);
 	}
 
+	public List<DocumentoFiscalItem> findItensByVariosDocumentoFiscal(Collection<DocumentoFiscal> listDocumentosFiscais) {
+		return documentoFiscalItemRepository.findByDocumentoFiscalIn(listDocumentosFiscais);
+	}
+	
 	public Optional<DocumentoFiscalItem> findOne(Long id) {
 		return documentoFiscalItemRepository.findById(id);
 	}

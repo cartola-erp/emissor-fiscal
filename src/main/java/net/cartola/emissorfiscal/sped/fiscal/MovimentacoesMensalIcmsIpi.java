@@ -21,13 +21,13 @@ import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 @Setter
 public class MovimentacoesMensalIcmsIpi {
 	
-	private List<DocumentoFiscal> listCompras;
+//	private List<DocumentoFiscal> listCompras;
 	private List<DocumentoFiscal> listDocumentoFiscal;
 	private List<Pessoa> listCadastros;
 	private List<PessoaAlteradoSped> listCadastrosAlteradosSped;
 	
 	private List<ProdutoAlteradoSped> listProdutoAlteradoSped;
-	private List<ProdutoUnidade> listProdutoUnidade;
+//	private List<ProdutoUnidade> listProdutoUnidade;
 	private Loja loja;
 //	private Pessoa loja;			// CONFESSO que ainda tou na duvida se pego a loja de "CADASTROS" ou da tbl "LOJA" msm
 	private Contador contador;

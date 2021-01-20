@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @Record(fields = { 
 	@Field(name = "reg", maxLength = 4), 
-	@Field(name = "unid"),
+	@Field(name = "unid", padding = 0, minLength = 6, maxLength = 6),
 	@Field(name = "descr") 
 })	
 @ToString
