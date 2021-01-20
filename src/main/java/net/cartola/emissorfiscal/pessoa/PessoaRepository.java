@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
 	
-	Optional<Pessoa> findPessoaByCnpj(Long cnpj);
-
+	Optional<Pessoa> findPessoaByCnpj(String cnpj);
+	
+	Optional<Pessoa> findPessoaByCnpjOrCpf(String cnpj, String cpf);
 }

@@ -61,7 +61,7 @@ public class PessoaEndereco implements Serializable {
 	private String logradouroEndereco;
 
 	@Column(name = "end_num")
-	private Integer enderecoNumero;
+	private int enderecoNumero;
 
 	@Column(name = "compl_end")
 	private String complementoEndereco;

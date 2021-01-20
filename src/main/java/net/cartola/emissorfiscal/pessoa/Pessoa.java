@@ -25,12 +25,15 @@ import javax.persistence.Table;
 public class Pessoa {
 	
 	private Long id;
-	private Long cnpj;
+	private String cnpj;
+    private String cpf;
 	private RegimeTributario regimeTributario;
 	private PessoaTipo pessoaTipo = PessoaTipo.FISICA;
 	private Long ie;
 	private Long codSuframa;
 	private String nome;
+	private int codigoErp;
+	private int lojaErp;
 	private int enderecoCodigoErp;
 	private PessoaEndereco endereco; 
 	
@@ -43,12 +46,20 @@ public class Pessoa {
 		this.id = id;
 	}
 
-	public Long getCnpj() {
+	public String getCnpj() {
 		return cnpj;
 	}
 
-	public void setCnpj(Long cnpj) {
+	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
+	}
+	
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -96,6 +107,24 @@ public class Pessoa {
 		this.nome = nome;
 	}
 	
+	@Column(name = "cod_erp")
+	public int getCodigoErp() {
+		return codigoErp;
+	}
+
+	public void setCodigoErp(int codigoErp) {
+		this.codigoErp = codigoErp;
+	}
+
+	@Column(name = "loja_erp")
+	public int getLojaErp() {
+		return lojaErp;
+	}
+
+	public void setLojaErp(int lojaErp) {
+		this.lojaErp = lojaErp;
+	}
+
 	@Column(name = "end_cod_erp")
 	public int getEnderecoCodigoErp() {
 		return enderecoCodigoErp;

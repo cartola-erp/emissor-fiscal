@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.util.StringUtil;
+
 /**
  *	23 de nov de 2019
  *	@author robson.costa
@@ -25,6 +27,11 @@ public class PessoaService {
 	}
 	
 	public Optional<Pessoa> save(Pessoa pessoa) {
+		boolean isCnpj = StringUtil.isCnpj(pessoa.getCnpj());
+		if (!isCnpj) {
+			pessoa.setCpf(pessoa.getCnpj());
+			pessoa.setCnpj("");
+		}
 		Optional<PessoaEndereco> opEndereco = pessoaEnderecoService.save(pessoa.getEndereco());			
 		pessoa.setEndereco(opEndereco.get());
 		return Optional.ofNullable(pessoaRepository.saveAndFlush(pessoa));
@@ -34,8 +41,12 @@ public class PessoaService {
 		return pessoaRepository.findById(id);
 	}
 	
-	public Optional<Pessoa> findByCnpj(Long cnpj) {
+	public Optional<Pessoa> findByCnpj(String cnpj) {
 		return pessoaRepository.findPessoaByCnpj(cnpj);
+	}
+	
+	public Optional<Pessoa> findPessoaByCnpjOrCpf(String cnpj, String cpf) {
+		return pessoaRepository.findPessoaByCnpjOrCpf(cnpj, cpf);
 	}
 	
 	public void deleteById(Long id) {
@@ -49,7 +60,7 @@ public class PessoaService {
 	 * @return {@link Optional} <{@link Pessoa}>
 	 */
 	public Optional<Pessoa> verificaSePessoaExiste(Pessoa pessoa) {
-		Optional<Pessoa> opPessoa = findByCnpj(pessoa.getCnpj());
+		Optional<Pessoa> opPessoa = findPessoaByCnpjOrCpf(pessoa.getCnpj(), pessoa.getCpf());
 		if (!opPessoa.isPresent()) {
 			return save(pessoa);
 		}
