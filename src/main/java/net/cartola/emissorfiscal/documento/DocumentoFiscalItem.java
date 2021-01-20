@@ -45,6 +45,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private String codigoSequencia;
 	private String codigoBarras;
 	private String descricaoEmpresa;
+	private String unidade;
 	
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
@@ -148,6 +149,14 @@ public class DocumentoFiscalItem implements Serializable {
 		this.descricaoEmpresa = descricaoEmpresa;
 	}
 
+	public String getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(String unidade) {
+		this.unidade = unidade;
+	}
+	
 	@NotNull(message = FINALIDADE_OBRIGATORIA)
 	@Enumerated(EnumType.STRING)
 	@Column(name="finalidade", columnDefinition="enum('CONSUMO', 'REVENDA') default 'CONSUMO' ")
