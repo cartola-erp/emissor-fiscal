@@ -424,7 +424,7 @@ public class CalculoFiscalEstadualTest {
 		TributacaoEstadual tribEstaVendaInterICMS00 = criaTributaEstaVenda(Integer.parseInt(TestHelper.NCM_ICMS_00_DIFAL_FCP), 00, EstadoSigla.RJ, IVA_ZERO, ICMS_BASE_CEM, FCP_ALIQ_2_PERC, ICMS_ST_ALIQ_ZERO, ICMS_CFOP_ITEM);
 		DocumentoFiscal docFiscalRJ = criaDocumentoFiscalVenda(tribEstaVendaInterICMS00.getNcm(), ITEM_ICMS_ST_BASE_ULTIM_COMPR_0, ITEM_ICMS_ST_VLR_ULTIM_COMPR_0, QTD_ULTIM_COMP_0, ITEM_ICMS_ST_ALIQ_ULTIM_COMPRA_0);
 	
-		Pessoa destinatarioRj = pessoaService.findByCnpj(Long.valueOf(PESSOA_DEST_CNPJ_RJ)).get();
+		Pessoa destinatarioRj = pessoaService.findByCnpj(PESSOA_DEST_CNPJ_RJ).get();
 		docFiscalRJ.setDestinatario(destinatarioRj);
 		
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscalRJ, true, false);
@@ -493,8 +493,8 @@ public class CalculoFiscalEstadualTest {
 		List<DocumentoFiscalItem> listItens = new ArrayList<>();
 		DocumentoFiscalItem docFiscalItem = new DocumentoFiscalItem();
 
-		Pessoa emitente = pessoaService.findByCnpj(Long.valueOf(PESSOA_EMITENTE_CNPJ)).get();
-		Pessoa destinatario = pessoaService.findByCnpj(Long.valueOf(PESSOA_DEST_CNPJ_SP)).get();
+		Pessoa emitente = pessoaService.findByCnpj(PESSOA_EMITENTE_CNPJ).get();
+		Pessoa destinatario = pessoaService.findByCnpj(PESSOA_DEST_CNPJ_SP).get();
 				
 		Operacao operacao = new Operacao();
 		operacao.setDescricao("VENDA");
