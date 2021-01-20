@@ -202,7 +202,7 @@ public class TestHelper {
 		for (String[] dados : data) {
 			int aux = 0;
 			Pessoa pessoa = new Pessoa();
-			pessoa.setCnpj(Long.valueOf(dados[aux++]));
+			pessoa.setCnpj(dados[aux++]);
 			PessoaEndereco endereco = new PessoaEndereco();
 			endereco.setUf(EstadoSigla.valueOf(dados[aux++]));
 			pessoa.setEndereco(endereco);

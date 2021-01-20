@@ -19,7 +19,7 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 //	@Query("SELECT doc, e FROM DocumentoFiscal doc INNER JOIN doc.emitente e WHERE e.id = :idEmitente")
 //	List <DocumentoFiscal> findDocFiscalByEmitenteId(@Param("idEmitente") Long idEmitente);
 	
-	Optional<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(Long cnpj, String tipo, Long serie, Long numero);
+	Optional<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(String cnpj, String tipo, Long serie, Long numero);
 	
 
 }

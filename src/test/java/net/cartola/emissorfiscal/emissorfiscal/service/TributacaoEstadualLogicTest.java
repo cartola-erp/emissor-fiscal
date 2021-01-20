@@ -87,7 +87,7 @@ public class TributacaoEstadualLogicTest {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA);
 		assertTrue(opOperacao.isPresent());
 		
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(12345678901234L, "NFE", 262265758L, 82211429431055L);
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero("12345678901234", "NFE", 262265758L, 82211429431055L);
 		assertTrue(opDocFiscal.isPresent());
 		
 		// Criando TRIBUTAÇÃO ESTADUAL

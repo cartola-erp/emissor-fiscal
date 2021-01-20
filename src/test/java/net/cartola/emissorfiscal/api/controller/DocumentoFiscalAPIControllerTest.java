@@ -79,7 +79,7 @@ public class DocumentoFiscalAPIControllerTest {
 	private ResponseEntity<Response<DocumentoFiscal>> buscarUmDocumentoFiscal() {
 		DocumentoFiscal docFiscal = new DocumentoFiscal();
 		docFiscal.setEmitente(new Pessoa());
-		docFiscal.getEmitente().setCnpj(Long.parseLong(TestHelper.PESSOA_EMITENTE_CNPJ));
+		docFiscal.getEmitente().setCnpj(TestHelper.PESSOA_EMITENTE_CNPJ);
 		docFiscal.setTipo(TestHelper.DOC_FISCAL_TIPO_NFE);
 		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
 		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
@@ -116,8 +116,8 @@ public class DocumentoFiscalAPIControllerTest {
 	public void test02_tentaInserirDocumentoFiscalVendaInterEstadual() {
 		// POPULANDO OBJ
 		Operacao operacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA_INTERESTADUAL).get();
-		Pessoa emitente = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_EMITENTE_CNPJ)).get();
-		Pessoa destinatario = pessoaService.findByCnpj(Long.parseLong(TestHelper.PESSOA_DEST_CNPJ_SP)).get();
+		Pessoa emitente = pessoaService.findByCnpj(TestHelper.PESSOA_EMITENTE_CNPJ).get();
+		Pessoa destinatario = pessoaService.findByCnpj(TestHelper.PESSOA_DEST_CNPJ_SP).get();
 		Ncm ncm = ncmService.findNcmByNumeroAndExcecao(NcmServiceLogicTest.NCM_NUMERO_REGISTRO_1, NcmServiceLogicTest.NCM_EXCECAO_REGISTRO_1).get();
 		
 		List<Ncm> listNcms = ncmService.findAll();
