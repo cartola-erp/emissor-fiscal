@@ -7,7 +7,7 @@ package net.cartola.emissorfiscal.sped.fiscal;
  * T -> Grupo de Registro que será montado (Que tem uma Ocorrencia)
  * R -> Informações recebidas, referente as movimentações de um mês
  */
-public interface MontaGrupoRegistroSimples <T, R extends MovimentacoesMensalIcmsIpi> {
+public interface MontaGrupoRegistroSimples <T, R extends MovimentoMensalIcmsIpi> {
 	
 	T montarGrupoDeRegistroSimples(R movimentosIcmsIpi);
 	

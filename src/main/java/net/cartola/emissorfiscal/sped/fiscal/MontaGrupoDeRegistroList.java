@@ -9,7 +9,7 @@ import java.util.List;
  * List<T> -> Grupo de Registro que será montado (Para registros com mais de uma ocorrencia)
  * R -> Informações recebidas, referente as movimentações de um mês
  */
-public interface MontaGrupoDeRegistroList <T, R extends MovimentacoesMensalIcmsIpi> {
+public interface MontaGrupoDeRegistroList <T, R extends MovimentoMensalIcmsIpi> {
 	
 	List<T> montarGrupoDeRegistro(R movimentosIcmsIpi);
 	

@@ -21,8 +21,8 @@ public class ContadorService {
 		return contadorRepository.findAll();
 	}
 	
-	public Optional<Contador> save(Contador endereco) {
-		return Optional.ofNullable(contadorRepository.saveAndFlush(endereco));
+	public Optional<Contador> save(Contador contador) {
+		return Optional.ofNullable(contadorRepository.saveAndFlush(contador));
 	}
 		
 	public Optional<Contador> findOne(Long id) {
