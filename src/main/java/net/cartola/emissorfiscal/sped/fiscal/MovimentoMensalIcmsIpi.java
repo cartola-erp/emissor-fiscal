@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
@@ -19,15 +20,16 @@ import net.cartola.emissorfiscal.produto.ProdutoUnidade;
  */
 @Getter
 @Setter
-public class MovimentacoesMensalIcmsIpi {
+public class MovimentoMensalIcmsIpi {
 	
 //	private List<DocumentoFiscal> listCompras;
 	private List<DocumentoFiscal> listDocumentoFiscal;
 	private List<Pessoa> listCadastros;
 	private List<PessoaAlteradoSped> listCadastrosAlteradosSped;
 	
+	private List<DocumentoFiscalItem> listItens;
 	private List<ProdutoAlteradoSped> listProdutoAlteradoSped;
-//	private List<ProdutoUnidade> listProdutoUnidade;
+	private List<ProdutoUnidade> listProdUnid;
 	private Loja loja;
 //	private Pessoa loja;			// CONFESSO que ainda tou na duvida se pego a loja de "CADASTROS" ou da tbl "LOJA" msm
 	private Contador contador;
