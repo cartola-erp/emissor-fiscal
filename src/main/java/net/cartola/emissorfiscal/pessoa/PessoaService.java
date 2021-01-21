@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.pessoa;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,10 @@ public class PessoaService {
 	
 	public List<Pessoa> findAll() {
 		return pessoaRepository.findAll();
+	}
+	
+	public List<Pessoa> findByIdsIn(Set<Long> pessoasId) {
+		return pessoaRepository.findPessoaByIdIn(pessoasId);
 	}
 	
 	public Optional<Pessoa> save(Pessoa pessoa) {
@@ -66,5 +71,6 @@ public class PessoaService {
 		}
 		return opPessoa;
 	}
+
 }
 

@@ -61,16 +61,8 @@ public class SpedFiscalService implements MontaSpedFiscal<SpedFiscal, MovimentoM
 	
 	@Override
 	public SpedFiscal criarSpedFiscal(MovimentoMensalIcmsIpi movimentacoesMensalIcmsIpi) {
-		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o arquivo do SPED FISCAL (Icms IPI) ");
-		/** 
-		 * @Todo 
-		 * Iterar dentro de um for, de lojas? mas onde? aqui ou no controller? 
-		 * acho que o ideal será no controller.
-		 * Porém o importante de saber é que caso 1 loja de certo tenho que salvar o seu arquivo no banco, e apenas retornar 
-		 * as que deram errado;
-		 */
-		
+		LOG.log(Level.INFO, "Criando os Blocos do SPED FISCAL (Icms IPI) ");
+
 		SpedFiscal spedFiscal = new SpedFiscal();
 		
 		spedFiscal.setBloco0(bloco0Service.criarBloco(movimentacoesMensalIcmsIpi));
@@ -83,7 +75,8 @@ public class SpedFiscalService implements MontaSpedFiscal<SpedFiscal, MovimentoM
 		spedFiscal.setBlocoK(blocoKService.criarBloco(movimentacoesMensalIcmsIpi));
 		spedFiscal.setBloco1(bloco1Service.criarBloco(movimentacoesMensalIcmsIpi));
 //		spedFiscal.setBloco9(bloco9Service.criarBloco(movimentacoesMensalIcmsIpi));
-		
+
+		LOG.log(Level.INFO, "Terminado a criação dos Blocos do SPED FISCAL (Icms IPI) ");
 		return spedFiscal;
 	}
 

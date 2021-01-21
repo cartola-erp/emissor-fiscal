@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.contador.ContadorService;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.loja.LojaService;
@@ -57,7 +56,6 @@ public class SpedFiscalArquivoService {
 
 	public void gerarAquivoSpedFiscal(Long lojaId, Long contadorId, LocalDate dataInicio, LocalDate dataFim) {
 		List<Loja> listLojas = buscaLojas(lojaId); 		
-		Contador contador = contadorService.findOne(contadorId).get();
 
 		for (Loja loja : listLojas) {
 			LocalDateTime dataHoraInicioGeracao = LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault());
@@ -74,10 +72,7 @@ public class SpedFiscalArquivoService {
 				spedFiscalArquivo = opSpedFiscalArqu.get();
 			}
 			
-			/**
-			 * SE NÃO vier -> ID LOJA, então é para TODAS
-			 */
-			MovimentoMensalIcmsIpi moviMensalIcmsIpi = moviMensalIcmsIpiService.buscaMovimentacoesIcmsIpi(loja, contador, dataInicio, dataFim);
+			MovimentoMensalIcmsIpi moviMensalIcmsIpi = moviMensalIcmsIpiService.buscaMovimentacoesIcmsIpi(loja, contadorId, dataInicio, dataFim);
 			
 			/***
 			 * APENAS para eu ter definido a URL que será gerado.
@@ -86,6 +81,8 @@ public class SpedFiscalArquivoService {
 			 * 
 			 */
 			SpedFiscal spedFiscal = spedFiscalService.criarSpedFiscal(moviMensalIcmsIpi);
+			
+			// TODO --> Gerar o Arquivo
 			/** O Objeto retornado acima, "spedFiscal", é de todos os blocos montados, agora eu tenho:
 			 * 1 - Que gerar o arquivo (SpedFiscalArquivo)
 			 * 2 - Salvar o arquivo Gerado*/
@@ -94,7 +91,7 @@ public class SpedFiscalArquivoService {
 			spedFiscalArquivo.setDataHoraFimGeracao(dataHoraFim);
 			save(spedFiscalArquivo);
 			
-			LOG.log(Level.INFO, "Terminado aa geração do arquivo SPED FISCAL ICMS IPI, ás {0} para a LOJA {1} " , new Object[]{dataHoraInicioGeracao, loja});
+			LOG.log(Level.INFO, "Terminado a geração do arquivo SPED FISCAL ICMS IPI, ás {0} para a LOJA {1} " , new Object[]{dataHoraInicioGeracao, loja});
 		}
 
 	}

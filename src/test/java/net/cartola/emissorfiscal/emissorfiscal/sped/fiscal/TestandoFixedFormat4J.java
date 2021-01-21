@@ -29,7 +29,7 @@ public class TestandoFixedFormat4J {
 		
 		
 //		reg0000.setCodVer(VersaoDoLayout.V_014);
-		reg0000.setNome("Empire TianSheng");
+		reg0000.setNome("Empire ");
 //		Reg0001AberturaDoBloco reg0001 = new Reg0001AberturaDoBloco();
 		
 		Bloco0 bloco0 = new Bloco0();
