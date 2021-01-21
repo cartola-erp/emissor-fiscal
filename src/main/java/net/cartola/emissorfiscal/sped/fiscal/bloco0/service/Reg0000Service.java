@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoRegistroSimples;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0000AberturaArquivoDigital;
 import net.cartola.emissorfiscal.sped.fiscal.enums.FinalidadeDoArquivo;
 import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeAtividade;
@@ -18,12 +18,12 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.VersaoDoLayout;
  * @author robson.costa
  */
 @Service
-class Reg0000Service implements MontaGrupoRegistroSimples<Reg0000AberturaArquivoDigital, MovimentacoesMensalIcmsIpi> {
+class Reg0000Service implements MontaGrupoRegistroSimples<Reg0000AberturaArquivoDigital, MovimentoMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(Reg0000Service.class.getName());
 	
 	@Override
-	public Reg0000AberturaArquivoDigital montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
+	public Reg0000AberturaArquivoDigital montarGrupoDeRegistroSimples(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		LOG.log(Level.INFO, "Montando a abertura do arquivo digital (Reg0000) ");
 		Reg0000AberturaArquivoDigital reg0000 = new Reg0000AberturaArquivoDigital();
 		Loja loja = movimentosIcmsIpi.getLoja();

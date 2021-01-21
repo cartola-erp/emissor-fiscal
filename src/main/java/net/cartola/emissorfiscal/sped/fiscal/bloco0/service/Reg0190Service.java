@@ -50,6 +50,7 @@ class Reg0190Service implements MontaGrupoDeRegistroList<Reg0190, MovimentacoesM
 			reg0190.setDescr(unidade.getDescricao());
 			listReg0190.add(reg0190);
 		});
+		LOG.log(Level.INFO, "Grupo de Registro 0190, terminado: {0} " ,listReg0190);
 		return listReg0190;
 	}
 

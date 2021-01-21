@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoRegistroSimples;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC001AberturaDoBlocoC;
 
 /**
@@ -14,13 +14,13 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC001AberturaDoBlocoC;
  * @author robson.costa
  */
 @Service
-class RegC001Service implements MontaGrupoRegistroSimples<RegC001AberturaDoBlocoC, MovimentacoesMensalIcmsIpi> {
+class RegC001Service implements MontaGrupoRegistroSimples<RegC001AberturaDoBlocoC, MovimentoMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(RegC001Service.class.getName());
 	
 	
 	@Override
-	public RegC001AberturaDoBlocoC montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
+	public RegC001AberturaDoBlocoC montarGrupoDeRegistroSimples(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando a abertura do bloco C ");
 

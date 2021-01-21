@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Bloco0;
 
 /**
@@ -15,7 +15,7 @@ import net.cartola.emissorfiscal.sped.fiscal.bloco0.Bloco0;
  * @author robson.costa
  */
 @Service
-public class Bloco0Service implements MontaBloco<Bloco0, MovimentacoesMensalIcmsIpi> {
+public class Bloco0Service implements MontaBloco<Bloco0, MovimentoMensalIcmsIpi> {
 	
 	private static final Logger LOG = Logger.getLogger(Bloco0Service.class.getName());
 	
@@ -53,9 +53,9 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentacoesMensalIcms
 	private Reg0990Service reg0990Service;
 	
 	@Override
-	public Bloco0 criarBloco(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public Bloco0 criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o BLOCO 0, com INICIO em: {0} e TERMINO: {1} ", movimentacoesMensalIcmsIpi.getDataInicio());
+		LOG.log(Level.INFO, "Montando o BLOCO 0, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 		Bloco0 bloco0 = new Bloco0();
 		
 		/**
@@ -64,17 +64,17 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentacoesMensalIcms
 		 * Tentar capturar possiveis erros.: Ex o famosão -> @NullPointerException
 		 */
 		
-		bloco0.setReg0000(reg0000Service.montarGrupoDeRegistroSimples(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0001(reg0001Service.montarGrupoDeRegistroSimples(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0005(reg0005Service.montarGrupoDeRegistroSimples(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0100(reg0100Service.montarGrupoDeRegistroSimples(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0150(reg0150Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0190(reg0190Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0200(reg0200Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0400(reg0400Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0450(reg0450Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0460(reg0460Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		bloco0.setReg0990(reg0990Service.montarGrupoDeRegistroSimples(movimentacoesMensalIcmsIpi));
+		bloco0.setReg0000(reg0000Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+		bloco0.setReg0001(reg0001Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+		bloco0.setReg0005(reg0005Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+		bloco0.setReg0100(reg0100Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+		bloco0.setReg0150(reg0150Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		bloco0.setReg0190(reg0190Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		bloco0.setReg0200(reg0200Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		bloco0.setReg0400(reg0400Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		bloco0.setReg0450(reg0450Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		bloco0.setReg0460(reg0460Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		bloco0.setReg0990(reg0990Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO 0, TEMINADA! {0} " ,bloco0);
 		return bloco0;

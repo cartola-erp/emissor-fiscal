@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoG.BlocoG;
 
 /**
@@ -14,14 +14,14 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoG.BlocoG;
  * @author robson.costa
  */
 @Service
-public class BlocoGService implements MontaBloco<BlocoG, MovimentacoesMensalIcmsIpi> {
+public class BlocoGService implements MontaBloco<BlocoG, MovimentoMensalIcmsIpi> {
 	
 	private static final Logger LOG = Logger.getLogger(BlocoGService.class.getName());
 
 	@Override
-	public BlocoG criarBloco(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public BlocoG criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o BLOCO G, com INICIO em: {0} e TERMINO: {1} ", movimentacoesMensalIcmsIpi.getDataInicio());
+		LOG.log(Level.INFO, "Montando o BLOCO G, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 
 		return null;
 	}

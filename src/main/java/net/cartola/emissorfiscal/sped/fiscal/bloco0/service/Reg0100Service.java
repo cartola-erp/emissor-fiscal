@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoRegistroSimples;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0100;
 
 /**
@@ -15,12 +15,12 @@ import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0100;
  * @author robson.costa
  */
 @Service
-class Reg0100Service implements MontaGrupoRegistroSimples<Reg0100, MovimentacoesMensalIcmsIpi> {
+class Reg0100Service implements MontaGrupoRegistroSimples<Reg0100, MovimentoMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(Reg0100Service.class.getName());
 
 	@Override
-	public Reg0100 montarGrupoDeRegistroSimples(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
+	public Reg0100 montarGrupoDeRegistroSimples(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0100 ");
 		Reg0100 reg0100 = new Reg0100();
 		Contador contador = movimentosIcmsIpi.getContador();

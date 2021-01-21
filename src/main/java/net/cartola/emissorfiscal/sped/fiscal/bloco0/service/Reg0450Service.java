@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0450;
 
 /**
@@ -16,12 +16,12 @@ import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0450;
  * @author robson.costa
  */
 @Service
-class Reg0450Service implements MontaGrupoDeRegistroList<Reg0450, MovimentacoesMensalIcmsIpi> {
+class Reg0450Service implements MontaGrupoDeRegistroList<Reg0450, MovimentoMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(Reg0450Service.class.getName());
 	
 	@Override
-	public List<Reg0450> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
+	public List<Reg0450> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0450 ");
 

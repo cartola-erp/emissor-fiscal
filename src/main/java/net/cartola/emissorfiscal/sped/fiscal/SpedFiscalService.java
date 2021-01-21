@@ -22,7 +22,7 @@ import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK1.service.BlocoKService;
  * @author robson.costa
  */
 @Service
-public class SpedFiscalService implements MontaArquivoSpedFiscal<SpedFiscal, MovimentacoesMensalIcmsIpi> {
+public class SpedFiscalService implements MontaSpedFiscal<SpedFiscal, MovimentoMensalIcmsIpi> {
 	
 	private static final Logger LOG = Logger.getLogger(SpedFiscalService.class.getName());
 
@@ -60,7 +60,7 @@ public class SpedFiscalService implements MontaArquivoSpedFiscal<SpedFiscal, Mov
 	
 	
 	@Override
-	public SpedFiscal criarArquivoSpedFiscal(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public SpedFiscal criarSpedFiscal(MovimentoMensalIcmsIpi movimentacoesMensalIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o arquivo do SPED FISCAL (Icms IPI) ");
 		/** 

@@ -14,7 +14,7 @@ import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
 import net.cartola.emissorfiscal.pessoa.PessoaEndereco;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0150;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados;
@@ -25,7 +25,7 @@ import net.cartola.emissorfiscal.util.StringUtil;
  * @author robson.costa
  */
 @Service
-class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentacoesMensalIcmsIpi> {
+class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(Reg0150Service.class.getName());
 
@@ -35,7 +35,7 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentacoesM
 	private Map<String, PessoaAlteradoSped> mapPessoaAlteradoPorCpfNovo = new HashMap<>();
 	
 	@Override
-	public List<Reg0150> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
+	public List<Reg0150> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0150 ");
 		List<Pessoa> listCadPessoa = movimentosIcmsIpi.getListCadastros();
 		List<PessoaAlteradoSped> listCadAlteradoSped = movimentosIcmsIpi.getListCadastrosAlteradosSped();
@@ -64,7 +64,7 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentacoesM
 			
 			listReg0150.add(reg0150);
 		});
-		LOG.log(Level.INFO, "Registro Grupo de Registro 0150, terminado: {0} " ,listReg0150);
+		LOG.log(Level.INFO, "Grupo de Registro 0150, terminado: {0} " ,listReg0150);
 		return listReg0150;
 	}
 
@@ -80,6 +80,8 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentacoesM
 	}
 	
 	private List<Reg0175> montaReg0175(Pessoa pessoa) {
+		LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 ");
+
 		List<Reg0175> listReg0175 = null;
 		if (mapPessoaAlteradoPorCnpjNovo.containsKey(pessoa.getCnpj())) {
 			PessoaAlteradoSped pessAlteradoSped = mapPessoaAlteradoPorCnpjNovo.get(pessoa.getCnpj());
@@ -90,6 +92,7 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentacoesM
 			List<Reg0175CamposAlterados> listCampAlterado = findFieldsUpdates(pessAlteradoSped);
 			listReg0175 = preencheReg0175(listCampAlterado, pessAlteradoSped);
 		}
+		LOG.log(Level.INFO, "Grupo de Registro 0175, terminado: {0} " ,listReg0175);
 		return listReg0175;
 	}
 	

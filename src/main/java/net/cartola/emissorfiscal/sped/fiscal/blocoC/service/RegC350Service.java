@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC350;
 
 /**
@@ -15,13 +15,13 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC350;
  * @author robson.costa
  */
 @Service
-class RegC350Service implements MontaGrupoDeRegistroList<RegC350, MovimentacoesMensalIcmsIpi> {
+class RegC350Service implements MontaGrupoDeRegistroList<RegC350, MovimentoMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(RegC350Service.class.getName());
 
 
 	@Override
-	public List<RegC350> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
+	public List<RegC350> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C350");
 		

@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC400;
 
 /**
@@ -15,13 +15,13 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC400;
  * @author robson.costa
  */
 @Service
-class RegC400Service implements MontaGrupoDeRegistroList<RegC400, MovimentacoesMensalIcmsIpi> {
+class RegC400Service implements MontaGrupoDeRegistroList<RegC400, MovimentoMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(RegC400Service.class.getName());
 
 	
 	@Override
-	public List<RegC400> montarGrupoDeRegistro(MovimentacoesMensalIcmsIpi movimentosIcmsIpi) {
+	public List<RegC400> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C400");
 		

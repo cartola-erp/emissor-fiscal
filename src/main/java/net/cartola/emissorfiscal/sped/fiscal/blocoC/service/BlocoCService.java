@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
-import net.cartola.emissorfiscal.sped.fiscal.MovimentacoesMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.BlocoC;
 
 /**
@@ -15,7 +15,7 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoC.BlocoC;
  * @author robson.costa
  */
 @Service
-public class BlocoCService implements MontaBloco<BlocoC, MovimentacoesMensalIcmsIpi> {
+public class BlocoCService implements MontaBloco<BlocoC, MovimentoMensalIcmsIpi> {
 
 	private static final Logger LOG = Logger.getLogger(BlocoCService.class.getName());
 	
@@ -42,9 +42,9 @@ public class BlocoCService implements MontaBloco<BlocoC, MovimentacoesMensalIcms
 	
 	
 	@Override
-	public BlocoC criarBloco(MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public BlocoC criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o BLOCO C, com INICIO em: {0} e TERMINO: {1} ", movimentacoesMensalIcmsIpi.getDataInicio());
+		LOG.log(Level.INFO, "Montando o BLOCO C, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 		BlocoC blocoC = new BlocoC();
 		
 		/**
@@ -53,13 +53,13 @@ public class BlocoCService implements MontaBloco<BlocoC, MovimentacoesMensalIcms
 		 * Tentar capturar possiveis erros.: Ex o famosão -> @NullPointerException
 		 */
 		
-		blocoC.setRegC001(regC001Service.montarGrupoDeRegistroSimples(movimentacoesMensalIcmsIpi));
-		blocoC.setRegC100(regC100Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		blocoC.setRegC350(regC350Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		blocoC.setRegC400(regC400Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		blocoC.setRegC500(regC500Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		blocoC.setRegC800(regC800Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
-		blocoC.setRegC990(regC990Service.montarGrupoDeRegistroSimples(movimentacoesMensalIcmsIpi));
+		blocoC.setRegC001(regC001Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+		blocoC.setRegC100(regC100Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		blocoC.setRegC350(regC350Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		blocoC.setRegC400(regC400Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		blocoC.setRegC500(regC500Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		blocoC.setRegC800(regC800Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		blocoC.setRegC990(regC990Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
 		
 		return blocoC;
 	}
