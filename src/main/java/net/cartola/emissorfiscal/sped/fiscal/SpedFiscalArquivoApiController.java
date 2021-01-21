@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,18 +20,22 @@ import net.cartola.emissorfiscal.response.Response;
  */
 @RestController
 @RequestMapping("api/v1/sped-fiscal")
-public class SpedFiscalApiController {
+public class SpedFiscalArquivoApiController {
 	
-	private static final Logger LOG = Logger.getLogger(SpedFiscalApiController.class.getName());
+	private static final Logger LOG = Logger.getLogger(SpedFiscalArquivoApiController.class.getName());
 
 	@Autowired
-	private SpedFiscalService spedFiscalService;
-	
+	private SpedFiscalArquivoService spedFiscalArquService;
+
+	private static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	@PostMapping(value = "/gerar-arquivo")
-	public ResponseEntity<Response<SpedFiscalArquivo>> gerarArquivoSpedFiscal(@RequestBody MovimentacoesMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+	public ResponseEntity<Response<SpedFiscalArquivo>> gerarArquivoSpedFiscal(Long lojaId, Long contadorId, String dtInicio, String dtFim) {
 		LOG.log(Level.INFO, "Gerando Arquivo SPED FISCAL (ICMS IPI) ");
 		Response<SpedFiscalArquivo> response = new Response<>();
+		
+		LocalDate dataInicio = LocalDate.parse(dtInicio, DTF);
+		LocalDate dataFim = LocalDate.parse(dtFim, DTF);
 		
 		/**
 		 * TODO 
@@ -39,7 +45,7 @@ public class SpedFiscalApiController {
 		 */
 		
 		
-		SpedFiscal spedFiscal = spedFiscalService.criarArquivoSpedFiscal(movimentacoesMensalIcmsIpi);
+		spedFiscalArquService.gerarAquivoSpedFiscal(lojaId, contadorId, dataInicio, dataFim);
 		
 		return null;
 	}

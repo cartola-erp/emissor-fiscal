@@ -22,7 +22,7 @@ public class BlocoDService implements MontaBloco<BlocoD, MovimentoMensalIcmsIpi>
 	@Override
 	public BlocoD criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o bloco D, com INICIO em: {0} e TERMINO: {1} ", movimentosIcmsIpi.getDataInicio());
+		LOG.log(Level.INFO, "Montando o bloco D, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 
 		return null;
 	}
