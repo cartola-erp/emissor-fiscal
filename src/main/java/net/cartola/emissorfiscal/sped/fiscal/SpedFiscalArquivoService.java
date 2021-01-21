@@ -72,7 +72,7 @@ public class SpedFiscalArquivoService {
 				spedFiscalArquivo = opSpedFiscalArqu.get();
 			}
 			
-			MovimentoMensalIcmsIpi moviMensalIcmsIpi = moviMensalIcmsIpiService.buscaMovimentacoesIcmsIpi(loja, contadorId, dataInicio, dataFim);
+			MovimentoMensalIcmsIpi moviMensalIcmsIpi = moviMensalIcmsIpiService.buscarMovimentacoesDoPeriodo(loja, contadorId, dataInicio, dataFim);
 			
 			/***
 			 * APENAS para eu ter definido a URL que será gerado.

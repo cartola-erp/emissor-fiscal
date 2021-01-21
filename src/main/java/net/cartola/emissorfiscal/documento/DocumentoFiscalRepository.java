@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.documento;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
 
 @Repository
 public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal, Long> {
@@ -20,6 +22,7 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 //	List <DocumentoFiscal> findDocFiscalByEmitenteId(@Param("idEmitente") Long idEmitente);
 	
 	Optional<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(String cnpj, String tipo, Long serie, Long numero);
-	
+
+	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteOrDestinatario(LocalDate dataInicio, LocalDate dataFim, Pessoa emitente, Pessoa destinatario);
 
 }
