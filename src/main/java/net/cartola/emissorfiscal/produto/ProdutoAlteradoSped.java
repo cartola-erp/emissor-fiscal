@@ -18,14 +18,14 @@ import lombok.Setter;
 public class ProdutoAlteradoSped {
 	
 	private Long id;
-	private int codigoProduto;
+	private int produtoCodigoErp;
 	private String codigoFabricante;
 	private String codigoOriginal;
 	private String codigoBarras;
 	private Integer etiquetaCodigo;	
 	// PS: Atualmente sempre informa o: CODIGO_X + CODIGO_SEQUENCIA, como codigo do PRODUTO, no SPED
 	// Preciso disso abaixo no SPED
-	private long codigoXAnt;
+	private Long codigoXAnt;
 	private String codigoSequenciaAnt;
 	private String codigoNovo;
 	private String descricaoAnt;

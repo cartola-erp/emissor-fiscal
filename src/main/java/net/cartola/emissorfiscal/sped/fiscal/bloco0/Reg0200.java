@@ -2,8 +2,11 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import java.util.List;
 
+import org.springframework.security.core.parameters.DefaultSecurityParameterNameDiscoverer;
+
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import coffeepot.bean.wr.typeHandler.DefaultStringHandler;
 import lombok.ToString;
 import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
 
@@ -21,9 +24,9 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
     @Field(name = "codAntItem"),
     @Field(name = "unidInv"),
     @Field(name = "tipoItem"),
-    @Field(name = "codNcm"),
+    @Field(name = "codNcm", params = {DefaultStringHandler.PARAM_FILTER_NUMBER_ONLY}),
     @Field(name = "exIpi"),
-    @Field(name = "codGen"),
+    @Field(name = "codGen", params = {DefaultStringHandler.PARAM_FILTER_NUMBER_ONLY}),
     @Field(name = "codLst"),
     @Field(name = "aliqIcms"),
     @Field(name = "cest"),

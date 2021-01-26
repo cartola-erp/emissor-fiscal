@@ -81,5 +81,4 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentoMensalIcmsIpi>
 	}
 	
 	
-	
 }
