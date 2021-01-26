@@ -1,12 +1,17 @@
 
 package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0400;
@@ -22,10 +27,20 @@ class Reg0400Service implements MontaGrupoDeRegistroList<Reg0400, MovimentoMensa
 	
 	@Override
 	public List<Reg0400> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
-		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o Grupo de Registro 0400 ");
+		LOG.log(Level.INFO, "Montando o Registro 0400 ");
+		List<Reg0400> listReg0400 = new ArrayList<>();
+		Set<Operacao> listOperacoes = new HashSet<>();
+		listOperacoes.addAll(movimentosIcmsIpi.getListOperacoes());
 
-		return null;
+		listOperacoes.stream().forEachOrdered(operacao -> {
+			Reg0400 reg0400 = new Reg0400();
+			reg0400.setCodNat(String.valueOf(operacao.getId()));
+			reg0400.setDescrNat(operacao.getDescricao());
+			listReg0400.add(reg0400);
+		});
+		
+		LOG.log(Level.INFO, "Registro 0400, terminado: {0} " ,listReg0400);
+		return listReg0400;
 	}
 
 }

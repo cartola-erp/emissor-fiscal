@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
@@ -9,6 +10,7 @@ import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
@@ -30,6 +32,8 @@ public class MovimentoMensalIcmsIpi {
 	private List<DocumentoFiscalItem> listItens;
 	private List<ProdutoAlteradoSped> listProdutoAlteradoSped;
 	private List<ProdutoUnidade> listProdUnid;
+	private Collection<Operacao> listOperacoes;
+	
 	private Loja loja;
 //	private Pessoa loja;			// CONFESSO que ainda tou na duvida se pego a loja de "CADASTROS" ou da tbl "LOJA" msm
 	private Contador contador;

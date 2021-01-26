@@ -12,7 +12,7 @@ import coffeepot.bean.wr.annotation.Record;
 
 @Record(fields = {
 	    @Field(name = "reg", maxLength = 4),
-	    @Field(name = "qtdLin0")
+	    @Field(name = "qtdLin0", classType = Long.class)
 //	    @Field(name = "qtdLin", classType = Long.class)
 })
 public class Reg0990EncerramentoDoBloco {

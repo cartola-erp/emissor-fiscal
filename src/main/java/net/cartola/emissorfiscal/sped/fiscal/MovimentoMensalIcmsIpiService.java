@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.sped.fiscal;
 import static java.util.stream.Collectors.toSet;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,6 +20,8 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaService;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
@@ -53,6 +56,9 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	@Autowired
 	private ProdutoUnidadeService prodUnidService;
 	
+	@Autowired
+	private OperacaoService operacaoService;
+	
 //	LOJA SERVICE
 	
 	@Autowired
@@ -78,6 +84,10 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		Set<String> unidadesSet = listItens.stream().map(DocumentoFiscalItem::getUnidade).collect(toSet());
 		List<ProdutoUnidade> listProdUnid = prodUnidService.findByListSiglas(unidadesSet);
 
+		Set<Operacao> operacoesSet = listDocFiscal.stream().map(DocumentoFiscal::getOperacao).sorted().collect(toSet());
+//		operacaoService.findById(operacaoIds);
+		movimentoMensalIcmsIpi.setListOperacoes(operacoesSet);
+		
 		Contador contador = contadorService.findOne(contadorId).get();
 
 		// TODO Buscando todos os produtos Movimentados, que tiveram, alguma alteração que seja necessária informar no SPED ICMS IPI

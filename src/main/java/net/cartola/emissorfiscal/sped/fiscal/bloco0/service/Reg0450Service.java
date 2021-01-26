@@ -1,6 +1,7 @@
 
 package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,10 +23,13 @@ class Reg0450Service implements MontaGrupoDeRegistroList<Reg0450, MovimentoMensa
 	
 	@Override
 	public List<Reg0450> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
-		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o Grupo de Registro 0450 ");
-
-		return null;
+		LOG.log(Level.INFO, "Montando o Registro 0450 ");
+		List<Reg0450> listReg0450 = new ArrayList<>();
+		
+		
+		
+		LOG.log(Level.INFO, "Registro 0450, terminado: {0} " ,listReg0450);
+		return listReg0450;
 	}
 
 }

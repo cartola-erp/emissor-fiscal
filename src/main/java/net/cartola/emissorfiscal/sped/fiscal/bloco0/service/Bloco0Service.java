@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Bloco0;
+import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0990EncerramentoDoBloco;
+import net.cartola.emissorfiscal.util.RecordCounter;
 
 /**
  * 18/09/2020
@@ -74,7 +76,12 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentoMensalIcmsIpi>
 		bloco0.setReg0400(reg0400Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		bloco0.setReg0450(reg0450Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		bloco0.setReg0460(reg0460Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
-		bloco0.setReg0990(reg0990Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+
+		long qtdLin0 = RecordCounter.count(bloco0);
+		Reg0990EncerramentoDoBloco reg0990 = new Reg0990EncerramentoDoBloco(qtdLin0 + 1);
+		bloco0.setReg0990(reg0990);
+		
+//		bloco0.setReg0990(reg0990Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO 0, TEMINADA! {0} " ,bloco0);
 		return bloco0;
