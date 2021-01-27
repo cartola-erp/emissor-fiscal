@@ -43,10 +43,13 @@ public class DocumentoFiscalItem implements Serializable {
 	/** Serão somente usada em ENTRADAS/COMPRAS, as info abaixo? Não sei, mas acredito que sim !!!**/
 	private Long codigoX;
 	private String codigoSequencia;
-	private String codigoBarras;
+	private int produtoCodigoErp;
+	private String ean;		// --> Codigo Barras
 	private String descricaoEmpresa;
 	private String unidade;
-	
+	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
+    private BigDecimal desconto;
+
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
 	private BigDecimal quantidade = BigDecimal.ZERO;
@@ -125,6 +128,7 @@ public class DocumentoFiscalItem implements Serializable {
 		this.codigoX = codigoX;
 	}
 
+	@Column(name = "codigo_seq")
 	public String getCodigoSequencia() {
 		return codigoSequencia;
 	}
@@ -132,15 +136,26 @@ public class DocumentoFiscalItem implements Serializable {
 	public void setCodigoSequencia(String codigoSequencia) {
 		this.codigoSequencia = codigoSequencia;
 	}
-
-	public String getCodigoBarras() {
-		return codigoBarras;
+	
+	@Column(name = "prod_cod_erp")
+	public int getProdutoCodigoErp() {
+		return produtoCodigoErp;
 	}
 
-	public void setCodigoBarras(String codigoBarras) {
-		this.codigoBarras = codigoBarras;
+	public void setProdutoCodigoErp(int produtoCodigoErp) {
+		this.produtoCodigoErp = produtoCodigoErp;
 	}
 
+	@Column(name = "ean")
+	public String getEan() {
+		return ean;
+	}
+
+	public void setEan(String ean) {
+		this.ean = ean;
+	}
+
+	@Column(name = "desc_empr")
 	public String getDescricaoEmpresa() {
 		return descricaoEmpresa;
 	}
@@ -153,8 +168,25 @@ public class DocumentoFiscalItem implements Serializable {
 		return unidade;
 	}
 
+	public int getCodigoAnp() {
+		return codigoAnp;
+	}
+
+	@Column(name = "codi_anp")
+	public void setCodigoAnp(int codigoAnp) {
+		this.codigoAnp = codigoAnp;
+	}
+	
 	public void setUnidade(String unidade) {
 		this.unidade = unidade;
+	}
+	
+	public BigDecimal getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(BigDecimal desconto) {
+		this.desconto = desconto;
 	}
 	
 	@NotNull(message = FINALIDADE_OBRIGATORIA)
