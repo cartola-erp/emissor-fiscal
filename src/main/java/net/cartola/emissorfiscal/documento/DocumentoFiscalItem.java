@@ -168,11 +168,11 @@ public class DocumentoFiscalItem implements Serializable {
 		return unidade;
 	}
 
+	@Column(name = "cod_anp")
 	public int getCodigoAnp() {
 		return codigoAnp;
 	}
 
-	@Column(name = "codi_anp")
 	public void setCodigoAnp(int codigoAnp) {
 		this.codigoAnp = codigoAnp;
 	}
