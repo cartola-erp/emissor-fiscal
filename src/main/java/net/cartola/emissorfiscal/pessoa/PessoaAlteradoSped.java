@@ -3,6 +3,15 @@ package net.cartola.emissorfiscal.pessoa;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,10 +27,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Entity
+@Table(name = "pess_alte_sped")
 public class PessoaAlteradoSped {
 
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@CreationTimestamp
+	@Column(name = "dt_alte_cad")
 	private LocalDate dtAlteracaoCadastro;
 	
 	private String nomeAnt;
@@ -36,11 +50,17 @@ public class PessoaAlteradoSped {
 	private int codMunNovo;
 	private String suframaAnt;
 	private String suframaNovo;
+	@Column(name = "end_ant")
 	private String enderecoAnt;
+	@Column(name = "end_novo")
 	private String enderecoNovo;
+	@Column(name = "num_ant")
 	private int numeroAnt;
+	@Column(name = "num_novo")
 	private int numeroNovo;
+	@Column(name = "compl_ant")
 	private String complementoAnt;
+	@Column(name = "compl_novo")
 	private String complementoNovo;
 	private String bairroAnt;
 	private String bairroNovo;

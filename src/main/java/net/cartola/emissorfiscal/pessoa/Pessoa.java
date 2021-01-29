@@ -20,8 +20,8 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "pessoa")
-//@Table(name = "pess")
+//@Table(name = "pessoa")
+@Table(name = "pess")
 public class Pessoa {
 	
 	private Long id;
@@ -73,7 +73,7 @@ public class Pessoa {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="pessoa_tipo", columnDefinition="enum('FISICA', 'JURIDICA') default 'FISICA' ")
+	@Column(name="pess_tipo", columnDefinition="enum('FISICA', 'JURIDICA') default 'FISICA' ")
 	public PessoaTipo getPessoaTipo() {
 		return pessoaTipo;
 	}
@@ -135,7 +135,7 @@ public class Pessoa {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER) 
-	@JoinColumn(name = "endereco_id", referencedColumnName = "pess_end_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_pessoa_end_id"))
+	@JoinColumn(name = "end_id", referencedColumnName = "pess_end_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_pessoa_end_id"))
 	public PessoaEndereco getEndereco() {
 		return endereco;
 	}
