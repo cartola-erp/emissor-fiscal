@@ -52,6 +52,7 @@ public class TributacaoEstadual implements Serializable {
     private BigDecimal icmsStAliquota = BigDecimal.ZERO;	// usado em:  ICMS10, ICMS30, ICMS70, ICMS90 etc
     private Integer cest;
     private int cfop;
+	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
     private String mensagem;
 
     @Id
@@ -205,6 +206,15 @@ public class TributacaoEstadual implements Serializable {
     
 	public void setCfop(int cfop) {
 		this.cfop = cfop;
+	}
+	
+	@Column(name = "cod_anp", nullable = false)
+	public int getCodigoAnp() {
+		return codigoAnp;
+	}
+
+	public void setCodigoAnp(int codigoAnp) {
+		this.codigoAnp = codigoAnp;
 	}
 
 	@Column(name="mens")

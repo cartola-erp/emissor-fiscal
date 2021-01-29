@@ -168,7 +168,7 @@ public class DocumentoFiscalItem implements Serializable {
 		return unidade;
 	}
 
-	@Column(name = "cod_anp")
+	@Column(name = "cod_anp", nullable = false)
 	public int getCodigoAnp() {
 		return codigoAnp;
 	}
