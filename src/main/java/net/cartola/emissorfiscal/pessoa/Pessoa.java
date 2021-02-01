@@ -63,7 +63,7 @@ public class Pessoa {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="regime_tributario", columnDefinition="enum('SIMPLES', 'PRESUMIDO', 'REAL') ")
+	@Column(name="regime_tributario", columnDefinition="enum('SIMPLES', 'SIMPLES_EXCESSO', 'NORMAL') ")
 	public RegimeTributario getRegimeTributario() {
 		return regimeTributario;
 	}
