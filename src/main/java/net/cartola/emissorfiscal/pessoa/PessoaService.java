@@ -32,16 +32,20 @@ public class PessoaService {
 	}
 	
 	public Optional<Pessoa> save(Pessoa pessoa) {
-		boolean isCnpj = StringUtil.isCnpj(pessoa.getCnpj());
-		if (!isCnpj) {
-			pessoa.setCpf(pessoa.getCnpj());
-			pessoa.setCnpj("");
-		}
+//		setCnpjCpf(pessoa);
 		Optional<PessoaEndereco> opEndereco = pessoaEnderecoService.save(pessoa.getEndereco());			
 		pessoa.setEndereco(opEndereco.get());
 		return Optional.ofNullable(pessoaRepository.saveAndFlush(pessoa));
 	}
 		
+//	private void setCnpjCpf(Pessoa pessoa) {
+//		boolean isCnpj = StringUtil.isCnpj(pessoa.getCnpj());
+//		if (!isCnpj) {
+//			pessoa.setCpf(pessoa.getCnpj());
+//			pessoa.setCnpj("");
+//		}
+//	}
+	
 	public Optional<Pessoa> findOne(Long id) {
 		return pessoaRepository.findById(id);
 	}
@@ -50,8 +54,8 @@ public class PessoaService {
 		return pessoaRepository.findPessoaByCnpj(cnpj);
 	}
 	
-	public Optional<Pessoa> findPessoaByCnpjOrCpf(String cnpj, String cpf) {
-		return pessoaRepository.findPessoaByCnpjOrCpf(cnpj, cpf);
+	public Optional<Pessoa> findPessoaByCpf(String cpf) {
+		return pessoaRepository.findPessoaByCpf(cpf);
 	}
 	
 	public void deleteById(Long id) {
@@ -65,11 +69,17 @@ public class PessoaService {
 	 * @return {@link Optional} <{@link Pessoa}>
 	 */
 	public Optional<Pessoa> verificaSePessoaExiste(Pessoa pessoa) {
-		Optional<Pessoa> opPessoa = findPessoaByCnpjOrCpf(pessoa.getCnpj(), pessoa.getCpf());
-		if (!opPessoa.isPresent()) {
+		Optional<Pessoa> opPessoaBuscada = Optional.empty(); 
+		if (pessoa.getCnpj() != null && !pessoa.getCnpj().isEmpty()) {
+			opPessoaBuscada = findByCnpj(pessoa.getCnpj());
+		} else if (pessoa.getCpf() != null && !pessoa.getCpf().isEmpty()) {
+			opPessoaBuscada = findPessoaByCpf(pessoa.getCpf());
+		}
+		
+		if (!opPessoaBuscada.isPresent()) {
 			return save(pessoa);
 		}
-		return opPessoa;
+		return opPessoaBuscada;
 	}
 
 }

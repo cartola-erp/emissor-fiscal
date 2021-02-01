@@ -12,7 +12,7 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
 	
 	Optional<Pessoa> findPessoaByCnpj(String cnpj);
 	
-	Optional<Pessoa> findPessoaByCnpjOrCpf(String cnpj, String cpf);
+	Optional<Pessoa> findPessoaByCpf(String cpf);
 
 	List<Pessoa> findPessoaByIdIn(Set<Long> pessoasId);
 

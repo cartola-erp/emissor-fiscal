@@ -25,12 +25,14 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import lombok.ToString;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.util.LocalDateDeserializer;
 import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
 
+@ToString
 @Entity
 @Table(name = "docu_fisc")
 public class DocumentoFiscal implements Serializable {
@@ -411,20 +413,5 @@ public class DocumentoFiscal implements Serializable {
 		this.valorImpostoMunicipal = valorImpostoMunicipal;
 	}
 
-	@Override
-	public String toString() {
-		return "DocumentoFiscal [id=" + id + ", operacao=" + operacao + ", tipo=" + tipo + ", serie=" + serie
-				+ ", numero=" + numero + ", emitente=" + emitente + ", destinatario=" + destinatario + ", itens="
-				+ itens + ", referencias=" + referencias + ", icmsBase=" + icmsBase + ", icmsValor=" + icmsValor
-				+ ", icmsValorDesonerado=" + icmsValorDesonerado + ", icmsFcpValor=" + icmsFcpValor + ", icmsStBase="
-				+ icmsStBase + ", icmsStValor=" + icmsStValor + ", icmsValorUfDestino=" + icmsValorUfDestino
-				+ ", vlrTotalProduto=" + vlrTotalProduto + ", pisBase=" + pisBase + ", pisValor=" + pisValor
-				+ ", cofinsBase=" + cofinsBase + ", cofinsValor=" + cofinsValor + ", ipiBase=" + ipiBase + ", ipiValor="
-				+ ipiValor + ", modelo=" + modelo + ", status=" + status + ", nfeChaveAcesso=" + nfeChaveAcesso
-				+ ", emissao=" + emissao + ", cadastro=" + cadastro + ", criadoPor=" + criadoPor + ", alterado="
-				+ alterado + ", alteradoPor=" + alteradoPor + ", valorImpostoFederal=" + valorImpostoFederal
-				+ ", valorImpostoEstadual=" + valorImpostoEstadual + ", valorImpostoMunicipal=" + valorImpostoMunicipal
-				+ "]";
-	}
-	
+
 }

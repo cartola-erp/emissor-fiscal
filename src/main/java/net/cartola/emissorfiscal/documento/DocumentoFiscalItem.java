@@ -23,7 +23,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.ToString;
 import net.cartola.emissorfiscal.ncm.Ncm;
 
-@ToString
+
+@ToString(exclude = {"documentoFiscal"})
 @Entity
 @Table(name = "docu_fisc_item")
 @JsonIgnoreProperties(value = { "documentoFiscal" })
