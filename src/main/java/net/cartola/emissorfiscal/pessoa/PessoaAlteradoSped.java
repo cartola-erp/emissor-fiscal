@@ -36,6 +36,11 @@ public class PessoaAlteradoSped {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "cod_erp")
+	private int codigoErp;
+	@Column(name = "loja_erp")
+	private int lojaErp;
+	
 	@CreationTimestamp
 	@Column(name = "dt_alte_cad")
 	private LocalDate dtAlteracaoCadastro;
