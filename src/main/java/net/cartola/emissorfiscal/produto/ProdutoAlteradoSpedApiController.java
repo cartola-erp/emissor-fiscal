@@ -32,7 +32,10 @@ public class ProdutoAlteradoSpedApiController {
 	@PostMapping()
 	public ResponseEntity<Response<ProdutoAlteradoSped>> save (@Valid @RequestBody ProdutoAlteradoSped prodAlterSped) {
 		LOG.log(Level.INFO, "Salvando o ProdutoAlteradoSped {0} " ,prodAlterSped);
-//		Optional<ProdutoAlteradoSped> opProdAlterSped = prodAlterSpedService
+		if (prodAlterSpedService.isDescAntEqualsDescNova(prodAlterSped)) {
+			LOG.log(Level.INFO, "O produto não foi salvo pois a descrição é a mesma que a anterior {0} " ,prodAlterSped);
+			return ResponseEntity.noContent().build();
+		}
 		return saveOrEditProdutoAlteradoSped(prodAlterSped);
 	}
 	

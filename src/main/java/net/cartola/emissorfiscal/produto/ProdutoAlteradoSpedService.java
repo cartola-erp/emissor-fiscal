@@ -33,5 +33,9 @@ public class ProdutoAlteradoSpedService {
 		return prodAlterSpedRepository.findById(id);
 	}
 	
+	public boolean isDescAntEqualsDescNova(ProdutoAlteradoSped prodAlterSped) {
+		return (prodAlterSped.getDescricaoAnt().equals(prodAlterSped.getDescricaoNova()));
+	}
+
 	
 }
