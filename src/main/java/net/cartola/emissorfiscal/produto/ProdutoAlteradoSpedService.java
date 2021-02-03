@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.produto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -23,8 +24,9 @@ public class ProdutoAlteradoSpedService {
 		return prodAlterSpedRepository.findAll();
 	}
 	
-	public Optional<ProdutoAlteradoSped> save(ProdutoAlteradoSped contador) {
-		return Optional.ofNullable(prodAlterSpedRepository.saveAndFlush(contador));
+	public Optional<ProdutoAlteradoSped> save(ProdutoAlteradoSped prodAlteSped) {
+		prodAlteSped.setDtFinalUtilizacaoDescAnterior(LocalDate.now());
+		return Optional.ofNullable(prodAlterSpedRepository.saveAndFlush(prodAlteSped));
 	}
 		
 	public Optional<ProdutoAlteradoSped> findOne(Long id) {

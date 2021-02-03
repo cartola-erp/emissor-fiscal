@@ -53,8 +53,8 @@ public class EmissorFiscalApplication {
 				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
 				Usuario u = new Usuario();
 				u.setLogin("robson.costa");
-				u.setNome("Robson");
-				u.setSenha(bcryptEncoder.encode("123123"));
+				u.setNome("Robson"); 
+				u.setSenha(bcryptEncoder.encode("root"));
 				u.setPerfis(Arrays.asList(upa, upu));
 				usuarioService.save(u);
 				System.out.printf("Usuario criado : %s", u);

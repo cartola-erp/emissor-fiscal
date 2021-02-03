@@ -14,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 30/09/2020
@@ -27,6 +28,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "pess_alte_sped")
 public class PessoaAlteradoSped {
@@ -42,8 +44,8 @@ public class PessoaAlteradoSped {
 	private String nomeNovo;
 	private int codPaisAnt;
 	private int codPaisNovo;
-	private String CnpjAnt;
-	private String CnpjNovo;
+	private String cnpjAnt;
+	private String cnpjNovo;
 	private String cpfAnt;
 	private String cpfNovo;
 	private int codMunAnt;		// no erpj ibgeCodigo em tbl cidades

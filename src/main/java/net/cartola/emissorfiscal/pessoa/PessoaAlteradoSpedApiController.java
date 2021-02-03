@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.pessoa;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,9 +33,20 @@ public class PessoaAlteradoSpedApiController {
 	public ResponseEntity<Response<PessoaAlteradoSped>> save (@Valid @RequestBody PessoaAlteradoSped pessAlterSped) {
 		LOG.log(Level.INFO, "Salvando a PessoaAlteradoSped {0} " ,pessAlterSped);
 		
+		return saveOrEditPessoaAlteradoSped(pessAlterSped);
+	}
+	
+	
+	private ResponseEntity<Response<PessoaAlteradoSped>> saveOrEditPessoaAlteradoSped(PessoaAlteradoSped pessAlterSped) {
+		Response<PessoaAlteradoSped> response = new Response<>();
+		Optional<PessoaAlteradoSped> opPessAlterSped = pessAlterSpedService.save(pessAlterSped);
 		
-		
-		return null;
+		if (opPessAlterSped.isPresent()) {
+			response.setData(opPessAlterSped.get());
+			return ResponseEntity.ok(response);
+		} else {
+			return ResponseEntity.noContent().build();
+		}
 	}
 	
 }

@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.produto;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,9 +32,21 @@ public class ProdutoAlteradoSpedApiController {
 	@PostMapping()
 	public ResponseEntity<Response<ProdutoAlteradoSped>> save (@Valid @RequestBody ProdutoAlteradoSped prodAlterSped) {
 		LOG.log(Level.INFO, "Salvando o ProdutoAlteradoSped {0} " ,prodAlterSped);
-		
-		
-		return null;
+//		Optional<ProdutoAlteradoSped> opProdAlterSped = prodAlterSpedService
+		return saveOrEditProdutoAlteradoSped(prodAlterSped);
+	}
+	
+	
+	private ResponseEntity<Response<ProdutoAlteradoSped>> saveOrEditProdutoAlteradoSped(ProdutoAlteradoSped prodAlterSped) {
+		Response<ProdutoAlteradoSped> response = new Response<>();
+		Optional<ProdutoAlteradoSped> opProdAlterSped = prodAlterSpedService.save(prodAlterSped);
+
+		if (opProdAlterSped.isPresent()) {
+			response.setData(opProdAlterSped.get());
+			return ResponseEntity.ok(response);
+		} else {
+			return ResponseEntity.noContent().build();
+		}
 	}
 	
 }

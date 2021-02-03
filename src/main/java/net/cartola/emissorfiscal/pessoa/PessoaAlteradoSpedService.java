@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.pessoa;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -25,8 +26,9 @@ public class PessoaAlteradoSpedService {
 		return pessAlterSpedRepository.findAll();
 	}
 	
-	public Optional<PessoaAlteradoSped> save(PessoaAlteradoSped pessoaAlteradoSped) {
-		return Optional.ofNullable(pessAlterSpedRepository.saveAndFlush(pessoaAlteradoSped));
+	public Optional<PessoaAlteradoSped> save(PessoaAlteradoSped pessAlterSped) {
+		pessAlterSped.setDtAlteracaoCadastro(LocalDate.now());
+		return Optional.ofNullable(pessAlterSpedRepository.saveAndFlush(pessAlterSped));
 	}
 		
 	public Optional<PessoaAlteradoSped> findOne(Long id) {

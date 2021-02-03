@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 30/09/2020
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "prod_alte_sped")
 public class ProdutoAlteradoSped {
 	
