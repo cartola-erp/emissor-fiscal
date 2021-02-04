@@ -98,7 +98,7 @@ public class Pessoa {
 		this.codSuframa = codSuframa;
 	}
 	
-	@Column(length = 60)
+	@Column(length = 255)
 	public String getNome() {
 		return nome;
 	}

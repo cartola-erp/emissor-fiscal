@@ -38,8 +38,9 @@ public enum ModeloDocumentoFiscal implements EnumCodificado {
     _60("Cupom Fiscal Eletrônico (CF-e-ECF)", "60"),
     _63("Bilhete de Passagem Eletrônico – BP-e", "63"),
     _65("Nota Fiscal Eletrônica ao Consumidor Final", "65"),
-    _67("Conhecimento de Transporte Eletrônico - CT-e OS", "67");
-    
+    _67("Conhecimento de Transporte Eletrônico - CT-e OS", "67"),
+    NFSE("NFSe", "NFSe");
+
     private final String codigo;
     private final String descricao;
     

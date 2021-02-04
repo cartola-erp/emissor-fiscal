@@ -70,8 +70,8 @@ public class EmissorFiscalApplication {
 				Usuario u = new Usuario();
 				u.setLogin("erpj-ws");
 				u.setNome("erpj-ws");
-				u.setSenha(bcryptEncoder.encode("erpj-ws"));
-				u.setPerfis(Arrays.asList(upa, upu));
+				u.setSenha(bcryptEncoder.encode("erpj-ws-homologacao")); 
+				u.setPerfis(Arrays.asList(upa, upu)); 
 				usuarioService.save(u);
 				System.out.printf("Usuario criado : %s", u);
 			}

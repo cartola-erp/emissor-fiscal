@@ -30,12 +30,20 @@ public class PessoaAlteradoSpedApiController {
 	
 	
 	@PostMapping()
-	public ResponseEntity<Response<PessoaAlteradoSped>> save (@Valid @RequestBody PessoaAlteradoSped pessAlterSped) {
-		LOG.log(Level.INFO, "Salvando a PessoaAlteradoSped {0} " ,pessAlterSped);
-		
-		return saveOrEditPessoaAlteradoSped(pessAlterSped);
+	public ResponseEntity<Response<PessoaAlteradoSped>> save (@Valid @RequestBody PessoaAlteradoSped newPessAlterSped) {
+		LOG.log(Level.INFO, "Salvando a PessoaAlteradoSped {0} " ,newPessAlterSped);
+		PessoaAlteradoSped pessAlterSpedValidada = pessAlterSpedService.validaPessoaAlteradoSped(newPessAlterSped);
+
+		return saveOrEditPessoaAlteradoSped(pessAlterSpedValidada);
 	}
 	
+	@PostMapping(value = "/endereco")
+	public ResponseEntity<Response<PessoaAlteradoSped>> saveEndereco (@Valid @RequestBody PessoaAlteradoSped pessAlterSped) {
+		LOG.log(Level.INFO, "Salvando a alteração de ENDERECO em PessoaAlteradoSped {0} " ,pessAlterSped);
+		PessoaAlteradoSped pessEndAlterSpedValidada = pessAlterSpedService.validaEnderecoPessoaAlteradaSped(pessAlterSped);
+
+		return saveOrEditPessoaAlteradoSped(pessEndAlterSpedValidada);
+	}
 	
 	private ResponseEntity<Response<PessoaAlteradoSped>> saveOrEditPessoaAlteradoSped(PessoaAlteradoSped pessAlterSped) {
 		Response<PessoaAlteradoSped> response = new Response<>();
@@ -43,6 +51,7 @@ public class PessoaAlteradoSpedApiController {
 		
 		if (opPessAlterSped.isPresent()) {
 			response.setData(opPessAlterSped.get());
+			LOG.log(Level.INFO, "PessoaAlteradoSped, salvo com sucesso {0} " ,opPessAlterSped);
 			return ResponseEntity.ok(response);
 		} else {
 			return ResponseEntity.noContent().build();
