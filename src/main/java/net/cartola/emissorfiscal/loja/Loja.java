@@ -42,7 +42,7 @@ public class Loja implements Serializable {
 	private String nomeFantasia = "";
 	private int cnae; //no DAO é String, mas no banco é INT -> deixei int
 //	private String cnpj = "";
-	private Long cnpj;
+	private String cnpj;
 	private String ie = "";
 	private String im = "";
 	private String endereco = "";
@@ -71,9 +71,12 @@ public class Loja implements Serializable {
 //	private String site = "";
 //	private int codigoContabilContmatic;
 //	private RegimeTributario tributacao = RegimeTributario.NORMAL;
-	@Column(name = "regime_tribu")
+	@Enumerated(EnumType.STRING)
+	@Column(name = "regime_tribu", columnDefinition="enum('SIMPLES', 'PRESUMIDO', 'REAL') ")
 	private RegimeTributario regimeTributario= RegimeTributario.NORMAL;
 //	private boolean tributaIpi = false;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "sped_fisc_perf", columnDefinition="enum('A', 'B', 'C') ")
 	private PerfilEnquadramento spedFiscalPerfil; //No erpj é String -> ver se não implica em algo na integração
 	private String eMail = "";
 //	private Double latitude;

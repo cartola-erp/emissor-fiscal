@@ -44,9 +44,9 @@
 
 						<div class="form-group col-md-4">
 							<label for="cmbLojas"><strong>Loja</strong></label>
-							<select class="custom-select" name="ufLojaId">
+							<select class="custom-select" name="lojaId">
 								<option selected id="opLoja"> </option>
-								<!-- <option th:each="estado : ${listEstado}" th:value="${estado.id}" th:id="${estado.sigla}" th:selected="${estado.id == ufOrigemIdSelecionado}" th:text="${estado.sigla}" ></option> -->
+								<option th:each="loja : ${listLojas}" th:value="${loja.id}" th:id="${loja.id}" th:selected="${loja.id == lojaIdSelecionado}" th:text="${loja.nomeFantasia}" ></option>
 							</select>
 						</div>
 						
@@ -55,6 +55,17 @@
 							<label class="form-check-label" for="chkTodasLojas">Todas as Lojas</label>
 						</div>
 					</div> 
+
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label for="cmbContadores"><strong>Contador</strong></label>
+							<select class="custom-select" name="contadorId">
+								<option selected id="opContador"> </option>
+								<option th:each="contador : ${listContador}" th:value="${contador.id}" th:id="${contador.id}" th:selected="${contador.id == contadorIdSelecionado}" th:text="${contador.nome}" ></option>
+							</select>
+						</div>
+					</div> 
+
 
 					<!-- <div class="form-row">
 					</div>  -->

@@ -29,7 +29,7 @@ public class Contador implements Serializable {
 	private Long id;
 	private String nome;
 	private Long cpf;
-	private Long crc;
+	private String crc;
 	private Long cnpj;
 	private Long cep;
 	private String endereco;
@@ -67,11 +67,11 @@ public class Contador implements Serializable {
 		this.cpf = cpf;
 	}
 
-	public Long getCrc() {
+	public String getCrc() {
 		return crc;
 	}
 
-	public void setCrc(Long crc) {
+	public void setCrc(String crc) {
 		this.crc = crc;
 	}
 

@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.documento;
 import static java.util.stream.Collectors.toMap;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,13 +79,13 @@ public class DocumentoFiscalService {
 	 * O "lojaEmitDest", é usado na query, para trazer todos os DocFiscais, em que uma Determinada Loja esteja envolvida.
 	 * Ou seja, em que ela seja a Emitente (geralmente operações de SAIDAS), ou a destinataria (operações de ENTRADAS)
 	 * 
-	 * @param dataInicio
+	 * @param dataHoraInicio
 	 * @param dataFim
 	 * @param lojaEmitDest
 	 * @return List<DocumentoFiscal> De uma loja num determinado Período
 	 */
-	public List<DocumentoFiscal> findByPeriodoCadastroAndLoja(LocalDate dataInicio, LocalDate dataFim, Pessoa lojaEmitDest) {
-		return documentoFiscalRepository.findByCadastroBetweenAndEmitenteOrDestinatario(dataInicio, dataFim, lojaEmitDest, lojaEmitDest);
+	public List<DocumentoFiscal> findByPeriodoCadastroAndLoja(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa lojaEmitDest) {
+		return documentoFiscalRepository.findByCadastroBetweenAndEmitenteOrDestinatario(dataHoraInicio, dataHoraFim, lojaEmitDest, lojaEmitDest);
 	}
 	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {

@@ -43,7 +43,7 @@ public class Reg0000AberturaArquivoDigital {
 	private LocalDate dtIni;
 	private LocalDate dtFin;
 	private String nome;
-	private Long cnpj;
+	private String cnpj;
 	private Long cpf;
 	private String uf;
 	private String ie;
@@ -97,11 +97,11 @@ public class Reg0000AberturaArquivoDigital {
 		this.nome = nome;
 	}
 
-	public Long getCnpj() {
+	public String getCnpj() {
 		return cnpj;
 	}
 
-	public void setCnpj(Long cnpj) {
+	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
 

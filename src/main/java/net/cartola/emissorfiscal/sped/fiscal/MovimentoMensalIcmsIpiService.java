@@ -3,7 +3,9 @@ package net.cartola.emissorfiscal.sped.fiscal;
 import static java.util.stream.Collectors.toSet;
 
 import java.time.LocalDate;
-import java.util.Comparator;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -67,11 +69,13 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	@Override
 	public MovimentoMensalIcmsIpi buscarMovimentacoesDoPeriodo(Loja loja, Long contadorId, LocalDate dataInicio, LocalDate dataFim) {
 		LOG.log(Level.INFO, "Inicio da busca das movimentações para a LOJA {0}, no PERIODO de {1} a {2} " , new Object[]{loja, dataInicio, dataFim});
+		LocalDateTime dataHoraInicio = LocalDateTime.of(dataInicio, LocalTime.of(4, 0, 0));
+		LocalDateTime dataHoraFim = LocalDateTime.of(dataFim, LocalTime.of(23, 55, 0));
 
 		MovimentoMensalIcmsIpi movimentoMensalIcmsIpi = new MovimentoMensalIcmsIpi();
 		
 		Optional<Pessoa> lojaEmitOrDest = pessoaService.findByCnpj(String.valueOf(loja.getCnpj()));
-		List<DocumentoFiscal> listDocFiscal = docFiscService.findByPeriodoCadastroAndLoja(dataInicio, dataFim, lojaEmitOrDest.get());
+		List<DocumentoFiscal> listDocFiscal = docFiscService.findByPeriodoCadastroAndLoja(dataHoraInicio, dataHoraFim, lojaEmitOrDest.get());
 		// Buscando os Id e todas as Pessoas, envolvidas nas movimentações (emitentes e destinatarios)
 		Set<Long> pessoasId = listDocFiscal.stream().map(docFiscal -> docFiscal.getEmitente().getId()).collect(toSet());
 		pessoasId.addAll(listDocFiscal.stream().map(docFiscal -> docFiscal.getDestinatario().getId()).collect(toSet()));
@@ -84,7 +88,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		Set<String> unidadesSet = listItens.stream().map(DocumentoFiscalItem::getUnidade).collect(toSet());
 		List<ProdutoUnidade> listProdUnid = prodUnidService.findByListSiglas(unidadesSet);
 
-		Set<Operacao> operacoesSet = listDocFiscal.stream().map(DocumentoFiscal::getOperacao).sorted().collect(toSet());
+		Set<Operacao> operacoesSet = listDocFiscal.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
 //		operacaoService.findById(operacaoIds);
 		movimentoMensalIcmsIpi.setListOperacoes(operacoesSet);
 		
@@ -98,11 +102,13 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		movimentoMensalIcmsIpi.setListCadastros(listCadPessoas);
 		
 //		TODO	-> SETAR no obj de movimentos --> 	Pessoa/Cadastro alterado sped
+		movimentoMensalIcmsIpi.setListCadastrosAlteradosSped(new ArrayList<>());
 		
 		movimentoMensalIcmsIpi.setListItens(listItens);
 		
 //		TODO	-> SETAR no obj de movimentos --> 	Produto alterado Sped
-		
+		movimentoMensalIcmsIpi.setListProdutoAlteradoSped(new ArrayList<>());
+
 		movimentoMensalIcmsIpi.setListProdUnid(listProdUnid);
 		movimentoMensalIcmsIpi.setLoja(loja);
 		movimentoMensalIcmsIpi.setContador(contador);

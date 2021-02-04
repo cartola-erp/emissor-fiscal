@@ -1,6 +1,6 @@
 package net.cartola.emissorfiscal.documento;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +23,6 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 	
 	Optional<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(String cnpj, String tipo, Long serie, Long numero);
 
-	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteOrDestinatario(LocalDate dataInicio, LocalDate dataFim, Pessoa emitente, Pessoa destinatario);
+	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteOrDestinatario(LocalDateTime dataInicio, LocalDateTime dataFim, Pessoa emitente, Pessoa destinatario);
 
 }
