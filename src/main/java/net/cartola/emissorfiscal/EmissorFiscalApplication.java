@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import net.cartola.emissorfiscal.contador.Contador;
+import net.cartola.emissorfiscal.contador.ContadorService;
 import net.cartola.emissorfiscal.usuario.Perfil;
 import net.cartola.emissorfiscal.usuario.Usuario;
 import net.cartola.emissorfiscal.usuario.UsuarioPerfil;
@@ -24,8 +26,7 @@ public class EmissorFiscalApplication {
 	
 	@Bean
 	@Profile({"homologacao", "test"})
-	CommandLineRunner initDev(UsuarioService usuarioService,
-			BCryptPasswordEncoder bcryptEncoder) {
+	CommandLineRunner initDev(UsuarioService usuarioService, ContadorService contadorService, BCryptPasswordEncoder bcryptEncoder) {
 
 		return args -> {
 			Optional<Usuario> op = usuarioService.findByLogin("contador");
@@ -75,6 +76,24 @@ public class EmissorFiscalApplication {
 				usuarioService.save(u);
 				System.out.printf("Usuario criado : %s", u);
 			}
+			
+//			Optional<Contador> opContador = contadorService.
+			Contador contador = new Contador();
+			contador.setNome("IVONE APARECIDA VAZ ALVES");
+			contador.setCpf(17737325875L);
+			contador.setCrc("SP000205767/O-0");
+//			contador.setCrc(0002057670L);
+//			contador 
+			contador.setCep(13304675L);
+			contador.setEndereco("RUA PASTOR PAULO LEIVAS MACALÃO");
+			contador.setNumImovel(27);
+			contador.setComplementoEndereco("");
+			contador.setBairroDoImovel("JD AEROPORTO");
+			contador.setTelefone("11971837908");
+			contador.setNumFax("");
+			contador.setEmail("ivone-vaz@bol.com.br");
+			contador.setCodMunicipio(3523909L);
+			contadorService.save(contador);
 		};
 	}
 
