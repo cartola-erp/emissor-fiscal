@@ -2,7 +2,6 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import java.util.List;
 
-import org.springframework.security.core.parameters.DefaultSecurityParameterNameDiscoverer;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
@@ -18,7 +17,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
  */
 @Record(fields = { 
 	@Field(name = "reg", maxLength = 4), 
-    @Field(name = "codItem"),
+    @Field(name = "codItem", padding = '0', minLength = 8, maxLength = 8),
     @Field(name = "descrItem"),
     @Field(name = "codBarra"),
     @Field(name = "codAntItem"),

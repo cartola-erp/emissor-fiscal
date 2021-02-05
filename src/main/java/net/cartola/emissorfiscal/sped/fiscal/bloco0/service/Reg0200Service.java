@@ -144,12 +144,8 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 
 	
 	private String getCodItem(DocumentoFiscalItem item) {
-		NumberFormat nf = NumberFormat.getInstance();
-		nf.setMinimumIntegerDigits(3);
-		nf.setMaximumFractionDigits(7);
-		String codItem = item.getCodigoX().toString() + item.getCodigoSequencia().toString();
-		String codItemFormatado = nf.format(StringUtil.somenteNumerosELetras(codItem));
-		return codItemFormatado;
+		String codItem = item.getCodigoX().toString() + item.getCodigoSequencia();
+		return codItem;
 	}
 	
 	private TipoDoItem getTipoItem(DocumentoFiscalItem item) {

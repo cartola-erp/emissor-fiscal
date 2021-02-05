@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
+import java.io.Serializable;
 import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
@@ -37,7 +38,9 @@ import coffeepot.bean.wr.annotation.Record;
     @Field(name = "reg0600"),
 	@Field(name = "reg0990")
 })    
-public class Bloco0 {
+public class Bloco0 implements Serializable {
+	
+	private static final long serialVersionUID = -1432636138632034013L;
 	
 	private Reg0000AberturaArquivoDigital reg0000;
 	private Reg0001AberturaDoBloco reg0001;

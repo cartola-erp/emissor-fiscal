@@ -63,7 +63,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
     @Field(name = "regC160"),
     @Field(name = "regC165"),
     @Field(name = "regC170"),
-    @Field(name = "regC185"),
+//    @Field(name = "regC185"),
     @Field(name = "regC190"),
     @Field(name = "regC195")
 })
@@ -110,7 +110,7 @@ public class RegC100 {
 	private RegC160 regC160;
 	private List<RegC165> regC165;
 	private List<RegC170> regC170;
-	private List<RegC185> regC185;			// this 
+//	private List<RegC185> regC185;			// this 
 	private List<RegC190> regC190;
 	private List<RegC195> regC195;
 	
@@ -414,13 +414,13 @@ public class RegC100 {
 		this.regC170 = regC170;
 	}
 
-	public List<RegC185> getRegC185() {
-		return regC185;
-	}
-
-	public void setRegC185(List<RegC185> regC185) {
-		this.regC185 = regC185;
-	}
+//	public List<RegC185> getRegC185() {
+//		return regC185;
+//	}
+//
+//	public void setRegC185(List<RegC185> regC185) {
+//		this.regC185 = regC185;
+//	}
 
 	public List<RegC190> getRegC190() {
 		return regC190;

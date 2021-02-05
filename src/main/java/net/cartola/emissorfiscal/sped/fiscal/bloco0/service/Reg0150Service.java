@@ -18,6 +18,7 @@ import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0150;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados;
+import net.cartola.emissorfiscal.util.NumberUtil;
 import net.cartola.emissorfiscal.util.StringUtil;
 
 /**
@@ -54,7 +55,7 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 			reg0150.setCpf(pessoa.getCpf());
 			reg0150.setIe(pessoa.getIe().toString());
 			reg0150.setCodMun(pessEnd.getIbgeCodigo());
-			reg0150.setSuframa(pessoa.getCodSuframa().toString());
+			reg0150.setSuframa(NumberUtil.getNullSafeForUI(pessoa.getCodSuframa()));
 			reg0150.setEnd(pessEnd.getLogradouroEndereco());
 			reg0150.setNum(pessEnd.getEnderecoNumero());
 			reg0150.setCompl(pessEnd.getComplementoEndereco());
