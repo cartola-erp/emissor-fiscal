@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +29,21 @@ public class PessoaAlteradoSpedService {
 	
 	public List<PessoaAlteradoSped> findAll() {
 		return pessAlterSpedRepository.findAll();
+	}
+	
+	public List<PessoaAlteradoSped> findPessoaAlteradoPorPeriodo(LocalDate dataInicio, LocalDate dataFim) {
+		return pessAlterSpedRepository.findByDtAlteracaoCadastroBetween(dataInicio, dataFim);
+	}
+	
+	
+	public List<PessoaAlteradoSped> findPessoaAlteradoPorPeriodoSped(LocalDate dataInicio, LocalDate dataFim, Set<String> listCpfCnpj) {
+		return pessAlterSpedRepository.findByDtAlteracaoCadastroBetweenAndCnpjAntInOrCnpjNovoInOrCpfAntInOrCpfNovoIn(
+				dataInicio, 
+				dataFim, 
+				listCpfCnpj, 
+				listCpfCnpj, 
+				listCpfCnpj, 
+				listCpfCnpj);
 	}
 	
 	public Optional<PessoaAlteradoSped> save(PessoaAlteradoSped pessAlterSped) {

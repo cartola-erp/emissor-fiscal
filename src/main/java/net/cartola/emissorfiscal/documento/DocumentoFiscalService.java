@@ -95,11 +95,12 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
-	public Optional<DocumentoFiscal> update(DocumentoFiscal documentoFiscal) {
+	public Optional<DocumentoFiscal> updateStatusAndChaveAcesso(DocumentoFiscal documentoFiscal) {
 		
 		/**
 		 * VER O QUE EU PRECISO FAZER PARA ATUALIZAR O DOCUMENTO FISCAL
 		 * */
+		
 		
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}

@@ -36,7 +36,7 @@ public class SpedFiscalArquivo {
 	private Loja loja;
 	private LocalDate dataInicioSped;
 	private LocalDate dataFimSped;
-	private Byte[] arquivo;			// Depois de gerar o arquivo setar aqui. O ideal é em bytes ? I do Know, but probably Yes, the ideal is in bytes not String
+	private byte[] arquivo;			// Depois de gerar o arquivo setar aqui. O ideal é em bytes ? I do Know, but probably Yes, the ideal is in bytes not String
 	private String nomeArquivo;
 //	private String linkDownload; 	// Terá link para baixar o arquivo ??? Yes, I think bro !
 	private LocalDateTime dataHoraInicioGeracao;

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,7 +26,11 @@ import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
+import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSpedService;
 import net.cartola.emissorfiscal.pessoa.PessoaService;
+import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
+import net.cartola.emissorfiscal.produto.ProdutoAlteradoSpedService;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 import net.cartola.emissorfiscal.produto.ProdutoUnidadeService;
 
@@ -47,11 +52,11 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	@Autowired
 	private PessoaService pessoaService;
 	
-//	@Autowired
-//	private PESSOA ALTERADO SERVICE
+	@Autowired
+	private PessoaAlteradoSpedService pessAlterSpedService;
 	
-//	@Autowired
-//	private PRODUTO ALTERADO SERVICE
+	@Autowired
+	private ProdutoAlteradoSpedService prodAlterSpedService;
 	
 //	produto 
 	
@@ -102,7 +107,9 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		movimentoMensalIcmsIpi.setListCadastros(listCadPessoas);
 		
 //		TODO	-> SETAR no obj de movimentos --> 	Pessoa/Cadastro alterado sped
-		movimentoMensalIcmsIpi.setListCadastrosAlteradosSped(new ArrayList<>());
+		Set<String> cpfCnpjSet = getListCpfCnpj(listCadPessoas);
+		List<PessoaAlteradoSped> listPessAlteradoSped = pessAlterSpedService.findPessoaAlteradoPorPeriodoSped(dataInicio, dataFim, cpfCnpjSet);
+		movimentoMensalIcmsIpi.setListCadastrosAlteradosSped(listPessAlteradoSped);
 		
 		movimentoMensalIcmsIpi.setListItens(listItens);
 		
@@ -117,6 +124,16 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		
 		LOG.log(Level.INFO, "Terminado a busca das movimentações para a LOJA {0}" ,loja);
 		return movimentoMensalIcmsIpi;
+	}
+
+	private Set<String> getListCpfCnpj(List<Pessoa> listCadPessoas) {
+		Set<String> cpfCnpjSet = new HashSet<>();
+		Set<String> cpfSet = listCadPessoas.stream().filter(pessoa -> pessoa.getCpf() != null && !pessoa.getCpf().isEmpty()).map(Pessoa::getCpf).collect(toSet());
+		Set<String> cnpjSet = listCadPessoas.stream().filter(pessoa -> pessoa.getCnpj() != null && !pessoa.getCnpj().isEmpty()).map(Pessoa::getCnpj).collect(toSet());
+		
+		cpfCnpjSet.addAll(cpfSet);
+		cpfCnpjSet.addAll(cnpjSet);
+		return cpfCnpjSet;
 	}
 	
 	

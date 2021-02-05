@@ -93,8 +93,11 @@ public class DocumentoFiscalApiController {
 		if (!opDocFiscal.isPresent()) {
 			return ResponseEntity.noContent().build();
 		}
-		docFiscal.setId(opDocFiscal.get().getId());
-		docFiscalService.update(docFiscal).ifPresent(updatedDocFiscal -> response.setData(updatedDocFiscal));
+//		docFiscal.setId(opDocFiscal.get().getId());
+		DocumentoFiscal docFiscInDb = opDocFiscal.get();
+		docFiscInDb.setNfeChaveAcesso(docFiscal.getNfeChaveAcesso());
+		docFiscInDb.setStatus(docFiscal.getStatus());
+		docFiscalService.updateStatusAndChaveAcesso(docFiscInDb).ifPresent(updatedDocFiscal -> response.setData(updatedDocFiscal));
 		return ResponseEntity.ok(response);
 	}
 	
