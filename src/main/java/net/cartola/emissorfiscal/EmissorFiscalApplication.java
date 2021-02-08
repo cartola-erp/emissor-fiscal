@@ -80,7 +80,7 @@ public class EmissorFiscalApplication {
 //			Optional<Contador> opContador = contadorService.
 			Contador contador = new Contador();
 			contador.setNome("IVONE APARECIDA VAZ ALVES");
-			contador.setCpf(17737325875L);
+			contador.setCpf("17737325875");
 			contador.setCrc("SP000205767/O-0");
 //			contador.setCrc(0002057670L);
 //			contador 

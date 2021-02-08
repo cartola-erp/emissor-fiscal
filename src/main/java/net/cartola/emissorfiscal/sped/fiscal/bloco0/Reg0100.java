@@ -32,7 +32,7 @@ public class Reg0100 {
 	
 	private final String reg = "0100";
 	private String nome;
-	private Long cpf;
+	private String cpf;
 	private String crc;
 	private Long cnpj;
 	private Long cep;
@@ -57,11 +57,11 @@ public class Reg0100 {
 		this.nome = nome;
 	}
 
-	public Long getCpf() {
+	public String getCpf() {
 		return cpf;
 	}
 
-	public void setCpf(Long cpf) {
+	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 
