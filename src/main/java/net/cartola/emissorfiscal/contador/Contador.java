@@ -30,7 +30,7 @@ public class Contador implements Serializable {
 	private String nome;
 	private String cpf;
 	private String crc;
-	private Long cnpj;
+	private String cnpj;
 	private Long cep;
 	private String endereco;
 	private int numImovel;
@@ -59,6 +59,7 @@ public class Contador implements Serializable {
 		this.nome = nome;
 	}
 
+	@Column(length = 11)
 	public String getCpf() {
 		return cpf;
 	}
@@ -67,6 +68,7 @@ public class Contador implements Serializable {
 		this.cpf = cpf;
 	}
 
+	@Column(length = 20)
 	public String getCrc() {
 		return crc;
 	}
@@ -75,11 +77,12 @@ public class Contador implements Serializable {
 		this.crc = crc;
 	}
 
-	public Long getCnpj() {
+	@Column(length = 20)
+	public String getCnpj() {
 		return cnpj;
 	}
 
-	public void setCnpj(Long cnpj) {
+	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
 
@@ -125,7 +128,7 @@ public class Contador implements Serializable {
 		this.bairroDoImovel = bairroDoImovel;
 	}
 
-	@Column(name = "tele")
+	@Column(name = "tele", length = 12)
 	public String getTelefone() {
 		return telefone;
 	}

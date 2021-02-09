@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +29,8 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.PerfilEnquadramento;
 @Getter
 @Setter
 @Entity
-@Table(name = "loja")
+@Table(name = "loja", uniqueConstraints = @UniqueConstraint(name = "unk_loja_cnpj", columnNames = {
+		"cnpj"})) 
 public class Loja implements Serializable {
 	
 	private static final long serialVersionUID = -7121328260972557814L;
@@ -42,6 +44,7 @@ public class Loja implements Serializable {
 	private String nomeFantasia = "";
 	private int cnae; //no DAO é String, mas no banco é INT -> deixei int
 //	private String cnpj = "";
+	@Column(length = 14)
 	private String cnpj;
 	private String ie = "";
 	private String im = "";
@@ -56,8 +59,10 @@ public class Loja implements Serializable {
 	private String bairro = "";
 	private Integer cidadeCodigo;
 //	private String uf = "SP";
+	@Column(length = 2)
 	@Enumerated(EnumType.STRING)
 	private EstadoSigla uf = EstadoSigla.SP;
+	@Column(length = 9)
 	private String cep = "";
     private int ibgeCodigo;		// vem do obj cidade
 
