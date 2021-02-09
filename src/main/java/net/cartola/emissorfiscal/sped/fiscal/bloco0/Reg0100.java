@@ -34,7 +34,7 @@ public class Reg0100 {
 	private String nome;
 	private String cpf;
 	private String crc;
-	private Long cnpj;
+	private String cnpj;
 	private Long cep;
 	private String end;
 	private int num;
@@ -73,11 +73,11 @@ public class Reg0100 {
 		this.crc = crc;
 	}
 
-	public Long getCnpj() {
+	public String getCnpj() {
 		return cnpj;
 	}
 
-	public void setCnpj(Long cnpj) {
+	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
 

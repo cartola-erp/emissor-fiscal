@@ -27,7 +27,7 @@ class Reg0100Service implements MontaGrupoRegistroSimples<Reg0100, MovimentoMens
 		
 		reg0100.setNome(contador.getNome());
 		reg0100.setCpf(contador.getCpf());
-		reg0100.setCrc(contador.getCrc().toString());
+		reg0100.setCrc(contador.getCrc());
 		reg0100.setCnpj(contador.getCnpj());
 		reg0100.setCep(contador.getCep());
 		reg0100.setEnd(contador.getEndereco());

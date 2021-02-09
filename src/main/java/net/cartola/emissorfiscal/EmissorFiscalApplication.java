@@ -77,23 +77,26 @@ public class EmissorFiscalApplication {
 				System.out.printf("Usuario criado : %s", u);
 			}
 			
-//			Optional<Contador> opContador = contadorService.
-			Contador contador = new Contador();
-			contador.setNome("IVONE APARECIDA VAZ ALVES");
-			contador.setCpf("17737325875");
-			contador.setCrc("SP000205767/O-0");
-//			contador.setCrc(0002057670L);
-//			contador 
-			contador.setCep(13304675L);
-			contador.setEndereco("RUA PASTOR PAULO LEIVAS MACALÃO");
-			contador.setNumImovel(27);
-			contador.setComplementoEndereco("");
-			contador.setBairroDoImovel("JD AEROPORTO");
-			contador.setTelefone("11971837908");
-			contador.setNumFax("");
-			contador.setEmail("ivone-vaz@bol.com.br");
-			contador.setCodMunicipio(3523909L);
-			contadorService.save(contador);
+			String crc = "SP000205767/O-0";
+			Optional<Contador> opContador = contadorService.findByCrc(crc);
+			if (!opContador.isPresent()) {
+				Contador contador = new Contador();
+				contador.setNome("IVONE APARECIDA VAZ ALVES");
+				contador.setCpf("17737325875");
+				contador.setCrc(crc);
+//				contador.setCrc(0002057670L);
+//				contador 
+				contador.setCep(13304675L);
+				contador.setEndereco("RUA PASTOR PAULO LEIVAS MACALÃO");
+				contador.setNumImovel(27);
+				contador.setComplementoEndereco("");
+				contador.setBairroDoImovel("JD AEROPORTO");
+				contador.setTelefone("11971837908");
+				contador.setNumFax("");
+				contador.setEmail("ivone-vaz@bol.com.br");
+				contador.setCodMunicipio(3523909L);
+				contadorService.save(contador);
+			}
 		};
 	}
 

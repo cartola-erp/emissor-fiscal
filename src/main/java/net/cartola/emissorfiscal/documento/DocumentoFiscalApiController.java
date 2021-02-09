@@ -176,6 +176,7 @@ public class DocumentoFiscalApiController {
 		
 		List<String> erros = docFiscalService.setaValoresNecessariosCompra(docFiscal);
 		if(!ValidationHelper.collectionEmpty(erros)) {
+			LOG.log(Level.WARNING, "ERROS ao tentar salvar a compra -> {0} " ,erros);
 			return ResponseEntity.noContent().build();
 		}
 		

@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.loja;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -42,7 +43,8 @@ public class Loja implements Serializable {
 	private String nome = "";
 	private String razaoSocial = "";
 	private String nomeFantasia = "";
-	private int cnae; //no DAO é String, mas no banco é INT -> deixei int
+	@Column(length = 20)
+	private String cnae; //no DAO é String, mas no banco é INT -> deixei int
 //	private String cnpj = "";
 	@Column(length = 14)
 	private String cnpj;
@@ -67,8 +69,8 @@ public class Loja implements Serializable {
     private int ibgeCodigo;		// vem do obj cidade
 
 	private String telefone = "";
-	private Date cadastro;
-	private Date alterado;
+	private LocalDateTime cadastro;
+	private LocalDateTime alterado;
 //	private Integer cedenteCodigo;
 //	private Integer tabelaPrecoCodigo;
 //	private boolean estoqueGerenciado = false;
