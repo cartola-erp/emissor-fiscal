@@ -158,6 +158,7 @@ public class DocumentoFiscalApiController {
 		
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, true);
 		if (!ValidationHelper.collectionEmpty(erros)) {
+			LOG.log(Level.WARNING, "ERROS na validação do DocumentoFiscal: {0} ", erros);
 			response.setErrors(erros);
 			return ResponseEntity.badRequest().body(response);
 		}
