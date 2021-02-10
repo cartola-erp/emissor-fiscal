@@ -20,7 +20,6 @@ import javax.persistence.Table;
  */
 
 @Entity
-//@Table(name = "pessoa")
 @Table(name = "pess")
 public class Pessoa {
 	
@@ -146,10 +145,12 @@ public class Pessoa {
 
 	@Override
 	public String toString() {
-		return "Pessoa [id=" + id + ", cnpj=" + cnpj + ", regimeTributario=" + regimeTributario
-				+ ", pessoaTipo=" + pessoaTipo + "]";
+		return "Pessoa [id=" + id + ", cnpj=" + cnpj + ", cpf=" + cpf + ", regimeTributario=" + regimeTributario
+				+ ", pessoaTipo=" + pessoaTipo + ", ie=" + ie + ", codSuframa=" + codSuframa + ", nome=" + nome
+				+ ", codigoErp=" + codigoErp + ", lojaErp=" + lojaErp + ", enderecoCodigoErp=" + enderecoCodigoErp
+				+ ", endereco=" + endereco + "]";
 	}
-	
+
 }
 
 

@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.loja.Loja;
+
 
 /**
  * @date 13 de jan. de 2021
@@ -27,6 +29,18 @@ public class ContadorService {
 		
 	public Optional<Contador> findOne(Long id) {
 		return contadorRepository.findById(id);
+	}
+	
+	public Optional<Contador> findByCnpj(String cnpj) {
+		return contadorRepository.findContadorByCnpj(cnpj);
+	}
+	
+	public Optional<Contador> findByCpf(String cpf) {
+		return contadorRepository.findContadorByCpf(cpf);
+	}
+	
+	public Optional<Contador> findByCrc(String crc) {
+		return contadorRepository.findContadorByCrc(crc);
 	}
 	
 }

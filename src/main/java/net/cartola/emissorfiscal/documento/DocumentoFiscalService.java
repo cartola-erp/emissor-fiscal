@@ -191,6 +191,10 @@ public class DocumentoFiscalService {
 		
 		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
 		
+		
+//		mapErros.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
+//		mapErros.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
+		
 		if (!mapErros.containsValue(true)) {
 			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario);
 		}

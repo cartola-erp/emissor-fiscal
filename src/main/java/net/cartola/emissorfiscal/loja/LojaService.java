@@ -28,4 +28,11 @@ public class LojaService {
 		return lojaRepository.findById(id);
 	}
 	
+	public Optional<Loja> findByCnpj(String cnpj) {
+		return lojaRepository.findLojaByCnpj(cnpj);
+	}
+	
+	
+	
+	
 }

@@ -129,7 +129,10 @@
 							<label for="txtIcmsAliquotaDestino"><strong>FCP Aliq. (%)</strong></label>
 							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtFcpAliquota" th:field="*{fcpAliquota}" name="fcpAliquota" placeholder="ALIQ. do Fundo de combate a pobreza" maxlength="5" required />
 						</div> 
+					</div>
 
+					<!-- ALIQ DO IMPOSTO -->
+					<div class="form-row">
 						<div class="form-group col-md-2">
 							<label for="txtIcmStAliquota"><strong>ICMS ST Aliq. (%)</strong></label>
 							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmStAliquota" th:field="*{icmsStAliquota}" name="icmsStAliquota" placeholder="ICMS ST ALIQ." maxlength="5" required />
@@ -145,15 +148,22 @@
 							<input type="text" class="form-control somenteNumeros" id="txtCfop" th:field="*{cfop}" name="cfop" placeholder="CFOP..." minlength="4" maxlength="4" required>
 						</div> 
 
+						<div class="form-group col-md-6">
+							<label for="txtCfop"><strong>CODIGO ANP</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtCodigoAnp" th:field="*{codigoAnp}" name="codigoAnp" placeholder="Codigo ANP (Agencia Nac. de Petroleo)..."  maxlength="30" required>
+						</div> 
+					</div> 
+
+					<!-- MSG -->
+					<div class="form-row">
 							<!-- Mensagem -->
 						<!-- <div class="form-row"> -->
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-12">
 								<label for="txtDescricao">Mensagem</label>
 								<i class="fas fa-pencil-alt prefix"></i>
 								<textarea id="txtMensagem" th:field="*{mensagem}" name="mensagem" class="md-textarea form-control " rows="1"  maxlength="250"></textarea>
 							</div>
 						<!-- </div>	 -->
-
 					</div>
 
 				
