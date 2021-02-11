@@ -1,6 +1,5 @@
 package net.cartola.emissorfiscal.documento;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -46,13 +45,6 @@ public class DocumentoFiscalApiController {
 	@Autowired
 	private DeOlhoNoImpostoService olhoNoImpostoService;
 	
-//	@GetMapping("id{id}")
-//	public List<DocumentoFiscal> findDocumentoById(@PathVariable Long id) {
-////		return docFiscalService.findOne(id)
-//		return null;
-//	}
-	
-//	public ResponseEntity<List<DocumentoFiscal>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@PathVariable Long cnpj, @PathVariable String tipo, @PathVariable Long serie,  @PathVariable Long numero) {
 	@PostMapping(value = "/buscar")
 	public ResponseEntity<Response<DocumentoFiscal>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@RequestBody DocumentoFiscal docFiscal) {
 		Response<DocumentoFiscal> response = new Response<>();
@@ -67,7 +59,7 @@ public class DocumentoFiscalApiController {
 		response.setData(opDocFiscal.get());
 		return ResponseEntity.ok(response);
 	}
-	
+	 
 	
 	@PostMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
@@ -80,7 +72,7 @@ public class DocumentoFiscalApiController {
 //			return ResponseEntity.ok(response);
 			docFiscal.setId(opDocFiscal.get().getId());
 			docFiscalService.deleteById(opDocFiscal.get().getId());
-		}
+		} 
 		return saveOrEditDocumentoFiscal(docFiscal);
 	}
 	
@@ -139,19 +131,6 @@ public class DocumentoFiscalApiController {
 		return ResponseEntity.ok(response);
 	}
 	
-	
-//	@PutMapping()
-//	public ResponseEntity<Response<DocumentoFiscal>> edit (@Valid @RequestBody DocumentoFiscal docFiscal) {
-//		Response<DocumentoFiscal> response = new Response<>();
-//		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findOne(docFiscal.getId());
-//
-//		if(!opDocFiscal.isPresent()) {
-//			response.setErrors(Arrays.asList("O documento fiscal que você está tentando editar, NÃO existe!"));
-//			return ResponseEntity.badRequest().body(response);
-//		}
-//		opDocFiscal.ifPresent(oldDocFiscal -> docFiscal.setId(oldDocFiscal.getId()));
-//		return saveOrEditDocumentoFiscal(docFiscal);
-//	}
 	
 	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {
 		Response<DocumentoFiscal> response = new Response<>();

@@ -2,7 +2,6 @@ package net.cartola.emissorfiscal.loja;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +24,6 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.PerfilEnquadramento;
  * 25/09/2020
  * @author robson.costa
  */
-// É a mesma classe do ERP (ao menos do WS, pois não mudei nada)
 @ToString
 @Getter
 @Setter
@@ -45,7 +43,6 @@ public class Loja implements Serializable {
 	private String nomeFantasia = "";
 	@Column(length = 20)
 	private String cnae; //no DAO é String, mas no banco é INT -> deixei int
-//	private String cnpj = "";
 	@Column(length = 14)
 	private String cnpj;
 	private String ie = "";
@@ -60,7 +57,6 @@ public class Loja implements Serializable {
 	
 	private String bairro = "";
 	private Integer cidadeCodigo;
-//	private String uf = "SP";
 	@Column(length = 2)
 	@Enumerated(EnumType.STRING)
 	private EstadoSigla uf = EstadoSigla.SP;
@@ -72,11 +68,7 @@ public class Loja implements Serializable {
 	private LocalDateTime cadastro;
 	private LocalDateTime alterado;
 //	private Integer cedenteCodigo;
-//	private Integer tabelaPrecoCodigo;
-//	private boolean estoqueGerenciado = false;
-//	private String contatoSintegra = "";
 //	private String site = "";
-//	private int codigoContabilContmatic;
 //	private RegimeTributario tributacao = RegimeTributario.NORMAL;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "regime_tribu", columnDefinition="enum('SIMPLES', 'PRESUMIDO', 'REAL') ")
@@ -86,22 +78,8 @@ public class Loja implements Serializable {
 	@Column(name = "sped_fisc_perf", columnDefinition="enum('A', 'B', 'C') ")
 	private PerfilEnquadramento spedFiscalPerfil; //No erpj é String -> ver se não implica em algo na integração
 	private String eMail = "";
-//	private Double latitude;
-//	private Double longitude;
-//	private Integer acessoGestorCodigo;
-//	private String controlpayKey;
-//	private String senhaControlpay;
 	private String criadoPor;
 	private String alteradoPor;
-//	private List<Estoque> estoques;
 
-
-//	public List<Estoque> getEstoques() {
-//		return estoques;
-//	}
-//
-//	public void setEstoques(List<Estoque> estoques) {
-//		this.estoques = estoques;
-//	}
 
 }

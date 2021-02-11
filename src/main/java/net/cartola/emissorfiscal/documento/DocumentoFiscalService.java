@@ -2,7 +2,6 @@ package net.cartola.emissorfiscal.documento;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -143,18 +142,19 @@ public class DocumentoFiscalService {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());
 		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
-		Estado estadoOrigem = estadoService.findBySigla(opEmitente.get().getEndereco().getUf()).get();
-		Estado estadoDestino = estadoService.findBySigla(opDestinatario.get().getEndereco().getUf()).get();
-
-		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
+		Optional<Estado> opUfOrigem = estadoService.findBySigla(opEmitente.get().getEndereco().getUf());
+		Optional<Estado> opUfDestino = estadoService.findBySigla(opDestinatario.get().getEndereco().getUf());
+		Set<Ncm> ncmsDocFiscal = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
-		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<TributacaoEstadual>();
+
+		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<>();
 		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
-		
-		if (opOperacao.isPresent() && !ncms.isEmpty() && opEmitente.get().getRegimeTributario() != null && !mapErros.containsValue(true) ) {
-			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(),estadoOrigem, estadoDestino,
-					opEmitente.get().getRegimeTributario(), finalidades, ncms);
-			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(opOperacao.get(),opEmitente.get().getRegimeTributario(), finalidades, ncms);
+
+		//	if (opOperacao.isPresent() && !ncms.isEmpty() && opEmitente.get().getRegimeTributario() != null && !mapErros.containsValue(true) ) {
+		if ( isPermitidoBuscarTributacoes(opOperacao, ncmsDocFiscal, opEmitente.get(), opUfOrigem, opUfDestino, mapErros) && !mapErros.containsValue(true) ) {
+			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(), opUfOrigem.get(), opUfDestino.get(),
+					opEmitente.get().getRegimeTributario(), finalidades, ncmsDocFiscal);
+			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(opOperacao.get(),opEmitente.get().getRegimeTributario(), finalidades, ncmsDocFiscal);
 		}
 		
 		mapErros.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", !opOperacao.isPresent());
@@ -162,11 +162,11 @@ public class DocumentoFiscalService {
 		mapErros.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
 		
 		if (validaTribuEsta) {
-			validaTributosEstaduais(ncms, tributacoesEstaduais, mapErros);
+			validaTributosEstaduais(ncmsDocFiscal, tributacoesEstaduais, mapErros);
 		}
 		
 		if (validaTribuFede) {
-			validaTributosFederais(ncms, tributacoesFederais, mapErros);
+			validaTributosFederais(ncmsDocFiscal, tributacoesFederais, mapErros);
 		}
 		
 		if (!mapErros.containsValue(true)) {
@@ -175,7 +175,7 @@ public class DocumentoFiscalService {
 		return ValidationHelper.processaErros(mapErros);
 	}
 	
-	
+
 	/**
 	 * Método para setar os valores necessários, referente a um DocumentoFiscal, de entrada vindo do ERP.
 	 * E quem sabe no futuro, para validar, também caso calcule a entrada por aqui rs.
@@ -234,6 +234,48 @@ public class DocumentoFiscalService {
 		documentoFiscal.getReferencias().forEach(referencia -> {
 			referencia.setDocumentoFiscal(documentoFiscal);
 		});
+	}
+	
+	
+	/**
+	 * Irá validar se pode buscar as tributacões (PIS/COFINS e ICMS)
+	 * 
+	 * @param opOperacao		- Operação do DocumentoFiscal (Ex.: Venda, Transferência, Venda InterEstadual etc...)
+	 * @param ncmsDocFiscal		- Todos os Ncms válidos, encontrados nos itens do DocumentoFiscal
+	 * @param emitente			- Loja que emitiu o DocumentoFiscal
+	 * @param opUfOrigem 		- Estado de Origem
+	 * @param opUfDestino 		- Estado de Destino
+	 * @param mapErros			- Mapa com todas as mensagens de erros/validações. (Será adicionadas novas nesse method, caso tenha)
+	 * @return <b>true</b> -> Irá buscar as tributacoes | <b> false </b> -> Se alguma informação que precisa não estiver presente, Não irá buscar a tributacao
+	 */
+	private boolean isPermitidoBuscarTributacoes(Optional<Operacao> opOperacao, Set<Ncm> ncmsDocFiscal, Pessoa emitente, Optional<Estado> opUfOrigem, Optional<Estado> opUfDestino, Map<String, Boolean> mapErros) {
+		LOG.log(Level.INFO, "Validando se pode buscar as tributacoes (PIS/COFINS e ICMS), para o DocumentoFiscal ");
+		boolean isPermitidoBuscarTributacoes = true;
+
+		if (!opOperacao.isPresent()) {
+			mapErros.put("A operação da NFE (DocumentoFiscal), NÃO está cadastrada no emissor-fiscal " ,true);
+			isPermitidoBuscarTributacoes = false;
+		}
+		if (ncmsDocFiscal.isEmpty()) {
+			mapErros.put("Nenhum NCM válido encontrado no DocumentoFiscal", true);
+			isPermitidoBuscarTributacoes = false;
+		}
+		if (!opUfOrigem.isPresent()) {
+			mapErros.put("Estado de ORIGEM do EMITENTE não encontrado" ,true);
+			isPermitidoBuscarTributacoes = false;
+
+		}
+		if (!opUfDestino.isPresent()) {
+			mapErros.put("Estado de DESTINO do destinatário não encontrado" ,true);
+			isPermitidoBuscarTributacoes = false;
+		}
+		if (emitente.getRegimeTributario() == null) {
+			mapErros.put("O Regime Tributário, do EMITENTE está NULO" ,true);
+			isPermitidoBuscarTributacoes = false;
+		}
+//		isPermitidoBuscarTributacoes(opOperacao.isPresent(), !ncms.isEmpty(), opEmitente.get().getRegimeTributario() != null, mapErros);
+//		return (opOperacao.isPresent() && !ncms.isEmpty() && emitente.getRegimeTributario() != null && !mapErros.containsValue(true));
+		return isPermitidoBuscarTributacoes;
 	}
 	
 	// ================================================ VALIDA TRIBUTOS FEDERAIS ================================================
