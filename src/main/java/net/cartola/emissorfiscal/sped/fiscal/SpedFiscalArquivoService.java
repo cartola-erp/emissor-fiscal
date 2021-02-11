@@ -119,6 +119,7 @@ public class SpedFiscalArquivoService {
 
 		if (path != null) {
 			String dirArquivoSpedIcmsIpi = path.toAbsolutePath() + "//" + spedFiscArqu.getNomeArquivo();
+//			String dirArquivoSpedIcmsIpi = spedFiscArqu.getNomeArquivo();
 			LOG.log(Level.INFO, "Diretorio temporário do arquivo criado em -> {0} ", dirArquivoSpedIcmsIpi);
 			File fileSpedFiscal = new File(dirArquivoSpedIcmsIpi);
 			fileSpedFiscal.deleteOnExit();

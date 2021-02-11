@@ -29,8 +29,10 @@ class Reg0190Service implements MontaGrupoDeRegistroList<Reg0190, MovimentoMensa
 		
 		listProdUnid.stream().forEachOrdered(unidade -> {
 			Reg0190 reg0190 = new Reg0190();
-			reg0190.setUnid(unidade.getSigla());
-			reg0190.setDescr(unidade.getDescricao());
+//			reg0190.setUnid(unidade.getSigla());
+//			reg0190.setDescr(unidade.getDescricao());
+			reg0190.setUnid(String.valueOf(unidade.getId()));
+			reg0190.setDescr(unidade.getSigla());
 			listReg0190.add(reg0190);
 		});
 		LOG.log(Level.INFO, "Grupo de Registro 0190, terminado: {0} " ,listReg0190);

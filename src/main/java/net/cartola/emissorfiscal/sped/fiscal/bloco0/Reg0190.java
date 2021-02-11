@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import coffeepot.bean.wr.types.Align;
 import lombok.ToString;
 
 /**
@@ -13,7 +14,7 @@ import lombok.ToString;
 
 @Record(fields = { 
 	@Field(name = "reg", maxLength = 4), 
-	@Field(name = "unid", padding = 0, minLength = 6, maxLength = 6),
+	@Field(name = "unid", align = Align.RIGHT, padding = '0', minLength = 6, maxLength = 6),
 	@Field(name = "descr") 
 })	
 @ToString
