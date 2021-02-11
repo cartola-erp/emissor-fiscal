@@ -37,6 +37,8 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 	@Override
 	public List<Reg0200> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0200 ");
+		// TODO : Mudar a Lista de ITENS para um SET (pois da forma atual, irá repetir os itens)
+		// TODO : PS: Acredito que terei que buscar a CEST, p/ TODOS os itens (pois nas entradas eu não tenho) 
 		List<DocumentoFiscalItem> listItens = movimentosIcmsIpi.getListItens();
 		List<ProdutoAlteradoSped> listProdAlterado = movimentosIcmsIpi.getListProdutoAlteradoSped();
 		populaMapItemAlterado(listItens, listProdAlterado);
@@ -54,7 +56,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 			reg0200.setTipoItem(getTipoItem(item));
 			reg0200.setCodNcm(ncmString);
 			reg0200.setExIpi(Integer.toString(ncm.getExcecao()));
-			reg0200.setCodGen(ncmString.substring(0, 3));
+			reg0200.setCodGen(ncmString.substring(0, 2));
 //			reg0200.setCodLst(codLst);
 			reg0200.setAliqIcms(getAliqIcms(item));
 			reg0200.setCest(formataCest(item.getIcmsCest()));
@@ -63,6 +65,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 			reg0200.setReg0206(montaReg0206CodAnp(item));
 //			reg0200.setReg0210(reg0210);	// Nos Arquivos que a Gabi passou não vi sendo usados
 //			reg0200.setReg0220(reg0220);
+			listReg0200.add(reg0200);
 		});
 		
 		
