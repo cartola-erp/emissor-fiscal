@@ -60,6 +60,7 @@ public class BlocoCService implements MontaBloco<BlocoC, MovimentoMensalIcmsIpi>
 		
 		blocoC.setRegC990(montarEncerramentoDoBloco0(blocoC));
 		
+		LOG.log(Level.INFO, "Montagem do BLOCO C, TEMINADA! {0} " ,blocoC);
 		return blocoC;
 	}
 
@@ -70,7 +71,7 @@ public class BlocoCService implements MontaBloco<BlocoC, MovimentoMensalIcmsIpi>
 		long qtdLinC = RecordCounter.count(blocoC);
 		RegC990EncerramentoDoBlocoC regC990 = new RegC990EncerramentoDoBlocoC(qtdLinC + 1);
 		
-		LOG.log(Level.INFO, "Encerramento do BLOCO B (RegC990), terminada: {0} " ,regC990);
+		LOG.log(Level.INFO, "Encerramento do BLOCO C (RegC990), terminada: {0} " ,regC990);
 		return regC990;
 	}
 
