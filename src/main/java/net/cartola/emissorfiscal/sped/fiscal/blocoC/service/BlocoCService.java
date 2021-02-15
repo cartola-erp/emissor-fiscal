@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.BlocoC;
+import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC990EncerramentoDoBlocoC;
+import net.cartola.emissorfiscal.util.RecordCounter;
 
 /**
  * 18/09/2020
@@ -37,10 +39,6 @@ public class BlocoCService implements MontaBloco<BlocoC, MovimentoMensalIcmsIpi>
 	@Autowired
 	private RegC800Service regC800Service;
 	
-	@Autowired
-	private RegC990Service regC990Service;
-	
-	
 	@Override
 	public BlocoC criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
@@ -59,9 +57,21 @@ public class BlocoCService implements MontaBloco<BlocoC, MovimentoMensalIcmsIpi>
 		blocoC.setRegC400(regC400Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		blocoC.setRegC500(regC500Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		blocoC.setRegC800(regC800Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
-		blocoC.setRegC990(regC990Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+		
+		blocoC.setRegC990(montarEncerramentoDoBloco0(blocoC));
 		
 		return blocoC;
+	}
+
+
+	private RegC990EncerramentoDoBlocoC montarEncerramentoDoBloco0(BlocoC blocoC) {
+		LOG.log(Level.INFO, "Montando o encerramento do bloco C ");
+
+		long qtdLinC = RecordCounter.count(blocoC);
+		RegC990EncerramentoDoBlocoC regC990 = new RegC990EncerramentoDoBlocoC(qtdLinC + 1);
+		
+		LOG.log(Level.INFO, "Encerramento do BLOCO B (RegC990), terminada: {0} " ,regC990);
+		return regC990;
 	}
 
 

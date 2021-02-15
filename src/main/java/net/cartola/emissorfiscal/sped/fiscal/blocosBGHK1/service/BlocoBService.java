@@ -41,8 +41,8 @@ public class BlocoBService implements MontaBloco<BlocoB, MovimentoMensalIcmsIpi>
 	private RegB990EncerramentoDoBlocoB montarEncerramentoDoBlocoB(BlocoB blocoB) {
 		LOG.log(Level.INFO, "Montando o Registro 0990 (Encerramento do Bloco 0) ");
 
-		long qtdLin0 = RecordCounter.count(blocoB);
-		RegB990EncerramentoDoBlocoB regB990 = new RegB990EncerramentoDoBlocoB(qtdLin0 + 1);
+		long qtdLinB = RecordCounter.count(blocoB);
+		RegB990EncerramentoDoBlocoB regB990 = new RegB990EncerramentoDoBlocoB(qtdLinB + 1);
 		
 		LOG.log(Level.INFO, "Encerramento do BLOCO B (RegB990), terminada: {0} " ,regB990);
 		return regB990;
