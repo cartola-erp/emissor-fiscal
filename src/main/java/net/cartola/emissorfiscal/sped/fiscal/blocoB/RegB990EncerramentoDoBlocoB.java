@@ -18,8 +18,8 @@ public class RegB990EncerramentoDoBlocoB {
 	private final String reg = "B990";
 	private Long qtdLinB;
 
-	public RegB990EncerramentoDoBlocoB() {
-		this.qtdLinB = 2L;
+	public RegB990EncerramentoDoBlocoB(Long qtdLinhasBlocoB) {
+		this.qtdLinB = qtdLinhasBlocoB;
 	}
 
 	public String getReg() {
