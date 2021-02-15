@@ -25,7 +25,7 @@ public class EmissorFiscalApplication {
 	}
 	
 	@Bean
-	@Profile({"homologacao", "test"})
+	@Profile({"dev", "test", "homologacao" })
 	CommandLineRunner initDev(UsuarioService usuarioService, ContadorService contadorService, BCryptPasswordEncoder bcryptEncoder) {
 
 		return args -> {
