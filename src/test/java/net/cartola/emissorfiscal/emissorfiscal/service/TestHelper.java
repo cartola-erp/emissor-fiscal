@@ -16,7 +16,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
-import net.cartola.emissorfiscal.documento.DocumentoFiscalTipoOperacao;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.estado.Estado;
@@ -321,7 +321,7 @@ public class TestHelper {
 		for (String[] dados : data) {
 			int aux = 0;
 			DocumentoFiscal docFiscal = new DocumentoFiscal();
-			docFiscal.setTipoOperacao(DocumentoFiscalTipoOperacao.SAIDA);
+			docFiscal.setTipoOperacao(IndicadorDeOperacao.SAIDA);
 			String emitenteTipo = dados[aux++];
 			docFiscal.setEmitente(pessoas.stream().filter(p -> p.getPessoaTipo().toString().equals(emitenteTipo)).findAny().get());
 			

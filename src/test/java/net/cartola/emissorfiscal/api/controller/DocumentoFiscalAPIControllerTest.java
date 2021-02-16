@@ -28,7 +28,7 @@ import com.google.gson.Gson;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
-import net.cartola.emissorfiscal.documento.DocumentoFiscalTipoOperacao;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.emissorfiscal.service.NcmServiceLogicTest;
 import net.cartola.emissorfiscal.emissorfiscal.service.TestHelper;
 import net.cartola.emissorfiscal.ncm.Ncm;
@@ -81,7 +81,7 @@ public class DocumentoFiscalAPIControllerTest {
 		DocumentoFiscal docFiscal = new DocumentoFiscal();
 		docFiscal.setEmitente(new Pessoa());
 		docFiscal.getEmitente().setCnpj(TestHelper.PESSOA_EMITENTE_CNPJ);
-		docFiscal.setTipoOperacao(DocumentoFiscalTipoOperacao.SAIDA);
+		docFiscal.setTipoOperacao(IndicadorDeOperacao.SAIDA);
 		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
 		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
 		
@@ -137,7 +137,7 @@ public class DocumentoFiscalAPIControllerTest {
 		// DOCUMENTO FISCAL
 		DocumentoFiscal docFiscal = new DocumentoFiscal();
 		docFiscal.setOperacao(operacao);
-		docFiscal.setTipoOperacao(DocumentoFiscalTipoOperacao.SAIDA);
+		docFiscal.setTipoOperacao(IndicadorDeOperacao.SAIDA);
 		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
 		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
 		docFiscal.setEmitente(emitente);

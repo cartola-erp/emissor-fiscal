@@ -45,7 +45,7 @@ public class DocumentoFiscal implements Serializable {
 
 	private Long id;
 	private Operacao operacao;
-	private DocumentoFiscalTipoOperacao tipoOperacao;
+	private IndicadorDeOperacao tipoOperacao;
 	private Long serie;
 	private Long numero;
 	private Pessoa emitente;
@@ -105,11 +105,11 @@ public class DocumentoFiscal implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name="tipo_oper", columnDefinition="enum('ENTRADA', 'SAIDA') ")
-	public DocumentoFiscalTipoOperacao getTipoOperacao() {
+	public IndicadorDeOperacao getTipoOperacao() {
 		return tipoOperacao;
 	}
 
-	public void setTipoOperacao(DocumentoFiscalTipoOperacao tipoOperacao) {
+	public void setTipoOperacao(IndicadorDeOperacao tipoOperacao) {
 		this.tipoOperacao = tipoOperacao;
 	}
 	
