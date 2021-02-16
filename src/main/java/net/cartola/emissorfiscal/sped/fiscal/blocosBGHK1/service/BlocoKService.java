@@ -27,7 +27,6 @@ public class BlocoKService implements MontaBloco<BlocoK, MovimentoMensalIcmsIpi>
 
 		BlocoK blocoK = new BlocoK();
 		
-		
 		blocoK.setRegK990(montarEncerramentoDoBlocoK(blocoK));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO K, TEMINADA! {0} " ,blocoK);
