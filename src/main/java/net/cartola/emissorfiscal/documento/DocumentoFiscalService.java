@@ -124,8 +124,8 @@ public class DocumentoFiscalService {
 		documentoFiscalRepository.deleteById(id);
 	}
 	
-	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(String cnpjEmitente, String tipoDocumento, Long serie, Long numero) {
-		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(cnpjEmitente,  tipoDocumento,  serie,  numero);
+	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(String cnpjEmitente, DocumentoFiscalTipoOperacao tipoOperacao, Long serie, Long numero) {
+		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumero(cnpjEmitente,  tipoOperacao,  serie,  numero);
 	}
 	
 	/**

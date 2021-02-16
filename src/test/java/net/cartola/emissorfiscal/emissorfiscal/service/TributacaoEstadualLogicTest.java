@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalTipoOperacao;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
@@ -87,7 +88,7 @@ public class TributacaoEstadualLogicTest {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(TestHelper.OPERACAO_VENDA);
 		assertTrue(opOperacao.isPresent());
 		
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero("12345678901234", "NFE", 262265758L, 82211429431055L);
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumero("12345678901234", DocumentoFiscalTipoOperacao.SAIDA, 262265758L, 82211429431055L);
 		assertTrue(opDocFiscal.isPresent());
 		
 		// Criando TRIBUTAÇÃO ESTADUAL

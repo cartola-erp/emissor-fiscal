@@ -27,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalTipoOperacao;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.emissorfiscal.service.NcmServiceLogicTest;
@@ -500,7 +501,7 @@ public class CalculoFiscalEstadualTest {
 		operacao.setDescricao("VENDA");
 
 		docFiscal.setOperacao(operacao);
-		docFiscal.setTipo(DOC_FISC_TIPO);
+		docFiscal.setTipoOperacao(DocumentoFiscalTipoOperacao.SAIDA);
 		docFiscal.setSerie(DOC_FISC_SERIE);
 		docFiscal.setNumero(2L);
 		

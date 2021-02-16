@@ -45,7 +45,7 @@ public class DocumentoFiscal implements Serializable {
 
 	private Long id;
 	private Operacao operacao;
-	private String tipo;
+	private DocumentoFiscalTipoOperacao tipoOperacao;
 	private Long serie;
 	private Long numero;
 	private Pessoa emitente;
@@ -103,12 +103,14 @@ public class DocumentoFiscal implements Serializable {
 		this.operacao = operacao;
 	}
 
-	public String getTipo() {
-		return tipo;
+	@Enumerated(EnumType.STRING)
+	@Column(name="tipo_oper", columnDefinition="enum('ENTRADA', 'SAIDA') ")
+	public DocumentoFiscalTipoOperacao getTipoOperacao() {
+		return tipoOperacao;
 	}
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setTipoOperacao(DocumentoFiscalTipoOperacao tipoOperacao) {
+		this.tipoOperacao = tipoOperacao;
 	}
 	
 	public void setSerie(Long serie) {
@@ -412,6 +414,5 @@ public class DocumentoFiscal implements Serializable {
 	public void setValorImpostoMunicipal(BigDecimal valorImpostoMunicipal) {
 		this.valorImpostoMunicipal = valorImpostoMunicipal;
 	}
-
 
 }

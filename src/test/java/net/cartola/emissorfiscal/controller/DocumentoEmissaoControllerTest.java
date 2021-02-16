@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalTipoOperacao;
 import net.cartola.emissorfiscal.emissorfiscal.service.NcmServiceLogicTest;
 import net.cartola.emissorfiscal.emissorfiscal.service.TestHelper;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
@@ -89,7 +90,7 @@ public class DocumentoEmissaoControllerTest {
 		
 		// Documento Fiscal
 		docFiscal.setOperacao(operacao);
-		docFiscal.setTipo(DOCUMENTO_FISCAL_TIPO);
+		docFiscal.setTipoOperacao(DocumentoFiscalTipoOperacao.SAIDA);
 		docFiscal.setSerie(DOCUMENTO_FISCAL_SERIE);
 		docFiscal.setNumero(DOCUMENTO_FISCAL_NUMERO);
 		docFiscal.setEmitente(emitente);

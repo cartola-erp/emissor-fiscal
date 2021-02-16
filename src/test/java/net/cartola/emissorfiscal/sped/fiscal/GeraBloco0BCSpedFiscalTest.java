@@ -147,7 +147,7 @@ public class GeraBloco0BCSpedFiscalTest {
 		regB001.setIndDad(IndicadorDeMovimento.BLOCO_SEM_DADOS_INFORMADOS);
 //		regB001.setTestBigDecimal(new BigDecimal(1232D));
 		
-		RegB990EncerramentoDoBlocoB regB990 = new RegB990EncerramentoDoBlocoB();
+		RegB990EncerramentoDoBlocoB regB990 = new RegB990EncerramentoDoBlocoB(2L);
 		// PREENCHER REGISTRO
 		blocoB.setRegB001(regB001);
 		blocoB.setRegB990(regB990);

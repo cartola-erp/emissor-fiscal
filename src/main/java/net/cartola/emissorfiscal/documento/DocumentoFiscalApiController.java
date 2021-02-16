@@ -48,10 +48,10 @@ public class DocumentoFiscalApiController {
 	@PostMapping(value = "/buscar")
 	public ResponseEntity<Response<DocumentoFiscal>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@RequestBody DocumentoFiscal docFiscal) {
 		Response<DocumentoFiscal> response = new Response<>();
-		if(docFiscal == null || docFiscal.getEmitente() == null || docFiscal.getTipo() == null || docFiscal.getSerie() == null || docFiscal.getNumero() == null) {
+		if(docFiscal == null || docFiscal.getEmitente() == null || docFiscal.getTipoOperacao() == null || docFiscal.getSerie() == null || docFiscal.getNumero() == null) {
 			return ResponseEntity.badRequest().build();
 		} 
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumero());
 		
 		if(!opDocFiscal.isPresent()) {
 			return ResponseEntity.notFound().build();
@@ -65,7 +65,7 @@ public class DocumentoFiscalApiController {
 	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
 //		Response<DocumentoFiscal> response = new Response<>();
 		LOG.log(Level.INFO, "Salvando o DocumentoFiscal {0} " ,docFiscal);
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumero());
 //
 		if(opDocFiscal.isPresent()) {
 //			response.setData(opDocFiscal.get());
@@ -80,7 +80,7 @@ public class DocumentoFiscalApiController {
 	public ResponseEntity<Response<DocumentoFiscal>> update(@Valid @RequestBody DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Atualizando o DocumentoFiscal {0} " ,docFiscal);
 		Response<DocumentoFiscal> response = new Response<>();
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumero());
 
 		if (!opDocFiscal.isPresent()) {
 			return ResponseEntity.noContent().build();
@@ -99,7 +99,7 @@ public class DocumentoFiscalApiController {
 		LOG.log(Level.INFO, "Salvando a Compra {0} " ,docFiscal);
 		Response<DocumentoFiscal> response = new Response<>();
 		// Nessa linha abaixo busco se o DocumentoFiscal existe;
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipo(), docFiscal.getSerie(), docFiscal.getNumero());
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumero());
 		if(opDocFiscal.isPresent()) {
 			docFiscal.setId(opDocFiscal.get().getId());
 			docFiscalService.deleteById(opDocFiscal.get().getId());
