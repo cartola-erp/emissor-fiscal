@@ -30,7 +30,7 @@ public class Bloco1Service implements MontaBloco<Bloco1, MovimentoMensalIcmsIpi>
 		bloco1.setReg1990(montarEncerramentoDoBloco0(bloco1));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO 1, TEMINADA! {0} " ,bloco1);
-		return null;
+		return bloco1;
 	}
 
 	private Reg1990EncerramentoDoBloco1 montarEncerramentoDoBloco0(Bloco1 bloco1) {
