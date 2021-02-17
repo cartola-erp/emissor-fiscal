@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
+package net.cartola.emissorfiscal.util;
 
 import java.math.BigDecimal;
 import java.util.logging.Logger;
@@ -6,12 +6,12 @@ import java.util.logging.Logger;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 
 /**
- * Classe utilitária para obter corretamente a forma que devem ser escriturados os campos abaixo (no REGISTRO C100 e seu filhos):
- *  VALOR IMPOSTO, BASE CALCULO e ALIQUOTAS;
+ * Classe utilitária (para o SPED ICMS IPI) para obter corretamente a forma que devem ser escriturados os campos abaixo (no REGISTRO C100 e seu filhos):
+ * VALOR IMPOSTO, BASE CALCULO e ALIQUOTAS;
  *  
  * @author robson.costa
  */
-public class NumberUtilRegC100 {
+public final class NumberUtilRegC100 {
 
 	private static final Logger LOG = Logger.getLogger(NumberUtilRegC100.class.getName());
 

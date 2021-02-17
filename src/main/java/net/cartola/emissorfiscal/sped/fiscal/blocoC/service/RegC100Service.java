@@ -12,10 +12,14 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
  * 18/09/2020
@@ -61,13 +65,14 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	public List<RegC100> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		LOG.log(Level.INFO, "Montando o Registro C100");
 		
+		Loja lojaSped = movimentosIcmsIpi.getLoja();
 		List<DocumentoFiscal> listDocFiscalEntrada = getDocFiscalEntrada(movimentosIcmsIpi);
 		List<DocumentoFiscal> listDocFiscalSaida = getDocFiscalSaida(movimentosIcmsIpi);
 		
 		List<RegC100> listRegC100 = new ArrayList<>();
 //		RegC100 regC100 = new RegC100();
 		listDocFiscalEntrada.stream().forEach(docFiscEntrada -> {
-			listRegC100.add(preecheRegC100Entrada(docFiscEntrada));
+			listRegC100.add(preecheRegC100(docFiscEntrada, lojaSped));
 		});
 		
 		LOG.log(Level.INFO, "Registro C100, terminado. REG C100: {0} " ,listRegC100);
@@ -78,13 +83,19 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 
 	
 	
-	private RegC100 preecheRegC100Entrada(DocumentoFiscal docFiscEntrada) {
+	private RegC100 preecheRegC100(DocumentoFiscal docFisc, Loja lojaSped) {
+//		LOG.log(Level.INFO, "Montando o Registro C100");
 		// TODO Auto-generated method stub
+		RegC100 regC100 = new RegC100();
+		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
+		
+		regC100.setIndOper(tipoOperacao);
+		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
+		regC100.setCodPart(getCodPart(docFisc));
+		
 		return null;
 	}
 
-
-	
 
 
 	/**
@@ -117,12 +128,10 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 				.filter(docFisc -> docFisc.getTipoOperacao() == IndicadorDeOperacao.SAIDA && modelosDocFisc.contains(docFisc.getModelo()))
 				.collect(toList());
 		
-		
 		return listDocFiscSaida;
 	}
 
 	
-
 	/**
 	 * Obtem Todos os Modelos de Documentos Fiscais de ENTRADA e SAIDA, que devem ser escriturados na REGISTRO C100.
 	 * 
@@ -142,4 +151,34 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	}
 	
 	
+	private IndicadorDoEmitente getIndicadorEmitente(DocumentoFiscal docFisc, Loja lojaSped) {
+		LOG.log(Level.INFO, "Obtendo o indicador do emitente para o DocumentoFiscal {0} " ,docFisc);
+
+		Pessoa emitente = docFisc.getEmitente();
+		if (emitente.getCnpj().equals(lojaSped.getCnpj())) {
+			return IndicadorDoEmitente.EMISSAO_PROPRIA;
+		}
+		return IndicadorDoEmitente.TERCEIROS;
+	}
+	
+	/**
+	 * Obtem o código do participante para o <b>destinatário</b> se for operacao de <b>Entrada</b>
+	 * <b>Saída</b> codigo particapante do Emitente
+	 * 
+	 * Caso o Modelo documento seja == 65 (NFC-e), retorna String <b>Vazia</b>
+	 * @param docFisc
+	 * @return
+	 */
+	private String getCodPart(DocumentoFiscal docFisc) {
+		LOG.log(Level.INFO, "Obtendo o CODIGO DO PARTICIPANTE para o DocumentoFiscal {0} " ,docFisc);
+		if (docFisc.getModelo() != ModeloDocumentoFiscal._65) {
+			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA) {
+				return SpedFiscalUtil.getCodPart(docFisc.getDestinatario());
+			}
+			return SpedFiscalUtil.getCodPart(docFisc.getEmitente());
+		}
+		return "";
+	}
+
+		
 }
