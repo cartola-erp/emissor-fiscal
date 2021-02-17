@@ -75,9 +75,9 @@ public class RegC100 {
 	private String codPart;
 	private ModeloDocumentoFiscal codMod;
 	private SituacaoDoDocumento codSit;
-	private String ser;
+	private Long ser;
 	private Long numDoc;
-	private Long chvNfe;
+	private String chvNfe;
 	private LocalDate dtDoc;
 	private LocalDate dtES;
 	private BigDecimal vlDoc;
@@ -158,11 +158,11 @@ public class RegC100 {
 		this.codSit = codSit;
 	}
 
-	public String getSer() {
+	public Long getSer() {
 		return ser;
 	}
 
-	public void setSer(String ser) {
+	public void setSer(Long ser) {
 		this.ser = ser;
 	}
 
@@ -174,11 +174,11 @@ public class RegC100 {
 		this.numDoc = numDoc;
 	}
 
-	public Long getChvNfe() {
+	public String getChvNfe() {
 		return chvNfe;
 	}
 
-	public void setChvNfe(Long chvNfe) {
+	public void setChvNfe(String chvNfe) {
 		this.chvNfe = chvNfe;
 	}
 

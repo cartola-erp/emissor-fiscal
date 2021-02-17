@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
 import static java.util.stream.Collectors.toList;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
@@ -19,6 +21,8 @@ import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
+import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
+import net.cartola.emissorfiscal.util.NumberUtilRegC100;
 import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
@@ -92,9 +96,27 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setIndOper(tipoOperacao);
 		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
 		regC100.setCodPart(getCodPart(docFisc));
+		regC100.setCodMod(docFisc.getModelo());
+		regC100.setCodSit(getCodSit(docFisc));
+		regC100.setSer(docFisc.getSerie());
+		regC100.setNumDoc(docFisc.getNumero());
+		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
+		regC100.setDtDoc(docFisc.getEmissao());
+		regC100.setDtES(docFisc.getCadastro().toLocalDate());
 		
-		return null;
+		regC100.setVlDoc(NumberUtilRegC100.getVlrOrBaseCalc(docFisc.getVlrTotalProduto(), tipoOperacao));
+		
+		/**
+		 * 17.02.2021
+		 * 	PAREI AQUI NO PREENCHIMENTO DO REGISTRO C100
+		 */
+		
+		return regC100;
 	}
+
+
+
+
 
 
 
@@ -181,4 +203,16 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	}
 
 		
+	private SituacaoDoDocumento getCodSit(DocumentoFiscal docFisc) {
+		// TODO Colocar regra para quando for um DocumentoFiscal "COMPLEMENTAR"
+		NFeStatus nfeStatus = docFisc.getStatus();
+			if (nfeStatus.getCodigo().length() == 2) {
+				int nfeStatusCodigo = Integer.parseInt(nfeStatus.getCodigo());
+				SituacaoDoDocumento sitDoc = SituacaoDoDocumento.values()[nfeStatusCodigo];
+				return sitDoc;
+			}
+		return null;
+	}
+	
+	
 }
