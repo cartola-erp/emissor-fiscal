@@ -29,45 +29,14 @@ public class EmissorFiscalApplication {
 	CommandLineRunner initDev(UsuarioService usuarioService, ContadorService contadorService, BCryptPasswordEncoder bcryptEncoder) {
 
 		return args -> {
-			Optional<Usuario> op = usuarioService.findByLogin("contador");
-			if (!op.isPresent()) {
-				UsuarioPerfil upa = new UsuarioPerfil();
-				upa.setPerfil(Perfil.ROLE_CONTADOR);
-
-				UsuarioPerfil upu = new UsuarioPerfil();
-				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
-				Usuario u = new Usuario();
-				u.setLogin("contador");
-				u.setNome("Contador");
-				u.setSenha(bcryptEncoder.encode("root"));
-				u.setPerfis(Arrays.asList(upa, upu));
-				usuarioService.save(u);
-				System.out.printf("Usuario criado : %s", u);
-			}
-			
-			Optional<Usuario> opUser = usuarioService.findByLogin("robson.costa");
-			if (!opUser.isPresent()) {
-				UsuarioPerfil upa = new UsuarioPerfil();
-				upa.setPerfil(Perfil.ROLE_CONTADOR);
-
-				UsuarioPerfil upu = new UsuarioPerfil();
-				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
-				Usuario u = new Usuario();
-				u.setLogin("robson.costa");
-				u.setNome("Robson"); 
-				u.setSenha(bcryptEncoder.encode("root"));
-				u.setPerfis(Arrays.asList(upa, upu));
-				usuarioService.save(u);
-				System.out.printf("Usuario criado : %s", u);
-			}
 			
 			Optional<Usuario> opUserErpjWs = usuarioService.findByLogin("erpj-ws");
 			if (!opUserErpjWs.isPresent()) {
 				UsuarioPerfil upa = new UsuarioPerfil();
-				upa.setPerfil(Perfil.ROLE_CONTADOR);
+				upa.setPerfil(Perfil.API_ACESS);
 
 				UsuarioPerfil upu = new UsuarioPerfil();
-				upu.setPerfil(Perfil.ROLE_ESCRITURADOR);
+				upu.setPerfil(Perfil.API_ACESS);
 				Usuario u = new Usuario();
 				u.setLogin("erpj-ws");
 				u.setNome("erpj-ws");
@@ -76,6 +45,51 @@ public class EmissorFiscalApplication {
 				usuarioService.save(u);
 				System.out.printf("Usuario criado : %s", u);
 			}
+			
+			Optional<Usuario> op = usuarioService.findByLogin("contador");
+			if (!op.isPresent()) {
+				UsuarioPerfil upa = new UsuarioPerfil();
+				upa.setPerfil(Perfil.CONTADOR);
+
+				Usuario u = new Usuario();
+				u.setLogin("contador");
+				u.setNome("Contador");
+				u.setSenha(bcryptEncoder.encode("root"));
+				u.setPerfis(Arrays.asList(upa));
+				usuarioService.save(u);
+				System.out.printf("Usuario criado : %s", u);
+			}
+			
+			Optional<Usuario> opUserEscriturador = usuarioService.findByLogin("escriturador");
+			if (!opUserEscriturador.isPresent()) {
+				UsuarioPerfil upa = new UsuarioPerfil();
+				upa.setPerfil(Perfil.ESCRITURADOR);
+
+				Usuario u = new Usuario();
+				u.setLogin("escriturador");
+				u.setNome("escriturador");
+				u.setSenha(bcryptEncoder.encode("root"));
+				u.setPerfis(Arrays.asList(upa));
+				usuarioService.save(u);
+				System.out.printf("Usuario criado : %s", u);
+			}
+			
+			
+			Optional<Usuario> opUser = usuarioService.findByLogin("robson.costa");
+			if (!opUser.isPresent()) {
+				UsuarioPerfil upa = new UsuarioPerfil();
+				upa.setPerfil(Perfil.ADMIN);
+
+				Usuario u = new Usuario();
+				u.setLogin("robson.costa");
+				u.setNome("Robson"); 
+				u.setSenha(bcryptEncoder.encode("root"));
+				u.setPerfis(Arrays.asList(upa));
+				usuarioService.save(u);
+				System.out.printf("Usuario criado : %s", u);
+			}
+			
+		
 			
 			String crc = "SP000205767/O-0";
 			Optional<Contador> opContador = contadorService.findByCrc(crc);

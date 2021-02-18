@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import net.cartola.emissorfiscal.usuario.Perfil;
+
 /**
  * 26 de dez de 2019
  * 
@@ -49,10 +51,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new JwtAuthenticationFilter();
 	}
 
+	/**
+	 * OBS: A ordem é da mais restritiva, para as que são menos restrititvas
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable().authorizeRequests()
 				.antMatchers("/autenticacao/*", "/", "/login", "/home", "/api/v1/usuario/**").permitAll()
+				
+				.antMatchers("/menu-admin/**").hasRole(Perfil.ADMIN.name())
+				.antMatchers("/sped/**").hasAnyRole(Perfil.ADMIN.name(), Perfil.ESCRITURADOR.name())
+				.antMatchers("/**/consulta").hasAnyRole(Perfil.ADMIN.name(), Perfil.CONTADOR.name(), Perfil.WEB_ACESS.name())
+				.antMatchers("/**").hasAnyRole(Perfil.ADMIN.name(), Perfil.CONTADOR.name())
+				
+				.antMatchers("/api/**").hasAnyRole(Perfil.ADMIN.name(), Perfil.API_ACESS.name())
 				.antMatchers("/api/**").authenticated()
 				.anyRequest().authenticated()
 				.and().exceptionHandling()

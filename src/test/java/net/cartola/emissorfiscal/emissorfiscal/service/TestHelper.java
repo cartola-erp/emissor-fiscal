@@ -378,10 +378,10 @@ public class TestHelper {
 			u.setSenha(bCryptPasswordEncoder.encode("root"));
 			
 			UsuarioPerfil perfilUm = new UsuarioPerfil();
-			perfilUm.setPerfil(Perfil.ROLE_CONTADOR);
+			perfilUm.setPerfil(Perfil.CONTADOR);
 			
 			UsuarioPerfil perfilDois = new UsuarioPerfil();
-			perfilDois.setPerfil(Perfil.ROLE_CONTADOR);
+			perfilDois.setPerfil(Perfil.CONTADOR);
 			
 			u.setPerfis(Arrays.asList(perfilUm, perfilDois));
 			usuarioService.save(u);

@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.usuario;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -50,6 +51,7 @@ public class UsuarioPerfil implements Serializable {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Column(name="perfil", columnDefinition="enum('ADMIN', 'WEB_ACESS', 'CONTADOR', 'ESCRITURADOR', 'API_ACESS') default 'API_ACESS' ")
 	public Perfil getPerfil() {
 		return perfil;
 	}
