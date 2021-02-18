@@ -162,7 +162,7 @@ public class GeraBloco0BCSpedFiscalTest {
 		// PREENCHER REGISTRO
 		RegC100 regC100 = new RegC100();
 		// PREENCHER REGISTRO
-		regC100.setChvNfe(1212087L);
+		regC100.setChvNfe("1212087");
 		regC100.setDtDoc(LocalDate.now());
 		regC100.setDtES(LocalDate.now());
 		regC100.setIndOper(IndicadorDeOperacao.SAIDA);
