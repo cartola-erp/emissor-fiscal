@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.ToString;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.util.LocalDateDeserializer;
 import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
@@ -69,6 +70,7 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal ipiBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal ipiValor = BigDecimal.ZERO;
     
+	private IndicadorDePagamento indicadorPagamento;
 	private ModeloDocumentoFiscal modelo = ModeloDocumentoFiscal._55;
     private NFeStatus status;
 	private String nfeChaveAcesso;
@@ -300,6 +302,16 @@ public class DocumentoFiscal implements Serializable {
 
 	public void setIpiValor(BigDecimal ipiValor) {
 		this.ipiValor = ipiValor;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "indi_paga", columnDefinition ="enum('A_VISTA', 'A_PRAZO', 'OUTROS') ")
+	public IndicadorDePagamento getIndicadorPagamento() {
+		return indicadorPagamento;
+	}
+
+	public void setIndicadorPagamento(IndicadorDePagamento indicadorPagamento) {
+		this.indicadorPagamento = indicadorPagamento;
 	}
 	
 	@Enumerated(EnumType.STRING)
