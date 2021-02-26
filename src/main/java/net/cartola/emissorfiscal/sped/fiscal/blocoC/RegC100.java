@@ -7,7 +7,7 @@ import java.util.List;
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
-import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeFrete;
+import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
@@ -85,7 +85,7 @@ public class RegC100 {
 	private BigDecimal vlDesc;
 	private BigDecimal vlAbatNt;
 	private BigDecimal vlMerc;
-	private IndicadorDeFrete indFrt;
+	private FreteConta indFrt;
 	
 	private BigDecimal vlFrt;
 	private BigDecimal vlSeg;
@@ -238,11 +238,11 @@ public class RegC100 {
 		this.vlMerc = vlMerc;
 	}
 
-	public IndicadorDeFrete getIndFrt() {
+	public FreteConta getIndFrt() {
 		return indFrt;
 	}
 
-	public void setIndFrt(IndicadorDeFrete indFrt) {
+	public void setIndFrt(FreteConta indFrt) {
 		this.indFrt = indFrt;
 	}
 

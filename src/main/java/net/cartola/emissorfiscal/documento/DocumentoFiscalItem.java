@@ -49,12 +49,15 @@ public class DocumentoFiscalItem implements Serializable {
 	private String descricaoEmpresa;
 	private String unidade;
 	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
-    private BigDecimal desconto;
-
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
 	private BigDecimal quantidade = BigDecimal.ZERO;
 	private BigDecimal valorUnitario = BigDecimal.ZERO;
+    private BigDecimal desconto;
+	private BigDecimal valorFrete;
+	private BigDecimal valorSeguro;
+	private BigDecimal valorOutrasDespesasAcessorias;
+	
 	private Ncm ncm;
 	private int cfop;
 	private Integer icmsCest = 0;
@@ -182,14 +185,6 @@ public class DocumentoFiscalItem implements Serializable {
 		this.unidade = unidade;
 	}
 	
-	public BigDecimal getDesconto() {
-		return desconto;
-	}
-
-	public void setDesconto(BigDecimal desconto) {
-		this.desconto = desconto;
-	}
-	
 	@NotNull(message = FINALIDADE_OBRIGATORIA)
 	@Enumerated(EnumType.STRING)
 	@Column(name="finalidade", columnDefinition="enum('CONSUMO', 'REVENDA') default 'CONSUMO' ")
@@ -230,6 +225,41 @@ public class DocumentoFiscalItem implements Serializable {
 
 	public void setValorUnitario(BigDecimal valorUnitario) {
 		this.valorUnitario = valorUnitario;
+	}
+	
+	public BigDecimal getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(BigDecimal desconto) {
+		this.desconto = desconto;
+	}
+	
+	@Column(name = "vlr_fret")
+	public BigDecimal getValorFrete() {
+		return valorFrete;
+	}
+
+	public void setValorFrete(BigDecimal valorFrete) {
+		this.valorFrete = valorFrete;
+	}
+
+	@Column(name = "vlr_segu")
+	public BigDecimal getValorSeguro() {
+		return valorSeguro;
+	}
+
+	public void setValorSeguro(BigDecimal valorSeguro) {
+		this.valorSeguro = valorSeguro;
+	}
+
+	@Column(name = "vlr_outr_desp_acess")
+	public BigDecimal getValorOutrasDespesasAcessorias() {
+		return valorOutrasDespesasAcessorias;
+	}
+
+	public void setValorOutrasDespesasAcessorias(BigDecimal valorOutrasDespesasAcessorias) {
+		this.valorOutrasDespesasAcessorias = valorOutrasDespesasAcessorias;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
