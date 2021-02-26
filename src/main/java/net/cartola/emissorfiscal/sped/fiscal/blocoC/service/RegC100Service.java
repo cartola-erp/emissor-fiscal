@@ -2,7 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
 import static java.util.stream.Collectors.toList;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -99,7 +99,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setCodMod(docFisc.getModelo());
 		regC100.setCodSit(getCodSit(docFisc));
 		regC100.setSer(docFisc.getSerie());
-		regC100.setNumDoc(docFisc.getNumero());
+		regC100.setNumDoc(docFisc.getNumero()); 
 		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
 		regC100.setDtDoc(docFisc.getEmissao());
 		regC100.setDtES(docFisc.getCadastro().toLocalDate());
@@ -109,7 +109,23 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		/**
 		 * 17.02.2021
 		 * 	PAREI AQUI NO PREENCHIMENTO DO REGISTRO C100
+		 * 
 		 */
+		regC100.setIndPgto(docFisc.getIndicadorPagamento());
+		regC100.setVlDesc(docFisc.getValorDesconto());
+		regC100.setVlAbatNt(BigDecimal.ZERO);
+		regC100.setVlMerc(docFisc.getVlrTotalProduto());
+		regC100.setIndFrt(docFisc.getIndicadorFrete());
+		regC100.setVlFrt(docFisc.getValorFrete());
+		regC100.setVlSeg(docFisc.getValorSeguro());
+		regC100.setVlOutDa(docFisc.getValorOutrasDespesasAcessorias());
+		regC100.setVlIcms(docFisc.getIcmsValor());
+		regC100.setVlBcIcmsSt(docFisc.getIcmsStBase());
+		regC100.setVlIcmsSt(docFisc.getIcmsStValor());
+		regC100.setVlIpi(docFisc.getIpiValor());
+		regC100.setVlPis(docFisc.getPisValor());
+		regC100.setVlPisSt(BigDecimal.ZERO);
+		regC100.setVlCofinsSt(BigDecimal.ZERO);
 		
 		return regC100;
 	}
