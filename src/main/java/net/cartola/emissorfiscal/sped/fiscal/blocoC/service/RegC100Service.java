@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,12 +59,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 
 	@Autowired
 	private RegC195Service regC195Service;	
-	
-	@Autowired
-	private RegC197Service regC197Service;
-	
-//	@Autowired
-//	private RegC190Service regC190Service;
+
 	
 	@Override
 	public List<RegC100> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
@@ -74,43 +70,101 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		List<DocumentoFiscal> listDocFiscalSaida = getDocFiscalSaida(movimentosIcmsIpi);
 		
 		List<RegC100> listRegC100 = new ArrayList<>();
-//		RegC100 regC100 = new RegC100();
+
 		listDocFiscalEntrada.stream().forEach(docFiscEntrada -> {
-			listRegC100.add(preecheRegC100(docFiscEntrada, lojaSped));
+			listRegC100.add(preecheRegC100Entrada(docFiscEntrada, lojaSped));
+		});
+		
+		
+		listDocFiscalSaida.stream().forEach(docFiscSaida -> {
+			listRegC100.add(preencheRegC100Saida(docFiscSaida, lojaSped));
 		});
 		
 		LOG.log(Level.INFO, "Registro C100, terminado. REG C100: {0} " ,listRegC100);
-
 		return listRegC100;
 	}
 
 
 	
-	
-	private RegC100 preecheRegC100(DocumentoFiscal docFisc, Loja lojaSped) {
-//		LOG.log(Level.INFO, "Montando o Registro C100");
+	/**
+	 * Irá escriturar todas NFES de entrada, conforme as regras do Guia de Preenchimento. 
+	 * (CASO NÃO se encaixe em nenhuma das DEZ EXCECOES do GUIA, a NFE será escriturada NORMAL: REG C100, C170 e C190)
+	 * 
+	 * @param docFisc
+	 * @param lojaSped
+	 * @return
+	 */
+	private RegC100 preecheRegC100Entrada(DocumentoFiscal docFisc, Loja lojaSped) {
 		// TODO Auto-generated method stub
+		LOG.log(Level.INFO, "Montando o Registro C100, para as Entradas");
+		RegC100 regC100Entrada = new RegC100();
+		
+		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
+		TipoPreenchimentoRegC100 tipoPreenchimentoRegC100 = verificaTipoPreenchimento(docFisc, lojaSped);
+		
+		switch (tipoPreenchimentoRegC100) {
+		case EX_1_COD_SITUACAO:
+			regC100Entrada = prencheC100ExcecaoUmCodSit(docFisc, lojaSped);
+			break;
+		case EX_2_NFE_EMISSAO_PROPRIA:
+			regC100Entrada = preencheC100ExcecaoDoisEmissaoPropria(docFisc, lojaSped);
+			break;
+
+		case EX_3_NFE_COMPLEMENTAR:
+			
+			break;
+		default:
+			/** Se não for nenhum dos casos acima en tão é o preenchimento normal **/
+			regC100Entrada = preencheC100(docFisc, lojaSped);
+			regC100Entrada.setRegC170(regC170Service.montarGrupoRegC170(docFisc));
+			regC100Entrada.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
+			regC100Entrada.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
+			break;
+		}
+			
+		
+		return regC100Entrada;
+	}
+
+	
+	private RegC100 preencheRegC100Saida(DocumentoFiscal docFiscSaida, Loja lojaSped) {
+		// TODO Auto-generated method stub
+		LOG.log(Level.INFO, "Montando o Registro C100, para as Saídas");
+
+		RegC100 regC100Saida = new RegC100();
+		
+		regC100Saida = preencheC100(docFiscSaida, lojaSped);
+		
+		return regC100Saida;
+	}
+	
+	
+	/**
+	 * Preenchimento do REGISTRO C100 (Seja Entrada ou Saída)
+	 * OBS: É Apenas do REG C100.  
+	 * Os FILHOS NÃO estão sendo preenchidos nesse método
+	 * 
+	 * @param docFisc
+	 * @param lojaSped
+	 * @return
+	 */
+	private RegC100 preencheC100(DocumentoFiscal docFisc, Loja lojaSped) {
 		RegC100 regC100 = new RegC100();
 		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-		
+
 		regC100.setIndOper(tipoOperacao);
 		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
 		regC100.setCodPart(getCodPart(docFisc));
 		regC100.setCodMod(docFisc.getModelo());
 		regC100.setCodSit(getCodSit(docFisc));
 		regC100.setSer(docFisc.getSerie());
-		regC100.setNumDoc(docFisc.getNumero()); 
+		regC100.setNumDoc(docFisc.getNumero());
 		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
 		regC100.setDtDoc(docFisc.getEmissao());
 		regC100.setDtES(docFisc.getCadastro().toLocalDate());
-		
+
 		regC100.setVlDoc(NumberUtilRegC100.getVlrOrBaseCalc(docFisc.getVlrTotalProduto(), tipoOperacao));
-		
-		/**
-		 * 17.02.2021
-		 * 	PAREI AQUI NO PREENCHIMENTO DO REGISTRO C100
-		 * 
-		 */
+
 		regC100.setIndPgto(docFisc.getIndicadorPagamento());
 		regC100.setVlDesc(docFisc.getValorDesconto());
 		regC100.setVlAbatNt(BigDecimal.ZERO);
@@ -125,17 +179,76 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setVlIpi(docFisc.getIpiValor());
 		regC100.setVlPis(docFisc.getPisValor());
 		regC100.setVlPisSt(BigDecimal.ZERO);
-		regC100.setVlCofinsSt(BigDecimal.ZERO);
+		regC100.setVlCofinsSt(BigDecimal.ZERO);		
+		
+		return regC100;
+	}
+	
+	
+	/**
+	 * Dado um DocumentoFiscal, irá validar qual é o "tipo de preenchimento" (Se o mesmo se encaixa em alguma das DEZ EXCECOES, da Documentacao, GUIA PRATICO EFD).
+	 * 
+	 * Caso não se encaixe o {@link TipoPreenchimentoRegC100} então é "NORMAL"
+	 * 
+	 * @param docFisc
+	 * @param lojaSped
+	 * @return
+	 */
+	private TipoPreenchimentoRegC100 verificaTipoPreenchimento(DocumentoFiscal docFisc, Loja lojaSped) {
+		LOG.log(Level.INFO, "Verificando o tipo de preenchimento do Registro C100");
+
+		List<NFeStatus> nfesNaoAutorizadas = Arrays.asList(NFeStatus.CANCELADA, NFeStatus.DENEGADA, NFeStatus.INUTILIZADA);
+		
+		if (nfesNaoAutorizadas.contains(docFisc.getStatus())) {
+			return TipoPreenchimentoRegC100.EX_1_COD_SITUACAO;
+		}
+		
+		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
+		return TipoPreenchimentoRegC100.NORMAL;
+	}
+
+
+	
+
+	/**
+	 * Irá preencher o REG C100 - Caso se encaixe na EXCEÇÃO 1, do Guia Pratico da EFD, que diz basicamente o Seguinte:
+	 * "...DocumentosFiscais com o CODIGO SITUACAO 2,3,4 (Cancelado, Cancelado extemporêno e Denegado), Preencha somente --> REG, IND_OPER, IND_EMIT, COD_MOD, COD_SIT, SER, NUM_DOC e CHV_NF-e..." 
+	 * "...Para os com CODIGO SITUACAO 5 (Numercao Inutilizada), todos os campos anteriores. EXCETO o campo CHV_NF-e...."
+	 * 
+	 * Demais campos deverão ser apresentados com conteúdo VAZIO “||”. Não informar registros filhos. 
+	 * 
+	 * @param docFisc
+	 * @param lojaSped
+	 * @return
+	 */
+	private RegC100 prencheC100ExcecaoUmCodSit(DocumentoFiscal docFisc, Loja lojaSped) {
+		RegC100 regC100 = new RegC100();
+		
+		regC100.setIndOper(docFisc.getTipoOperacao());
+		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
+		regC100.setCodMod(docFisc.getModelo());
+		regC100.setCodSit(getCodSit(docFisc));
+		regC100.setSer(docFisc.getSerie());
+		regC100.setNumDoc(docFisc.getNumero());
+		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
+		// ACHO QUE NEM PRECISA DISSO
+//		if (docFisc.getStatus().equals(NFeStatus.INUTILIZADA)) {
+//			regC100.setChvNfe("");
+//		}
 		
 		return regC100;
 	}
 
 
+	private RegC100 preencheC100ExcecaoDoisEmissaoPropria(DocumentoFiscal docFisc, Loja lojaSped) {
+		// TODO Auto-generated method stub
+		
+		return null;
+	}
 
-
-
-
-
+	
+	
+	
 	/**
 	 * 
 	 * @param movimentosIcmsIpi
