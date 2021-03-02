@@ -66,18 +66,18 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		LOG.log(Level.INFO, "Montando o Registro C100");
 		
 		Loja lojaSped = movimentosIcmsIpi.getLoja();
-		List<DocumentoFiscal> listDocFiscalEntrada = getDocFiscalEntrada(movimentosIcmsIpi);
-		List<DocumentoFiscal> listDocFiscalSaida = getDocFiscalSaida(movimentosIcmsIpi);
+		List<DocumentoFiscal> listDocFiscalEntradaEmissaoTerceiros = getDocFiscalEntradaEmissaoTerceiros(movimentosIcmsIpi);
+		List<DocumentoFiscal> listDocFiscalEmissaoPropria = getDocFiscalEmissaoPropria(movimentosIcmsIpi);
 		
 		List<RegC100> listRegC100 = new ArrayList<>();
 
-		listDocFiscalEntrada.stream().forEach(docFiscEntrada -> {
-			listRegC100.add(preecheRegC100Entrada(docFiscEntrada, lojaSped));
+		listDocFiscalEntradaEmissaoTerceiros.stream().forEach(docFiscEntradaEmissTerceiros -> {
+			listRegC100.add(preecheRegC100EntradaEmissaoTerceiros(docFiscEntradaEmissTerceiros, lojaSped));
 		});
 		
 		
-		listDocFiscalSaida.stream().forEach(docFiscSaida -> {
-			listRegC100.add(preencheRegC100Saida(docFiscSaida, lojaSped));
+		listDocFiscalEmissaoPropria.stream().forEach(docFiscEmissaoPropria -> {
+			listRegC100.add(preencheRegC100EmissaoPropria(docFiscEmissaoPropria, lojaSped));
 		});
 		
 		LOG.log(Level.INFO, "Registro C100, terminado. REG C100: {0} " ,listRegC100);
@@ -87,14 +87,14 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 
 	
 	/**
-	 * Irá escriturar todas NFES de entrada, conforme as regras do Guia de Preenchimento. 
+	 * Irá escriturar todas NFES de entrada (Todas que sejam ENTRADA e emitidas por TERCEIROS), conforme as regras do Guia de Preenchimento. 
 	 * (CASO NÃO se encaixe em nenhuma das DEZ EXCECOES do GUIA, a NFE será escriturada NORMAL: REG C100, C170 e C190)
 	 * 
 	 * @param docFisc
 	 * @param lojaSped
 	 * @return
 	 */
-	private RegC100 preecheRegC100Entrada(DocumentoFiscal docFisc, Loja lojaSped) {
+	private RegC100 preecheRegC100EntradaEmissaoTerceiros(DocumentoFiscal docFisc, Loja lojaSped) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C100, para as Entradas");
 		RegC100 regC100Entrada = new RegC100();
@@ -126,14 +126,28 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		return regC100Entrada;
 	}
 
-	
-	private RegC100 preencheRegC100Saida(DocumentoFiscal docFiscSaida, Loja lojaSped) {
+
+	/**
+	 * É EMISSAO PRÓPRIA e não SAÍDA, pois podemos emitir NFES de ENTRADA. Ex.: Na Operação de --> Devolução do Cliente <--, que seja PF.
+	 * Ou seja, Emissão Própria, inclui --> ENTRADAS e SAÍDAS. Sendo ENTRADAS (Em alguns casos emissão própria) e SAÍDA (Em TODOS os CASOS)
+	 *
+	 *
+	 * @param docFiscSaida
+	 * @param lojaSped
+	 * @return
+	 */
+	private RegC100 preencheRegC100EmissaoPropria(DocumentoFiscal docFiscSaida, Loja lojaSped) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C100, para as Saídas");
 
 		RegC100 regC100Saida = new RegC100();
 		
 		regC100Saida = preencheC100(docFiscSaida, lojaSped);
+//		regC100Saida.setRegC110(regC110);
+		
+		regC100Saida.setRegC190(regC190Service.montarGrupoRegC190(docFiscSaida));
+		regC100Saida.setRegC195(regC195Service.montarGrupoRegC195(docFiscSaida));
+		
 		
 		return regC100Saida;
 	}
@@ -176,7 +190,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setVlIcms(docFisc.getIcmsValor());
 		regC100.setVlBcIcmsSt(docFisc.getIcmsStBase());
 		regC100.setVlIcmsSt(docFisc.getIcmsStValor());
-		regC100.setVlIpi(docFisc.getIpiValor());
+//		regC100.setVlIpi(docFisc.getIpiValor());			Não Estamos Enquadrado como contribuinte de IPI. Portanto não informamos NADA de IPI
 		regC100.setVlPis(docFisc.getPisValor());
 		regC100.setVlPisSt(BigDecimal.ZERO);
 		regC100.setVlCofinsSt(BigDecimal.ZERO);		
@@ -250,15 +264,19 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	
 	
 	/**
+	 * Irá Retornar TODOS os DocumentoFiscais que sejam de ENTRADA. Porém que NÃO sejam, de EMISSÃO PRÓPRIA (Ex.: Operacao: Devolução do Cliente, que nós emitimos a NFE)
+	 * Ou seja, Apenas ENTRADA, cuja a EMISSAO seja de TERCEIROS (cnpjEmitente != cnpjLojaSpedFiscal)
 	 * 
 	 * @param movimentosIcmsIpi
 	 * @return List<DocumentoFiscal> - Lista de Todos DocumentosFiscais, que devem ser escriturados na Entrada
 	 */
-	private List<DocumentoFiscal> getDocFiscalEntrada(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
+	private List<DocumentoFiscal> getDocFiscalEntradaEmissaoTerceiros(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		List<DocumentoFiscal> listDocumentoFiscal = movimentosIcmsIpi.getListDocumentoFiscal();
+		Loja lojaSped = movimentosIcmsIpi.getLoja();
 		
 		List<DocumentoFiscal> listDocFiscEntrada = listDocumentoFiscal.stream()
-			.filter(docFisc -> docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA && getModelosDocFiscRegC100().contains(docFisc.getModelo()))
+			.filter(docFisc -> docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA && getModelosDocFiscRegC100().contains(docFisc.getModelo())
+			&& !docFisc.getEmitente().getCnpj().equalsIgnoreCase(lojaSped.getCnpj()))
 			.collect(toList());
 		
 		return listDocFiscEntrada;
@@ -266,17 +284,27 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 
 	
 	/**
+	 * Irá retornar TODOS os DocumentosFiscais de EMISSAO Propria.:
+	 * 
+	 * <b> Saída --> </b> TODOS os DocumentoFiscais, que emitimos
+	 * <b> Entrada --> </b> SOMENTE os que nós emitimos. Ou seja, cnpjEmitente == cnpjLojaSpedFiscal
+	 * 
+	 * PS: NFCe (Modelo 65), Serve somente para as Operações de Venda. (Caso vá fazer uma Devolução dela, é criado Uma NFE (Modelo 55) que refencia a NFCe.
 	 * 
 	 * @param movimentosIcmsIpi
 	 * @return List<DocumentoFiscal> - Lista de Todos DocumentosFiscais, que devem ser escriturados na Saída
 	 */
-	private List<DocumentoFiscal> getDocFiscalSaida(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
+	private List<DocumentoFiscal> getDocFiscalEmissaoPropria(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		List<DocumentoFiscal> listDocumentoFiscal = movimentosIcmsIpi.getListDocumentoFiscal();
-		List<ModeloDocumentoFiscal> modelosDocFisc = getModelosDocFiscRegC100();
-		modelosDocFisc.add(ModeloDocumentoFiscal._65);
+		Loja lojaSpedFiscal = movimentosIcmsIpi.getLoja();
+		
+		List<ModeloDocumentoFiscal> modelosDocFiscSaida = getModelosDocFiscRegC100();
+		modelosDocFiscSaida.add(ModeloDocumentoFiscal._65);
 		
 		List<DocumentoFiscal> listDocFiscSaida = listDocumentoFiscal.stream()
-				.filter(docFisc -> docFisc.getTipoOperacao() == IndicadorDeOperacao.SAIDA && modelosDocFisc.contains(docFisc.getModelo()))
+				.filter(docFisc -> docFisc.getTipoOperacao() == IndicadorDeOperacao.SAIDA && modelosDocFiscSaida.contains(docFisc.getModelo()) 
+				|| docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA && getModelosDocFiscRegC100().contains(docFisc.getModelo()) 
+					&& docFisc.getEmitente().getCnpj().equalsIgnoreCase(lojaSpedFiscal.getCnpj()))
 				.collect(toList());
 		
 		return listDocFiscSaida;
