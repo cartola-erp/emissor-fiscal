@@ -140,6 +140,14 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C100, para as Saídas");
 
+		/**
+		 * Como nas emissão propria, temos documentos Fiscais tanto de entrada como de saidas.
+		 * Terei que filtar aquis os que são de entradas, e preencher de forma diferente. 
+		 * PS: Acredito que seja chamando o método de preenchimento de TERCEIROS....
+		 * 
+		 * EX.: De entra
+		 */
+		
 		RegC100 regC100Saida = new RegC100();
 		
 		regC100Saida = preencheC100(docFiscSaida, lojaSped);
@@ -303,8 +311,8 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		
 		List<DocumentoFiscal> listDocFiscSaida = listDocumentoFiscal.stream()
 				.filter(docFisc -> docFisc.getTipoOperacao() == IndicadorDeOperacao.SAIDA && modelosDocFiscSaida.contains(docFisc.getModelo()) 
-				|| docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA && getModelosDocFiscRegC100().contains(docFisc.getModelo()) 
-					&& docFisc.getEmitente().getCnpj().equalsIgnoreCase(lojaSpedFiscal.getCnpj()))
+				|| (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA && getModelosDocFiscRegC100().contains(docFisc.getModelo()) 
+					&& docFisc.getEmitente().getCnpj().equalsIgnoreCase(lojaSpedFiscal.getCnpj())))
 				.collect(toList());
 		
 		return listDocFiscSaida;
