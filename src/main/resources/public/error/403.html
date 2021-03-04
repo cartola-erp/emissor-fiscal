@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
 <head>
     <meta charset="utf-8">
     <title>403 - Acesso negado </title>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="shortcut icon" th:href="@{/img/favicon.ico}" href="../../static/img/favicon.ico"/>
+    
+<!--     <link rel="preconnect" href="https://fonts.gstatic.com"> -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -231,7 +235,7 @@
     </div>
     <div id="main-body">
         <p class="enormous-font bree-font">403</p>
-        <p class="big-font"> Acesso negado para o usuário logado</!</p>
+        <p class="big-font"> Acesso negado para o usuário logado!</p>
         <hr>
         <p class="big-font">Para onde você deseja ir?</p>
         <div class="botoes">
