@@ -60,12 +60,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/autenticacao/*", "/", "/login", "/home", "/api/v1/usuario/**").permitAll()
 				
 				.antMatchers("/menu-admin/**").hasRole(Perfil.ADMIN.name())
+				.antMatchers("/api/v1/**").hasAnyRole(Perfil.ADMIN.name(), Perfil.API_ACESS.name())
 				.antMatchers("/sped/**").hasAnyRole(Perfil.ADMIN.name(), Perfil.ESCRITURADOR.name())
 				.antMatchers("/**/consulta").hasAnyRole(Perfil.ADMIN.name(), Perfil.CONTADOR.name(), Perfil.WEB_ACESS.name())
 				.antMatchers("/**").hasAnyRole(Perfil.ADMIN.name(), Perfil.CONTADOR.name())
 				
-				.antMatchers("/api/**").hasAnyRole(Perfil.ADMIN.name(), Perfil.API_ACESS.name())
-				.antMatchers("/api/**").authenticated()
+//				.antMatchers("/api/v1/**").hasAnyRole(Perfil.ADMIN.name(), Perfil.API_ACESS.name())
+//				.antMatchers("/api/**").authenticated()
 				.anyRequest().authenticated()
 				.and().exceptionHandling()
 				.authenticationEntryPoint(unauthorizedHandler)
