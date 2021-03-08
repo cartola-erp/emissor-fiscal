@@ -113,6 +113,28 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		case EX_3_NFE_COMPLEMENTAR:
 			
 			break;
+		case EX_4_NFE_REGIME_ESPECIAL_NORMA_ESPECIFICA:
+			
+			break;
+		case EX_5_:
+			
+			break;
+		case EX_6_VENDA_COM_RESSARCIMENTO:
+			
+			break;
+		case EX_7_NFE_EMITIDA_TERCEIROS:
+			
+			break;
+		case EX_8_NFE_UF_CONSUMO_PREENCHIDO:
+			
+			break;
+		case EX_9_NFCE:
+			
+			break;
+		case EX_10_INFO_COMPLEMENTAR_ITEM:
+			
+			break;
+		
 		default:
 			/** Se não for nenhum dos casos acima en tão é o preenchimento normal **/
 			regC100Entrada = preencheC100(docFisc, lojaSped);
