@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Cadastro de tributação estadual - (GUIA) </title>
+	</head>
+
+	<body>
+		<section id="cadastro-tributacao-estadual-guia-container">
+
+			<!-- BREADCRUMB -->
+			<div>
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb breadcrumb-personalizado">
+								<li class="breadcrumb-item"><a href="/home" class="breadcrumb-item-personalizado">Home</a></li>
+								<li class="breadcrumb-item"><a href="/tributacao-estadual/guia/cadastro" class="breadcrumb-item-personalizado">Cadastrar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">Tributação Estadual - (GUIA)</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+			</div>
+
+			<div>
+
+				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
+				<form th:action="@{/tributacao-estadual/guia/cadastro}" th:object="${tribEstaGuia}" method="POST">
+					<!-- ESTADOS e TIPO GUIA-->
+					<div class="form-row">
+
+						<div class="form-group col-md-3">
+							<label for="cmbTipoGuia"><strong>Tipo da Guia</strong></label>
+							<select class="custom-select" id="tipoGuia" name="tipoGuia" required>
+								<option selected id="opTipoGuia"> </option>
+								<option th:each="tipoGuia: ${listTipoGuia}" th:value="${tipoGuia}" th:selected="${tipoGuia ==tipoGuiaSelecionado}" th:text="${tipoGuia}" ></option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-2">
+							<label for="cmbEstadoOrigem"><strong>Estado ORIGEM</strong></label>
+							<select class="custom-select" name="ufOrigemId">
+								<option selected id="opEstadoOrigem"> </option>
+								<option th:each="estado : ${listEstado}" th:value="${estado.id}" th:id="${estado.sigla}" th:selected="${estado.id == ufOrigemIdSelecionado}" th:text="${estado.sigla}" ></option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-2">
+							<label for="cmbEstadoDestino"><strong>Estado DESTINO</strong></label>
+							<select class="custom-select" name="ufDestinoId">
+								<option selected id="opEstadoDestino"> </option>
+								<!-- ${} essa concatenação no id é uma POG, para diferenciar do id de UF ORIGEM -->
+								<option th:each="estado : ${listEstado}" th:value="${estado.id}" th:id="${_}+${estado.sigla}" th:selected="${estado.id == ufDestinoIdSelecionado}" th:text="${estado.sigla}" ></option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-5">
+							<label for="cmbProdutoOrigem"><strong>Origem do Produto</strong></label>
+							<select class="custom-select" id="tipoGuia" name="produtoOrigem" required>
+								<option selected id="opProdutoOrigem"> </option>
+								<option th:each="produtoOrigem: ${listProdutoOrigem}" th:value="${produtoOrigem}" th:selected="${produtoOrigem ==tipoProdutoOrigemSelecionado}" th:text="${produtoOrigem.getDescricaoComOrdinal()}" ></option>
+							</select>
+						</div>
+						
+	
+					</div>
+
+					<!-- OPERAÇÃO e NCM -->
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label for="cmbOperacao"><strong>Operação</strong></label>
+							<select class="custom-select" name="operacaoId">
+							<option selected id="opOperacao"> </option>
+								<option th:each="operacao : ${listOperacao}" th:value="${operacao.id}" th:id="${operacao.descricao}" th:selected="${operacao.id == operacaoIdSelecionado}" th:text="${operacao.descricao}" ></option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label for="txtNcm"><strong>NCM</strong></label>
+							<input type="hidden" th:value="*{ncm.id}" id="txtNcmId" name="ncmId" readonly required /> 
+							<input type="text" class="form-control" id="txtNcmDescricao" th:value="*{ncm}" placeholder="Clique No botão (+) ao lado para buscar o NCM" disabled required />
+						</div> 
+						
+						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnAdicionarNcm" data-toggle="modal" data-target=".bd-example-modal-lg">
+							<span data-feather="plus">adicionar ncm</span>
+						</button>
+					</div>
+
+					<!-- ALIQ DO IMPOSTO -->
+					<div class="form-row">
+
+						<!-- <div class="form-group col-md-2">
+							<label for="txtIcmsCst"><strong>ICMS CST</strong></label>
+							<input type="text" class="form-control somenteNumeros" id="txtIcmsCst" th:field="*{icmsCst}" name="icmsCst" placeholder="ICMS CST..." minlength="1" maxlength="3" required />
+						</div>  -->
+
+						
+						<div class="form-group col-md-4">
+							<label for="txtIcmsAliqInternaDestino"><strong>Aliq. Interna destino (%)</strong></label>
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsAliqInternaDestino" th:field="*{icmsAliqInternaDestino}" name="icmsAliqInternaDestino" placeholder="ICMS ALIQ. Inter. dest" maxlength="5" required />
+						</div> 
+
+						<div class="form-group col-md-4">
+							<label for="txtIcmsIva"><strong>ICMS IVA/MVA (%)</strong></label>
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsIva" th:field="*{icmsIva}" name="icmsIva" placeholder="ICMS IVA/MVA." maxlength="5" />
+						</div> 
+
+						<div class="form-group col-md-4">
+							<label for="txtIcmsAliquota"><strong>ICMS Aliq. (%)</strong></label>
+							<input type="text" class="form-control somenteNumerosPontoEVirgula" id="txtIcmsAliquota" th:field="*{icmsAliquota}"  name="icmsAliquota" placeholder="ICMS ALIQ. (4% ou 12% ?)" maxlength="5" required />
+						</div> 
+					
+					</div>
+
+					<!-- MSG -->
+					<div class="form-row">
+							<!-- Mensagem -->
+						<!-- <div class="form-row"> -->
+							<div class="form-group col-md-12">
+								<label for="txtDescricao">Mensagem</label>
+								<i class="fas fa-pencil-alt prefix"></i>
+								<textarea id="txtMensagem" th:field="*{mensagem}" name="mensagem" class="md-textarea form-control " rows="1"  maxlength="250"></textarea>
+							</div>
+						<!-- </div>	 -->
+					</div>
+				
+
+					<!-- BTN ALTERAR/CADASTRAR -->
+					<div class="form-row">
+						<!-- <input type="text" th:field="*{id}" class="form-control" id="txtId" name="id" hidden> -->
+						<input type="text" class="form-control" id="txtId" th:field="*{id}" name="id" hidden="true" >
+
+						<div class = "form-group col-md-12">
+							<button type="submit" id="btnCadastrarAlterar" class="btn btn-outline-primary ajusta-margin-btn col-md-12"><strong>Alterar/Cadastrar</strong></button>
+							<!-- <button type="submit" class="btn btn-outline-primary col-md-12" th:text="${textBtnCadastrarEditar}"><strong> </strong></button> -->
+						</div>
+					</div>
+
+				</form>
+
+				<div th:replace="/ncm/modal-add-ncm :: modal-add-ncm"></div>
+
+			</div>
+		</section>
+
+	</body>
+
+</html>
