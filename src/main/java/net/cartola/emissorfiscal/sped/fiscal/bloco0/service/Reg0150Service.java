@@ -1,6 +1,5 @@
 package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,7 @@ import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0150;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados;
 import net.cartola.emissorfiscal.util.NumberUtil;
-import net.cartola.emissorfiscal.util.StringUtil;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
  * 21/09/2020
@@ -48,7 +47,7 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 			Reg0150 reg0150 = new Reg0150();
 			PessoaEndereco pessEnd = pessoa.getEndereco();
 			
-			reg0150.setCodPart(getCodPart(pessoa));
+			reg0150.setCodPart(SpedFiscalUtil.getCodPart(pessoa));
 			reg0150.setNome(pessoa.getNome());
 			reg0150.setCodPais(1058);		// 1058 --> Cod Brasil | Tabela 3.2.1 - EFD ICMS IPI
 			reg0150.setCnpj(pessoa.getCnpj());
@@ -69,17 +68,6 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 		return listReg0150;
 	}
 
-	private String getCodPart(Pessoa pessoa) {
-		NumberFormat nf = NumberFormat.getInstance();
-		nf.setMinimumIntegerDigits(8);
-		nf.setMaximumFractionDigits(8);
-//		StringBuilder codPart = new StringBuilder(pessoa.getCodigoErp()).append(0).append(pessoa.getLojaErp());  
-		String codPart = pessoa.getCodigoErp() + "0"+ pessoa.getLojaErp();  
-		String codParFormatado = StringUtil.somenteNumeros(nf.format(Integer.valueOf(codPart)));
-		return codParFormatado;
-//		return nf.format(codPart);
-	}
-	
 	private List<Reg0175> montaReg0175(Pessoa pessoa) {
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 ");
 

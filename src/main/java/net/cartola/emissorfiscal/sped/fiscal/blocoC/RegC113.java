@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
-import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 

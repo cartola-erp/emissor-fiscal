@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import coffeepot.bean.wr.writer.DelimitedWriter;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.sped.fiscal.SpedFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Bloco0;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0000AberturaArquivoDigital;
@@ -37,7 +38,6 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC990EncerramentoDoBlocoC;
 import net.cartola.emissorfiscal.sped.fiscal.enums.FinalidadeDoArquivo;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeMovimento;
-import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.sped.fiscal.enums.VersaoDoLayout;
 import net.cartola.emissorfiscal.sped.fiscal.typeHandler.CustomEnumHandler;
 import net.cartola.emissorfiscal.sped.fiscal.typeHandler.LocalDateHandler;
@@ -147,7 +147,7 @@ public class GeraBloco0BCSpedFiscalTest {
 		regB001.setIndDad(IndicadorDeMovimento.BLOCO_SEM_DADOS_INFORMADOS);
 //		regB001.setTestBigDecimal(new BigDecimal(1232D));
 		
-		RegB990EncerramentoDoBlocoB regB990 = new RegB990EncerramentoDoBlocoB();
+		RegB990EncerramentoDoBlocoB regB990 = new RegB990EncerramentoDoBlocoB(2L);
 		// PREENCHER REGISTRO
 		blocoB.setRegB001(regB001);
 		blocoB.setRegB990(regB990);
@@ -162,7 +162,7 @@ public class GeraBloco0BCSpedFiscalTest {
 		// PREENCHER REGISTRO
 		RegC100 regC100 = new RegC100();
 		// PREENCHER REGISTRO
-		regC100.setChvNfe(1212087L);
+		regC100.setChvNfe("1212087");
 		regC100.setDtDoc(LocalDate.now());
 		regC100.setDtES(LocalDate.now());
 		regC100.setIndOper(IndicadorDeOperacao.SAIDA);

@@ -6,9 +6,9 @@ import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.sped.fiscal.enums.CodConsumoEnergiaOuGas;
 import net.cartola.emissorfiscal.sped.fiscal.enums.CodTipoDeLigacao;
-import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;

@@ -27,6 +27,7 @@ import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaService;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
@@ -124,8 +125,8 @@ public class DocumentoFiscalService {
 		documentoFiscalRepository.deleteById(id);
 	}
 	
-	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoDocumentoSerieENumero(String cnpjEmitente, String tipoDocumento, Long serie, Long numero) {
-		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoAndSerieAndNumero(cnpjEmitente,  tipoDocumento,  serie,  numero);
+	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(String cnpjEmitente, IndicadorDeOperacao tipoOperacao, Long serie, Long numero) {
+		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumero(cnpjEmitente,  tipoOperacao,  serie,  numero);
 	}
 	
 	/**
@@ -191,6 +192,9 @@ public class DocumentoFiscalService {
 		
 		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
 		
+		if (documentoFiscal.getIndicadorPagamento() == null) {
+			documentoFiscal.setIndicadorPagamento(IndicadorDePagamento.OUTROS);
+		}
 		
 //		mapErros.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
 //		mapErros.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());

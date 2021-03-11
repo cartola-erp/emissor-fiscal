@@ -76,7 +76,11 @@ public class UsuarioService implements UserDetailsService {
 	private List<SimpleGrantedAuthority> getAuthority(Usuario usuario) {
 		List<SimpleGrantedAuthority> list = new ArrayList<>();
 		usuario.getPerfis().forEach(perfil -> {
-			list.add(new SimpleGrantedAuthority(perfil.getPerfil().name()));
+			String perfilName = perfil.getPerfil().name();
+			if (!perfilName.startsWith("ROLE_")) {
+				perfilName = "ROLE_" + perfilName;
+			}
+			list.add(new SimpleGrantedAuthority(perfilName));
 		});
 		return list;
 	}

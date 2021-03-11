@@ -51,9 +51,6 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentoMensalIcmsIpi>
 	@Autowired
 	private Reg0460Service reg0460Service;
 	
-	@Autowired
-	private Reg0990Service reg0990Service;
-	
 	@Override
 	public Bloco0 criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
@@ -76,16 +73,20 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentoMensalIcmsIpi>
 		bloco0.setReg0400(reg0400Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		bloco0.setReg0450(reg0450Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		bloco0.setReg0460(reg0460Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
-
-		long qtdLin0 = RecordCounter.count(bloco0);
-		Reg0990EncerramentoDoBloco reg0990 = new Reg0990EncerramentoDoBloco(qtdLin0 + 1);
-		bloco0.setReg0990(reg0990);
-		
-//		bloco0.setReg0990(reg0990Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+		bloco0.setReg0990(montarEncerramentoDoBloco0(bloco0));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO 0, TEMINADA! {0} " ,bloco0);
 		return bloco0;
 	}
 	
 	
+	private Reg0990EncerramentoDoBloco montarEncerramentoDoBloco0(Bloco0 bloco0) {
+		LOG.log(Level.INFO, "Montando o Registro 0990 (Encerramento do Bloco 0) ");
+
+		long qtdLin0 = RecordCounter.count(bloco0);
+		Reg0990EncerramentoDoBloco reg0990 = new Reg0990EncerramentoDoBloco(qtdLin0 + 1);
+		
+		LOG.log(Level.INFO, "Encerramento do BLOCO B (Reg0990), terminada: {0} " ,reg0990);
+		return reg0990;
+	}
 }

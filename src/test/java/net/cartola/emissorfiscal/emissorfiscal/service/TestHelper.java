@@ -16,6 +16,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalRepository;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.estado.Estado;
@@ -97,8 +98,6 @@ public class TestHelper {
 	private static final String DOC_FISCAL_NUMERO_3 = "65791541873496";
 	private static final String DOC_FISCAL_NUMERO_4 = "30802553106899";
 	
-	public static final String DOC_FISCAL_TIPO_NFE = "NFE";
-	public static final String DOC_FISCAL_TIPO_SAT = "SAT";
 	
 	@Autowired
 	private EstadoRepository estadoRepository;
@@ -314,15 +313,15 @@ public class TestHelper {
 		List<Pessoa> pessoas = criarPessoa();
 		
 		String[][] data = { { "NFE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_EMITENTE_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_1, DOC_FISCAL_NUMERO_1 },
-				{ "SAT", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_EMITENTE_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_2, DOC_FISCAL_NUMERO_2 },
-				{ "CTE", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_DEST_UF_SP, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_3, DOC_FISCAL_NUMERO_3 },
-				{ "ECF", PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_DEST_UF_SP, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_4, DOC_FISCAL_NUMERO_4 } };
+				{  PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_EMITENTE_UF_SP, OPERACAO_VENDA, DOC_FISCAL_SERIE_2, DOC_FISCAL_NUMERO_2 },
+				{  PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_DEST_UF_SP, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_3, DOC_FISCAL_NUMERO_3 },
+				{  PESSOA_TIPO_JURIDICA, PESSOA_TIPO_JURIDICA, PESSOA_DEST_UF_SP, OPERACAO_VENDA_INTERESTADUAL, DOC_FISCAL_SERIE_4, DOC_FISCAL_NUMERO_4 } };
 
 		
 		for (String[] dados : data) {
 			int aux = 0;
 			DocumentoFiscal docFiscal = new DocumentoFiscal();
-			docFiscal.setTipo(dados[aux++]);
+			docFiscal.setTipoOperacao(IndicadorDeOperacao.SAIDA);
 			String emitenteTipo = dados[aux++];
 			docFiscal.setEmitente(pessoas.stream().filter(p -> p.getPessoaTipo().toString().equals(emitenteTipo)).findAny().get());
 			
@@ -379,10 +378,10 @@ public class TestHelper {
 			u.setSenha(bCryptPasswordEncoder.encode("root"));
 			
 			UsuarioPerfil perfilUm = new UsuarioPerfil();
-			perfilUm.setPerfil(Perfil.ROLE_CONTADOR);
+			perfilUm.setPerfil(Perfil.CONTADOR);
 			
 			UsuarioPerfil perfilDois = new UsuarioPerfil();
-			perfilDois.setPerfil(Perfil.ROLE_CONTADOR);
+			perfilDois.setPerfil(Perfil.CONTADOR);
 			
 			u.setPerfis(Arrays.asList(perfilUm, perfilDois));
 			usuarioService.save(u);

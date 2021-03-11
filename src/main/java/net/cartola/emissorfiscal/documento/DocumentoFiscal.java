@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.ToString;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.util.LocalDateDeserializer;
 import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
@@ -45,13 +47,19 @@ public class DocumentoFiscal implements Serializable {
 
 	private Long id;
 	private Operacao operacao;
-	private String tipo;
+	private IndicadorDeOperacao tipoOperacao;
 	private Long serie;
 	private Long numero;
 	private Pessoa emitente;
 	private Pessoa destinatario;
 	private List<DocumentoFiscalItem> itens;
 	private Set<DocumentoFiscalReferencia> referencias;
+	private BigDecimal valorDesconto;
+	private FreteConta indicadorFrete;
+	private BigDecimal valorFrete;
+	private BigDecimal valorSeguro;
+	private BigDecimal valorOutrasDespesasAcessorias;
+	
 	private BigDecimal icmsBase = BigDecimal.ZERO;
 	private BigDecimal icmsValor = BigDecimal.ZERO;
 	private BigDecimal icmsValorDesonerado = BigDecimal.ZERO;
@@ -69,6 +77,7 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal ipiBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
 	private BigDecimal ipiValor = BigDecimal.ZERO;
     
+	private IndicadorDePagamento indicadorPagamento;
 	private ModeloDocumentoFiscal modelo = ModeloDocumentoFiscal._55;
     private NFeStatus status;
 	private String nfeChaveAcesso;
@@ -103,12 +112,14 @@ public class DocumentoFiscal implements Serializable {
 		this.operacao = operacao;
 	}
 
-	public String getTipo() {
-		return tipo;
+	@Enumerated(EnumType.STRING)
+	@Column(name="tipo_oper", columnDefinition="enum('ENTRADA', 'SAIDA') ")
+	public IndicadorDeOperacao getTipoOperacao() {
+		return tipoOperacao;
 	}
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setTipoOperacao(IndicadorDeOperacao tipoOperacao) {
+		this.tipoOperacao = tipoOperacao;
 	}
 	
 	public void setSerie(Long serie) {
@@ -161,6 +172,53 @@ public class DocumentoFiscal implements Serializable {
 		return referencias;
 	}
 
+	@Column(name = "vlr_desconto")
+	public BigDecimal getValorDesconto() {
+		return valorDesconto;
+	}
+
+	public void setValorDesconto(BigDecimal valorDesconto) {
+		this.valorDesconto = valorDesconto;
+	}
+	
+//	@Column(name = "indi_fret", columnDefinition ="enum('0', '1', '2', '3', '4', '5') DEFAULT '5' ")
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "indi_fret")
+	public FreteConta getIndicadorFrete() {
+		return indicadorFrete;
+	}
+
+	public void setIndicadorFrete(FreteConta indicadorFrete) {
+		this.indicadorFrete = indicadorFrete;
+	}
+
+	@Column(name = "vlr_fret")
+	public BigDecimal getValorFrete() {
+		return valorFrete;
+	}
+
+	public void setValorFrete(BigDecimal valorFrete) {
+		this.valorFrete = valorFrete;
+	}
+
+	@Column(name = "vlr_segu")
+	public BigDecimal getValorSeguro() {
+		return valorSeguro;
+	}
+
+	public void setValorSeguro(BigDecimal valorSeguro) {
+		this.valorSeguro = valorSeguro;
+	}
+
+	@Column(name = "vlr_outr_desp_acess")
+	public BigDecimal getValorOutrasDespesasAcessorias() {
+		return valorOutrasDespesasAcessorias;
+	}
+
+	public void setValorOutrasDespesasAcessorias(BigDecimal valorOutrasDespesasAcessorias) {
+		this.valorOutrasDespesasAcessorias = valorOutrasDespesasAcessorias;
+	}
+	
 	public void setReferencias(Set<DocumentoFiscalReferencia> referencias) {
 		this.referencias = referencias;
 	}
@@ -301,6 +359,16 @@ public class DocumentoFiscal implements Serializable {
 	}
 	
 	@Enumerated(EnumType.STRING)
+	@Column(name = "indi_paga", columnDefinition ="enum('A_VISTA', 'A_PRAZO', 'OUTROS') ")
+	public IndicadorDePagamento getIndicadorPagamento() {
+		return indicadorPagamento;
+	}
+
+	public void setIndicadorPagamento(IndicadorDePagamento indicadorPagamento) {
+		this.indicadorPagamento = indicadorPagamento;
+	}
+	
+	@Enumerated(EnumType.STRING)
 	public ModeloDocumentoFiscal getModelo() {
 		return modelo;
 	}
@@ -412,6 +480,5 @@ public class DocumentoFiscal implements Serializable {
 	public void setValorImpostoMunicipal(BigDecimal valorImpostoMunicipal) {
 		this.valorImpostoMunicipal = valorImpostoMunicipal;
 	}
-
 
 }
