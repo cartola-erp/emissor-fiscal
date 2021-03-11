@@ -55,6 +55,7 @@
 							<th scope="col"> <b> UF Destino </b> </th>	
 							<th scope="col"> <b> Operação </b> </th>	
 							<th scope="col"> <b> NCM </b> </th>	
+							<th scope="col"> <b> Produto Origem </b> </th>	
 
 							<th scope="col"> <b> Icms Aliq. Interna Destino </b> </th>	
 							<th scope="col"> <b> IVA/MVA </b> </th>	
@@ -73,6 +74,7 @@
 							<td scope="row" th:text="${tribEstaGuia.estadoDestino.sigla}"> MG </td>	
 							<td scope="row" th:text="${tribEstaGuia.operacao.descricao}"> Compra Interestadual </td>	
 							<td scope="row" th:text="${tribEstaGuia.ncm.numero}"> 12345678 </td>
+							<td scope="row" th:text="${tribEstaGuia.produtoOrigem.getDescricaoComOrdinal()}"> Nacional </td>
 
 							<td scope="row" th:text="${tribEstaGuia.icmsAliqInternaDestino}"> 12345678 </td>	
 							<td scope="row" th:text="${tribEstaGuia.icmsIva}"> 12345678 </td>	

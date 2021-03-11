@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
@@ -96,6 +98,13 @@ public class TributacaoEstadualGuiaService {
 		return tribEstaGuiaRepository.findByNcmIn(ncms, pr);
 	}
 	
+	public List<TributacaoEstadualGuia> findTribEstaGuiaByTipoGuiaUfOrigemUfDestinoProdutoOrigemOperENcms(TipoGuia tipoGuia, Estado estadoOrigem, Estado estadoDestino, 
+			Set<ProdutoOrigem> produtoOrigens, Operacao operacao, Set<Ncm> ncms) {
+		return tribEstaGuiaRepository.findByTipoGuiaAndEstadoOrigemAndEstadoDestinoAndProdutoOrigemInAndOperacaoAndNcmIn(tipoGuia,
+				estadoOrigem, estadoDestino, produtoOrigens, operacao,
+				ncms);
+	}
+	
 //	public List<TributacaoEstadualGuia> findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(Operacao operacao, Estado estadoOrigem, Estado estadoDestino, RegimeTributario regimeTributario,
 //			Collection<Finalidade> finalidade, Collection<Ncm> ncms) {
 //		return tribEstaGuiaRepository.findByOperacaoAndEstadoOrigemAndEstadoDestinoAndRegimeTributarioAndFinalidadeInAndNcmIn(operacao, estadoOrigem, estadoDestino, regimeTributario, finalidade, ncms);
@@ -117,7 +126,8 @@ public class TributacaoEstadualGuiaService {
 		tribEstaGuia.setIcmsIva(tribEstaGuia.getIcmsIva().multiply(new BigDecimal(100D)));
 		tribEstaGuia.setIcmsAliquota(tribEstaGuia.getIcmsAliquota().multiply(new BigDecimal(100D)));
 	}
-	
+
+
 	// ====================  "VALIDAÇÕES" =================== 
 
 //	public List<String> getMensagensErros(BindingResult bindResult, boolean existeNumeroEExecao) {
