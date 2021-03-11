@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -49,7 +50,8 @@ import net.cartola.emissorfiscal.operacao.Operacao;
 @Getter
 @Setter
 @Entity
-@Table(name = "trib_esta_guia")
+@Table(name = "trib_esta_guia", uniqueConstraints = @UniqueConstraint(name = "unk_trib_esta_guia_tipo_oper_uf_origem_dest_ncm", columnNames = {
+		"tipo_guia", "produto_origem", "esta_orig_id", "esta_dest_id", "ncm_id", "oper_id" }))
 public class TributacaoEstadualGuia implements Serializable {
 
 	private static final long serialVersionUID = 8190985020309716307L;
@@ -59,7 +61,7 @@ public class TributacaoEstadualGuia implements Serializable {
 	private Long id;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "enum('GARE_ICMS', 'GNRE')")
+	@Column(name = "tipo_guia", columnDefinition = "enum('GARE_ICMS', 'GNRE')")
 	private TipoGuia tipoGuia;
 	
 	@ManyToOne
@@ -71,6 +73,7 @@ public class TributacaoEstadualGuia implements Serializable {
 	private Estado estadoDestino;
 	
 	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "produto_origem")
 	private ProdutoOrigem produtoOrigem;
 	
 	@ManyToOne
