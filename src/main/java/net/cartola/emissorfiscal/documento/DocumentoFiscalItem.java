@@ -53,10 +53,10 @@ public class DocumentoFiscalItem implements Serializable {
 	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
 	private BigDecimal quantidade = BigDecimal.ZERO;
 	private BigDecimal valorUnitario = BigDecimal.ZERO;
-    private BigDecimal desconto;
-	private BigDecimal valorFrete;
-	private BigDecimal valorSeguro;
-	private BigDecimal valorOutrasDespesasAcessorias;
+    private BigDecimal desconto = BigDecimal.ZERO;
+	private BigDecimal valorFrete = BigDecimal.ZERO;
+	private BigDecimal valorSeguro = BigDecimal.ZERO;
+	private BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
 	
 	private Ncm ncm;
 	private int cfop;
