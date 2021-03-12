@@ -29,7 +29,7 @@ public class EmailEngine {
 	 */
 	public void enviarEmail(Mail mail) {
 //		Mail mail = emailSendGrid.getMail();
-		LOG.log(Level.INFO, "Enviando o email: Subject/Title => {}" ,mail.getSubject());
+		LOG.log(Level.INFO, "Enviando o email: Subject/Title => {0}" ,mail.getSubject());
 	    SendGrid sg = new SendGrid("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");
 
 		Request request = new Request();

@@ -7,8 +7,10 @@ import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.tributacao.estadual.TipoGuia;
+import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualGuia;
 
 /**
  * Deverá calcular o valor que tem que pagar para cada item, de ICMS ST, nas aquisicoes vindas de 
@@ -27,6 +29,8 @@ public class CalculoGareCompras implements Serializable {
 	private TipoGuia tipoGuia;
 	private int codigoReceita;
 	private Loja loja;
+	private DocumentoFiscalItem docFiscItem;
+	private TributacaoEstadualGuia tribEstaGuia;
 	private String infoComplementar;
 	private LocalDate dataVencimento;
 	private String mesAnoReferencia;

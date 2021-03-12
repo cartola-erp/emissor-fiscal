@@ -73,11 +73,11 @@
 
 
         <!-- ========================================================================================== -->
-        <!-- ======================= Tabela Referente a todos os itens da nota ======================== -->
+        <!-- =================== Tabela Referente a todos os itens da nota com ST ===================== -->
         <!-- ========================================================================================== -->
-        <h1 style="text-align: center;"> Itens </h1>
+        <h1 style="text-align: center;"> Itens (Somentes os calculados com ST) </h1>
 
-              <table id="t01">
+              <table border="1" width = "100%" bordercolor = "green" >
                  <tr>
                     <th>COD X</th>
                     <th>SEQ</th>
@@ -87,23 +87,29 @@
                     <th>VLR Prod.</th>
                     <th>Frete</th>
                     <th>VLR IPI</th>
-                    <th>Total</th>
+                    <!-- <th>Total</th> -->
                     <th>MVA</th>
-
+                    <th>Prod. Origem</th>
+                    <th>ICMS Aliq. Cred.</th>
+                    <th>Aliq. Interna Dest.</th>
                 </tr>
-                <tr>
-                    <td>Jill</td>
-                    <td>Smith</td>
-                    <td>50</td>
-                    <td>Smith</td>
-                    <td>50</td>
-                    <td>Smith</td>
-                    <td>50</td>
-                    <td>50</td>
-                    <td>50</td>
-                    <td>50</td>
+                <tr th:each="calcGare : ${listCalcGare}">
+                    <td th:text="${calcGare.docFiscItem.codigoX}">Cod X</td>
+                    <td> </td>               <!-- COD SEQ -->
+                    <td> </td>               <!-- Desc. -->
+                    <td> </td>               <!-- Nº Item -->
+                    <td th:text="${calcGare.docFiscItem.ncm.numero}">NCM</td> 
+                    <td th:text="${calcGare.docFiscItem.valorUnitario}"> VLR Prod</td>
+                    <td> </td>               <!-- Frete -->
+                    <td> </td>               <!-- VLR IPI -->
+                    <td> </td>               <!-- Total -->
+                    <td th:text="${calcGare.tribEstaGuia.icmsIva}">IVA/MVA</td>
+                    <td th:text="${calcGare.tribEstaGuia.produtoOrigem.ordinal}">Origem</td>
+                    <td th:text="${calcGare.tribEstaGuia.icmsAliquota}">Aliq. Cred</td>
+                    <td th:text="${calcGare.tribEstaGuia.icmsAliqInternaDestino}">Aliq. Interna Dest.</td>
                 </tr>
             </table>
+
 
 
 
