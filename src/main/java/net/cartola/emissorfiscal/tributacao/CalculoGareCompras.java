@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.tributacao.estadual.TipoGuia;
 
@@ -16,6 +17,7 @@ import net.cartola.emissorfiscal.tributacao.estadual.TipoGuia;
  * @date 8 de mar. de 2021
  * @author robson.costa
  */
+@ToString
 @Getter
 @Setter
 public class CalculoGareCompras implements Serializable {
