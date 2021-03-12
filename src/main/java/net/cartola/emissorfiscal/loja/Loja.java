@@ -81,5 +81,7 @@ public class Loja implements Serializable {
 	private String criadoPor;
 	private String alteradoPor;
 
-
+	public String getLojaAndRazaoSocial() {
+		return this.codigoLoja +" - "+ razaoSocial;
+	}
 }

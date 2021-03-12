@@ -12,61 +12,73 @@
             width: 100%;
         }
 
-        table, th, td {
+        table,
+        th,
+        td {
             border: 1px solid black;
             border-collapse: collapse;
         }
-
-        th, td {
+    
+        th,
+        td {
             padding: 15px;
             text-align: left;
         }
-
+    
         #t01 tr:nth-child(even) {
             background-color: #eee;
         }
-
+    
         #t01 tr:nth-child(odd) {
             background-color: #fff;
         }
-
+    
         #t01 th {
             background-color: black;
             color: white;
         }
     </style>
 
-
     <!-- BODY/CORPO do EMAIL -->
     <body>
 
-        <!-- <h1 style="text-align: center;"> Compras vindas de SC/MS ou SC </h2> -->
-        
-        <!-- Tabela referente a nota -->
-        <h1 style="text-align: center;"> Documento Fiscal </h2>
 
-        <table id="t01">
+        <!-- Tabela referente a nota -->
+        <h1 style="text-align: center;"> 
+            Doc. Fiscal (Chave): 
+            <span th:text="${docFisc.nfeChaveAcesso}">
+        </h1>
+
+        <table border="1" width = "100%" bordercolor = "green" >
             <tr>
                 <th>Compra</th>
                 <th>Loja</th>
                 <th>Numero Nf</th>
-                <th>Chave de Acesso</th>
                 <th>Uf de Origem</th>
+                <th>Tel. Loja</th>
+                <th>CNAE (AG)</th>
+                <th>Insc. Estad. (AG)</th>
             </tr>
+
             <tr>
-              <td>Jill</td>
-              <td>Smith</td>
-              <td>50</td>
-              <td>Smith</td>
-              <td>50</td>
+              <td th:text="${docFisc.numero}"> Informe o numero da compra </td>
+              <td th:text="${loja.getLojaAndRazaoSocial()}"> Loja </td>
+              <td th:text="${docFisc.numero}"> Numero da Nota </td>
+              <td th:text="${docFisc.emitente.endereco.uf}"> SC </td>
+              <td th:text="${loja.telefone}">Tel. AG</td>
+              <td th:text="${loja.cnae}"> Numero da Nota </td>
+              <td th:text="${loja.ie}"> SC </td>
             </tr>
-          </table>
+        </table>
 
-        <!-- Tabela Referente a todos os itens da nota -->
-        <h1 style="text-align: center;"> Itens </h2>
 
-            <table id="t01">
-                <tr>
+        <!-- ========================================================================================== -->
+        <!-- ======================= Tabela Referente a todos os itens da nota ======================== -->
+        <!-- ========================================================================================== -->
+        <h1 style="text-align: center;"> Itens </h1>
+
+              <table id="t01">
+                 <tr>
                     <th>COD X</th>
                     <th>SEQ</th>
                     <th>Descrição</th>
