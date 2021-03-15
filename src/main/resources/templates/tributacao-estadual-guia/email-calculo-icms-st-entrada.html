@@ -90,6 +90,7 @@
                     <!-- <th>VLR Total.</th> -->
                     <th>Frete</th>
                     <th>VLR IPI</th>
+                    <th>Desconto</th>
                     <th>MVA</th>
                     <th>Prod. Origem</th>
                     <th>ICMS Aliq. Cred.</th>
@@ -109,6 +110,7 @@
                     <!-- <td th:text="${, 0, 'POINT', 4 'COMMA')}"> </td>  Vlr total produto -->
                     <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.valorFrete, 0, 'POINT', 4, 'COMMA')}" > </td>                 <!-- Frete -->
                     <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.ipiValor, 0, 'POINT', 4, 'COMMA')}" > </td>                   <!-- VLR IPI -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.desconto, 0, 'POINT', 4, 'COMMA')}" > </td>                   <!-- Desconto -->
                     <td th:text="${calcGare.tribEstaGuia.icmsIva}"> </td>                    <!-- IVA/MVA -->
                     <td th:text="${calcGare.tribEstaGuia.produtoOrigem.ordinal()}"> </td>      <!-- Origem -->
                     <td th:text="${calcGare.tribEstaGuia.icmsAliquota}"> </td>               <!-- Aliq. Cred -->

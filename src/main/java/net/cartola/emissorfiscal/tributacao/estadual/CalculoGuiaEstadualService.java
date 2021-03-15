@@ -23,6 +23,7 @@ import net.cartola.emissorfiscal.documento.CompraDto;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
+import net.cartola.emissorfiscal.engine.EmailEngine;
 import net.cartola.emissorfiscal.engine.EmailModel;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
@@ -58,6 +59,10 @@ public class CalculoGuiaEstadualService {
 	
 	@Autowired
 	private TemplateEngine templateEngine;
+	
+	@Autowired
+	private EmailEngine emailEngine;
+	
 //	private SpringTemplateEngine templateEngine;
 	
 
@@ -86,9 +91,10 @@ public class CalculoGuiaEstadualService {
 			boolean existeIcmStParaNcm = mapTribEstaGuiaPorNcmAndProdutoOrigem.containsKey(docItem.getNcm());
 			if (existeIcmStParaNcm) {
 				TributacaoEstadualGuia tribEstaGuia = mapTribEstaGuiaPorNcmAndProdutoOrigem.get(docItem.getNcm()).get(docItem.getOrigem());
-				CalculoGareCompras calcGareIcmsStEntr = calcularGareCompras(docItem, tribEstaGuia, documentoFiscal, opLoja);
+				CalculoGareCompras calcGareIcmsStEntr = calcularIcmsStParaOItemDaCompra(docItem, tribEstaGuia, documentoFiscal, opLoja);
 				listCalculoIcmsStCompra.add(calcGareIcmsStEntr);
 				mapCalcGarePorItem.put(docItem, calcGareIcmsStEntr);
+				compraDto.setFoiCalculadoIcmsSt(true);
 			}
 		});
 		
@@ -100,33 +106,34 @@ public class CalculoGuiaEstadualService {
 
 	/**
 	 * Irá fazer o calculo que tem que recolher de GARE para Cada Item do DocumetnoFiscal
+	 * 
 	 * @param docItem
 	 * @param tribEstaGuia
 	 * @param docFiscal
 	 * @param opLoja
 	 * @return
 	 */
-	private CalculoGareCompras calcularGareCompras(DocumentoFiscalItem docItem, TributacaoEstadualGuia tribEstaGuia, DocumentoFiscal docFiscal, Optional<Loja> opLoja) {
+	private CalculoGareCompras calcularIcmsStParaOItemDaCompra(DocumentoFiscalItem docItem, TributacaoEstadualGuia tribEstaGuia, DocumentoFiscal docFiscal, Optional<Loja> opLoja) {
 		CalculoGareCompras calcGareCompras = new CalculoGareCompras();
 		StringBuilder infoCompl = new StringBuilder();
 		infoCompl.append("Nota Fiscal Nº ").append(docFiscal.getNumero()).append(" CNPJ Nº ")
 				.append(docFiscal.getEmitente().getCnpj())
 				.append(" Conforme Portaria CAT 16 de 2008 e o art. 426-A § 4°do RICMS/2000");
 		
+		/** Fazendo calculo de ICMS ST, para o item */
 		BigDecimal aliqIvaMva = BigDecimal.ONE.add(tribEstaGuia.getIcmsIva());
 		BigDecimal baseCalcIcms = docItem.getQuantidade().multiply(docItem.getValorUnitario());
 		BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getValorFrete()).add(docItem.getIpiValor());
 		
-		BigDecimal baseCalcIcmsSt = baseCalcIcmsComFretIpi.multiply(aliqIvaMva);
+		BigDecimal baseCalcIcmsSt = baseCalcIcmsComFretIpi.subtract(docItem.getDesconto()).multiply(aliqIvaMva);
 		BigDecimal valorIcmsSt = baseCalcIcmsSt.multiply(tribEstaGuia.getIcmsAliqInternaDestino());
 		BigDecimal creditoIcmsProprio = baseCalcIcms.multiply(tribEstaGuia.getIcmsAliquota());
 		BigDecimal valorIcmsStAReter = valorIcmsSt.subtract(creditoIcmsProprio);
 
-		/**
-		 * Aqui deve ser calculado os valores da planilha do  excel que a Gabi me passou
-		 * 
-		 */
-		
+		/** JUROS, MULTA e TOTAL (ainda tenho que calcular) **/
+		BigDecimal juros = BigDecimal.ZERO;
+	    BigDecimal multa = BigDecimal.ZERO;
+	    BigDecimal valorTotal = valorIcmsSt.add(juros).add(multa);
 		
 		calcGareCompras.setTipoGuia(TipoGuia.GARE_ICMS);
 		calcGareCompras.setCodigoReceita(632);
@@ -135,61 +142,64 @@ public class CalculoGuiaEstadualService {
 		calcGareCompras.setTribEstaGuia(tribEstaGuia);
 		calcGareCompras.setInfoComplementar(infoCompl.toString());
 		calcGareCompras.setDataVencimento(LocalDate.now());
-//		String mesAnoRef = Integer.toString(LocalDate.now().getMonthValue()) +"/"+ LocalDate.now().getYear();
 		String mesAnoRef = LocalDate.now().getMonthValue() +"/"+ LocalDate.now().getYear();
 		calcGareCompras.setMesAnoReferencia(mesAnoRef);
 		calcGareCompras.setValorPrincipal(valorIcmsStAReter);
-
-		/** JUROS, MULTA e TOTAL (ainda tenho que calcular) **/
-		calcGareCompras.setJuros(BigDecimal.ZERO);
-		calcGareCompras.setMulta(BigDecimal.ZERO);
-		calcGareCompras.setTotal(valorIcmsStAReter);
+		calcGareCompras.setJuros(juros);
+		calcGareCompras.setMulta(multa);
+		calcGareCompras.setTotal(valorTotal);
 		return calcGareCompras;
 	}
 	
 	
 	/**
 	 * Irá calcular qual o total de uma lista de Calculos de Gare (Juros, Multa, valor total etc...)
+	 * 
 	 * @param listCalcIcmsStCompra
 	 * @return
 	 */
 	private CalculoGareCompras totalizaCalcGareIcmsStCompras(List<CalculoGareCompras> listCalcIcmsStCompra) {
-		 CalculoGareCompras calcGareCompra = new CalculoGareCompras();
+		 CalculoGareCompras totalCalcGareCompra = new CalculoGareCompras();
 		 
 		 if (!listCalcIcmsStCompra.isEmpty()) {
 			 CalculoGareCompras objCalcGareCompra = listCalcIcmsStCompra.get(0);
+			 BigDecimal totalValorPrincipal = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getValorPrincipal()).reduce(BigDecimal.ZERO, BigDecimal::add);
 			 BigDecimal totalJuros = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getJuros()).reduce(BigDecimal.ZERO, BigDecimal::add);
 			 BigDecimal totalMulta = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getMulta()).reduce(BigDecimal.ZERO, BigDecimal::add);
 			 BigDecimal total = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getTotal()).reduce(BigDecimal.ZERO, BigDecimal::add);
 			 
-			 calcGareCompra.setTipoGuia(objCalcGareCompra.getTipoGuia());
-			 calcGareCompra.setCodigoReceita(objCalcGareCompra.getCodigoReceita());
-			 calcGareCompra.setLoja(objCalcGareCompra.getLoja());
+			 totalCalcGareCompra.setTipoGuia(objCalcGareCompra.getTipoGuia());
+			 totalCalcGareCompra.setCodigoReceita(objCalcGareCompra.getCodigoReceita());
+			 totalCalcGareCompra.setLoja(objCalcGareCompra.getLoja());
+			 totalCalcGareCompra.setInfoComplementar(objCalcGareCompra.getInfoComplementar());
+			 totalCalcGareCompra.setDataVencimento(objCalcGareCompra.getDataVencimento());
+			 totalCalcGareCompra.setMesAnoReferencia(objCalcGareCompra.getMesAnoReferencia());
 			 
-			 calcGareCompra.setInfoComplementar(objCalcGareCompra.getInfoComplementar());
-			 calcGareCompra.setDataVencimento(objCalcGareCompra.getDataVencimento());
-			 calcGareCompra.setMesAnoReferencia(objCalcGareCompra.getMesAnoReferencia());
-			 calcGareCompra.setValorPrincipal(total);
-			 
-			 calcGareCompra.setJuros(totalJuros);
-			 calcGareCompra.setMulta(totalMulta);
-			 calcGareCompra.setTotal(total);
+			 totalCalcGareCompra.setValorPrincipal(totalValorPrincipal);
+			 totalCalcGareCompra.setJuros(totalJuros);
+			 totalCalcGareCompra.setMulta(totalMulta);
+			 totalCalcGareCompra.setTotal(total);
 		 }
 		
-		 return calcGareCompra;
+		 return totalCalcGareCompra;
 	}
 
+	public void enviarEmail(CompraDto compraDto) {
+		String htmlEmail = this.gerarEmail(compraDto);
+		Mail emailSendGrid = this.getMailSendgridWithContent(htmlEmail);
+		emailEngine.enviarEmail(emailSendGrid);
+	}
 
 	/**
 	 * Irá gerar o HTML do  Email que será enviado
 	 * @param compraDto
 	 * @return
 	 */
-	public String gerarEmail(CompraDto compraDto) {
-		StringBuilder sb = new StringBuilder();
+	private String gerarEmail(CompraDto compraDto) {
+		StringBuilder sbEmailTitle = new StringBuilder();
 		DocumentoFiscal docFiscal = compraDto.getDocFiscal();
-		sb.append("Calc. ICMS ST Compra: " +docFiscal.getNfeChaveAcesso()).append(" DE: ").append(docFiscal.getEmitente().getEndereco().getUf());
-		emailTitle = sb.toString();
+		sbEmailTitle.append("Calc. ICMS ST Compra: " +docFiscal.getNfeChaveAcesso()).append(" DE: ").append(docFiscal.getEmitente().getEndereco().getUf());
+		emailTitle = sbEmailTitle.toString();
 		
 		Context context  = new Context();
 		
@@ -212,7 +222,7 @@ public class CalculoGuiaEstadualService {
 	 * @param contentHtml
 	 * @return {@link Mail}
 	 */
-	public Mail getMailSendgridWithContent(String contentHtml) {
+	private Mail getMailSendgridWithContent(String contentHtml) {
 		EmailModel emailSendGrid = new EmailModel();
 		Mail mail = emailSendGrid.withFrom(FROM).withTo(TO).withTitle(emailTitle).withContentHtml(contentHtml).build();
 		return mail;
