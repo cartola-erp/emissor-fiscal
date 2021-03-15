@@ -61,13 +61,13 @@
             </tr>
 
             <tr>
-              <td th:text="${docFisc.numero}"> Informe o numero da compra </td>
-              <td th:text="${loja.getLojaAndRazaoSocial()}"> Loja </td>
-              <td th:text="${docFisc.numero}"> Numero da Nota </td>
-              <td th:text="${docFisc.emitente.endereco.uf}"> SC </td>
-              <td th:text="${loja.telefone}">Tel. AG</td>
-              <td th:text="${loja.cnae}"> Numero da Nota </td>
-              <td th:text="${loja.ie}"> SC </td>
+              <td th:text="${docFisc.numero}">  </td>                       <!-- Informe o numero da compra -->
+              <td th:text="${loja.getLojaAndRazaoSocial()}">  </td>         <!-- Loja -->
+              <td th:text="${docFisc.numero}"> </td>                        <!-- Numero da Nota  -->
+              <td th:text="${docFisc.emitente.endereco.uf}"> </td>          <!-- UF -->
+              <td th:text="${loja.telefone}"></td>                          <!-- Tel. AG -->
+              <td th:text="${loja.cnae}">  </td>                            <!-- CNAE -->
+              <td th:text="${loja.ie}">  </td>                              <!-- IE -->
             </tr>
         </table>
 
@@ -85,6 +85,8 @@
                     <th>Nº Item</th>
                     <th>Ncm</th>     <!-- CASO se um NCM que nunca tenha sido validado pela gabi pintar de cor diferente -->
                     <th>VLR Prod.</th>
+                    <th>Qtd.</th>
+                    <th>VLR Total.</th>
                     <th>Frete</th>
                     <th>VLR IPI</th>
                     <!-- <th>Total</th> -->
@@ -92,25 +94,71 @@
                     <th>Prod. Origem</th>
                     <th>ICMS Aliq. Cred.</th>
                     <th>Aliq. Interna Dest.</th>
+                    <!-- VALORES REFERENTES ao CALCULO de ICMS ST ref. a Cada ITEM -->
+                    <th>Vlr Principal </th>
+                    <th>Vlr Total</th>
                 </tr>
                 <tr th:each="calcGare : ${listCalcGare}">
                     <td th:text="${calcGare.docFiscItem.codigoX}">Cod X</td>
                     <td> </td>               <!-- COD SEQ -->
                     <td> </td>               <!-- Desc. -->
                     <td> </td>               <!-- Nº Item -->
-                    <td th:text="${calcGare.docFiscItem.ncm.numero}">NCM</td> 
-                    <td th:text="${calcGare.docFiscItem.valorUnitario}"> VLR Prod</td>
+                    <td th:text="${calcGare.docFiscItem.ncm.numero}"></td>                  <!-- NCM -->
+                    <td th:text="${calcGare.docFiscItem.valorUnitario}"> </td>              <!-- VLR Prod -->
+                    <td th:text="${calcGare.docFiscItem.quantidade}"> </td>                 <!-- Quantidade -->
+                    <td th:text="${calcGare.docFiscItem.valorUnitario}"> </td>  
                     <td> </td>               <!-- Frete -->
                     <td> </td>               <!-- VLR IPI -->
-                    <td> </td>               <!-- Total -->
-                    <td th:text="${calcGare.tribEstaGuia.icmsIva}">IVA/MVA</td>
-                    <td th:text="${calcGare.tribEstaGuia.produtoOrigem.ordinal}">Origem</td>
-                    <td th:text="${calcGare.tribEstaGuia.icmsAliquota}">Aliq. Cred</td>
-                    <td th:text="${calcGare.tribEstaGuia.icmsAliqInternaDestino}">Aliq. Interna Dest.</td>
+                    <!-- <td> </td>               Total -->
+                    <td th:text="${calcGare.tribEstaGuia.icmsIva}"> </td>                    <!-- IVA/MVA -->
+                    <td th:text="${calcGare.tribEstaGuia.produtoOrigem.ordinal}"> </td>      <!-- Origem -->
+                    <td th:text="${calcGare.tribEstaGuia.icmsAliquota}"> </td>               <!-- Aliq. Cred -->
+                    <td th:text="${calcGare.tribEstaGuia.icmsAliqInternaDestino}"> </td>     <!-- Aliq. Interna Dest. -->
+                    <!-- VALORES REFERENTES ao CALCULO de ICMS ST ref. a Cada ITEM -->
+                    <td> </td> <!-- Vlr Principal-->
+                    <td th:text="${}"> </td> <!-- Vlr Total -->
                 </tr>
             </table>
 
 
+            
+        <!-- Tabela referente a Guia ICMS ST  -->
+        <h1 style="text-align: center;"> 
+            Info da Guia ICMS ST 
+            <!-- <span th:text="${docFisc.nfeChaveAcesso}"> -->
+        </h1>
+
+        <table border="1" width = "100%" bordercolor = "green" >
+            <tr>
+                <th>Nome</th>
+                <th>Endereço</th>
+                <th>Municipio</th>
+                <th>CNAE</th>
+                <th>IE</th>
+                <th>Info. Complementar</th>
+                <th>Data Vencto.</th>
+                <th>Referência</th>
+                <th>Valor Principal</th>
+                <th>Juros</th>
+                <th>Multa</th>
+                <th>Total</th>
+            </tr>
+
+            <tr>
+                <td th:text="${docFisc.numero}">  </td>                       <!-- Nome -->
+                <td th:text="${loja.getLojaAndRazaoSocial()}">  </td>         <!-- Endereço -->
+                <td th:text="${docFisc.numero}"> </td>                        <!-- Municipio -->
+                <td th:text="${docFisc.emitente.endereco.uf}"> </td>          <!-- CNAE -->
+                <td th:text="${loja.telefone}"></td>                          <!-- IE -->
+                <td th:text="${loja.cnae}">  </td>                            <!-- Info. Complementar -->
+                <td th:text="${loja.ie}">  </td>                              <!-- Data Vencto. -->
+                <td th:text="${loja.telefone}"></td>                          <!-- Referência -->
+                <td th:text="${loja.cnae}">  </td>                            <!-- Valor Principal -->
+                <td th:text="${loja.ie}">  </td>                              <!-- Juros -->
+                <td th:text="${loja.cnae}">  </td>                            <!-- Multa -->
+                <td th:text="${loja.ie}">  </td>                              <!-- Total -->
+            </tr>
+        </table>
 
 
             <!-- Colocar aqui algumas "considerações.: Ex.: Formula dos Calculos e legendas" -->
