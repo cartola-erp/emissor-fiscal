@@ -51,6 +51,7 @@ public class CalculoGuiaEstadualServiceTest {
 	@Autowired
 	private EmailEngine emailEngine;
 	
+	private BigDecimal DOC_FISC_ITEM_UM_VALOR = new BigDecimal(10000);
 	private BigDecimal DOC_FISC_ITEM_VALOR = new BigDecimal(100);
 	private BigDecimal DOC_FISC_ITEM_QUANT = new BigDecimal(1);
 
@@ -82,7 +83,7 @@ public class CalculoGuiaEstadualServiceTest {
 		ncmUm.setId(10002L);
 		ncmUm.setNumero(87085099);
 		
-		docFiscItemUm.setValorUnitario(DOC_FISC_ITEM_VALOR);
+		docFiscItemUm.setValorUnitario(DOC_FISC_ITEM_UM_VALOR);
 		docFiscItemUm.setQuantidade(DOC_FISC_ITEM_QUANT);
 		docFiscItemUm.setNcm(ncmUm);
 		docFiscItemUm.setOrigem(ProdutoOrigem.NACIONAL);
