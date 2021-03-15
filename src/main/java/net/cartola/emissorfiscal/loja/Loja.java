@@ -84,4 +84,9 @@ public class Loja implements Serializable {
 	public String getLojaAndRazaoSocial() {
 		return this.codigoLoja +" - "+ razaoSocial;
 	}
+	
+	public String getEnderecoAndNumeroAndBairro() {
+		return this.razaoSocial +", "+ this.enderecoNumero + " - "+ this.bairro;
+	}
+	
 }
