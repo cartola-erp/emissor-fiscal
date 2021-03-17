@@ -46,10 +46,11 @@ public class DocumentoFiscal implements Serializable {
 	private static final String PESSOA_TIPO_DESTINATARIO_OBRIGATORIO = "Atenção!! A informação referente a ao tipo de pessoa (Física ou Jurídica) é obrigatória!";
 
 	private Long id;
+    private int documento;
 	private Operacao operacao;
 	private IndicadorDeOperacao tipoOperacao;
 	private Long serie;
-	private Long numero;
+	private Long numeroNota;
 	private Pessoa emitente;
 	private Pessoa destinatario;
 	private List<DocumentoFiscalItem> itens;
@@ -101,6 +102,15 @@ public class DocumentoFiscal implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	@Column(name = "doc")
+	public int getDocumento() {
+		return documento;
+	}
+
+	public void setDocumento(int documento) {
+		this.documento = documento;
+	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "operacao_id", referencedColumnName = "oper_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_operacao_id"))
@@ -130,12 +140,12 @@ public class DocumentoFiscal implements Serializable {
 		return serie;
 	}
 
-	public void setNumero(Long numero) {
-		this.numero = numero;
+	public void setNumeroNota(Long numeroNota) {
+		this.numeroNota = numeroNota;
 	}
 	
-	public Long getNumero() {
-		return numero;
+	public Long getNumeroNota() {
+		return numeroNota;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)

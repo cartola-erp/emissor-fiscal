@@ -114,9 +114,9 @@ public class CalculoGuiaEstadualService {
 	 * @return
 	 */
 	private CalculoGareCompras calcularIcmsStParaOItemDaCompra(DocumentoFiscalItem docItem, TributacaoEstadualGuia tribEstaGuia, DocumentoFiscal docFiscal, Optional<Loja> opLoja) {
-		CalculoGareCompras calcGareCompras = new CalculoGareCompras();
+		CalculoGareCompras calcGareCompra = new CalculoGareCompras();
 		StringBuilder infoCompl = new StringBuilder();
-		infoCompl.append("Nota Fiscal Nº ").append(docFiscal.getNumero()).append(" CNPJ Nº ")
+		infoCompl.append("Nota Fiscal Nº ").append(docFiscal.getNumeroNota()).append(" CNPJ Nº ")
 				.append(docFiscal.getEmitente().getCnpj())
 				.append(" Conforme Portaria CAT 16 de 2008 e o art. 426-A § 4°do RICMS/2000");
 		
@@ -135,20 +135,30 @@ public class CalculoGuiaEstadualService {
 	    BigDecimal multa = BigDecimal.ZERO;
 	    BigDecimal valorTotal = valorIcmsSt.add(juros).add(multa);
 		
-		calcGareCompras.setTipoGuia(TipoGuia.GARE_ICMS);
-		calcGareCompras.setCodigoReceita(632);
-		opLoja.ifPresent(loja -> calcGareCompras.setLoja(loja));
-		calcGareCompras.setDocFiscItem(docItem);
-		calcGareCompras.setTribEstaGuia(tribEstaGuia);
-		calcGareCompras.setInfoComplementar(infoCompl.toString());
-		calcGareCompras.setDataVencimento(LocalDate.now());
+	    calcGareCompra.setNumNota(docFiscal.getNumeroNota());
+	    calcGareCompra.setNumCompra(docFiscal.getDocumento());
+	    calcGareCompra.setNumItem(docItem.getItem());
+	    calcGareCompra.setCodigoX(docItem.getCodigoX());
+	    calcGareCompra.setCodigoSequencia(docItem.getCodigoSequencia());
+	    calcGareCompra.setNcmEntrada(docItem.getNcm().getNumero());
+	    
+		calcGareCompra.setTipoGuia(TipoGuia.GARE_ICMS);
+		calcGareCompra.setCodigoReceita(632);
+		opLoja.ifPresent(loja -> {
+			calcGareCompra.setLoja(loja);
+			calcGareCompra.setLojaId(loja.getId());
+		});
+		calcGareCompra.setDocFiscItem(docItem);
+		calcGareCompra.setTribEstaGuia(tribEstaGuia);
+		calcGareCompra.setInfoComplementar(infoCompl.toString());
+		calcGareCompra.setDataVencimento(LocalDate.now());
 		String mesAnoRef = LocalDate.now().getMonthValue() +"/"+ LocalDate.now().getYear();
-		calcGareCompras.setMesAnoReferencia(mesAnoRef);
-		calcGareCompras.setValorPrincipal(valorIcmsStAReter);
-		calcGareCompras.setJuros(juros);
-		calcGareCompras.setMulta(multa);
-		calcGareCompras.setTotal(valorTotal);
-		return calcGareCompras;
+		calcGareCompra.setMesAnoReferencia(mesAnoRef);
+		calcGareCompra.setValorPrincipal(valorIcmsStAReter);
+		calcGareCompra.setJuros(juros);
+		calcGareCompra.setMulta(multa);
+		calcGareCompra.setTotal(valorTotal);
+		return calcGareCompra;
 	}
 	
 	

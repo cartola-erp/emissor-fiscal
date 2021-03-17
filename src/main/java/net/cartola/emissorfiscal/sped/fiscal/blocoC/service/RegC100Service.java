@@ -202,7 +202,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setCodMod(docFisc.getModelo());
 		regC100.setCodSit(getCodSit(docFisc));
 		regC100.setSer(docFisc.getSerie());
-		regC100.setNumDoc(docFisc.getNumero());
+		regC100.setNumDoc(docFisc.getNumeroNota());
 		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
 		regC100.setDtDoc(docFisc.getEmissao());
 		regC100.setDtES(docFisc.getCadastro().toLocalDate());
@@ -273,7 +273,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setCodMod(docFisc.getModelo());
 		regC100.setCodSit(getCodSit(docFisc));
 		regC100.setSer(docFisc.getSerie());
-		regC100.setNumDoc(docFisc.getNumero());
+		regC100.setNumDoc(docFisc.getNumeroNota());
 		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
 		// ACHO QUE NEM PRECISA DISSO
 //		if (docFisc.getStatus().equals(NFeStatus.INUTILIZADA)) {
