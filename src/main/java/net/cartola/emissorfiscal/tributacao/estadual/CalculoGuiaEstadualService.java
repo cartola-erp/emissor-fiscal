@@ -30,7 +30,7 @@ import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.loja.LojaService;
 import net.cartola.emissorfiscal.ncm.Ncm;
-import net.cartola.emissorfiscal.tributacao.CalculoGareCompras;
+import net.cartola.emissorfiscal.tributacao.CalculoGareCompra;
 
 /**
  * GARE
@@ -68,8 +68,8 @@ public class CalculoGuiaEstadualService {
 
 	public CompraDto calculaGuiaGareIcmsStEntrada(DocumentoFiscal documentoFiscal) {
 		LOG.log(Level.INFO, "Fazendo o Calculo Estadual das Guia para os DocumentoFiscal, de entrada");
-		List<CalculoGareCompras> listCalculoIcmsStCompra = new ArrayList<>();
-		Map<DocumentoFiscalItem, CalculoGareCompras> mapCalcGarePorItem = new HashMap<>();
+		List<CalculoGareCompra> listCalculoIcmsStCompra = new ArrayList<>();
+		Map<DocumentoFiscalItem, CalculoGareCompra> mapCalcGarePorItem = new HashMap<>();
 		Optional<Loja> opLoja = lojaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
 		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getEndereco().getUf()).get();
 		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();
@@ -91,7 +91,7 @@ public class CalculoGuiaEstadualService {
 			boolean existeIcmStParaNcm = mapTribEstaGuiaPorNcmAndProdutoOrigem.containsKey(docItem.getNcm());
 			if (existeIcmStParaNcm) {
 				TributacaoEstadualGuia tribEstaGuia = mapTribEstaGuiaPorNcmAndProdutoOrigem.get(docItem.getNcm()).get(docItem.getOrigem());
-				CalculoGareCompras calcGareIcmsStEntr = calcularIcmsStParaOItemDaCompra(docItem, tribEstaGuia, documentoFiscal, opLoja);
+				CalculoGareCompra calcGareIcmsStEntr = calcularIcmsStParaOItemDaCompra(docItem, tribEstaGuia, documentoFiscal, opLoja);
 				listCalculoIcmsStCompra.add(calcGareIcmsStEntr);
 				mapCalcGarePorItem.put(docItem, calcGareIcmsStEntr);
 				compraDto.setFoiCalculadoIcmsSt(true);
@@ -113,8 +113,8 @@ public class CalculoGuiaEstadualService {
 	 * @param opLoja
 	 * @return
 	 */
-	private CalculoGareCompras calcularIcmsStParaOItemDaCompra(DocumentoFiscalItem docItem, TributacaoEstadualGuia tribEstaGuia, DocumentoFiscal docFiscal, Optional<Loja> opLoja) {
-		CalculoGareCompras calcGareCompra = new CalculoGareCompras();
+	private CalculoGareCompra calcularIcmsStParaOItemDaCompra(DocumentoFiscalItem docItem, TributacaoEstadualGuia tribEstaGuia, DocumentoFiscal docFiscal, Optional<Loja> opLoja) {
+		CalculoGareCompra calcGareCompra = new CalculoGareCompra();
 		StringBuilder infoCompl = new StringBuilder();
 		infoCompl.append("Nota Fiscal Nº ").append(docFiscal.getNumeroNota()).append(" CNPJ Nº ")
 				.append(docFiscal.getEmitente().getCnpj())
@@ -168,11 +168,11 @@ public class CalculoGuiaEstadualService {
 	 * @param listCalcIcmsStCompra
 	 * @return
 	 */
-	private CalculoGareCompras totalizaCalcGareIcmsStCompras(List<CalculoGareCompras> listCalcIcmsStCompra) {
-		 CalculoGareCompras totalCalcGareCompra = new CalculoGareCompras();
+	private CalculoGareCompra totalizaCalcGareIcmsStCompras(List<CalculoGareCompra> listCalcIcmsStCompra) {
+		 CalculoGareCompra totalCalcGareCompra = new CalculoGareCompra();
 		 
 		 if (!listCalcIcmsStCompra.isEmpty()) {
-			 CalculoGareCompras objCalcGareCompra = listCalcIcmsStCompra.get(0);
+			 CalculoGareCompra objCalcGareCompra = listCalcIcmsStCompra.get(0);
 			 BigDecimal totalValorPrincipal = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getValorPrincipal()).reduce(BigDecimal.ZERO, BigDecimal::add);
 			 BigDecimal totalJuros = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getJuros()).reduce(BigDecimal.ZERO, BigDecimal::add);
 			 BigDecimal totalMulta = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getMulta()).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -216,7 +216,7 @@ public class CalculoGuiaEstadualService {
 		context.setVariable("docFisc", docFiscal);
 		context.setVariable("listCalcGare", compraDto.getMapCalcGarePorItem().values());
 		
-		CalculoGareCompras totalCalcGareCompra = compraDto.getTotalCalcGareCompra();
+		CalculoGareCompra totalCalcGareCompra = compraDto.getTotalCalcGareCompra();
 		context.setVariable("loja", totalCalcGareCompra.getLoja());
 		context.setVariable("totalCalc", totalCalcGareCompra);
 //		context.setVariable("infoCompl", totalCalcGareCompra.getInfoComplementar());

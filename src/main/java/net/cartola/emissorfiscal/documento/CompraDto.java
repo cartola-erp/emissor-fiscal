@@ -6,7 +6,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.cartola.emissorfiscal.tributacao.CalculoGareCompras;
+import net.cartola.emissorfiscal.tributacao.CalculoGareCompra;
 
 /**
   * @date 10 de mar. de 2021
@@ -22,8 +22,10 @@ public class CompraDto implements Serializable {
 	
 	private DocumentoFiscal docFiscal;
 
-	private Map<DocumentoFiscalItem, CalculoGareCompras> mapCalcGarePorItem;
+	private Map<DocumentoFiscalItem, CalculoGareCompra> mapCalcGarePorItem;
+	private CalculoGareCompra totalCalcGareCompra;
+	private boolean foiCalculadoIcmsSt = false;
 	
-	private CalculoGareCompras totalCalcGareCompra;
+	
 	
 }
