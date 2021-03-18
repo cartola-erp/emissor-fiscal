@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +30,7 @@ import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.loja.LojaService;
 import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.properties.GuiaGareEmailProperties;
 import net.cartola.emissorfiscal.tributacao.CalculoGareCompra;
 
 /**
@@ -45,12 +45,13 @@ public class CalculoGuiaEstadualService {
 	
 	private static final Logger LOG = Logger.getLogger(CalculoGuiaEstadualService.class.getName());
 	
-	private static final String FROM = "guia.gare.icms_st@autogeral.com.br";
-	private static final String TO =  "robson.costa@autogeral.com.br";
 	private String emailTitle;
 
 	@Autowired
 	private TributacaoEstadualGuiaService tribEstaGuiaService;
+	
+	@Autowired
+	private GuiaGareEmailProperties emailPropertie;
 	
 	@Autowired
 	private EstadoService estadoService;
@@ -239,7 +240,7 @@ public class CalculoGuiaEstadualService {
 	 */
 	private Mail getMailSendgridWithContent(String contentHtml) {
 		EmailModel emailSendGrid = new EmailModel();
-		Mail mail = emailSendGrid.withFrom(FROM).withTo(TO).withTitle(emailTitle).withContentHtml(contentHtml).build();
+		Mail mail = emailSendGrid.withFrom(emailPropertie.getFrom()).withTo(emailPropertie.getTo()).withTitle(emailTitle).withContentHtml(contentHtml).build();
 		return mail;
 	}
 	

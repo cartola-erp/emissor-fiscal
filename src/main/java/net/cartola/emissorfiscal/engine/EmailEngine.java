@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sendgrid.Method;
@@ -11,6 +12,8 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
+
+import net.cartola.emissorfiscal.properties.SendgridApiProperties;
 
 /**
   * @date 12 de mar. de 2021
@@ -22,6 +25,8 @@ public class EmailEngine {
 	private static final Logger LOG = Logger.getLogger(EmailEngine.class.getName());
 //	private EmailModel emailModel;
 	
+	@Autowired
+	private SendgridApiProperties sendGridApiProperties;
 	
 	/**
 	 * Envia email usando o Sendgrid
@@ -30,7 +35,7 @@ public class EmailEngine {
 	public void enviarEmail(Mail mail) {
 //		Mail mail = emailSendGrid.getMail();
 		LOG.log(Level.INFO, "Enviando o email: Subject/Title => {0}" ,mail.getSubject());
-	    SendGrid sg = new SendGrid("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");
+	    SendGrid sg = new SendGrid(sendGridApiProperties.getApiKey());
 
 		Request request = new Request();
 		request.setMethod(Method.POST);

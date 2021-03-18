@@ -92,7 +92,7 @@ public class DocumentoEmissaoControllerTest {
 		docFiscal.setOperacao(operacao);
 		docFiscal.setTipoOperacao(IndicadorDeOperacao.SAIDA);
 		docFiscal.setSerie(DOCUMENTO_FISCAL_SERIE);
-		docFiscal.setNumero(DOCUMENTO_FISCAL_NUMERO);
+		docFiscal.setNumeroNota(DOCUMENTO_FISCAL_NUMERO);
 		docFiscal.setEmitente(emitente);
 		docFiscal.setDestinatario(destinatario);
 		docFiscal.setItens(listItens);

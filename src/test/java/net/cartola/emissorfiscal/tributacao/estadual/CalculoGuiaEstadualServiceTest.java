@@ -119,7 +119,7 @@ public class CalculoGuiaEstadualServiceTest {
 		docFisc.setEmitente(emitente);
 		docFisc.setDestinatario(destinatario);
 		docFisc.setItens(listItens);
-		docFisc.setNumero(1234L);
+		docFisc.setNumeroNota(1234L);
 //		docFisc.setEmitente(emitente);
 		docFisc.setNfeChaveAcesso("31210304156194000412550010004160171100808200");
 		return docFisc;
@@ -137,11 +137,12 @@ public class CalculoGuiaEstadualServiceTest {
 		LojaService.findOne(1L).ifPresent(loja -> {
 			compraDto.getTotalCalcGareCompra().setLoja(loja);
 		});
-		String htmlEmail = calcGuiaEstaService.gerarEmail(compraDto);
-		
-		
-		Mail emailSendGrid = calcGuiaEstaService.getMailSendgridWithContent(htmlEmail);
-		emailEngine.enviarEmail(emailSendGrid);
+//		String htmlEmail = calcGuiaEstaService.gerarEmail(compraDto);
+//		
+//		
+//		Mail emailSendGrid = calcGuiaEstaService.getMailSendgridWithContent(htmlEmail);
+//		emailEngine.enviarEmail(emailSendGrid);
+		calcGuiaEstaService.enviarEmail(compraDto);
 
 	}
 

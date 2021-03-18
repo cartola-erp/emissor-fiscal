@@ -503,7 +503,7 @@ public class CalculoFiscalEstadualTest {
 		docFiscal.setOperacao(operacao);
 		docFiscal.setTipoOperacao(IndicadorDeOperacao.SAIDA);
 		docFiscal.setSerie(DOC_FISC_SERIE);
-		docFiscal.setNumero(2L);
+		docFiscal.setNumeroNota(2L);
 		
 		// falta setar esses abaixo
 		docFiscal.setEmitente(emitente);
