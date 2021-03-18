@@ -62,9 +62,9 @@
             </tr>
 
             <tr>
-              <td th:text="${docFisc.numero}">  </td>                       <!-- Informe o numero da compra -->
+              <td th:text="${docFisc.documento}">  </td>                       <!-- Informe o numero da compra -->
               <td th:text="${loja.getLojaAndRazaoSocial()}">  </td>         <!-- Loja -->
-              <td th:text="${docFisc.numero}"> </td>                        <!-- Numero da Nota  -->
+              <td th:text="${docFisc.numeroNota}"> </td>                        <!-- Numero da Nota  -->
               <td th:text="${docFisc.emitente.endereco.uf}"> </td>          <!-- UF -->
               <td th:text="${loja.telefone}"></td>                          <!-- Tel. AG -->
               <td th:text="${loja.cnae}">  </td>                            <!-- CNAE -->
@@ -90,14 +90,14 @@
                     <!-- <th>VLR Total.</th> -->
                     <th>Frete</th>
                     <th>VLR IPI</th>
-                    <th>Desconto</th>
-                    <th>MVA</th>
+                    <th>Desconto (R$)</th>
+                    <th>MVA (%)</th>
                     <th>Prod. Origem</th>
-                    <th>ICMS Aliq. Cred.</th>
-                    <th>Aliq. Interna Dest.</th>
+                    <th>ICMS Aliq. Cred. (%)</th>
+                    <th>Aliq. Interna Dest. (%)</th>
                     <!-- VALORES REFERENTES ao CALCULO de ICMS ST ref. a Cada ITEM -->
-                    <th>Vlr Principal (Guia) </th>
-                    <th>Vlr Total (Guia) (R$)</th>
+                    <th>Vlr Principal (Guia) em R$</th>
+                    <th>Vlr Total (Guia) em R$</th>
                 </tr>
                 <tr th:each="calcGare : ${listCalcGare}">
                     <td th:text="${calcGare.docFiscItem.codigoX}"> </td>                     <!-- Cod X -->
@@ -109,12 +109,12 @@
                     <td th:text="${calcGare.docFiscItem.quantidade}"> </td>                  <!-- Quantidade -->
                     <!-- <td th:text="${, 0, 'POINT', 4 'COMMA')}"> </td>  Vlr total produto -->
                     <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.valorFrete, 0, 'POINT', 4, 'COMMA')}" > </td>                 <!-- Frete -->
-                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.ipiValor, 0, 'POINT', 4, 'COMMA')}" > </td>                   <!-- VLR IPI -->
-                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.desconto, 0, 'POINT', 4, 'COMMA')}" > </td>                   <!-- Desconto -->
-                    <td th:text="${calcGare.tribEstaGuia.icmsIva}"> </td>                    <!-- IVA/MVA -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.ipiValor, 0, 'POINT', 4, 'COMMA') }" > </td>                   <!-- VLR IPI -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.desconto, 0, 'POINT', 4, 'COMMA') }" > </td>                   <!-- Desconto -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsIva, 0, 'POINT', 4, 'COMMA') }"> </td>                    <!-- IVA/MVA -->
                     <td th:text="${calcGare.tribEstaGuia.produtoOrigem.ordinal()}"> </td>      <!-- Origem -->
-                    <td th:text="${calcGare.tribEstaGuia.icmsAliquota}"> </td>               <!-- Aliq. Cred -->
-                    <td th:text="${calcGare.tribEstaGuia.icmsAliqInternaDestino}"> </td>     <!-- Aliq. Interna Dest. -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsAliquota, 0, 'POINT', 4, 'COMMA') }"> </td>               <!-- Aliq. Cred -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsAliqInternaDestino, 0, 'POINT', 4, 'COMMA') }"> </td>     <!-- Aliq. Interna Dest. -->
                     <!-- VALORES REFERENTES ao CALCULO de ICMS ST ref. a Cada ITEM -->
                     <td th:text="${#numbers.formatDecimal(calcGare.valorPrincipal, 0, 'POINT', 4,  'COMMA')}"> </td>                          <!-- Vlr Principal-->
                     <td th:text="${#numbers.formatDecimal(calcGare.total, 0, 'POINT', 4, 'COMMA')}"> </td>                                   <!-- Vlr total -->

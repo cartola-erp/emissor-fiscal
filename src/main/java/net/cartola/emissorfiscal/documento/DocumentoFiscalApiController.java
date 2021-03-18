@@ -95,7 +95,7 @@ public class DocumentoFiscalApiController {
 	
 	
 	@PostMapping(value = "/salvar-compra") 
-	public ResponseEntity<Response<DocumentoFiscal>> saveCompra(@RequestBody DocumentoFiscal docFiscal) {
+	public ResponseEntity<Response<CompraDto>> saveCompra(@RequestBody DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Salvando a Compra {0} " ,docFiscal);
 		Response<DocumentoFiscal> response = new Response<>();
 		// Nessa linha abaixo busco se o DocumentoFiscal existe;
@@ -151,8 +151,8 @@ public class DocumentoFiscalApiController {
 		}
 	}
 	
-	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscalEntrada(DocumentoFiscal docFiscal) {
-		Response<DocumentoFiscal> response = new Response<>();
+	private ResponseEntity<Response<CompraDto>> saveOrEditDocumentoFiscalEntrada(DocumentoFiscal docFiscal) {
+		Response<CompraDto> response = new Response<>();
 		
 		List<String> erros = docFiscalService.setaValoresNecessariosCompra(docFiscal);
 		if(!ValidationHelper.collectionEmpty(erros)) {
@@ -160,9 +160,9 @@ public class DocumentoFiscalApiController {
 			return ResponseEntity.noContent().build();
 		}
 		
-		Optional<DocumentoFiscal> opDocFiscalEntrada = docFiscalService.saveCompra(docFiscal);
-		if(opDocFiscalEntrada.isPresent()) {
-			response.setData(opDocFiscalEntrada.get());
+		Optional<CompraDto> opCompraDto = docFiscalService.saveCompra(docFiscal);
+		if(opCompraDto.isPresent()) {
+			response.setData(opCompraDto.get());
 			return ResponseEntity.ok(response);
 		} else {
 			return ResponseEntity.noContent().build();

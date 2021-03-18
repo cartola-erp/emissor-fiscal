@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.tributacao.estadual;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class CalculoGuiaEstadualService {
 	public CompraDto calculaGuiaGareIcmsStEntrada(DocumentoFiscal documentoFiscal) {
 		LOG.log(Level.INFO, "Fazendo o Calculo Estadual das Guia para os DocumentoFiscal, de entrada");
 		List<CalculoGareCompra> listCalculoIcmsStCompra = new ArrayList<>();
-		Map<DocumentoFiscalItem, CalculoGareCompra> mapCalcGarePorItem = new HashMap<>();
+		List<CalculoGareCompra> listCalcGareItem = new ArrayList<>();
 		Optional<Loja> opLoja = lojaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
 		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getEndereco().getUf()).get();
 		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();
@@ -93,12 +94,14 @@ public class CalculoGuiaEstadualService {
 				TributacaoEstadualGuia tribEstaGuia = mapTribEstaGuiaPorNcmAndProdutoOrigem.get(docItem.getNcm()).get(docItem.getOrigem());
 				CalculoGareCompra calcGareIcmsStEntr = calcularIcmsStParaOItemDaCompra(docItem, tribEstaGuia, documentoFiscal, opLoja);
 				listCalculoIcmsStCompra.add(calcGareIcmsStEntr);
-				mapCalcGarePorItem.put(docItem, calcGareIcmsStEntr);
+//				mapCalcGarePorItem.put(docItem, calcGareIcmsStEntr);
+				listCalcGareItem.add(calcGareIcmsStEntr);
 				compraDto.setFoiCalculadoIcmsSt(true);
 			}
 		});
 		
-		compraDto.setMapCalcGarePorItem(mapCalcGarePorItem);
+		listCalcGareItem.sort(Comparator.comparing(CalculoGareCompra::getNumItem));
+		compraDto.setListCalcGareItem(listCalcGareItem);
 		compraDto.setTotalCalcGareCompra(totalizaCalcGareIcmsStCompras(listCalculoIcmsStCompra));
 		return compraDto;
 	}
@@ -133,7 +136,7 @@ public class CalculoGuiaEstadualService {
 		/** JUROS, MULTA e TOTAL (ainda tenho que calcular) **/
 		BigDecimal juros = BigDecimal.ZERO;
 	    BigDecimal multa = BigDecimal.ZERO;
-	    BigDecimal valorTotal = valorIcmsSt.add(juros).add(multa);
+	    BigDecimal valorTotal = valorIcmsStAReter.add(juros).add(multa);
 		
 	    calcGareCompra.setNumNota(docFiscal.getNumeroNota());
 	    calcGareCompra.setNumCompra(docFiscal.getDocumento());
@@ -178,6 +181,9 @@ public class CalculoGuiaEstadualService {
 			 BigDecimal totalMulta = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getMulta()).reduce(BigDecimal.ZERO, BigDecimal::add);
 			 BigDecimal total = listCalcIcmsStCompra.stream().map(calcIcmsStCompra -> calcIcmsStCompra.getTotal()).reduce(BigDecimal.ZERO, BigDecimal::add);
 			 
+			 totalCalcGareCompra.setNumNota(objCalcGareCompra.getNumNota());
+			 totalCalcGareCompra.setNumCompra(objCalcGareCompra.getNumCompra());
+			 totalCalcGareCompra.setLojaId(objCalcGareCompra.getLojaId());
 			 totalCalcGareCompra.setTipoGuia(objCalcGareCompra.getTipoGuia());
 			 totalCalcGareCompra.setCodigoReceita(objCalcGareCompra.getCodigoReceita());
 			 totalCalcGareCompra.setLoja(objCalcGareCompra.getLoja());
@@ -214,12 +220,11 @@ public class CalculoGuiaEstadualService {
 		Context context  = new Context();
 		
 		context.setVariable("docFisc", docFiscal);
-		context.setVariable("listCalcGare", compraDto.getMapCalcGarePorItem().values());
+		context.setVariable("listCalcGare", compraDto.getListCalcGareItem());
 		
 		CalculoGareCompra totalCalcGareCompra = compraDto.getTotalCalcGareCompra();
 		context.setVariable("loja", totalCalcGareCompra.getLoja());
 		context.setVariable("totalCalc", totalCalcGareCompra);
-//		context.setVariable("infoCompl", totalCalcGareCompra.getInfoComplementar());
 
 		String html = templateEngine.process("tributacao-estadual-guia/email-calculo-icms-st-entrada", context);
 

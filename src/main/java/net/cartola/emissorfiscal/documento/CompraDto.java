@@ -1,17 +1,20 @@
 package net.cartola.emissorfiscal.documento;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import net.cartola.emissorfiscal.tributacao.CalculoGareCompra;
 
-/**
-  * @date 10 de mar. de 2021
-  * @author robson.costa
-  */
+/**	
+ * Classe usada para retornar um DocumentoFiscal de entrada ("Compra"). Para o ERP.
+ * Com, o resultado do Calculo da guia gare de ICMS ST (Somente para itens com NCM de ST, nas entradas vindas de SC, MS e ES)
+ * 
+ * @date 10 de mar. de 2021
+ * @author robson.costa
+ */
 @Getter
 @Setter
 @ToString
@@ -22,10 +25,9 @@ public class CompraDto implements Serializable {
 	
 	private DocumentoFiscal docFiscal;
 
-	private Map<DocumentoFiscalItem, CalculoGareCompra> mapCalcGarePorItem;
+	private List<CalculoGareCompra> listCalcGareItem;	
 	private CalculoGareCompra totalCalcGareCompra;
 	private boolean foiCalculadoIcmsSt = false;
-	
 	
 	
 }
