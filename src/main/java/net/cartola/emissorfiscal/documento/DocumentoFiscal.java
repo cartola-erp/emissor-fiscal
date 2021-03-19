@@ -103,7 +103,7 @@ public class DocumentoFiscal implements Serializable {
 		this.id = id;
 	}
 	
-	@Column(name = "doc")
+	@Column(name = "docu")
 	public int getDocumento() {
 		return documento;
 	}
