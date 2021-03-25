@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.cartola.emissorfiscal.response.Response;
-import net.cartola.emissorfiscal.util.StringUtil;
 
 @RestController
 @RequestMapping("api/v1/loja")
@@ -33,11 +32,10 @@ public class LojaApiController {
 		LOG.log(Level.INFO, "Salvando uma nova loja {0} ", loja);
 		Response<Loja> response = new Response<>();
 
-		Optional<Loja> opLoja = lojaService.findByCnpj(StringUtil.somenteNumeros(loja.getCnpj()));
 		Optional<Loja> opOldLoja = lojaService.findOne(Integer.toUnsignedLong(loja.getCodigoLoja()));
 
-		if (opLoja.isPresent()) {
-			response.setData(opLoja.get());
+		if (opOldLoja.isPresent()) {
+			response.setData(opOldLoja.get());
 			return ResponseEntity.ok(response);
 		} else {
 			Optional<Loja> opLojaSaved = lojaService.save(loja);
@@ -52,7 +50,6 @@ public class LojaApiController {
 		LOG.log(Level.INFO, "Atualizando a loja {0} ", loja);
 		Response<Loja> response = new Response<>();
 
-//		Optional<Loja> opOldLoja = lojaService.findByCnpj(StringUtil.somenteNumeros(loja.getCnpj()));
 		Optional<Loja> opOldLoja = lojaService.findOne(Integer.toUnsignedLong(loja.getCodigoLoja()));
 
 		if (opOldLoja.isPresent()) {
