@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.loja;
 
+import static net.cartola.emissorfiscal.util.StringUtil.somenteNumeros;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,7 @@ public class LojaService {
 	}
 	
 	public Optional<Loja> save(Loja loja) {
+		loja = retiraCaracteresEspeciais(loja);
 		return Optional.ofNullable(lojaRepository.saveAndFlush(loja));
 	}
 		
@@ -32,7 +35,19 @@ public class LojaService {
 		return lojaRepository.findLojaByCnpj(cnpj);
 	}
 	
-	
+	private Loja retiraCaracteresEspeciais(Loja loja) {
+		String cnpj = somenteNumeros(loja.getCnpj());
+		String ie = somenteNumeros(loja.getIe());
+		String cnae = somenteNumeros(loja.getCnae());
+		String cep = somenteNumeros(loja.getCep());
+		
+		loja.setCnpj(cnpj);
+		loja.setIe(ie);
+		loja.setCnae(cnae);
+		loja.setCep(cep);
+		
+		return loja;
+	}
 	
 	
 }

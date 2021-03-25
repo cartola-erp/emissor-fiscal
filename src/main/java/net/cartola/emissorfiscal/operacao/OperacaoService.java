@@ -1,14 +1,19 @@
 package net.cartola.emissorfiscal.operacao;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+
+import net.cartola.emissorfiscal.util.StringUtil;
 
 @Service
 public class OperacaoService {
@@ -17,7 +22,9 @@ public class OperacaoService {
 	private OperacaoRepository operacaoRepository;
 
 	public List<Operacao> findAll() {
-		return operacaoRepository.findAll();
+		List<Operacao> listOperacoes = operacaoRepository.findAll();
+		listOperacoes.sort(Comparator.comparing(Operacao::getId));
+		return listOperacoes;
 	}
 
 	public List<Operacao> findByIdsIn(Set<Long> operacaoIds) {
@@ -25,6 +32,8 @@ public class OperacaoService {
 	}
 	
 	public Optional<Operacao> save(Operacao operacao) {
+		String descricao = StringUtil.prepareString(operacao.getDescricao());
+		operacao.setDescricao(descricao);
 		return Optional.ofNullable(operacaoRepository.saveAndFlush(operacao));
 	}
 
