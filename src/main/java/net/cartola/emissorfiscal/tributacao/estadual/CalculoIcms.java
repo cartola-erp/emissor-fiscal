@@ -46,6 +46,9 @@ public class CalculoIcms {
 		case 30:
 			opCalcImposto = Optional.of(((CalculoImpostoIcms30) calculaIcms30(docItem, tributacao)));
 			break;
+		case 40:
+			opCalcImposto = Optional.of(((CalculoImposto) calculaIcms40(docItem, tributacao)));
+			break;	
 		case 51:
 			opCalcImposto = Optional.of(((CalculoImpostoIcms51) calculaIcms51(docItem, tributacao)));
 			break;
@@ -254,6 +257,27 @@ public class CalculoIcms {
 		return icms30;
 	}
 
+	private CalculoImposto calculaIcms40(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+		LOG.log(Level.INFO, "Calculando o ICMS 40 para o ITEM: {0} ", di);
+		CalculoImposto calcImposto = new CalculoImposto();
+		
+		calcImposto.setImposto(Imposto.ICMS_40);
+		
+		calcImposto.setValorUnitario(BigDecimal.ZERO);
+		calcImposto.setQuantidade(BigDecimal.ZERO);
+		calcImposto.setBaseDeCalculo(BigDecimal.ZERO);
+		calcImposto.setAliquota(BigDecimal.ZERO);
+//		calcIcms.setOrdem(di.getId().intValue()); // -> mudar
+		calcImposto.setValor(BigDecimal.ZERO);
+
+		
+		di.setIcmsCst(tributacao.getIcmsCst());
+		di.setIcmsCest(tributacao.getCest());
+		di.setCfop(tributacao.getCfop());
+		
+		return calcImposto;
+	}
+	
 	private CalculoImpostoIcms51 calculaIcms51(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		// TODO Auto-generated method stub
 		return new CalculoImpostoIcms51();

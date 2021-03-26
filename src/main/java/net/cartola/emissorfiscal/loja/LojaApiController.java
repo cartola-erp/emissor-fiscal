@@ -50,13 +50,15 @@ public class LojaApiController {
 		LOG.log(Level.INFO, "Atualizando a loja {0} ", loja);
 		Response<Loja> response = new Response<>();
 
-		Optional<Loja> opOldLoja = lojaService.findOne(Integer.toUnsignedLong(loja.getCodigoLoja()));
+//		Optional<Loja> opOldLoja = lojaService.findOne(Integer.toUnsignedLong(loja.getCodigoLoja()));
+		loja.setId(Integer.toUnsignedLong(loja.getCodigoLoja()));
+		Optional<Loja> opLoja = lojaService.save(loja);
 
-		if (opOldLoja.isPresent()) {
-			loja.setId(opOldLoja.get().getId());
-			Optional<Loja> opLojaUpdated = lojaService.save(loja);
-			LOG.log(Level.INFO, "Loja atualizada {0} ", opLojaUpdated);
-			response.setData(opOldLoja.get());
+		if (opLoja.isPresent()) {
+			loja.setId(opLoja.get().getId());
+//			Optional<Loja> opLojaUpdated = lojaService.save(loja);
+			LOG.log(Level.INFO, "Loja atualizada {0} ", opLoja);
+			response.setData(opLoja.get());
 			return ResponseEntity.ok(response);
 		} else {
 			List<String> listError = Arrays.asList("Loja não encontrada no EMISSOR-FISCAL");
