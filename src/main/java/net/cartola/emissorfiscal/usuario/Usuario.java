@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,7 +25,8 @@ import org.hibernate.validator.constraints.Length;
  *	@author robson.costa
  */
 @Entity
-@Table(name = "usua")
+@Table(name = "usua", uniqueConstraints = {@UniqueConstraint(columnNames = "login", name = "unk_usua_login" ), 
+			@UniqueConstraint(columnNames = "email", name = "unk_usua_email")} )
 public class Usuario implements Serializable {
 	
 	private static final long serialVersionUID = -2676374644535061459L;

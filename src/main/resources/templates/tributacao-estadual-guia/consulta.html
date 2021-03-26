@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
+	
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<title> Consulta de tributação estadual - (ICMS) </title>
+	</head>
+
+	<body>
+		<section id="consulta-tributacao-estadual-container">
+
+			<!-- BREADCRUMB -->
+			<div>
+				<div class="row mb-3 ">
+					<div class="col-md-12">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb breadcrumb-personalizado">
+								<li class="breadcrumb-item"><a href="/home" class="breadcrumb-item-personalizado">Home</a></li>
+								<li class="breadcrumb-item"><a href="/tributacao-estadual/guia/consulta" class="breadcrumb-item-personalizado">Consultar</a></li>			
+								<li class="breadcrumb-item active" aria-current="page">Tributação Estadual - (GUIA)</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+			</div>
+
+			<div>
+
+				<!-- FORMULÁRIO para CONSULTAR a TRIBUTAÇÃO ESTADUAL, por NCM -->
+				<form action="/tributacao-estadual/guia/consulta" method="POST" >
+                    <div class="form-group form-row zera-padd-left col-md-12">
+                        <div class="form-group col-md-8">
+                            <label><b>Pesquisar tributação estadual das Guias por NCM: </b></label>
+                            <input type="text" class="form-control " id="txtNcmTributacaoEstadual" name="ncm" placeholder="Informe o número do NCM..." minlength="3">
+                        </div>
+
+                        <div>
+                            <button class="btn btn-outline-primary" type="submit" id="btnPesquisar">
+                                <span data-feather="search">search</span>
+                            </button>
+                        </div>
+                    </div>
+				</form>
+
+
+				<!-- TABELA COM AS TRIBUTAÇÕES CONSULTADAS-->
+				<table class="table table-hover table-responsive ">
+					<thead>
+						<tr>
+							<!-- <th scope="col"> <b> ID </b> </th> -->	
+							<th scope="col"> <b> ID </b> </th>
+							<th scope="col"> <b> Tipo Guia </b> </th>	
+							<th scope="col"> <b> UF Origem </b> </th>	
+							<th scope="col"> <b> UF Destino </b> </th>	
+							<th scope="col"> <b> Operação </b> </th>	
+							<th scope="col"> <b> NCM </b> </th>	
+							<th scope="col"> <b> Produto Origem </b> </th>	
+
+							<th scope="col"> <b> Icms Aliq. Interna Destino </b> </th>	
+							<th scope="col"> <b> IVA/MVA </b> </th>	
+							<th scope="col"> <b> Icms Aliq. </b> </th>	
+					
+                            <th scope="col"> <b> Editar </b> </th>	
+                            <th scope="col"> <b> Deletar </b> </th>
+						</tr>
+					</thead>
+									
+					<tbody>
+						<tr th:each="tribEstaGuia: ${listTribEstaGuia}">
+							<td scope="row" th:text="${tribEstaGuia.id}"> 1 </td>	
+							<td scope="row" th:text="${tribEstaGuia.tipoGuia}"> Gare ou GNRE </td>	
+							<td scope="row" th:text="${tribEstaGuia.estadoOrigem.sigla}"> SP </td>	
+							<td scope="row" th:text="${tribEstaGuia.estadoDestino.sigla}"> MG </td>	
+							<td scope="row" th:text="${tribEstaGuia.operacao.descricao}"> Compra Interestadual </td>	
+							<td scope="row" th:text="${tribEstaGuia.ncm.numero}"> 12345678 </td>
+							<td scope="row" th:text="${tribEstaGuia.produtoOrigem.getDescricaoComOrdinal()}"> Nacional </td>
+
+							<td scope="row" th:text="${tribEstaGuia.icmsAliqInternaDestino}"> 12345678 </td>	
+							<td scope="row" th:text="${tribEstaGuia.icmsIva}"> 12345678 </td>	
+							<td scope="row" th:text="${tribEstaGuia.icmsAliquota}"> 12345678 </td>	
+											
+					      <!-- 		EDITAR -->
+                            <td scope="row">
+                                <a th:href="@{'/tributacao-estadual/guia/editar/' + ${tribEstaGuia.id}}">
+                                    <button type="button" class="btn btn-outline-primary ajusta-botao-tbl">
+                                        <span data-feather="edit-3">Editar</span>
+                                    </button>
+                                </a>
+                            </td>
+
+                            <!-- DELETAR -->
+                            <td scope="row">
+                                <!-- <form th:method="DELETE" th:action="${(#mvc.url('NC#delete').arg(0, ncm.id)).build()}"> -->
+                                <form th:method="POST" method="DELETE" th:action="@{'/tributacao-estadual/guia/deletar/' + ${tribEstaGuia.id}}">
+                                    <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl">
+<!--                                     <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl" data-toggle="modal" data-target="#modalDeletarOperacao" > -->
+                                        <span data-feather="trash-2">Deletar</span>
+                                    </button>
+                                </form>
+                            </td>
+
+						 </tr>
+					</tbody>
+							
+						<!-- PAGINAÇÃO ? -->
+						<!-- <ul class="nav nav-pills ">
+							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listConsultorios.totalPages)}">
+								 <a th:href="@{/consultorio/consultar/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
+								 </a>
+							</li>	
+						</ul>
+						-->
+				</table>
+						
+				<ul class="nav nav-pills ">
+					<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listTribEstaGuia.totalPages)}">
+						 <a th:href="@{/tributacao-estadual/guia/consulta/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
+							 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
+						 </a>
+					</li>	
+				</ul>
+
+
+
+			<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDeletarOperacao">
+					Launch demo modal
+    	    </button> -->
+			
+			<!-- INSERINDO O MODAL PARA A CONFIRMAÇÃO DE DELETE-->
+			<!-- <div th:replace="/operacao/modal-deletar :: modal-deletar"></div> -->
+
+
+
+			</div>
+		</section>
+
+	</body>
+
+</html>

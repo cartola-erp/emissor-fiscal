@@ -29,6 +29,7 @@ import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaService;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
+import net.cartola.emissorfiscal.tributacao.estadual.CalculoGuiaEstadualService;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualService;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
@@ -69,6 +70,9 @@ public class DocumentoFiscalService {
 	private CalculoFiscalFederal calcFiscalFederal;
 	
 	@Autowired
+	private CalculoGuiaEstadualService calcGuiaEstaService;
+	
+	@Autowired
 	private DeOlhoNoImpostoService olhoNoImpostoService;
 	
 	public List<DocumentoFiscal> findAll() {
@@ -105,8 +109,14 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
-	public Optional<DocumentoFiscal> saveCompra(DocumentoFiscal documentoFiscal){
-		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
+	public Optional<CompraDto> saveCompra(DocumentoFiscal documentoFiscal) {		
+		CompraDto compraDto = calcGuiaEstaService.calculaGuiaGareIcmsStEntrada(documentoFiscal);
+		if (compraDto.isFoiCalculadoIcmsSt()) {
+			calcGuiaEstaService.enviarEmail(compraDto);
+		}
+		DocumentoFiscal docFiscal = documentoFiscalRepository.saveAndFlush(documentoFiscal);
+		compraDto.setDocFiscal(docFiscal);
+		return Optional.ofNullable(compraDto);
 	}
 	
 	public List<DocumentoFiscal> findDocumentoFiscalByOperacao(Operacao operacao) {
@@ -126,7 +136,7 @@ public class DocumentoFiscalService {
 	}
 	
 	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(String cnpjEmitente, IndicadorDeOperacao tipoOperacao, Long serie, Long numero) {
-		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumero(cnpjEmitente,  tipoOperacao,  serie,  numero);
+		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNota(cnpjEmitente,  tipoOperacao,  serie,  numero);
 	}
 	
 	/**

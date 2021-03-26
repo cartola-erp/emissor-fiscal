@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title> </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+
+    <!-- CSS -->
+    <style>
+        table {
+            width: 100%;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+        }
+    
+        #t01 tr:nth-child(even) {
+            background-color: #eee;
+        }
+    
+        #t01 tr:nth-child(odd) {
+            background-color: #fff;
+        }
+    
+        #t01 th {
+            background-color: black;
+            color: white;
+        }
+    </style>
+
+    <!-- BODY/CORPO do EMAIL -->
+    <body>
+
+        <!-- ========================================================================================== -->
+        <!-- ================================ Tabela referente a nota ================================= -->
+        <!-- ========================================================================================== -->
+        <h1 style="text-align: center;"> 
+            Doc. Fiscal (Chave): 
+            <span th:text="${docFisc.nfeChaveAcesso}">
+        </h1>
+
+        <table border="1" width = "100%" bordercolor = "green" >
+            <tr>
+                <th>Compra</th>
+                <th>Loja</th>
+                <th>Numero Nf</th>
+                <th>Uf de Origem</th>
+                <th>Tel. Loja</th>
+                <th>CNAE (AG)</th>
+                <th>Insc. Estad. (AG)</th>
+            </tr>
+
+            <tr>
+              <td th:text="${docFisc.documento}">  </td>                       <!-- Informe o numero da compra -->
+              <td th:text="${loja.getLojaAndRazaoSocial()}">  </td>         <!-- Loja -->
+              <td th:text="${docFisc.numeroNota}"> </td>                        <!-- Numero da Nota  -->
+              <td th:text="${docFisc.emitente.endereco.uf}"> </td>          <!-- UF -->
+              <td th:text="${loja.telefone}"></td>                          <!-- Tel. AG -->
+              <td th:text="${loja.cnae}">  </td>                            <!-- CNAE -->
+              <td th:text="${loja.ie}">  </td>                              <!-- IE -->
+            </tr>
+        </table>
+
+
+        <!-- ========================================================================================== -->
+        <!-- =================== Tabela Referente a todos os itens da nota com ST ===================== -->
+        <!-- ========================================================================================== -->
+        <h1 style="text-align: center;"> Itens (Somentes os calculados com ST) </h1>
+
+              <table border="1" width = "100%" bordercolor = "green" >
+                 <tr>
+                    <th>COD X</th>
+                    <th>SEQ</th>
+                    <th>Descrição</th>
+                    <th>Nº Item</th>
+                    <th>Ncm</th>     <!-- CASO se um NCM que nunca tenha sido validado pela gabi pintar de cor diferente -->
+                    <th>VLR Prod.</th>
+                    <th>Qtd.</th>
+                    <!-- <th>VLR Total.</th> -->
+                    <th>Frete</th>
+                    <th>VLR IPI</th>
+                    <th>Desconto (R$)</th>
+                    <th>MVA (%)</th>
+                    <th>Prod. Origem</th>
+                    <th>ICMS Aliq. Cred. (%)</th>
+                    <th>Aliq. Interna Dest. (%)</th>
+                    <!-- VALORES REFERENTES ao CALCULO de ICMS ST ref. a Cada ITEM -->
+                    <th>Vlr Principal (Guia) em R$</th>
+                    <th>Vlr Total (Guia) em R$</th>
+                </tr>
+                <tr th:each="calcGare : ${listCalcGare}">
+                    <td th:text="${calcGare.docFiscItem.codigoX}"> </td>                     <!-- Cod X -->
+                    <td th:text="${calcGare.docFiscItem.codigoSequencia}" > </td>            <!-- COD SEQ -->
+                    <td th:text="${calcGare.docFiscItem.descricaoEmpresa}" > </td>           <!-- Desc. -->
+                    <td th:text="${calcGare.docFiscItem.item}" > </td>                       <!-- Nº Item -->
+                    <td th:text="${calcGare.docFiscItem.ncm.numero}"></td>                   <!-- NCM -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.valorUnitario, 0, 'POINT', 4, 'COMMA')}"> </td>               <!-- VLR Prod -->
+                    <td th:text="${calcGare.docFiscItem.quantidade}"> </td>                  <!-- Quantidade -->
+                    <!-- <td th:text="${, 0, 'POINT', 4 'COMMA')}"> </td>  Vlr total produto -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.valorFrete, 0, 'POINT', 4, 'COMMA')}" > </td>                 <!-- Frete -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.ipiValor, 0, 'POINT', 4, 'COMMA') }" > </td>                   <!-- VLR IPI -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.desconto, 0, 'POINT', 4, 'COMMA') }" > </td>                   <!-- Desconto -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsIva, 0, 'POINT', 4, 'COMMA') }"> </td>                    <!-- IVA/MVA -->
+                    <td th:text="${calcGare.tribEstaGuia.produtoOrigem.ordinal()}"> </td>      <!-- Origem -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsAliquota, 0, 'POINT', 4, 'COMMA') }"> </td>               <!-- Aliq. Cred -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsAliqInternaDestino, 0, 'POINT', 4, 'COMMA') }"> </td>     <!-- Aliq. Interna Dest. -->
+                    <!-- VALORES REFERENTES ao CALCULO de ICMS ST ref. a Cada ITEM -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.valorPrincipal, 0, 'POINT', 4,  'COMMA')}"> </td>                          <!-- Vlr Principal-->
+                    <td th:text="${#numbers.formatDecimal(calcGare.total, 0, 'POINT', 4, 'COMMA')}"> </td>                                   <!-- Vlr total -->
+                </tr>
+            </table>
+
+
+        <!-- ========================================================================================== -->
+        <!-- =================== Tabela ref. ao preenchimento da Guia ICMS ST ========================= -->
+        <!-- ========================================================================================== -->    
+        <h1 style="text-align: center;"> 
+            Info da Guia ICMS ST 
+            <!-- <span th:text="${docFisc.nfeChaveAcesso}"> -->
+        </h1>
+
+        <table border="1" width = "100%" bordercolor = "green" >
+            <tr>
+                <th>Nome</th>
+                <th>Endereço</th>
+                <th>Municipio</th>
+                <th>Tel. AG</th>
+                <th>CNAE</th>
+                <th>IE</th>
+                <th>Info. Complementar</th>
+                <th>Data Vencto.</th>
+                <th>Referência</th>
+                <th>Valor Principal</th>
+                <th>Juros</th>
+                <th>Multa</th>
+                <th>Total</th>
+            </tr>
+
+            <tr>
+                <td th:text="${loja.getLojaAndRazaoSocial()}">  </td>                       <!-- Nome -->
+                <td th:text="${loja.getEnderecoAndNumeroAndBairro()}">  </td>               <!-- Endereço -->
+                <td > </td>                        <!-- Municipio -->
+                <td th:text="${loja.telefone}"> </td>                             <!-- CNAE -->
+                <td th:text="${loja.cnae}"> </td>                                 <!-- CNAE -->
+                <td th:text="${loja.ie}"></td>                                    <!-- IE -->
+                <td th:text="${totalCalc.infoComplementar}">  </td>               <!-- Info. Complementar -->
+                <td th:text="${#temporals.format(totalCalc.dataVencimento, 'dd/MM/yyyy') }">  </td>                 <!-- Data Vencto. -->
+                <td th:text="${totalCalc.mesAnoReferencia}"></td>                 <!-- Referência -->
+                <td th:text="${#numbers.formatDecimal(totalCalc.valorPrincipal, 0, 'POINT', 4, 'COMMA') }">  </td>                 <!-- Valor Principal -->
+                <td th:text="${#numbers.formatDecimal(totalCalc.juros, 0, 'POINT', 4, 'COMMA') }">  </td>                          <!-- Juros -->
+                <td th:text="${#numbers.formatDecimal(totalCalc.multa, 0, 'POINT', 4, 'COMMA') }">  </td>                          <!-- Multa -->
+                <td th:text="${#numbers.formatDecimal(totalCalc.total, 0, 'POINT', 4, 'COMMA') }">  </td>                          <!-- Total -->
+            </tr>
+        </table>
+
+
+            <!-- Colocar aqui algumas "considerações.: Ex.: Formula dos Calculos e legendas" -->
+        <div>
+            <h5>OBS</h5> 
+
+            <div>
+                <a href="https://www.fazenda.sp.gov.br/guiasinternet/gare/paginas/gare.aspx" target="_blank"> Gerar Guia Gare - 046.2 - Regime periódioco de apuração </a>
+            </div>
+            
+            <div> 
+                <a href="https://www.fazenda.sp.gov.br/calculadoraeletronica/" target="_blank"> Calculadora eltetrônica para calcular JUROS e MULTA </a>
+            </div>
+        </div>
+
+    </body>
+
+</html>

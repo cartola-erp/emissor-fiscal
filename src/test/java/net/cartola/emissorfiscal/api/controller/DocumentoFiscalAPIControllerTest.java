@@ -83,7 +83,7 @@ public class DocumentoFiscalAPIControllerTest {
 		docFiscal.getEmitente().setCnpj(TestHelper.PESSOA_EMITENTE_CNPJ);
 		docFiscal.setTipoOperacao(IndicadorDeOperacao.SAIDA);
 		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
-		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
+		docFiscal.setNumeroNota(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
 		
 		ParameterizedTypeReference<Response<DocumentoFiscal>> tipoRetorno = new ParameterizedTypeReference<Response<DocumentoFiscal>>() {
 		};
@@ -139,7 +139,7 @@ public class DocumentoFiscalAPIControllerTest {
 		docFiscal.setOperacao(operacao);
 		docFiscal.setTipoOperacao(IndicadorDeOperacao.SAIDA);
 		docFiscal.setSerie(Long.parseLong(TestHelper.DOC_FISCAL_SERIE_1));
-		docFiscal.setNumero(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
+		docFiscal.setNumeroNota(Long.parseLong(TestHelper.DOC_FISCAL_NUMERO_1));
 		docFiscal.setEmitente(emitente);
 		docFiscal.setDestinatario(destinatario);
 		docFiscal.setItens(listItens);

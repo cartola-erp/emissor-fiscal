@@ -334,7 +334,7 @@ public class TestHelper {
 			docFiscal.setOperacao(operacoes.stream()
 					.filter(operacao -> operacao.getDescricao().equals(operacaoDescricao)).findAny().get());
 			docFiscal.setSerie(Long.valueOf(dados[aux++]));
-			docFiscal.setNumero(Long.valueOf(dados[aux++]));
+			docFiscal.setNumeroNota(Long.valueOf(dados[aux++]));
 			docFiscal.setItens(criarDocumentoFiscalItem(ncms));
 			documentosFiscais.add(docFiscal);
 		}
