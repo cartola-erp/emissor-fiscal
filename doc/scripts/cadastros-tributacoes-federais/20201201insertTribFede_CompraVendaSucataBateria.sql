@@ -12,6 +12,6 @@
 
 
 	-- Emitida pelo fornecedor (Vamos Dar Entrada)
-	-- 80 - COMPRA DE SUCATA PARA COMERCIALIZACAO (CONTRIBUINTE)
+	-- 81 - COMPRA DE SUCATA PARA COMERCIALIZACAO (CONTRIBUINTE)
 	INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
-		VALUES (0.076000, 1.000000, 50, 'CONSUMO', 0.000000,0.000000, 1, 'Tributacao Cadastrada - 01/12 - VIA SCRIPT', 0.016500, 1.000000, 50,'NORMAL', 80, 9902);	
+		VALUES (0.076000, 1.000000, 50, 'CONSUMO', 0.000000,0.000000, 1, 'Tributacao Cadastrada - 01/12 - VIA SCRIPT', 0.016500, 1.000000, 50,'NORMAL', 81, 9902);	
