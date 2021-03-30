@@ -12,7 +12,8 @@
 		<min-idle-instances>1</min-idle-instances>
   </automatic-scaling>
   <system-properties>
-    <property name="spring.profiles.active" value="producao"/>
+<!--       <property name="spring.profiles.active" value="producao"/> -->
+    <property name="spring.profiles.active" value="homologacao"/>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
   </system-properties>
   <sessions-enabled>true</sessions-enabled>
