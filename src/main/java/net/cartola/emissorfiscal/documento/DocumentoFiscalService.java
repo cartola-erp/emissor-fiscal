@@ -109,10 +109,13 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
-	public Optional<CompraDto> saveCompra(DocumentoFiscal documentoFiscal) {		
-		CompraDto compraDto = calcGuiaEstaService.calculaGuiaGareIcmsStEntrada(documentoFiscal);
-		if (compraDto.isFoiCalculadoIcmsSt()) {
-			calcGuiaEstaService.enviarEmail(compraDto);
+	public Optional<CompraDto> saveCompra(DocumentoFiscal documentoFiscal, boolean isNewCompra) {		
+		CompraDto compraDto = new CompraDto();
+		if (isNewCompra) {
+			compraDto = calcGuiaEstaService.calculaGuiaGareIcmsStEntrada(documentoFiscal);
+			if (compraDto.isFoiCalculadoIcmsSt()) {
+				calcGuiaEstaService.enviarEmail(compraDto);
+			}
 		}
 		DocumentoFiscal docFiscal = documentoFiscalRepository.saveAndFlush(documentoFiscal);
 		compraDto.setDocFiscal(docFiscal);

@@ -126,7 +126,7 @@ public class CalculoGuiaEstadualService {
 		
 		/** Fazendo calculo de ICMS ST, para o item */
 		BigDecimal aliqIvaMva = BigDecimal.ONE.add(tribEstaGuia.getIcmsIva());
-		BigDecimal baseCalcIcms = docItem.getQuantidade().multiply(docItem.getValorUnitario());
+		BigDecimal baseCalcIcms =  docItem.getIcmsBase(); //docItem.getQuantidade().multiply(docItem.getValorUnitario());
 		BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getValorFrete()).add(docItem.getIpiValor());
 		
 		BigDecimal baseCalcIcmsSt = baseCalcIcmsComFretIpi.subtract(docItem.getDesconto()).multiply(aliqIvaMva);

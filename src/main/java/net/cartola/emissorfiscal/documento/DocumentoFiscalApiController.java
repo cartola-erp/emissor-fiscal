@@ -100,11 +100,13 @@ public class DocumentoFiscalApiController {
 		Response<DocumentoFiscal> response = new Response<>();
 		// Nessa linha abaixo busco se o DocumentoFiscal existe;
 		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
+		boolean isNewCompra = true;
 		if(opDocFiscal.isPresent()) {
 			docFiscal.setId(opDocFiscal.get().getId());
 			docFiscalService.deleteById(opDocFiscal.get().getId());
+			isNewCompra = false;
 		}
-		return saveOrEditDocumentoFiscalEntrada(docFiscal);
+		return saveOrEditDocumentoFiscalEntrada(docFiscal, isNewCompra);
 	}
 	
 	/**
@@ -151,7 +153,7 @@ public class DocumentoFiscalApiController {
 		}
 	}
 	
-	private ResponseEntity<Response<CompraDto>> saveOrEditDocumentoFiscalEntrada(DocumentoFiscal docFiscal) {
+	private ResponseEntity<Response<CompraDto>> saveOrEditDocumentoFiscalEntrada(DocumentoFiscal docFiscal, boolean isNewCompra) {
 		Response<CompraDto> response = new Response<>();
 		
 		List<String> erros = docFiscalService.setaValoresNecessariosCompra(docFiscal);
@@ -160,7 +162,7 @@ public class DocumentoFiscalApiController {
 			return ResponseEntity.noContent().build();
 		}
 		
-		Optional<CompraDto> opCompraDto = docFiscalService.saveCompra(docFiscal);
+		Optional<CompraDto> opCompraDto = docFiscalService.saveCompra(docFiscal, isNewCompra);
 		if(opCompraDto.isPresent()) {
 			response.setData(opCompraDto.get());
 			return ResponseEntity.ok(response);
