@@ -628,4 +628,96 @@ public class DocumentoFiscalItem implements Serializable {
 		this.documentoFiscal = documentoFiscal;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codigoSequencia == null) ? 0 : codigoSequencia.hashCode());
+		result = prime * result + ((codigoX == null) ? 0 : codigoX.hashCode());
+		result = prime * result + ((desconto == null) ? 0 : desconto.hashCode());
+		result = prime * result + ((descricaoEmpresa == null) ? 0 : descricaoEmpresa.hashCode());
+		result = prime * result + ((finalidade == null) ? 0 : finalidade.hashCode());
+		result = prime * result + item;
+		result = prime * result + ((origem == null) ? 0 : origem.hashCode());
+		result = prime * result + ((quantidade == null) ? 0 : quantidade.hashCode());
+		result = prime * result + ((unidade == null) ? 0 : unidade.hashCode());
+		result = prime * result + ((valorFrete == null) ? 0 : valorFrete.hashCode());
+		result = prime * result + ((valorUnitario == null) ? 0 : valorUnitario.hashCode());
+		return result;
+	}
+
+	/**
+	 * Considera se o <b>mesmo item</b> caso os valores abaixo <b> SEJAM IGUAIS:</b> 
+	 * 	
+	 * 	<p> - Codigo X											</p>	
+	 * 	<p> - Codigo Sequencia                                  </p>
+	 * 	<p> - DescricaoEmpresa                                  </p>
+	 * 	<p> - Finalidade                                        </p>
+	 * 	<p> - Desconto                                          </p>
+	 *  <p> - item (num do item no DocumentoFiscal/nfe)         </p>
+	 *  <p> - Origem                                            </p>
+	 *  <p> - Quantidade                                        </p>
+	 *  <p> - Valor do Frete                                    </p>
+	 *  <p> - Valor Unitário                                    </p>
+	 *                                                          </p>
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DocumentoFiscalItem other = (DocumentoFiscalItem) obj;
+		if (codigoSequencia == null) {
+			if (other.codigoSequencia != null)
+				return false;
+		} else if (!codigoSequencia.equals(other.codigoSequencia))
+			return false;
+		if (codigoX == null) {
+			if (other.codigoX != null)
+				return false;
+		} else if (!codigoX.equals(other.codigoX))
+			return false;
+		if (desconto == null) {
+			if (other.desconto != null)
+				return false;
+		} else if (desconto.compareTo(other.desconto) != 0)
+			return false;
+		if (descricaoEmpresa == null) {
+			if (other.descricaoEmpresa != null)
+				return false;
+		} else if (!descricaoEmpresa.equals(other.descricaoEmpresa))
+			return false;
+		if (finalidade != other.finalidade)
+			return false;
+		if (item != other.item)
+			return false;
+		if (origem != other.origem)
+			return false;
+		if (quantidade == null) {
+			if (other.quantidade != null)
+				return false;
+		} else if (quantidade.compareTo(other.quantidade) != 0)
+			return false;
+		if (unidade == null) {
+			if (other.unidade != null)
+				return false;
+		} else if (!unidade.equals(other.unidade))
+			return false;
+		if (valorFrete == null) {
+			if (other.valorFrete != null)
+				return false;
+		} else if (valorFrete.compareTo(other.valorFrete) != 0)
+			return false;
+		if (valorUnitario == null) {
+			if (other.valorUnitario != null)
+				return false;
+		} else if (valorUnitario.compareTo(other.valorUnitario) != 0)
+			return false;
+		return true;
+	}
+
+	
 }
