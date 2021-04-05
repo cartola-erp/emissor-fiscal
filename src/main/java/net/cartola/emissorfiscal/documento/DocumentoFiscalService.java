@@ -46,6 +46,9 @@ public class DocumentoFiscalService {
 	private DocumentoFiscalRepository documentoFiscalRepository;
 	
 	@Autowired
+	private DocumentoFiscalItemService docuFiscItemService;
+	
+	@Autowired
 	private OperacaoService operacaoService;
 	
 	@Autowired
@@ -78,6 +81,26 @@ public class DocumentoFiscalService {
 	public List<DocumentoFiscal> findAll() {
 		return documentoFiscalRepository.findAll();
 	}
+
+	public List<DocumentoFiscal> findDocumentoFiscalByOperacao(Operacao operacao) {
+		return documentoFiscalRepository.findByOperacao(operacao);
+	}
+	
+	public List<DocumentoFiscal> findDocumentoFiscalByVariasOperacoes(Collection<Operacao> operacoes) {
+		return documentoFiscalRepository.findByOperacaoIn(operacoes);
+	}
+	
+	public Optional<DocumentoFiscal> findOne(Long id) {
+		return documentoFiscalRepository.findById(id);
+	}
+	
+	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(String cnpjEmitente, IndicadorDeOperacao tipoOperacao, Long serie, Long numero) {
+		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNota(cnpjEmitente,  tipoOperacao,  serie,  numero);
+	}
+
+	public void deleteById(Long id) {
+		documentoFiscalRepository.deleteById(id);
+	}
 	
 	/**
 	 * O "lojaEmitDest", é usado na query, para trazer todos os DocFiscais, em que uma Determinada Loja esteja envolvida.
@@ -99,16 +122,12 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
-	public Optional<DocumentoFiscal> updateStatusAndChaveAcesso(DocumentoFiscal documentoFiscal) {
-		
-		/**
-		 * VER O QUE EU PRECISO FAZER PARA ATUALIZAR O DOCUMENTO FISCAL
-		 * */
-		
-		
-		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
-	}
-	
+	/**
+	 * Método  que responsável por salvar uma Compra (DocumentoFiscal de ENTRADA)
+	 * @param documentoFiscal
+	 * @param isNewCompra
+	 * @return
+	 */
 	public Optional<CompraDto> saveCompra(DocumentoFiscal documentoFiscal, boolean isNewCompra) {		
 		CompraDto compraDto = new CompraDto();
 		if (isNewCompra) {
@@ -122,26 +141,31 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(compraDto);
 	}
 	
-	public List<DocumentoFiscal> findDocumentoFiscalByOperacao(Operacao operacao) {
-		return documentoFiscalRepository.findByOperacao(operacao);
-	}
-	
-	public List<DocumentoFiscal> findDocumentoFiscalByVariasOperacoes(Collection<Operacao> operacoes) {
-		return documentoFiscalRepository.findByOperacaoIn(operacoes);
-	}
-	
-	public Optional<DocumentoFiscal> findOne(Long id) {
-		return documentoFiscalRepository.findById(id);
+	/**
+	 * Método que irá preparar o newDocFiscal, para salvar no Banco de Dados.
+	 * PS: Ainda tem que chamar, o método -> {@linkplain} validaDadosESetaValoresNecessarios(...); para o Documento, que será salvo no Banco
+	 * 
+	 * @param opOldDocFiscal - DocumentoFiscal, que está atualmente no Banco de Dados;
+	 * @param newDocFiscal - DocumentoFiscal com as novas informações para serem atualizadas
+	 * 
+	 * @return Lista de erros que impedem de atualizar o DocumentoFiscal no emissor-fiscal
+	 */
+	public void prepareDocumentoFiscalToUpdate(Optional<DocumentoFiscal> opOldDocFiscal, DocumentoFiscal newDocFiscal) {
+		Map<Integer, DocumentoFiscalItem> mapNewItemPorNumItem = newDocFiscal.getItens().stream().collect(toMap(DocumentoFiscalItem::getItem, newDocFiscItem -> newDocFiscItem));
+		DocumentoFiscal oldDocFiscal = opOldDocFiscal.get();
+		
+		newDocFiscal.setId(oldDocFiscal.getId());
+		boolean isItensEquals = newDocFiscal.getItens().containsAll(opOldDocFiscal.get().getItens());
+		if (isItensEquals) {
+			oldDocFiscal.getItens().stream().forEach(oldItem -> mapNewItemPorNumItem.get(oldItem.getItem()).setId(oldItem.getId()));
+		} else {
+			docuFiscItemService.deleteByListItens(oldDocFiscal.getItens());
+		}
+		List<DocumentoFiscalItem> newListItens = new ArrayList<>();
+		newListItens.addAll(mapNewItemPorNumItem.values());
+		newDocFiscal.setItens(newListItens);
 	}
 
-	public void deleteById(Long id) {
-		documentoFiscalRepository.deleteById(id);
-	}
-	
-	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(String cnpjEmitente, IndicadorDeOperacao tipoOperacao, Long serie, Long numero) {
-		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNota(cnpjEmitente,  tipoOperacao,  serie,  numero);
-	}
-	
 	/**
 	 * Valida se as informações necessárias para um documento Fiscal existem, caso sim, as mesmas são setadas no 
 	 * documentoFiscal
@@ -151,7 +175,7 @@ public class DocumentoFiscalService {
 	 * @return
 	 */
 	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
-		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o DocumentoFiscal {0} ", documentoFiscal);
+		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o Documento = {0} ", documentoFiscal.getDocumento());
 		Map<String, Boolean> mapErros = new HashMap<>(); // FALSE == NÃO TEM ERRO | TRUE == TEM ERRO
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
 		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());

@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.cartola.emissorfiscal.ibpt.DeOlhoNoImpostoService;
 import net.cartola.emissorfiscal.response.Response;
-import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
-import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 import net.cartola.emissorfiscal.util.ValidationHelper;
 
 
@@ -26,7 +24,6 @@ import net.cartola.emissorfiscal.util.ValidationHelper;
  *	22 de nov de 2019
  *	@author robson.costa
  */
-
 @RestController
 @RequestMapping("api/v1/documento-fiscal")
 public class DocumentoFiscalApiController {
@@ -35,12 +32,6 @@ public class DocumentoFiscalApiController {
 	
 	@Autowired
 	private DocumentoFiscalService docFiscalService;
-	
-	@Autowired
-	private CalculoFiscalFederal calcFiscalFederal;
-	
-	@Autowired
-	private CalculoFiscalEstadual calFiscalEstadual;
 	
 	@Autowired
 	private DeOlhoNoImpostoService olhoNoImpostoService;
@@ -60,79 +51,28 @@ public class DocumentoFiscalApiController {
 		return ResponseEntity.ok(response);
 	}
 	 
-	
 	@PostMapping()
-	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal docFiscal) {
-//		Response<DocumentoFiscal> response = new Response<>();
-		LOG.log(Level.INFO, "Salvando o DocumentoFiscal {0} " ,docFiscal);
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
+	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal newDocFiscal) {
+		LOG.log(Level.INFO, "Salvando o DocumentoFiscal {0} " ,newDocFiscal);
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(newDocFiscal.getEmitente().getCnpj(), newDocFiscal.getTipoOperacao(), newDocFiscal.getSerie(), newDocFiscal.getNumeroNota());
 //
 		if(opDocFiscal.isPresent()) {
-//			response.setData(opDocFiscal.get());
-//			return ResponseEntity.ok(response);
-			docFiscal.setId(opDocFiscal.get().getId());
-			docFiscalService.deleteById(opDocFiscal.get().getId());
+			docFiscalService.prepareDocumentoFiscalToUpdate(opDocFiscal, newDocFiscal);
 		} 
-		return saveOrEditDocumentoFiscal(docFiscal);
+		return saveOrEditDocumentoFiscal(newDocFiscal);
 	}
-	
-	@PutMapping()
-	public ResponseEntity<Response<DocumentoFiscal>> update(@Valid @RequestBody DocumentoFiscal docFiscal) {
-		LOG.log(Level.INFO, "Atualizando o DocumentoFiscal {0} " ,docFiscal);
-		Response<DocumentoFiscal> response = new Response<>();
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
 
-		if (!opDocFiscal.isPresent()) {
+	@PutMapping()
+	public ResponseEntity<Response<DocumentoFiscal>> update(@Valid @RequestBody DocumentoFiscal newDocFiscal) {
+		LOG.log(Level.INFO, "Atualizando o DocumentoFiscal {0} " ,newDocFiscal);
+		Optional<DocumentoFiscal> opOldDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(newDocFiscal.getEmitente().getCnpj(), newDocFiscal.getTipoOperacao(), newDocFiscal.getSerie(), newDocFiscal.getNumeroNota());
+
+		if (!opOldDocFiscal.isPresent()) {
 			return ResponseEntity.noContent().build();
 		}
-//		docFiscal.setId(opDocFiscal.get().getId());
-		DocumentoFiscal docFiscInDb = opDocFiscal.get();
-		docFiscInDb.setNfeChaveAcesso(docFiscal.getNfeChaveAcesso());
-		docFiscInDb.setStatus(docFiscal.getStatus());
-		docFiscalService.updateStatusAndChaveAcesso(docFiscInDb).ifPresent(updatedDocFiscal -> response.setData(updatedDocFiscal));
-		return ResponseEntity.ok(response);
+		docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
+		return saveOrEditDocumentoFiscal(newDocFiscal);
 	}
-	
-	
-	@PostMapping(value = "/salvar-compra") 
-	public ResponseEntity<Response<CompraDto>> saveCompra(@RequestBody DocumentoFiscal docFiscal) {
-		LOG.log(Level.INFO, "Salvando a Compra {0} " ,docFiscal);
-		Response<DocumentoFiscal> response = new Response<>();
-		// Nessa linha abaixo busco se o DocumentoFiscal existe;
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
-		boolean isNewCompra = true;
-		if(opDocFiscal.isPresent()) {
-			docFiscal.setId(opDocFiscal.get().getId());
-			docFiscalService.deleteById(opDocFiscal.get().getId());
-			isNewCompra = false;
-		}
-		return saveOrEditDocumentoFiscalEntrada(docFiscal, isNewCompra);
-	}
-	
-	/**
-	 * DEPOIS QUE TERMINAR DE IMPLANTAR O ICMS (save(...) ), APAGAR ESSE MÉTODO
-	 * @param docFiscal
-	 * @return
-	 */
-	@PostMapping("/busca-calculo-federal")
-	public ResponseEntity<Response<DocumentoFiscal>> findCalculoFederal(@Valid @RequestBody DocumentoFiscal docFiscal) {
-		LOG.log(Level.INFO, "Buscando calculo de PIS/COFINS, para o DocumentoFiscal {0}", docFiscal);
-		Response<DocumentoFiscal> response = new Response<>();
-		// 1 - VALIDAR
-		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, false, true);
-		if (!ValidationHelper.collectionEmpty(erros)) {
-			LOG.log(Level.WARNING, "Houve algum erro na validação do DocumentoFiscal: {0} ", erros);
-			response.setErrors(erros);
-			return ResponseEntity.badRequest().body(response);
-		}
-		
-		// 2 - CALCULAR
-		calcFiscalFederal.calculaImposto(docFiscal);
-		olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(docFiscal));
-		response.setData(docFiscal);
-		return ResponseEntity.ok(response);
-	}
-	
 	
 	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {
 		Response<DocumentoFiscal> response = new Response<>();
@@ -153,6 +93,23 @@ public class DocumentoFiscalApiController {
 		}
 	}
 	
+	// ========================================================== REFERENTE as "COMPRAS_DBF" ================================================================================
+	
+	@PostMapping(value = "/salvar-compra") 
+	public ResponseEntity<Response<CompraDto>> saveCompra(@RequestBody DocumentoFiscal docFiscal) {
+		LOG.log(Level.INFO, "Salvando a Compra {0} " ,docFiscal);
+		Response<DocumentoFiscal> response = new Response<>();
+		// Nessa linha abaixo busco se o DocumentoFiscal existe;
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
+		boolean isNewCompra = true;
+		if(opDocFiscal.isPresent()) {
+			docFiscal.setId(opDocFiscal.get().getId());
+			docFiscalService.deleteById(opDocFiscal.get().getId());
+			isNewCompra = false;
+		}
+		return saveOrEditDocumentoFiscalEntrada(docFiscal, isNewCompra);
+	}
+
 	private ResponseEntity<Response<CompraDto>> saveOrEditDocumentoFiscalEntrada(DocumentoFiscal docFiscal, boolean isNewCompra) {
 		Response<CompraDto> response = new Response<>();
 		
@@ -169,7 +126,6 @@ public class DocumentoFiscalApiController {
 		} else {
 			return ResponseEntity.noContent().build();
 		}
-		
 	}
 
 }

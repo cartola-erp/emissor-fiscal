@@ -46,7 +46,7 @@ public class DocumentoFiscal implements Serializable {
 	private static final String PESSOA_TIPO_DESTINATARIO_OBRIGATORIO = "Atenção!! A informação referente a ao tipo de pessoa (Física ou Jurídica) é obrigatória!";
 
 	private Long id;
-    private int documento;
+    private int documento;		// Campo referente a COMPRA ou NFE (do ERP, dependendo do tipo do DocumentoFiscal, que for)
 	private Operacao operacao;
 	private IndicadorDeOperacao tipoOperacao;
 	private Long serie;

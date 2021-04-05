@@ -42,4 +42,9 @@ public class DocumentoFiscalItemService {
 	public void deleteById(Long id) {
 		documentoFiscalItemRepository.deleteById(id);
 	}
+	
+	public void deleteByListItens(Collection<DocumentoFiscalItem> listItens) {
+		documentoFiscalItemRepository.deleteInBatch(listItens);
+	}
+	
 }
