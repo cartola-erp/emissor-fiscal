@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,11 +26,12 @@ import net.cartola.emissorfiscal.estado.EstadoSigla;
  * @date 6 de jan. de 2021
  * @author robson.costa
  */
-@Entity
-@Table(name = "pess_end")
+@EqualsAndHashCode
 @Getter
 @Setter
 @ToString
+@Entity
+@Table(name = "pess_end")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PessoaEndereco implements Serializable {
 	
@@ -37,7 +39,7 @@ public class PessoaEndereco implements Serializable {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "pess_end_id")
-	private Long id;
+	@EqualsAndHashCode.Exclude private Long id;
 	
 	@Column(name = "cad_cod_erp")
 	private int cadastroCodigoErp;

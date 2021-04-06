@@ -491,4 +491,208 @@ public class DocumentoFiscal implements Serializable {
 		this.valorImpostoMunicipal = valorImpostoMunicipal;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cofinsBase == null) ? 0 : cofinsBase.hashCode());
+		result = prime * result + ((cofinsValor == null) ? 0 : cofinsValor.hashCode());
+		result = prime * result + ((destinatario == null) ? 0 : destinatario.hashCode());
+		result = prime * result + documento;
+		result = prime * result + ((emissao == null) ? 0 : emissao.hashCode());
+		result = prime * result + ((emitente == null) ? 0 : emitente.hashCode());
+		result = prime * result + ((icmsBase == null) ? 0 : icmsBase.hashCode());
+		result = prime * result + ((icmsFcpValor == null) ? 0 : icmsFcpValor.hashCode());
+		result = prime * result + ((icmsStBase == null) ? 0 : icmsStBase.hashCode());
+		result = prime * result + ((icmsStValor == null) ? 0 : icmsStValor.hashCode());
+		result = prime * result + ((icmsValor == null) ? 0 : icmsValor.hashCode());
+		result = prime * result + ((icmsValorDesonerado == null) ? 0 : icmsValorDesonerado.hashCode());
+		result = prime * result + ((icmsValorUfDestino == null) ? 0 : icmsValorUfDestino.hashCode());
+		result = prime * result + ((indicadorFrete == null) ? 0 : indicadorFrete.hashCode());
+		result = prime * result + ((indicadorPagamento == null) ? 0 : indicadorPagamento.hashCode());
+		result = prime * result + ((ipiBase == null) ? 0 : ipiBase.hashCode());
+		result = prime * result + ((ipiValor == null) ? 0 : ipiValor.hashCode());
+		result = prime * result + ((itens == null) ? 0 : itens.hashCode());
+		result = prime * result + ((modelo == null) ? 0 : modelo.hashCode());
+		result = prime * result + ((numeroNota == null) ? 0 : numeroNota.hashCode());
+		result = prime * result + ((operacao == null) ? 0 : operacao.hashCode());
+		result = prime * result + ((pisBase == null) ? 0 : pisBase.hashCode());
+		result = prime * result + ((pisValor == null) ? 0 : pisValor.hashCode());
+		result = prime * result + ((serie == null) ? 0 : serie.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((tipoOperacao == null) ? 0 : tipoOperacao.hashCode());
+		result = prime * result + ((valorDesconto == null) ? 0 : valorDesconto.hashCode());
+		result = prime * result + ((valorFrete == null) ? 0 : valorFrete.hashCode());
+		result = prime * result + ((valorImpostoEstadual == null) ? 0 : valorImpostoEstadual.hashCode());
+		result = prime * result + ((valorImpostoFederal == null) ? 0 : valorImpostoFederal.hashCode());
+		result = prime * result + ((valorImpostoMunicipal == null) ? 0 : valorImpostoMunicipal.hashCode());
+		result = prime * result
+				+ ((valorOutrasDespesasAcessorias == null) ? 0 : valorOutrasDespesasAcessorias.hashCode());
+		result = prime * result + ((valorSeguro == null) ? 0 : valorSeguro.hashCode());
+		result = prime * result + ((vlrTotalProduto == null) ? 0 : vlrTotalProduto.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DocumentoFiscal other = (DocumentoFiscal) obj;
+		if (cofinsBase == null) {
+			if (other.cofinsBase != null)
+				return false;
+		} else if (cofinsBase.compareTo(other.cofinsBase) != 0)
+			return false;
+		if (cofinsValor == null) {
+			if (other.cofinsValor != null)
+				return false;
+		} else if (cofinsValor.compareTo(other.cofinsValor) != 0)
+			return false;
+		if (destinatario == null) {
+			if (other.destinatario != null)
+				return false;
+		} else if (!destinatario.equals(other.destinatario))
+			return false;
+		if (documento != other.documento)
+			return false;
+		if (emissao == null) {
+			if (other.emissao != null)
+				return false;
+		} else if (!emissao.equals(other.emissao))
+			return false;
+		if (emitente == null) {
+			if (other.emitente != null)
+				return false;
+		} else if (!emitente.equals(other.emitente))
+			return false;
+		if (icmsBase == null) {
+			if (other.icmsBase != null)
+				return false;
+		} else if (icmsBase.compareTo(other.icmsBase) != 0)
+			return false;
+		if (icmsFcpValor == null) {
+			if (other.icmsFcpValor != null)
+				return false;
+		} else if (icmsFcpValor.compareTo(other.icmsFcpValor) != 0)
+			return false;
+		if (icmsStBase == null) {
+			if (other.icmsStBase != null)
+				return false;
+		} else if (icmsStBase.compareTo(other.icmsStBase) != 0)
+			return false;
+		if (icmsStValor == null) {
+			if (other.icmsStValor != null)
+				return false;
+		} else if (icmsStValor.compareTo(other.icmsStValor) != 0)
+			return false;
+		if (icmsValor == null) {
+			if (other.icmsValor != null)
+				return false;
+		} else if (icmsValor.compareTo(other.icmsValor) != 0)
+			return false;
+		if (icmsValorDesonerado == null) {
+			if (other.icmsValorDesonerado != null)
+				return false;
+		} else if (icmsValorDesonerado.compareTo(other.icmsValorDesonerado) != 0)
+			return false;
+		if (icmsValorUfDestino == null) {
+			if (other.icmsValorUfDestino != null)
+				return false;
+		} else if (icmsValorUfDestino.compareTo(other.icmsValorUfDestino) != 0)
+			return false;
+		if (indicadorFrete != other.indicadorFrete)
+			return false;
+		if (indicadorPagamento != other.indicadorPagamento)
+			return false;
+		if (ipiBase == null) {
+			if (other.ipiBase != null)
+				return false;
+		} else if (ipiBase.compareTo(other.ipiBase) != 0)
+			return false;
+		if (ipiValor == null) {
+			if (other.ipiValor != null)
+				return false;
+		} else if (ipiValor.compareTo(other.ipiValor) != 0)
+			return false;
+		if (itens == null) {
+			if (other.itens != null)
+				return false;
+		} else if (!itens.equals(other.itens))
+			return false;
+		if (modelo != other.modelo)
+			return false;
+		if (numeroNota == null) {
+			if (other.numeroNota != null)
+				return false;
+		} else if (numeroNota.compareTo(other.numeroNota) != 0)
+			return false;
+		if (operacao == null) {
+			if (other.operacao != null)
+				return false;
+		} else if (!operacao.equals(other.operacao))
+			return false;
+		if (pisBase == null) {
+			if (other.pisBase != null)
+				return false;
+		} else if (pisBase.compareTo(other.pisBase) != 0)
+			return false;
+		if (pisValor == null) {
+			if (other.pisValor != null)
+				return false;
+		} else if (pisValor.compareTo(other.pisValor) != 0)
+			return false;
+		if (serie == null) {
+			if (other.serie != null)
+				return false;
+		} else if (serie.compareTo(other.serie) != 0)
+			return false;
+		if (tipoOperacao != other.tipoOperacao)
+			return false;
+		if (valorDesconto == null) {
+			if (other.valorDesconto != null)
+				return false;
+		} else if (valorDesconto.compareTo(other.valorDesconto) != 0)
+			return false;
+		if (valorFrete == null) {
+			if (other.valorFrete != null)
+				return false;
+		} else if (valorFrete.compareTo(other.valorFrete) != 0)
+			return false;
+		if (valorImpostoEstadual == null) {
+			if (other.valorImpostoEstadual != null)
+				return false;
+		} else if (valorImpostoEstadual.compareTo(other.valorImpostoEstadual) != 0)
+			return false;
+		if (valorImpostoFederal == null) {
+			if (other.valorImpostoFederal != null)
+				return false;
+		} else if (valorImpostoFederal.compareTo(other.valorImpostoFederal) != 0)
+			return false;
+		if (valorImpostoMunicipal == null) {
+			if (other.valorImpostoMunicipal != null)
+				return false;
+		} else if (valorImpostoMunicipal.compareTo(other.valorImpostoMunicipal) != 0)
+			return false;
+		if (valorOutrasDespesasAcessorias == null) {
+			if (other.valorOutrasDespesasAcessorias != null)
+				return false;
+		} else if (valorOutrasDespesasAcessorias.compareTo(other.valorOutrasDespesasAcessorias) != 0)
+			return false;
+		if (valorSeguro == null) {
+			if (other.valorSeguro != null)
+				return false;
+		} else if (valorSeguro.compareTo(other.valorSeguro) != 0)
+			return false;
+		if (vlrTotalProduto == null) {
+			if (other.vlrTotalProduto != null)
+				return false;
+		} else if (vlrTotalProduto.compareTo(other.vlrTotalProduto) != 0)
+			return false;
+		return true;
+	}
+	
 }

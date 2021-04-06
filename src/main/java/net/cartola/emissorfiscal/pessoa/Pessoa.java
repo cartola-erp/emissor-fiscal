@@ -13,17 +13,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.EqualsAndHashCode;
+
 /**
  *  Tabela populada pela -> cadastros | Do ERP
  *	22 de nov de 2019
  *	@author robson.costa
  */
 
+@EqualsAndHashCode
 @Entity
 @Table(name = "pess")
 public class Pessoa {
 	
-	private Long id;
+	@EqualsAndHashCode.Exclude private Long id;
 	private String cnpj;
     private String cpf;
 	private RegimeTributario regimeTributario;

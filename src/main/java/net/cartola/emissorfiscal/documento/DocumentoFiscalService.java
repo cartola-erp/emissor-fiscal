@@ -95,7 +95,8 @@ public class DocumentoFiscalService {
 	}
 	
 	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(String cnpjEmitente, IndicadorDeOperacao tipoOperacao, Long serie, Long numero) {
-		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNota(cnpjEmitente,  tipoOperacao,  serie,  numero);
+		Optional<DocumentoFiscal> opDocFiscal = documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNota(cnpjEmitente,  tipoOperacao,  serie,  numero);
+		return opDocFiscal.get() != null ? opDocFiscal : Optional.empty();
 	}
 
 	public void deleteById(Long id) {
