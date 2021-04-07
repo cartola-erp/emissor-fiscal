@@ -13,7 +13,7 @@ public class CalculoImposto implements Serializable {
 	protected BigDecimal valorUnitario;
 	protected int ordem;
 	protected BigDecimal quantidade;
-	protected BigDecimal baseDeCalculo;
+	protected BigDecimal baseDeCalculo = BigDecimal.ZERO;
 	protected BigDecimal aliquota;
 	protected BigDecimal valor;
 	

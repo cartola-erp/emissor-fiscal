@@ -48,7 +48,7 @@ public final class NumberUtilRegC100 {
 		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? null : BigDecimal.ZERO;
 	}
 	
-	private static BigDecimal multiplicaAliqPorCem(BigDecimal aliqEmDecimal) {
+	public static BigDecimal multiplicaAliqPorCem(BigDecimal aliqEmDecimal) {
 		boolean isAliqEmDecimal = aliqEmDecimal.compareTo(BigDecimal.ONE) == 0;
 		if (aliqEmDecimal != null && aliqEmDecimal != BigDecimal.ZERO && !isAliqEmDecimal) {
 			BigDecimal aliq = aliqEmDecimal.multiply(new BigDecimal(100D));
