@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.loja.Loja;
@@ -71,6 +72,9 @@ public final class SpedFiscalUtil {
 	public static SituacaoDoDocumento getCodSituacao(DocumentoFiscal docFisc) {
 		// TODO Colocar regra para quando for um DocumentoFiscal "COMPLEMENTAR"
 		NFeStatus nfeStatus = docFisc.getStatus();
+			if(docFisc.getFinalidadeEmissao().equals(FinalidadeEmissao.COMPLEMENTAR)) {
+				return SituacaoDoDocumento.DOCUMENTO_FISCAL_COMPLEMENTAR;
+			}
 			if (nfeStatus.getCodigo().length() == 2) {
 				int nfeStatusCodigo = Integer.parseInt(nfeStatus.getCodigo());
 				SituacaoDoDocumento sitDoc = SituacaoDoDocumento.values()[nfeStatusCodigo];

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.loja.Loja;
@@ -71,7 +72,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		 * Todos os DocumentoFiscal de entrada, emitidos por terceiros e que NÃO sejam modelo 65 (NFC-e)
 		 */
 		listDocFiscalEntradaEmissaoTerceiros.stream().forEach(docFiscEntradaEmissTerceiros -> {
-			listRegC100.add(preecheRegC100EntradaEmissaoTerceiros(docFiscEntradaEmissTerceiros, lojaSped));
+			listRegC100.add(gerarRegistroC100(docFiscEntradaEmissTerceiros, lojaSped));
 		});
 		
 		/**
@@ -81,6 +82,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		 */
 		listDocFiscalEmissaoPropria.stream().forEach(docFiscEmissaoPropria -> {
 //			listRegC100.add(preencheRegC100EmissaoPropria(docFiscEmissaoPropria, lojaSped));
+			listRegC100.add(gerarRegistroC100(docFiscEmissaoPropria, lojaSped));
 		});
 		
 		LOG.log(Level.INFO, "Registro C100, terminado. REG C100: {0} " ,listRegC100);
@@ -97,24 +99,24 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 * @param lojaSped
 	 * @return
 	 */
-	private RegC100 preecheRegC100EntradaEmissaoTerceiros(DocumentoFiscal docFisc, Loja lojaSped) {
+	private RegC100 gerarRegistroC100(DocumentoFiscal docFisc, Loja lojaSped) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C100 ");
 		RegC100 regC100 = new RegC100();
 		
 		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
-		TipoPreenchimentoRegC100 tipoPreenchimentoRegC100 = verificaTipoPreenchimento(docFisc, lojaSped);
+		TipoPreenchimentoRegC100 tipoPreenchimentoRegC100 = verificarTipoPreenchimento(docFisc, lojaSped);
 		
 		switch (tipoPreenchimentoRegC100) {
 		case EX_1_COD_SITUACAO:
-			regC100 = prencheC100ExcecaoUmCodSit(docFisc, lojaSped);
+			regC100 = prencherC100ExcecaoUmCodSit(docFisc, lojaSped);
 			break;
 		case EX_2_NFE_EMISSAO_PROPRIA:				// AQUI já ESTARÁ as ENTRADAS E SAÍDAS EMITITDAS PELAS AUTOGERAL, Então NÂO PRECISO iterar a LISTA EM DOIS METODOS DIFERENTES
-			regC100 = preencheC100ExcecaoDoisEmissaoPropria(docFisc, lojaSped);
+			regC100 = preencherC100ExcecaoDoisEmissaoPropria(docFisc, lojaSped);
 			break;
 
 		case EX_3_NFE_COMPLEMENTAR:
-			
+			regC100 = preencherC100ExcecaoTresNfeComplementar(docFisc, lojaSped);
 			break;
 		case EX_4_NFE_REGIME_ESPECIAL_NORMA_ESPECIFICA:
 			
@@ -139,11 +141,11 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			break;
 		
 		default:
-			/** Se não for nenhum dos casos acima en tão é o preenchimento normal **/
+			/** Se não for nenhum dos casos acima en tão é o preenchimento normal (DocumentoFiscal, emitido por terceiros, ou seja, são as ENTRADAS) **/
 			regC100 = new RegC100(docFisc, lojaSped);
 			regC100.setRegC170(regC170Service.montarGrupoRegC170(docFisc));
 			regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
-			regC100.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
+//			regC100.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
 			break;
 		}
 			
@@ -152,7 +154,6 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	}
 
 
-	
 	/**
 	 * Dado um DocumentoFiscal, irá validar qual é o "tipo de preenchimento" (Se o mesmo se encaixa em alguma das DEZ EXCECOES, da Documentacao, GUIA PRATICO EFD).
 	 * 
@@ -162,7 +163,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 * @param lojaSped
 	 * @return
 	 */
-	private TipoPreenchimentoRegC100 verificaTipoPreenchimento(DocumentoFiscal docFisc, Loja lojaSped) {
+	private TipoPreenchimentoRegC100 verificarTipoPreenchimento(DocumentoFiscal docFisc, Loja lojaSped) {
 		LOG.log(Level.INFO, "Verificando o tipo de preenchimento do Registro C100");
 
 		List<NFeStatus> nfesNaoAutorizadas = Arrays.asList(NFeStatus.CANCELADA, NFeStatus.DENEGADA, NFeStatus.INUTILIZADA);
@@ -175,11 +176,13 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			return TipoPreenchimentoRegC100.EX_2_NFE_EMISSAO_PROPRIA;
 		}
 		
-		
-		if (true) {
+		if (docFisc.getFinalidadeEmissao().equals(FinalidadeEmissao.COMPLEMENTAR)) {
 			return TipoPreenchimentoRegC100.EX_3_NFE_COMPLEMENTAR;
 		}
-		
+
+		if (false) {
+			return TipoPreenchimentoRegC100.EX_4_NFE_REGIME_ESPECIAL_NORMA_ESPECIFICA;
+		}
 		
 		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
 		return TipoPreenchimentoRegC100.NORMAL;
@@ -198,7 +201,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 * @param lojaSped
 	 * @return RegC100 preenchido na regra -> {@linkplain TipoPreenchimentoRegC100}.EX_1_COD_SITUACAO
 	 */
-	private RegC100 prencheC100ExcecaoUmCodSit(DocumentoFiscal docFisc, Loja lojaSped) {
+	private RegC100 prencherC100ExcecaoUmCodSit(DocumentoFiscal docFisc, Loja lojaSped) {
 		RegC100 regC100 = new RegC100();
 		
 		regC100.setIndOper(docFisc.getTipoOperacao());
@@ -228,21 +231,46 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 * @param lojaSped
 	 * @return
 	 */
-	private RegC100 preencheC100ExcecaoDoisEmissaoPropria(DocumentoFiscal docFisc, Loja lojaSped) {
+	private RegC100 preencherC100ExcecaoDoisEmissaoPropria(DocumentoFiscal docFisc, Loja lojaSped) {
 		// TODO Auto-generated method stub
 		/**
+		 * 
+		 * Execao 2 - NF-e emissão própria
+		 * Para informar o Registro C170, tenho que ver qual a regra dentro de SP para informamos os REG abaixo: 
+		 * C176 - A critério da UF
+		 * C180 - A critério da UF 
+		 * C181 - A critério da UF 
+		 * C177 - A critério da UF
+		 * Pois só podemos informar o C170 se informamos algum a cima, e obviamente
+		 * esses registros filhos tem suas próprias regras no GUIA;
+		 * 
 		 * C100 e C190
 		 * 
 		 */
 		RegC100 regC100 = new RegC100(docFisc, lojaSped);
-		
 		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
-		
 		
 		return regC100;
 	}
 
 	
+	
+	private RegC100 preencherC100ExcecaoTresNfeComplementar(DocumentoFiscal docFisc, Loja lojaSped) {
+		// TODO Auto-generated method stub
+		RegC100 regC100 = new RegC100();
+		regC100.setIndOper(docFisc.getTipoOperacao());
+		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
+		regC100.setCodMod(docFisc.getModelo());
+		regC100.setCodSit(getCodSituacao(docFisc));
+		
+		regC100.setNumDoc(docFisc.getNumeroNota());
+		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
+		regC100.setDtDoc(docFisc.getEmissao());
+		
+		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
+		return regC100;
+	}
+
 	
 	
 	// ========================================================================================================================================================================
