@@ -1,8 +1,9 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
 import static java.util.stream.Collectors.toList;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,15 +17,10 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.loja.Loja;
-import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
-import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
-import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
-import net.cartola.emissorfiscal.util.NumberUtilRegC100;
-import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
  * 18/09/2020
@@ -71,13 +67,20 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		
 		List<RegC100> listRegC100 = new ArrayList<>();
 
+		/**
+		 * Todos os DocumentoFiscal de entrada, emitidos por terceiros e que NÃO sejam modelo 65 (NFC-e)
+		 */
 		listDocFiscalEntradaEmissaoTerceiros.stream().forEach(docFiscEntradaEmissTerceiros -> {
 			listRegC100.add(preecheRegC100EntradaEmissaoTerceiros(docFiscEntradaEmissTerceiros, lojaSped));
 		});
 		
-		
+		/**
+		 * TODO -> AINDA NÃO CHEGUEI NESSE PREENCHIMENTO, ao enos não totalmente. POIS no método
+		 * preecheRegC100EntradaEmissaoTerceiros(...), tem uma validação para quando emitimos, então talvez esse caso preencimento abaixo
+		 * não seja necessário
+		 */
 		listDocFiscalEmissaoPropria.stream().forEach(docFiscEmissaoPropria -> {
-			listRegC100.add(preencheRegC100EmissaoPropria(docFiscEmissaoPropria, lojaSped));
+//			listRegC100.add(preencheRegC100EmissaoPropria(docFiscEmissaoPropria, lojaSped));
 		});
 		
 		LOG.log(Level.INFO, "Registro C100, terminado. REG C100: {0} " ,listRegC100);
@@ -96,18 +99,18 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 */
 	private RegC100 preecheRegC100EntradaEmissaoTerceiros(DocumentoFiscal docFisc, Loja lojaSped) {
 		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o Registro C100, para as Entradas");
-		RegC100 regC100Entrada = new RegC100();
+		LOG.log(Level.INFO, "Montando o Registro C100 ");
+		RegC100 regC100 = new RegC100();
 		
 		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
 		TipoPreenchimentoRegC100 tipoPreenchimentoRegC100 = verificaTipoPreenchimento(docFisc, lojaSped);
 		
 		switch (tipoPreenchimentoRegC100) {
 		case EX_1_COD_SITUACAO:
-			regC100Entrada = prencheC100ExcecaoUmCodSit(docFisc, lojaSped);
+			regC100 = prencheC100ExcecaoUmCodSit(docFisc, lojaSped);
 			break;
-		case EX_2_NFE_EMISSAO_PROPRIA:
-			regC100Entrada = preencheC100ExcecaoDoisEmissaoPropria(docFisc, lojaSped);
+		case EX_2_NFE_EMISSAO_PROPRIA:				// AQUI já ESTARÁ as ENTRADAS E SAÍDAS EMITITDAS PELAS AUTOGERAL, Então NÂO PRECISO iterar a LISTA EM DOIS METODOS DIFERENTES
+			regC100 = preencheC100ExcecaoDoisEmissaoPropria(docFisc, lojaSped);
 			break;
 
 		case EX_3_NFE_COMPLEMENTAR:
@@ -137,97 +140,18 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		
 		default:
 			/** Se não for nenhum dos casos acima en tão é o preenchimento normal **/
-			regC100Entrada = preencheC100(docFisc, lojaSped);
-			regC100Entrada.setRegC170(regC170Service.montarGrupoRegC170(docFisc));
-			regC100Entrada.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
-			regC100Entrada.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
+			regC100 = new RegC100(docFisc, lojaSped);
+			regC100.setRegC170(regC170Service.montarGrupoRegC170(docFisc));
+			regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
+			regC100.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
 			break;
 		}
 			
 		
-		return regC100Entrada;
-	}
-
-
-	/**
-	 * É EMISSAO PRÓPRIA e não SAÍDA, pois podemos emitir NFES de ENTRADA. Ex.: Na Operação de --> Devolução do Cliente <--, que seja PF.
-	 * Ou seja, Emissão Própria, inclui --> ENTRADAS e SAÍDAS. Sendo ENTRADAS (Em alguns casos emissão própria) e SAÍDA (Em TODOS os CASOS)
-	 *
-	 *
-	 * @param docFiscSaida
-	 * @param lojaSped
-	 * @return
-	 */
-	private RegC100 preencheRegC100EmissaoPropria(DocumentoFiscal docFiscSaida, Loja lojaSped) {
-		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o Registro C100, para as Saídas");
-
-		/**
-		 * Como nas emissão propria, temos documentos Fiscais tanto de entrada como de saidas.
-		 * Terei que filtar aquis os que são de entradas, e preencher de forma diferente. 
-		 * PS: Acredito que seja chamando o método de preenchimento de TERCEIROS....
-		 * 
-		 * EX.: De entra
-		 */
-		
-		RegC100 regC100Saida = new RegC100();
-		
-		regC100Saida = preencheC100(docFiscSaida, lojaSped);
-//		regC100Saida.setRegC110(regC110);
-		
-		regC100Saida.setRegC190(regC190Service.montarGrupoRegC190(docFiscSaida));
-		regC100Saida.setRegC195(regC195Service.montarGrupoRegC195(docFiscSaida));
-		
-		
-		return regC100Saida;
-	}
-	
-	
-	/**
-	 * Preenchimento do REGISTRO C100 (Seja Entrada ou Saída)
-	 * OBS: É Apenas do REG C100.  
-	 * Os FILHOS NÃO estão sendo preenchidos nesse método
-	 * 
-	 * @param docFisc
-	 * @param lojaSped
-	 * @return
-	 */
-	private RegC100 preencheC100(DocumentoFiscal docFisc, Loja lojaSped) {
-		RegC100 regC100 = new RegC100();
-		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-
-		regC100.setIndOper(tipoOperacao);
-		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
-		regC100.setCodPart(getCodPart(docFisc));
-		regC100.setCodMod(docFisc.getModelo());
-		regC100.setCodSit(getCodSit(docFisc));
-		regC100.setSer(docFisc.getSerie());
-		regC100.setNumDoc(docFisc.getNumeroNota());
-		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
-		regC100.setDtDoc(docFisc.getEmissao());
-		regC100.setDtES(docFisc.getCadastro().toLocalDate());
-
-		regC100.setVlDoc(NumberUtilRegC100.getVlrOrBaseCalc(docFisc.getVlrTotalProduto(), tipoOperacao));
-
-		regC100.setIndPgto(docFisc.getIndicadorPagamento());
-		regC100.setVlDesc(docFisc.getValorDesconto());
-		regC100.setVlAbatNt(BigDecimal.ZERO);
-		regC100.setVlMerc(docFisc.getVlrTotalProduto());
-		regC100.setIndFrt(docFisc.getIndicadorFrete());
-		regC100.setVlFrt(docFisc.getValorFrete());
-		regC100.setVlSeg(docFisc.getValorSeguro());
-		regC100.setVlOutDa(docFisc.getValorOutrasDespesasAcessorias());
-		regC100.setVlIcms(docFisc.getIcmsValor());
-		regC100.setVlBcIcmsSt(docFisc.getIcmsStBase());
-		regC100.setVlIcmsSt(docFisc.getIcmsStValor());
-//		regC100.setVlIpi(docFisc.getIpiValor());			Não Estamos Enquadrado como contribuinte de IPI. Portanto não informamos NADA de IPI
-		regC100.setVlPis(docFisc.getPisValor());
-		regC100.setVlPisSt(BigDecimal.ZERO);
-		regC100.setVlCofinsSt(BigDecimal.ZERO);		
-		
 		return regC100;
 	}
-	
+
+
 	
 	/**
 	 * Dado um DocumentoFiscal, irá validar qual é o "tipo de preenchimento" (Se o mesmo se encaixa em alguma das DEZ EXCECOES, da Documentacao, GUIA PRATICO EFD).
@@ -247,12 +171,21 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			return TipoPreenchimentoRegC100.EX_1_COD_SITUACAO;
 		}
 		
+		if (docFisc.getEmitente().getCnpj().equals(lojaSped.getCnpj())) {
+			return TipoPreenchimentoRegC100.EX_2_NFE_EMISSAO_PROPRIA;
+		}
+		
+		
+		if (true) {
+			return TipoPreenchimentoRegC100.EX_3_NFE_COMPLEMENTAR;
+		}
+		
+		
 		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
 		return TipoPreenchimentoRegC100.NORMAL;
 	}
 
 
-	
 
 	/**
 	 * Irá preencher o REG C100 - Caso se encaixe na EXCEÇÃO 1, do Guia Pratico da EFD, que diz basicamente o Seguinte:
@@ -263,7 +196,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 * 
 	 * @param docFisc
 	 * @param lojaSped
-	 * @return
+	 * @return RegC100 preenchido na regra -> {@linkplain TipoPreenchimentoRegC100}.EX_1_COD_SITUACAO
 	 */
 	private RegC100 prencheC100ExcecaoUmCodSit(DocumentoFiscal docFisc, Loja lojaSped) {
 		RegC100 regC100 = new RegC100();
@@ -271,7 +204,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setIndOper(docFisc.getTipoOperacao());
 		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
 		regC100.setCodMod(docFisc.getModelo());
-		regC100.setCodSit(getCodSit(docFisc));
+		regC100.setCodSit(getCodSituacao(docFisc));
 		regC100.setSer(docFisc.getSerie());
 		regC100.setNumDoc(docFisc.getNumeroNota());
 		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
@@ -283,12 +216,39 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		return regC100;
 	}
 
-
+	
+	/**
+	 * NFe Emissão própria - Regra Geral - Preencher somente os REGISTROS C100 e C190, 
+	 * SE existir ajuste de DoumentoFiscal preencha ->> C195 e C197
+	 * C170 - Somente preencha o C170 quando tiver que informar os registros - C176, C180 C181 ou o C177 (No caso de haver info. complementar do Item | Tabela 5.6) 
+	 * C110, C120, C185 e C186 - A critério de cada UF
+	 * C101 - Informar nas operações Interestaduais para Consumidor final Não Contribuinte do ICMS
+	 * 
+	 * @param docFisc
+	 * @param lojaSped
+	 * @return
+	 */
 	private RegC100 preencheC100ExcecaoDoisEmissaoPropria(DocumentoFiscal docFisc, Loja lojaSped) {
 		// TODO Auto-generated method stub
+		/**
+		 * C100 e C190
+		 * 
+		 */
+		RegC100 regC100 = new RegC100(docFisc, lojaSped);
 		
-		return null;
+		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
+		
+		
+		return regC100;
 	}
+
+	
+	
+	
+	// ========================================================================================================================================================================
+	// ========================================================================================================================================================================
+	// ========================================================================================================================================================================
+	// ========================================================================================================================================================================
 
 	
 	
@@ -298,7 +258,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 * Ou seja, Apenas ENTRADA, cuja a EMISSAO seja de TERCEIROS (cnpjEmitente != cnpjLojaSpedFiscal)
 	 * 
 	 * @param movimentosIcmsIpi
-	 * @return List<DocumentoFiscal> - Lista de Todos DocumentosFiscais, que devem ser escriturados na Entrada
+	 * @return List<DocumentoFiscal> - Todos DocumentoFiscais, de entrada, cujo o emitente != lojaSped
 	 */
 	private List<DocumentoFiscal> getDocFiscalEntradaEmissaoTerceiros(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		List<DocumentoFiscal> listDocumentoFiscal = movimentosIcmsIpi.getListDocumentoFiscal();
@@ -357,48 +317,6 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		listModeloDocFisc.add(ModeloDocumentoFiscal._55);
 		
 		return listModeloDocFisc;
-	}
-	
-	
-	private IndicadorDoEmitente getIndicadorEmitente(DocumentoFiscal docFisc, Loja lojaSped) {
-		LOG.log(Level.INFO, "Obtendo o indicador do emitente para o DocumentoFiscal {0} " ,docFisc);
-
-		Pessoa emitente = docFisc.getEmitente();
-		if (emitente.getCnpj().equals(lojaSped.getCnpj())) {
-			return IndicadorDoEmitente.EMISSAO_PROPRIA;
-		}
-		return IndicadorDoEmitente.TERCEIROS;
-	}
-	
-	/**
-	 * Obtem o código do participante para o <b>destinatário</b> se for operacao de <b>Entrada</b>
-	 * <b>Saída</b> codigo particapante do Emitente
-	 * 
-	 * Caso o Modelo documento seja == 65 (NFC-e), retorna String <b>Vazia</b>
-	 * @param docFisc
-	 * @return
-	 */
-	private String getCodPart(DocumentoFiscal docFisc) {
-		LOG.log(Level.INFO, "Obtendo o CODIGO DO PARTICIPANTE para o DocumentoFiscal {0} " ,docFisc);
-		if (docFisc.getModelo() != ModeloDocumentoFiscal._65) {
-			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA) {
-				return SpedFiscalUtil.getCodPart(docFisc.getDestinatario());
-			}
-			return SpedFiscalUtil.getCodPart(docFisc.getEmitente());
-		}
-		return "";
-	}
-
-		
-	private SituacaoDoDocumento getCodSit(DocumentoFiscal docFisc) {
-		// TODO Colocar regra para quando for um DocumentoFiscal "COMPLEMENTAR"
-		NFeStatus nfeStatus = docFisc.getStatus();
-			if (nfeStatus.getCodigo().length() == 2) {
-				int nfeStatusCodigo = Integer.parseInt(nfeStatus.getCodigo());
-				SituacaoDoDocumento sitDoc = SituacaoDoDocumento.values()[nfeStatusCodigo];
-				return sitDoc;
-			}
-		return null;
 	}
 	
 	

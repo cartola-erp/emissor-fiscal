@@ -6,12 +6,19 @@ import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
+
+import net.cartola.emissorfiscal.util.NumberUtilRegC100;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 
 /**
  * 02/09/2020
@@ -113,6 +120,57 @@ public class RegC100 {
 //	private List<RegC185> regC185;			// this 
 	private List<RegC190> regC190;
 	private List<RegC195> regC195;
+	
+	
+	public RegC100() {
+	
+	}
+	
+	
+	/**
+	 * Preenchimento do REGISTRO C100 (Seja Entrada ou Saída)
+	 * OBS: É Apenas do REG C100.  
+	 * Os FILHOS NÃO estão sendo preenchidos nesse método
+	 * 
+	 * @param docFisc
+	 * @param lojaSped
+	 * @return 
+	 */
+	public RegC100(DocumentoFiscal docFisc, Loja lojaSped) {
+		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
+
+		this.indOper = tipoOperacao ;
+		this.indEmit = getIndicadorEmitente(docFisc, lojaSped);
+		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
+		this.codPart = SpedFiscalUtil.getCodPart(docFisc);
+		this.codMod = docFisc.getModelo();
+		this.codSit = getCodSituacao(docFisc);
+		this.ser = docFisc.getSerie();
+		this.numDoc = docFisc.getNumeroNota();
+		this.chvNfe = docFisc.getNfeChaveAcesso();
+		this.dtDoc = docFisc.getEmissao();
+		this.dtES = docFisc.getCadastro().toLocalDate();
+		
+		this.vlDoc = NumberUtilRegC100.getVlrOrBaseCalc(docFisc.getVlrTotalProduto(), tipoOperacao);
+
+		this.indPgto = docFisc.getIndicadorPagamento();
+		this.vlDesc = docFisc.getValorDesconto();
+		this.vlAbatNt = null;		// REMESSAS p/ ZFM
+		this.vlMerc = docFisc.getVlrTotalProduto();
+		this.indFrt = docFisc.getIndicadorFrete();
+		this.vlFrt = docFisc.getValorFrete();
+		this.vlSeg = docFisc.getValorSeguro();
+		this.vlOutDa = docFisc.getValorOutrasDespesasAcessorias();
+		this.vlBcIcms = docFisc.getValorBaseCalculo();
+		this.vlIcms = docFisc.getIcmsValor();
+		this.vlBcIcmsSt = docFisc.getIcmsStBase();
+		this.vlIcmsSt = docFisc.getIcmsStValor();
+//		this.vlIpi(docFisc.getIpiValor());			Não Estamos Enquadrado como contribuinte de IPI. Portanto não informamos NADA de IPI
+		this.vlPis = docFisc.getPisValor();
+		this.vlCofins = docFisc.getCofinsValor();
+		this.vlPisSt = BigDecimal.ZERO;
+		this.vlCofinsSt = BigDecimal.ZERO;
+	}
 	
 	public String getReg() {
 		return reg;
