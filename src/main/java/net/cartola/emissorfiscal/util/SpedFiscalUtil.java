@@ -1,10 +1,14 @@
 package net.cartola.emissorfiscal.util;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.text.NumberFormat;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
@@ -102,6 +106,29 @@ public final class SpedFiscalUtil {
 			return IndicadorDoEmitente.EMISSAO_PROPRIA;
 		}
 		return IndicadorDoEmitente.TERCEIROS;
+	}
+
+	/**
+	 * Irá comparar o cnpj do emitente e destinatario
+	 * @param docFisc
+	 * @return
+	 */
+	public static boolean isEmitenteEqualsDestinatario(DocumentoFiscal docFisc) {
+		return docFisc.getEmitente().getCnpj().equals(docFisc.getDestinatario().getCnpj());
+	}
+	
+	
+	/**
+	 * Se a CFOP de algum DocumentoFiscalItem, for igual a 5929, então o DocumentoFiscal(NFE) "recebido" é referente, a 
+	 * um SAT emitido anteriormente
+	 *  
+	 * @param docFisc
+	 * @return 
+	 */
+	public static boolean isNfeReferenteASat(DocumentoFiscal docFisc) {
+		Set<Integer> setCfops = docFisc.getItens().stream().map(DocumentoFiscalItem::getCfop).collect(toSet());
+//		boolean isNfeReferenteASat = (setCfops.contains(5929) || setCfops.contains(6929));
+		return (setCfops.contains(5929) || setCfops.contains(6929));
 	}
 	
 }

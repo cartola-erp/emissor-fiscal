@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class MovimentoMensalIcmsIpi {
 //	private Pessoa loja;			// CONFESSO que ainda tou na duvida se pego a loja de "CADASTROS" ou da tbl "LOJA" msm
 	private Contador contador;
 	
+	private List<CodificacaoReg0450InfoComplementarFisco> listCodInfoComplementarFisco;
 	
 	private LocalDate dataInicio;
 	private LocalDate dataFim;
@@ -68,7 +70,23 @@ public class MovimentoMensalIcmsIpi {
 	public void setDataFim(LocalDate dataFim) {
 		this.dataFim = dataFim;
 	}
-	
 
+	public List<CodificacaoReg0450InfoComplementarFisco> getListCodInfoComplementarFisco() {
+		if (this.listCodInfoComplementarFisco == null || this.listCodInfoComplementarFisco.isEmpty()) {
+			this.listCodInfoComplementarFisco = new ArrayList<>();
+			CodificacaoReg0450InfoComplementarFisco codInfoComplementarFisco = new CodificacaoReg0450InfoComplementarFisco();
+			
+			codInfoComplementarFisco.setId(1L);
+			codInfoComplementarFisco.setCodInfo("01");
+			codInfoComplementarFisco.setDescricao("INFORMACOES COMPLEMENTARES DE INTERESSE DO FISCO");
+			listCodInfoComplementarFisco.add(codInfoComplementarFisco);
+		}
+		return listCodInfoComplementarFisco;
+	}
+
+	public void setListCodInfoComplementarFisco(List<CodificacaoReg0450InfoComplementarFisco> listCodInfoComplementarFisco) {
+		this.listCodInfoComplementarFisco = listCodInfoComplementarFisco;
+	}
+	
 	
 }

@@ -26,6 +26,16 @@ class Reg0450Service implements MontaGrupoDeRegistroList<Reg0450, MovimentoMensa
 		LOG.log(Level.INFO, "Montando o Registro 0450 ");
 		List<Reg0450> listReg0450 = new ArrayList<>();
 		
+		// Dentro do meu objeto MovimentoMensalIcmsIpi --> Posso ter uma Model que seja referente a "parametrização" desse registro...
+		// Mas pelos arquivos do SPED que vi, acredito que sempre será a Descrição abaixo para esse registro
+		
+		movimentosIcmsIpi.getListCodInfoComplementarFisco().stream().forEach(infoCompl -> {
+			Reg0450 reg0450 = new Reg0450();
+			
+			reg0450.setCodInf(infoCompl.getCodInfo());
+			reg0450.setTxt(infoCompl.getDescricao());
+			listReg0450.add(reg0450);			
+		});
 		
 		
 		LOG.log(Level.INFO, "Registro 0450, terminado: {0} " ,listReg0450);
