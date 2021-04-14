@@ -25,7 +25,7 @@ public class RegC116 {
     private ModeloDocumentoFiscal codMod;
     private String nrSat;
     private String chvCfe;
-    private Integer numCfe;
+    private Long numCfe;
     private LocalDate dtDoc;
 	
     public String getReg() {
@@ -39,8 +39,6 @@ public class RegC116 {
 	public void setCodMod(ModeloDocumentoFiscal codMod) {
 		this.codMod = codMod;
 	}
-
-
 
 	public String getNrSat() {
 		return nrSat;
@@ -58,11 +56,11 @@ public class RegC116 {
 		this.chvCfe = chvCfe;
 	}
 
-	public Integer getNumCfe() {
+	public Long getNumCfe() {
 		return numCfe;
 	}
 
-	public void setNumCfe(Integer numCfe) {
+	public void setNumCfe(Long numCfe) {
 		this.numCfe = numCfe;
 	}
 

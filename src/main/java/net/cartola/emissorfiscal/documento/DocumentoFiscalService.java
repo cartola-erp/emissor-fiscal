@@ -82,6 +82,10 @@ public class DocumentoFiscalService {
 		return documentoFiscalRepository.findAll();
 	}
 
+	public List<DocumentoFiscal> findByNfeChaveAcessoIn(Collection<String> setChaveAcessoReferencia) {
+		return documentoFiscalRepository.findByNfeChaveAcessoIn(setChaveAcessoReferencia);
+	}
+	
 	public List<DocumentoFiscal> findDocumentoFiscalByOperacao(Operacao operacao) {
 		return documentoFiscalRepository.findByOperacao(operacao);
 	}

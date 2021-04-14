@@ -25,4 +25,6 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 
 	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteOrDestinatario(LocalDateTime dataInicio, LocalDateTime dataFim, Pessoa emitente, Pessoa destinatario);
 
+	List<DocumentoFiscal> findByNfeChaveAcessoIn(Collection<String> setChaveAcessoReferencia);
+
 }

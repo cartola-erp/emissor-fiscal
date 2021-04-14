@@ -31,11 +31,11 @@ public class RegC113 {
     private IndicadorDoEmitente indEmit;
     private String codPart;
     private ModeloDocumentoFiscal codMod;
-    private String ser;
+    private Long ser;
     private Integer sub;
     private Long numDoc;
     private LocalDate dtDoc;
-    private Long chvDocE;
+    private String chvDocE;
 	
     public String getReg() {
 		return reg;
@@ -73,11 +73,11 @@ public class RegC113 {
 		this.codMod = codMod;
 	}
 
-	public String getSer() {
+	public Long getSer() {
 		return ser;
 	}
 
-	public void setSer(String ser) {
+	public void setSer(Long ser) {
 		this.ser = ser;
 	}
 
@@ -105,11 +105,11 @@ public class RegC113 {
 		this.dtDoc = dtDoc;
 	}
 
-	public Long getChvDocE() {
+	public String getChvDocE() {
 		return chvDocE;
 	}
 
-	public void setChvDocE(Long chvDocE) {
+	public void setChvDocE(String chvDocE) {
 		this.chvDocE = chvDocE;
 	}
     
