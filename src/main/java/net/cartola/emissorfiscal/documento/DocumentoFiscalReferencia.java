@@ -54,6 +54,7 @@ public class DocumentoFiscalReferencia implements Serializable {
 //	private Integer compraVinculada;
 	
 //	@Column(name = "icms_cst", scale = 4, nullable = false)
+	@ToString.Exclude
 	@Nullable
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "docu_fisc_id", unique = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc"))

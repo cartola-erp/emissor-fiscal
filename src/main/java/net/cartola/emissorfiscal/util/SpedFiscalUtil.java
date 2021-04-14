@@ -119,7 +119,7 @@ public final class SpedFiscalUtil {
 	
 	
 	/**
-	 * Se a CFOP de algum DocumentoFiscalItem, for igual a 5929, então o DocumentoFiscal(NFE) "recebido" é referente, a 
+	 * Se a CFOP de algum DocumentoFiscalItem, for igual a 5929 ou 6929, então o DocumentoFiscal(NFE) "recebido" é referente, a 
 	 * um SAT emitido anteriormente
 	 *  
 	 * @param docFisc
