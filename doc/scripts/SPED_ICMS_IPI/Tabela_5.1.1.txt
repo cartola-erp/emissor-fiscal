@@ -1,0 +1,143 @@
+COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+SP000202|Diferença de imposto apurada por contribuinte.|01012015|
+SP000206|Entrada de mercadoria com imposto a pagar ou utilização de serviços com imposto a pagar.|01012015|
+SP000207|Entrada de mercadoria, oriunda de outro Estado, destinada a uso, consumo ou integração no ativo imobilizado ou utilização de serviço iniciado fora do território paulista - Diferencial de alíquota.|01012015|
+SP000208|Complemento do imposto por contribuinte substituído - Complemento de Substituição Tributária.|01012015|
+SP000209|Ressarcimento de substituição tributária por Pedido de Liquidação de Débito Fiscal.|01012015|
+SP000210|Ressarcimento de substituição tributária por Nota Fiscal de Ressarcimento.|01012015|
+SP000211|Ressarcimento de substituição tributária por Pedido de Ressarcimento.|01012015|
+SP000212|Estabelecimento que receber de outro Estado, mercadoria abrangida pela substituição tributária, quando a responsabilidade pelo pagamento do imposto seja a ele atribuída - valor do imposto incidente sobre sua própria operação.|01012015|
+SP000213|Sujeito passivo por substituição que realizar operação fora do estabelecimento, sem destinatário certo, com mercadoria abrangida pela Substituição Tributária - ICMS próprio em remessa para venda fora do estabelecimento.|01012015|
+SP000214|Entrada de resíduo de materiais em estabelecimento industrial.|01012015|
+SP000215|Entrada de metais não-ferrosos  em estabelecimentos industriais. (Validade até a referência 08/2000).|01012015|
+SP000216|Remessa para venda fora do estabelecimento.|01012015|30092019
+SP000217|Diferença paga por empresa seguradora relativamente a peças adquiridas para emprego em conserto de veículo acidentado.|01012015|
+SP000218|Transferência de saldo credor  para estabelecimento centralizador.|01012015|
+SP000219|Recebimento de saldo devedor - estabelecimento centralizador.|01012015|
+SP000220|Devolução de crédito acumulado mediante autorização eletrônica.|01012015|
+SP000221|Apropriação de crédito acumulado mediante autorização eletrônica.|01012015|
+SP000222|Transferência de crédito acumulado – Protocolo ICM 12/84.|01012015|
+SP000223|Devolução de crédito recebido de Produtor Rural ou Cooperativa de Produtores Rurais mediante autorização eletrônica.|01012015|
+SP000224|Imposto devido na prestação de serviço de comunicação a usuário localizado neste Estado, na hipótese de inexistência de estabelecimento do prestador no território paulista.|01012015|
+SP000225|Transferência de Crédito Simples do ICMS, decorrente da entrada de bem destinado ao ativo permanente.|01012015|
+SP000226|Transferência de crédito do ICMS para cooperativa centralizadora de vendas.|01012015|
+SP000299|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|
+SP010301|Estorno de imposto creditado quando a mercadoria entrada no estabelecimento vier a perecer, deteriorar-se ou for objeto de roubo, furto ou extravio.|01012015|
+SP010302|Estorno de imposto creditado quando o serviço tomado ou a mercadoria adquirida for objeto de saída ou prestação de serviço não tributada.|01012015|
+SP010303|Estorno de imposto creditado quando a mercadoria adquirida for integrada ou consumida em processo de industrialização ou produção rural, quando a saída não for tributada ou estiver isenta do imposto.|01012015|
+SP010304|Estorno de imposto creditado quando a mercadoria adquirida for integrada ou consumida em processo de industrialização ou produção rural, quando a saída tiver base de cálculo reduzida.|01012015|
+SP010305|Estorno do valor do crédito deduzido na guia de recolhimento nas saídas de café cru, em coco ou em grão.|01012015|
+SP010306|Estorno do valor do crédito deduzido na guia de recolhimento nas saídas de gado em pé bovino e suíno.|01012015|
+SP010307|Ativo Permanente - transferência de crédito  remanescente.|01012015|
+SP010308|Saídas de produtos agrícolas - ICMS recolhido pelo armazém geral, por guia de recolhimentos especiais.|01012015|
+SP010309|Uso ou consumo da mercadoria ou serviço destinado à comercialização ou Industrialização.|01012015|
+SP010310|Estorno do imposto creditado na ocorrência 007.08.|01012015|
+SP010399|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|
+SP020708|Importação de bem ou mercadoria com direito a crédito de ICMS.|01012015|
+SP020709|Crédito outorgado sobre o imposto devido na prestação de serviço de transporte, exceto aéreo.|01012015|
+SP020710|Imposto pago indevidamente, em virtude de erro de fato ocorrido na escrituração dos livros fiscais ou no preparo da guia de recolhimento.|01012015|
+SP020711|Imposto correspondente à diferença verificada entre a importância recolhida e a apurada decorrente do desenquadramento do regime de estimativa.|01012015|
+SP020712|Imposto pago indevidamente, objeto de pedido administrativo de restituição quando a decisão não tiver sido proferida no prazo de 45 dias, contados da data do respectivo pedido.|01012015|
+SP020713|Imposto pago indevidamente em razão de destaque a maior em documento fiscal, até o limite estabelecido pela Secretaria da Fazenda.|01012015|
+SP020714|Valor do imposto destacado na nota fiscal relativa à aquisição de bem, objeto de arrendamento mercantil  pela empresa arrendadora, por ocasião da entrada no estabelecimento.|01012015|
+SP020716|Imposto recolhido por guia de recolhimentos  especiais nas saídas de álcool carburante e  de produtos resultantes da industrialização do petróleo.|01012015|
+SP020717|Imposto recolhido pelo destinatário por guia de recolhimentos especiais, relativo a serviço tomado ou mercadoria entrada no estabelecimento.|01012015|
+SP020718|Entrada de mercadoria, oriunda de outro Estado, destinada a uso, consumo ou integração no ativo imobilizado, ou utilização de serviço iniciado noutro Estado - Diferencial de alíquota.|01012015|
+SP020719|Ressarcimento de substituição tributária, por estabelecimento de contribuinte substituído.|01012015|
+SP020720|Compensação de imposto pago na operação própria do substituto, por estabelecimento de contribuinte substituído, relativamente a operações com veículos.|01012015|
+SP020721|Crédito relativo à operação própria do Substituto  em operação interestadual promovida pelo  contribuinte substituído.|01012015|
+SP020722|Imposto recolhido mediante guia de recolhimentos especiais nas operações com café cru.|01012015|
+SP020723|Imposto recolhido por guia de recolhimentos especiais pelo abate de gado.|01012015|
+SP020724|Crédito outorgado – abate de bovinos e suínos.|01012015|
+SP020725|Imposto recolhido mediante guia de recolhimentos especiais nas operações com gado em pé.|01012015|
+SP020726|Imposto relativo à entrada de gado em pé originário de outro Estado.|01012015|
+SP020727|Recolhimento em outros Estados nas operações de vendas fora do estabelecimento.|01012015|
+SP020728|Na desistência de ressarcimento por Nota Fiscal de Ressarcimento, Pedido de Ressarcimento ou Pedido de Liquidação de Débito Fiscal - Reincorporação do imposto.|01012015|
+SP020729|Transferência de saldo devedor para estabelecimento centralizador.|01012015|
+SP020730|Recebimento de saldo credor – estabelecimento centralizador.|01012015|
+SP020731|Crédito outorgado – abate de aves.|01012015|
+SP020732|Crédito outorgado – outros produtos alimentícios.|01012015|
+SP020733|Crédito outorgado – informática periférico.|01012015|
+SP020734|Crédito outorgado – telefone celular.|01012015|
+SP020735|Crédito outorgado – unidade de processamento.|01012015|
+SP020736|Crédito outorgado –  informática outros.|01012015|
+SP020737|Crédito outorgado - leite esterilizado UHT (longa vida).|01012015|
+SP020738|Crédito outorgado – adesivo hidroxilado - garrafas PET.|01012015|
+SP020739|Valor destinado ao Programa de Ação Cultural - PAC.|01012015|
+SP020740|Recebimento de crédito acumulado mediante autorização eletrônica.|01012015|
+SP020741|Reincorporação de crédito acumulado mediante autorização eletrônica.|01012015|
+SP020742|Valor destinado ao Programa de Incentivo ao Esporte - PIE.|01012015|
+SP020743|Recebimento de Crédito Acumulado – Protocolo ICM 12/84.|01012015|
+SP020744|Recebimento de crédito de estabelecimento de Produtor Rural ou de estabelecimento de Cooperativas de Produtores Rurais mediante autorização eletrônica.|01012015|
+SP020745|Incorporação de Crédito por estabelecimento de Cooperativas de Produtores Rurais mediante autorização eletrônica.|01012015|
+SP020746|Crédito oriundo de serviço de comunicação utilizado na prestação de serviço de mesma natureza a usuário localizado neste Estado, na hipótese de inexistência de estabelecimento do prestador no território paulista.|01012015|
+SP020747|Recebimento de Crédito Simples do ICMS, a que se refere o Decreto 56.133/2010.|01012015|
+SP020748|Recebimento de crédito do ICMS de estabelecimento fabricante de açúcar ou etanol.|01012015|
+SP020799|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|
+SP030801|Devolução de mercadoria oriunda de outro Estado, destinada a uso, consumo ou integração no ativo imobilizado, ou de utilização de serviço iniciado em outro Estado.|01012015|
+SP030802|Regularização de documentos fiscais em virtude de diferença no preço, em operação ou prestação, ou na quantidade de mercadoria, quando a regularização se efetuar após o período de apuração.|01012015|
+SP030803|Lançamento do imposto, não efetuado em época própria, em virtude de erro de cálculo ou de classificação fiscal, ou outro, quando a regularização se efetuar após o período de apuração.|01012015|
+SP030804|Imposto relativo à operações realizadas pelo sujeito passivo por substituição fora do estabelecimento com mercadoria abrangida pela substituição tributária - Estorno do ICMS próprio no retorno - venda fora do estabelecimento.|01012015|
+SP030805|Operações com café cru: imposto a ser recolhido em período posterior.|01012015|
+SP030806|Imposto destacado em Nota Fiscal de remessa para venda fora do estabelecimento.|01012015|30092019
+SP030807|Estorno de débito decorrente de cancelamento de BP-e escriturado com débito do imposto.|01122018|
+SP030899|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|
+SP041499|Deduções – RPA – ST – RES.|01012015|
+SP100201|Imposto retido em remessa para venda fora do estabelecimento.|01012015|
+SP100202|ICMS retido nas vendas efetuadas a revendedores ambulantes para revenda no sistema porta-a-porta para consumidores finais.|01012015|
+SP100299|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|
+SP110399|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|
+SP120701|Ressarcimento de imposto retido por nota fiscal|01012015|
+SP120702|Dedução de imposto retido – ressarcimento por depósito bancário.|01012015|
+SP120703|Ressarcimento relativo a operações interestaduais com combustíveis.|01012015|
+SP120704|Repasse a outras unidades federadas relativo a operações interestaduais com combustíveis.|01012015|
+SP120799|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|
+SP130801|Estorno de imposto retido no retorno – venda fora do estabelecimento.|01012015|
+SP130899|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|
+SP141499|Deduções – RPA – ST – RES.|01012015|
+SP009999|Outros débitos para ajuste de apuração ICMS.|01012009|31032015
+SP109999|Outros débitos para ajuste de apuração ICMS ST.|01012009|31032015
+SP019999|Estorno de créditos para ajuste de apuração ICMS.|01012009|31032015
+SP119999|Estorno de créditos para ajuste de apuração ICMS ST.|01012009|31032015
+SP029999|Outros créditos para ajuste de apuração ICMS.|01012009|31032015
+SP129999|Outros créditos para ajuste de apuração ICMS ST.|01012009|31032015
+SP039999|Estorno de débitos para ajuste de apuração ICMS.|01012009|31032015
+SP139999|Estorno de débitos para ajuste de apuração ICMS ST.|01012009|31032015
+SP049999|Deduções do imposto apurado na apuração ICMS.|01012009|31032015
+SP149999|Deduções do imposto apurado na apuração ICMS ST.|01012009|31032015
+SP059999|Débito especial de ICMS .|01012009|
+SP159999|Débito especial de ICMS ST.|01012009|
+SP099999|Controle do ICMS extra-apuração .|01012013|31032015
+SP000287|Parcela do diferencial de alíquota decorrente de operações e prestações que destinem bens e serviços a não contribuinte do ICMS localizado em outra unidade federada, líquida das devoluções (EC 87/2015)|01012016|
+SP209999|Outros débitos para ajuste de apuração ICMS Difal/FCP|01012016|31122016
+SP219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP|01012016|31122016
+SP229999|Outros créditos para ajuste de apuração ICMS Difal/FCP|01012016|31122016
+SP239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP|01012016|31122016
+SP249999|Deduções do imposto apurado na apuração ICMS Difal/FCP|01012016|31122016
+SP259999|Débito especial de ICMS Difal/FCP|01012016|31122016
+SP020770|Transferência do ICMS próprio devido ao FECOEP para apuração específica.|01022016|
+SP120770|Transferência do ICMS ST devido ao FECOEP para apuração específica.|01022016|
+SP019319|Transferência do saldo apurado correspondente ao ressarcimento do imposto retido por substituição tributária, do registro de apuração de operações próprias do ICMS para o registro de controle de créditos fiscais do ICMS (1200).|01012017|31122018
+SP029719|Transferência do total de créditos de ressarcimento do imposto retido por substituição tributária a ser utilizado no período (campo 06 do Registro 1200) para o registro de apuração de operações próprias do ICMS.|01012017|31122018
+SP099719|Código de controle do saldo de créditos fiscais decorrentes do ressarcimento do imposto retido por substituição tributária, de uso exclusivo no Registro 1200.|01012017|31122018
+SP209999|Outros débitos para ajuste de apuração ICMS Difal.|01012017|
+SP219999|Estorno de créditos para ajuste de apuração ICMS Difal.|01012017|
+SP229999|Outros créditos para ajuste de apuração ICMS Difal.|01012017|
+SP239999|Estorno de débitos para ajuste de apuração ICMS Difal.|01012017|
+SP249999|Deduções do imposto apurado na apuração ICMS Difal.|01012017|
+SP259999|Débito especial de ICMS Difal.|01012017|
+SP309999|Outros débitos para ajuste de apuração ICMS FCP.|01012017|
+SP319999|Estorno de créditos para ajuste de apuração ICMS FCP.|01012017|
+SP329999|Outros créditos para ajuste de apuração ICMS FCP.|01012017|
+SP339999|Estorno de débitos para ajuste de apuração ICMS FCP.|01012017|
+SP349999|Deduções do imposto apurado na apuração ICMS FCP.|01012017|
+SP359999|Débito especial de ICMS FCP.|01012017|
+SP020749|Ressarcimento de Substituição Tributária - Compensação Escritural mediante autorização eletrônica.|01052018|
+SP020750|Crédito relativo ao estoque de mercadoria excluída do regime da substituição tributária.|01022020|
+SP000227|Débito relativo ao estoque de mercadoria incluída no regime da substituição tributária.|01022020|
+SP090001|Uso determinado por regime especial - Controle de créditos de ressarcimento de ST ou antecipação por determinação de regime especial|01072020|
+SP019001|Uso determinado por regime especial - Transferência do valor creditado a título de ressarcimento de ST ou antecipação, da apuração de operações próprias do ICMS para o controle de créditos fiscais do ICMS (registro 1200)|01072020|
+SP029001|Uso determinado por regime especial – Utilização de créditos de ressarcimento do imposto retido por substituição tributária, ou antecipado, na apuração do ICMS de operações próprias|01072020|
+SP129001|Uso determinado por regime especial – Utilização de créditos de ressarcimento do imposto retido por substituição tributária, ou antecipado, na apuração do ICMS ST|01072020|
+SP029002|Imposto recolhido por guia de recolhimentos especiais para entradas interestaduais (art. 426A) - parcela correspondente a ICMS sobre operação própria|01072020|
+SP129002|Imposto recolhido por guia de recolhimentos especiais para entradas interestaduais (art. 426A) - parcela correspondente a ICMS sobre operações subsequentes|01072020|

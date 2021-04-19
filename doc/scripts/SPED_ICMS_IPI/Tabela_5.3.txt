@@ -1,0 +1,56 @@
+COD_AJ, DESC_AJ, DT_INI, DT_FIM
+SP40090207|Entrada de mercadoria, oriunda de outro Estado, destinada a uso, consumo ou integração no ativo imobilizado ou utilização de serviço iniciado fora do território paulista - Diferencial de alíquota. Artigo 117, II do RICMS/00|01012016|
+SP10090718|Entrada de mercadoria, oriunda de outro Estado, destinada a uso, consumo ou integração no ativo imobilizado, ou utilização de serviço iniciado noutro Estado - Diferencial de alíquota. Artigo 117, I do RICMS/00|01012016|
+SP50090301|Estorno de imposto creditado quando a mercadoria entrada no estabelecimento vier a perecer, deteriorar-se ou for objeto de roubo, furto ou extravio. Artigo 67, I do RICMS/00|01012016|
+SP50090309|Uso ou consumo da mercadoria ou serviço destinado à comercialização ou Industrialização. Artigo 67, V do RICMS/00|01012016|
+SP10090719|Ressarcimento de substituição tributária, por estabelecimento de contribuinte substituído. Artigos 269 e 270 do RICMS/00|01012016|31122018
+SP10090721|Crédito relativo à operação própria do Substituto  em operação interestadual promovida pelo  contribuinte substituído.   Artigo 271 do RICMS/00|01012016|31122018
+SP40090227|Pagamento Antecipado a título de imposto incidente sobre sua própria operação, com IVA-ST. Art. 277, § 2º, 1-a) ou 2 do RICMS/00|01012016|
+SP41090203|Pagamento Antecipado do imposto retido incidente sobre as operações subseqüentes, com IVA-ST. Art. 277, § 2º, 1-b) do RICMS/00|01012016|
+SP40090228|Pagamento Antecipado a título de imposto incidente sobre sua própria operação, com Preço Sugerido/Pesquisado. Art. 277, § 2º, 1-a) ou 2 do RICMS/00|01012016|
+SP41090204|Pagamento Antecipado do imposto retido incidente sobre as operações subseqüentes, com Preço Sugerido/Pesquisado. Art. 277, § 2º, 1-b) do RICMS/00|01012016|
+SP10090749|Recolhimento Antecipado do imposto retido incidente sobre as operações próprias - Art. 426-A do RICMS, com IVA-ST. Art. 277, § 3º, 1 do RICMS/00|01012016|
+SP10090750|Recolhimento Antecipado do imposto retido incidente sobre as operações próprias - Art. 426-A do RICMS, com Preço Sugerido/Pesquisado. Art. 277, § 3º, 1 do RICMS/00|01012016|
+SP11090705|Recolhimento Antecipado do imposto retido incidente sobre as operações subseqüentes - Art. 426-A do RICMS, com IVA-ST. Art. 277, § 3º, 2 do RICMS/00|01012016|
+SP11090706|Recolhimento Antecipado do imposto retido incidente sobre as operações subseqüentes - Art. 426-A do RICMS, com Preço Sugerido/Pesquisado. Art. 277, § 3º, 2 do RICMS/00|01012016|
+SP90090101|Operação abrangida por Regime Especial solicitado pelo contribuinte (campo informativo de concessão e uso de Regime Especial) - Artigo 479-A do RICMS/00.|01012016|
+SP90090102|Saída por Retorno Simbólico de Produtos Industrializados por Encomenda, pelo estabelecimento industrializador. Artigo 408, II, b) do RICMS/00|01012016|
+SP90090103|Entrada por Retorno Simbólico de Produtos Industrializados por Encomenda, pelo estabelecimento autor da encomenda. Artigo 408, II, b) do RICMS/00|01012016|
+SP40090226|Transferência de crédito do ICMS para cooperativa centralizadora de vendas Artigo 70-I do RICMS/00|01012016|
+SP10090748|Recebimento de crédito do ICMS de estabelecimento fabricante de açúcar ou etanol. Artigo 70-I do RICMS/00|01012016|
+SP11090704|Repasse a outras unidades federadas relativo a operações interestaduais com combustíveis. Cláusula Vigésima Segunda, § 1°, do Convênio ICMS 110/2007.|01012016|
+SP10090751|Saída de etanol hidratado combustível - EHC promovida por fabricante, cooperativa de produtores ou empresa comercializadora de etanol localizado em território paulista não credenciado nos termos do artigo 418-A para destinatário diverso do indicado no inciso II. Artigo 418-B-III-a do RICMS/00|01012016|
+SP11090707|Saída de etanol hidratado combustível - EHC promovida por fabricante, cooperativa de produtores ou empresa comercializadora de etanol localizado em território paulista não credenciado nos termos do artigo 418-A para destinatário suspenso da condição de substituto tributário. Artigo 418-B-III-b do RICMS/00|01012016|
+SP10090752|Saída de etanol hidratado combustível - EHC promovida por distribuidor de combustíveis localizado em território paulista não credenciado. Artigo 418-C-II do RICMS/00|01012016|
+SP11090708|Saída de etanol hidratado combustível - EHC promovida por distribuidor de combustíveis localizado em território paulista não credenciado. Artigo 418-C-II do RICMS/00|01012016|
+SP40090229|Saída de etanol hidratado combustível - EHC promovida por fabricante, cooperativa de produtores ou empresa comercializadora de etanol localizado em território paulista não credenciado com destino a contribuinte credenciado. Artigo 418-B-II do RICMS/00|01012016|
+SP40090230|Diferimento de cana-deaçúcar e outras matérias-primas relacionadas no art. 345 do RICMS/00 para o momento em que ocorrer a entrada no estabelecimento fabricante. Artigo 345 do RICMS/00|01012016|
+SP50090305|Estorno do valor do crédito deduzido na guia de recolhimento nas saídas de café cru, em coco ou em grão. Artigo 339, parágrafo único do RICMS/00|01012016|
+SP50090306|Estorno do valor do crédito deduzido na guia de recolhimento nas saídas de gado em pé bovino e suíno. Artigo 371, parágrafo único do RICMS/00|01012016|
+SP10090722|Imposto recolhido mediante guia de recolhimentos especiais nas operações com café cru.  Artigo 344, II do RICMS/00|01012016|
+SP10090723|Imposto recolhido por guia de recolhimentos especiais pelo abate de gado.  Artigo 367, § 2º e Artigo 381, I do RICMS/00|01012016|
+SP10090725|Imposto recolhido mediante guia de recolhimentos especiais nas operações com gado em pé.  Artigo 380, II do RICMS/00|01012016|
+SP10090726|Imposto relativo à entrada de gado em pé originário de outro Estado.  Artigo 381, II do RICMS/00|01012016|
+SP20090805|Operações com café cru: imposto a ser recolhido em período posterior. Artigo 344, III do RICMS/00|01012016|
+SP20090808|Estorno de débito correspondente a BP-e substituído, escriturado com débito do imposto, por ocasião da escrituração de BP-e de substituição.|01122018|
+SP10090753|AMENDOIM - Crédito Outorgado. Artigo 2 do Anexo III do RICMS/00|01012016|
+SP10090754|MALTE PARA A FABRICAÇÃO DE CERVEJA OU CHOPE - Crédito Outorgado. Artigo 15 do Anexo III do RICMS/00|01012016|
+SP10090755|FARINHA DE TRIGO E PRODUTOS RESULTANTES DE SUA INDUSTRIALIZAÇÃO - Crédito Presumido. Artigo 22 do Anexo III do RICMS/00|01012016|
+SP10090756|AQUISIÇÃO DE LEITE CRU PARA PRODUÇÃO DE QUEIJO OU REQUEIJÃO - Crédito Outorgado. Artigo 24 do Anexo III do RICMS/00|01012016|
+SP10090757|FEIJÃO - Crédito Presumido. Artigo 25 do Anexo III do RICMS/00|01012016|
+SP10090758|AVES/PRODUTOS DO ABATE EM FRIGORÍFICO PAULISTA - Crédito Presumido. Artigo 27 do Anexo III do RICMS/00|01012016|
+SP10090759|AMIDO E FÉCULA DA MANDIOCA - Crédito Presumido. Artigo 28 do Anexo III do RICMS/00|01012016|
+SP10090760|PRODUTOS DA MANDIOCA - Crédito Presumido. Artigo 29 do Anexo III do RICMS/00|01012016|
+SP10090761|CARNE - AQUISIÇÃO PELA INDÚSTRIA - Crédito Outorgado. Artigo 31 do Anexo III do RICMS/00|01012016|
+SP10090762|LEITE LONGA VIDA - Crédito Outorgado. Artigo 32 do Anexo III do RICMS/00|01012016|
+SP10090763|IOGURTE E LEITE FERMENTADO - Crédito Outorgado. Artigo 33 do Anexo III do RICMS/00|01012016|
+SP10090764|AVES/PRODUTOS DO ABATE EM FRIGORÍFICO PAULISTA - Crédito Outorgado. Artigo 35 do Anexo III do RICMS/00|01012016|
+SP10090765|TUBOS DE PLÁSTICO PARA COLETA DE SANGUE A VÁCUO - Crédito Outorgado. Artigo 39 do Anexo III do RICMS/00|01012016|
+SP10090766|PRODUTOS ALIMENTÍCIOS - Crédito Presumido. Decreto 51.598/2007 - Regime especial|01012016|
+SP50000319|Dedução do ressarcimento de substituição tributária, por estabelecimento de contribuinte substituído (artigos 269 e 270 do RICMS/00), na entrada por devolução ou retorno da mercadoria|01012017|31122018
+SP50000321|Estorno do crédito de ICMS relativo à operação própria do remetente, anteriormente apropriado conforme artigo 271 do RICMS/00, na entrada por devolução ou retorno da mercadoria|01012017|31122018
+SP90090104|Valor correspondente à coluna Isentas/Não tributadas e Outras (artigos 214 e 215 do RICMS/00)|01072018|
+SP90090278|Valor correspondente ao ICMS ST na condição de substituído (artigo 278, § 1º, do RICMS/00)|01072018|
+SP10090767|Saída interna com produto têxtil - Crédito Outorgado. Artigo 41 do Anexo III do RICMS/00.|01092018|
+SP90090105|Informações sobre o cálculo do recolhimento antecipado do imposto retido incidente sobre entradas interestaduais - Art. 426-A do RICMS, com Preço Sugerido/Pesquisado. Art. 277, § 3º, 1 do RICMS/00|01072020|
+SP90090106|Informações sobre o cálculo do recolhimento antecipado do imposto retido incidente sobre entradas interestaduais - Art. 426-A do RICMS, com IVA-ST. Art. 277, § 3º, 1 do RICMS/00|01072020|

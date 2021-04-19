@@ -1,0 +1,20 @@
+Pacote responsável, por ter as Models das tabelas que preciso usar no SPED
+
+exemplo as tabelas
+
+5.1.1 - AjusteApuracaoIcmsSp.java 						(5.1.1- Tabela de Códigos de Ajustes da Apuração do ICMS - SP.)
+5.3 - 	AjusteEInfoDeValoresProvenientesDeDocFiscal 	(5.3 - Tabela de Ajustes e Informações de Valores Provenientes de Documento Fiscal SP)
+
+
+DISCLAIMER: Elas simplesmente terão em seus registros os Códigos que podem ser baixados no SITE:
+http://www.sped.fazenda.gov.br/spedtabelas/AppConsulta/publico/aspx/ConsultaTabelasExternas.aspx?CodSistema=SpedFiscal
+
+PS: A minha intenção é tentar deixar o menos de hardcoded possivel. Sendo assim acredito que seja viável em pensar em
+algo de "configuração", que seja necessário, ser feito pelo contador antes de gerar o SPED FISCAL
+
+	"Ex.: Determinado CODIGO de tabela X, eh usado no REG XXXX do sped fiscal, quando for uma devolução para fornecedor "
+	
+Daí no registro preenchimento do desse determinado registro eu passaria as configurações dele, e verificava se a nota
+se encaixaria em tal critério, para ser preenchido o codigo corretamente
+
+
