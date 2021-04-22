@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.ncm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,10 @@ public class NcmService {
 		return Optional.ofNullable(ncmRepository.saveAndFlush(ncm));
 	}
 
+	public List<Ncm> findNcmByNumeroIn(Collection<Integer> listNumerosNcms) {
+		return ncmRepository.findNcmByNumeroIn(listNumerosNcms);
+	}
+	
 	public List<Ncm> findByNumero(int numeroNcm) {
 		return ncmRepository.findNcmByNumero(numeroNcm);
 	}

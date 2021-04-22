@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.ncm;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,4 +27,6 @@ public interface NcmRepository extends JpaRepository<Ncm, Long> {
 	 */
 	@Query("SELECT n FROM Ncm n WHERE n.numero = :numero AND n.excecao = :excecao")
 	Optional<Ncm> findNumeroAndExcecao(int numero, int excecao);
+
+	List<Ncm> findNcmByNumeroIn(Collection<Integer> listNumerosNcms);
 }

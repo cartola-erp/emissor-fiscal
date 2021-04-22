@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.documento;
 
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -145,6 +146,8 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(compraDto);
 	}
 	
+	
+	
 	/**
 	 * Método que irá preparar o newDocFiscal, para salvar no Banco de Dados.
 	 * PS: Ainda tem que chamar, o método -> {@linkplain} validaDadosESetaValoresNecessarios(...); para o Documento, que será salvo no Banco
@@ -187,7 +190,7 @@ public class DocumentoFiscalService {
 		Optional<Estado> opUfOrigem = estadoService.findBySigla(opEmitente.get().getEndereco().getUf());
 		Optional<Estado> opUfDestino = estadoService.findBySigla(opDestinatario.get().getEndereco().getUf());
 		Set<Ncm> ncmsDocFiscal = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
-		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
+		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(toSet());
 
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<>();
 		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
@@ -257,16 +260,29 @@ public class DocumentoFiscalService {
 	 * @return Set<Ncms>
 	 */
 	private Set<Ncm> setEVerificaNcmParaDocumentoFiscalItem(DocumentoFiscal documentoFiscal, Map<String, Boolean> map) {
+		Set<Integer> setNumeroNcms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).map(Ncm::getNumero).collect(toSet());
+		Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExcecao = ncmService.findNcmByNumeroIn(setNumeroNcms).stream().collect(Collectors.groupingBy(Ncm::getNumero,
+				Collectors.toMap(Ncm::getExcecao, (Ncm ncm) -> ncm)));
+		
 		documentoFiscal.getItens().forEach(docItem -> {
 			docItem.setDocumentoFiscal(documentoFiscal);
-			Optional<Ncm> opNcm = ncmService.findNcmByNumeroAndExcecao(docItem.getNcm().getNumero(), docItem.getNcm().getExcecao());
-			if(opNcm.isPresent()) {
-				docItem.setNcm(opNcm.get());
+			int numeroNcm = docItem.getNcm().getNumero();
+			int exTipi = (docItem.getNcm().getExcecao() > 5) ? 0 : docItem.getNcm().getExcecao();
+			boolean isNcmPresent = false;
+
+			Ncm ncm = null;
+			if (mapNcmPorNumeroEExcecao.containsKey(numeroNcm)) {
+				ncm = mapNcmPorNumeroEExcecao.get(numeroNcm).get(exTipi);
+				isNcmPresent = ncm != null;
 			}
-			map.put("O NCM: " +docItem.getNcm().getNumero()+ " NÃO existe", !opNcm.isPresent());
+			 
+			if(isNcmPresent) {
+				docItem.setNcm(ncm);
+			}
+			map.put("O NCM: " +docItem.getNcm().getNumero()+ " | EX: " +docItem.getNcm().getExcecao()+ " NÃO existe", !isNcmPresent);
 		});
 		
-		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(toSet());
 		return ncms;
 	}
 	
