@@ -63,6 +63,15 @@ public class SpedFiscalService implements MontaSpedFiscal<SpedFiscal, MovimentoM
 	public SpedFiscal criarSpedFiscal(MovimentoMensalIcmsIpi movimentacoesMensalIcmsIpi) {
 		LOG.log(Level.INFO, "Criando os Blocos do SPED FISCAL (Icms IPI) ");
 
+		/**
+		 * COMPLETABLE FUTURE 
+		 * Aparentemente como somente o BLOCO 9 que depende de outro (no caso de todos acima dele). É viável
+		 * Eu montar todos os outros blocos paralelamente; Logo que todos os outros terminarem (acho que verifico com ".get()" )
+		 * aí sim eu começo a montagem do BLOCO 9
+		 *
+		 * @see https://www.devmedia.com.br/trabalhando-com-completablefuture-no-java/32854
+		 * @see https://www.baeldung.com/java-completablefuture
+		 */
 		SpedFiscal spedFiscal = new SpedFiscal();
 		
 		spedFiscal.setBloco0(bloco0Service.criarBloco(movimentacoesMensalIcmsIpi));
