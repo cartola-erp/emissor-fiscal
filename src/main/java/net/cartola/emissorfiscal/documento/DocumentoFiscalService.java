@@ -113,11 +113,23 @@ public class DocumentoFiscalService {
 	 * 
 	 * @param dataHoraInicio
 	 * @param dataFim
-	 * @param lojaEmitDest
+	 * @param destinatario
+	 * @param entrada 
 	 * @return List<DocumentoFiscal> De uma loja num determinado Período
 	 */
-	public List<DocumentoFiscal> findByPeriodoCadastroAndLoja(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa lojaEmitDest) {
-		return documentoFiscalRepository.findByCadastroBetweenAndEmitenteOrDestinatario(dataHoraInicio, dataHoraFim, lojaEmitDest, lojaEmitDest);
+	public List<DocumentoFiscal> findByPeriodoCadastroAndLojaAndTipoOperacao(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa destinatario, IndicadorDeOperacao tipoOperacao) {
+		return documentoFiscalRepository.findByCadastroBetweenAndDestinatarioAndTipoOperacao(dataHoraInicio, dataHoraFim, destinatario, tipoOperacao);
+	}
+	
+	/**
+	 * Busca todos os DocumentoFicais de um Período que uma Pessoa emitiu (Loja)
+	 * @param dataHoraInicio
+	 * @param dataHoraFim
+	 * @param emitente
+	 * @return
+	 */
+	public List<DocumentoFiscal> findByPeriodoCadastroAndEmitente(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente) {
+		return documentoFiscalRepository.findByCadastroBetweenAndEmitente(dataHoraInicio, dataHoraFim, emitente);
 	}
 	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
@@ -390,5 +402,6 @@ public class DocumentoFiscalService {
 		return mapaTributacoesPorNcm;
 	}
 	// ==================================================================================================================================
+
 
 }

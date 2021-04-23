@@ -68,7 +68,7 @@ public final class NumberUtilRegC100 {
 	 * @return
 	 */
 	public static BigDecimal getVlrOrBaseCalc(BigDecimal vlrImpostoOrBaseCalc, IndicadorDeOperacao tipoOperacao) {
-		if (vlrImpostoOrBaseCalc != null && vlrImpostoOrBaseCalc != BigDecimal.ZERO) {
+		if (vlrImpostoOrBaseCalc != null && vlrImpostoOrBaseCalc.compareTo(BigDecimal.ZERO) != 0) {
 //			return String.valueOf(vlrImpostoOrBaseCalc).replace('.', ',');
 			return vlrImpostoOrBaseCalc;
 		}

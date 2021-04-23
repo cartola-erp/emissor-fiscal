@@ -22,6 +22,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
@@ -29,7 +30,6 @@ import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
 import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSpedService;
 import net.cartola.emissorfiscal.pessoa.PessoaService;
-import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSpedService;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 import net.cartola.emissorfiscal.produto.ProdutoUnidadeService;
@@ -80,7 +80,14 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		MovimentoMensalIcmsIpi movimentoMensalIcmsIpi = new MovimentoMensalIcmsIpi();
 		
 		Optional<Pessoa> lojaEmitOrDest = pessoaService.findByCnpj(String.valueOf(loja.getCnpj()));
-		List<DocumentoFiscal> listDocFiscal = docFiscService.findByPeriodoCadastroAndLoja(dataHoraInicio, dataHoraFim, lojaEmitOrDest.get());
+//		Set<DocumentoFiscal> listDocFiscal = new HashSet<>();	 	// (Lista com todos os DocumentoFiscais, da loja que está sendo feito o SPED)
+		List<DocumentoFiscal> listDocFiscal = new ArrayList<>();	// (Lista com todos os DocumentoFiscais, da loja que está sendo feito o SPED)
+
+		List<DocumentoFiscal> listDocFiscalEntradaEmitidoTerceiros = docFiscService.findByPeriodoCadastroAndLojaAndTipoOperacao(dataHoraInicio, dataHoraFim, lojaEmitOrDest.get(), IndicadorDeOperacao.ENTRADA);
+		List<DocumentoFiscal> listDocFiscalEmitidasPelaLojaAtual = docFiscService.findByPeriodoCadastroAndEmitente(dataHoraInicio, dataHoraFim, lojaEmitOrDest.get());
+		
+		listDocFiscal.addAll(listDocFiscalEntradaEmitidoTerceiros);
+		listDocFiscal.addAll(listDocFiscalEmitidasPelaLojaAtual);
 		// Buscando os Id e todas as Pessoas, envolvidas nas movimentações (emitentes e destinatarios)
 		Set<Long> pessoasId = listDocFiscal.stream().map(docFiscal -> docFiscal.getEmitente().getId()).collect(toSet());
 		pessoasId.addAll(listDocFiscal.stream().map(docFiscal -> docFiscal.getDestinatario().getId()).collect(toSet()));

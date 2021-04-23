@@ -59,7 +59,8 @@ import net.cartola.emissorfiscal.util.SpedFiscalUtil;
     @Field(name = "aliqCofinsReal"),
     @Field(name = "vlCofins"),
     @Field(name = "codCta"),
-    @Field(name = "vlAbatNt", minVersion = 13),
+//    @Field(name = "vlAbatNt", minVersion = 13),
+    @Field(name = "vlAbatNt"),
     // ==================== FILHO ====================
     @Field(name = "regC171"),
     @Field(name = "regC172"),
@@ -168,7 +169,7 @@ public class RegC170 {
 		this.vlBcCofins = getVlrOrBaseCalc(item.getCofinsBase(), tipoOperacao);
 		this.aliqCofins = getAliqAsBigDecimal(item.getCofinsAliquota(), tipoOperacao);
 		this.quantBcCofins = BigDecimal.ZERO;
-		this.aliqCofins = BigDecimal.ZERO;
+		this.aliqCofinsReal = BigDecimal.ZERO;
 		this.vlCofins = getVlrOrBaseCalc(item.getCofinsValor(), tipoOperacao);
 		this.codCta = 0d;
 		this.vlAbatNt = BigDecimal.ZERO;
