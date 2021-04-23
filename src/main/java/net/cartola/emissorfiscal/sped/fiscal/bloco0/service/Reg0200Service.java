@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodItem;
+
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -144,13 +146,6 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 		return listCamposAlterados;
 	}
 
-
-	
-	private String getCodItem(DocumentoFiscalItem item) {
-		String codItem = item.getCodigoX().toString() + item.getCodigoSequencia();
-		return codItem;
-	}
-	
 	private TipoDoItem getTipoItem(DocumentoFiscalItem item) {
 		switch (item.getFinalidade()) {
 		case COMERCIALIZACAO:

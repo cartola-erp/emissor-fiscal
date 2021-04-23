@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.multiplicaAliqPorCem;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
@@ -45,7 +46,8 @@ class RegC190Service {
 						-> mapPorCstCfopAliqIcms.forEach((cfop, mapPorCfopAliqIcms) 
 								-> mapPorCfopAliqIcms.forEach((aliqIcms, listItens) -> {
 											RegC190 regC190 = new RegC190();
-											regC190.setCstIcms(Integer.toString(origem.ordinal())  + Integer.toString(cstIcms));
+//											regC190.setCstIcms(Integer.toString(origem.ordinal())  + Integer.toString(cstIcms));
+											regC190.setCstIcms(getCstIcmsComOrigem(origem, cstIcms));
 											regC190.setCfop(cfop);
 											regC190.setAliqIcms(multiplicaAliqPorCem(aliqIcms));
 											regC190.setVlOpr(totalizaVlrOperacao(listItens));

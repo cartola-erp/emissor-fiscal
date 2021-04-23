@@ -1,12 +1,21 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getAliqAsBigDecimal;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
+
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import coffeepot.bean.wr.types.Align;
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ApuracaoIpi;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
  * 02/09/2020
@@ -75,9 +84,9 @@ public class RegC170 {
 	private BigDecimal vlItem;
 	private BigDecimal vlDesc;
 	private Boolean indMov;
-	private int cstIcms;
+	private String cstIcms;
 	private int cfop;
-	private String codNat;
+	private Long codNat;
 	private BigDecimal vlBcIcms;
 	private BigDecimal aliqIcms;
 	private BigDecimal vlIcms;
@@ -120,6 +129,51 @@ public class RegC170 {
 	private RegC179 regC179;
 	private RegC180 regC180;
 	
+	public RegC170(DocumentoFiscal docFisc, DocumentoFiscalItem item) {
+		// TODO -> O ideal é ter uma parte de pré configurações do SPED, e essa parte também esteja lá
+		List<Long> codOperacoesSemMovimentoEstoque = Arrays.asList(15L, 27L, 74L, 82L);
+		Boolean indMov = !codOperacoesSemMovimentoEstoque.contains(docFisc.getOperacao().getId());
+		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
+
+		this.numItem = item.getItem();
+		this.codItem = SpedFiscalUtil.getCodItem(item);
+		this.descrCompl = item.getDescricaoEmpresa();
+		this.qtd = item.getQuantidade().doubleValue();
+		this.unid = item.getUnidade();
+		this.vlItem = item.getValorUnitario();
+		this.vlDesc = item.getDesconto();
+		this.indMov =  indMov; 											// MOVIMENTOU ou NÃO o ITEM
+		this.cstIcms = getCstIcmsComOrigem(item.getOrigem(), item.getIcmsCst());
+		this.cfop = item.getCfop();
+		this.codNat = docFisc.getOperacao().getId();
+		this.vlBcIcms = getVlrOrBaseCalc(item.getIcmsBase(), tipoOperacao);			// ICMS
+		this.aliqIcms = getAliqAsBigDecimal(item.getIcmsAliquota(), tipoOperacao);
+		this.vlIcms = getVlrOrBaseCalc(item.getIcmsValor(), tipoOperacao);
+		this.vlBcIcmsSt = getVlrOrBaseCalc(item.getIcmsStBase(), tipoOperacao);
+		this.aliqSt = getAliqAsBigDecimal(item.getIcmsStAliquota(), tipoOperacao);
+		this.vlIcmsSt = getVlrOrBaseCalc(item.getIcmsStValor(), tipoOperacao);
+		this.indApur = null;
+		this.cstIpi = tipoOperacao.equals(IndicadorDeOperacao.ENTRADA) ? 49 : 99;	// IPI
+		this.codEnq = null;
+		this.vlBcIpi = getVlrOrBaseCalc(item.getIpiBase(), tipoOperacao);
+		this.aliqIpi = getAliqAsBigDecimal(item.getIpiAliquota(), tipoOperacao);
+		this.vlIpi = getVlrOrBaseCalc(item.getIpiValor(), tipoOperacao);
+		this.cstPis = item.getPisCst();												// PIS
+		this.vlBcPis = getVlrOrBaseCalc(item.getPisBase(), tipoOperacao);
+		this.aliqPis = getAliqAsBigDecimal(item.getPisAliquota(), tipoOperacao);
+		this.quantBcPis = BigDecimal.ZERO;
+		this.aliqPisReal = BigDecimal.ZERO;
+		this.vlPis = getVlrOrBaseCalc(item.getPisValor(), tipoOperacao);
+		this.cstCofins = item.getCofinsCst();										// COFINS
+		this.vlBcCofins = getVlrOrBaseCalc(item.getCofinsBase(), tipoOperacao);
+		this.aliqCofins = getAliqAsBigDecimal(item.getCofinsAliquota(), tipoOperacao);
+		this.quantBcCofins = BigDecimal.ZERO;
+		this.aliqCofins = BigDecimal.ZERO;
+		this.vlCofins = getVlrOrBaseCalc(item.getCofinsValor(), tipoOperacao);
+		this.codCta = 0d;
+		this.vlAbatNt = BigDecimal.ZERO;
+	}
+
 	public String getReg() {
 		return reg;
 	}
@@ -188,11 +242,11 @@ public class RegC170 {
 		this.indMov = indMov;
 	}
 
-	public int getCstIcms() {
+	public String getCstIcms() {
 		return cstIcms;
 	}
 
-	public void setCstIcms(int cstIcms) {
+	public void setCstIcms(String cstIcms) {
 		this.cstIcms = cstIcms;
 	}
 
@@ -204,11 +258,11 @@ public class RegC170 {
 		this.cfop = cfop;
 	}
 
-	public String getCodNat() {
+	public Long getCodNat() {
 		return codNat;
 	}
 
-	public void setCodNat(String codNat) {
+	public void setCodNat(Long codNat) {
 		this.codNat = codNat;
 	}
 

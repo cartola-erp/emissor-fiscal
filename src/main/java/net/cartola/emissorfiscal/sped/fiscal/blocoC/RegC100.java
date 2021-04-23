@@ -14,10 +14,9 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
-
-import net.cartola.emissorfiscal.util.NumberUtilRegC100;
 import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 
 /**
@@ -151,7 +150,7 @@ public class RegC100 {
 		this.dtDoc = docFisc.getEmissao();
 		this.dtES = docFisc.getCadastro().toLocalDate();
 		
-		this.vlDoc = NumberUtilRegC100.getVlrOrBaseCalc(docFisc.getVlrTotalProduto(), tipoOperacao);
+		this.vlDoc = getVlrOrBaseCalc(docFisc.getVlrTotalProduto(), tipoOperacao);
 
 		this.indPgto = docFisc.getIndicadorPagamento();
 		this.vlDesc = docFisc.getValorDesconto();
@@ -161,15 +160,15 @@ public class RegC100 {
 		this.vlFrt = docFisc.getValorFrete();
 		this.vlSeg = docFisc.getValorSeguro();
 		this.vlOutDa = docFisc.getValorOutrasDespesasAcessorias();
-		this.vlBcIcms = docFisc.getValorBaseCalculo();
-		this.vlIcms = docFisc.getIcmsValor();
-		this.vlBcIcmsSt = docFisc.getIcmsStBase();
-		this.vlIcmsSt = docFisc.getIcmsStValor();
+		this.vlBcIcms = getVlrOrBaseCalc(docFisc.getValorBaseCalculo(), tipoOperacao);
+		this.vlIcms = getVlrOrBaseCalc(docFisc.getIcmsValor(), tipoOperacao);
+		this.vlBcIcmsSt = getVlrOrBaseCalc(docFisc.getIcmsStBase(), tipoOperacao);
+		this.vlIcmsSt = getVlrOrBaseCalc(docFisc.getIcmsStValor(), tipoOperacao);
 //		this.vlIpi(docFisc.getIpiValor());			Não Estamos Enquadrado como contribuinte de IPI. Portanto não informamos NADA de IPI
-		this.vlPis = docFisc.getPisValor();
-		this.vlCofins = docFisc.getCofinsValor();
-		this.vlPisSt = BigDecimal.ZERO;
-		this.vlCofinsSt = BigDecimal.ZERO;
+		this.vlPis = getVlrOrBaseCalc(docFisc.getPisValor(), tipoOperacao);
+		this.vlCofins = getVlrOrBaseCalc(docFisc.getCofinsValor(), tipoOperacao);
+		this.vlPisSt = null;
+		this.vlCofinsSt = null;
 	}
 	
 	public String getReg() {

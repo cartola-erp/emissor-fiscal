@@ -12,6 +12,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
+import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
@@ -108,6 +109,16 @@ public final class SpedFiscalUtil {
 		return IndicadorDoEmitente.TERCEIROS;
 	}
 
+	public static String getCodItem(DocumentoFiscalItem item) {
+		String codItem = item.getCodigoX().toString() + item.getCodigoSequencia();
+		return codItem;
+	}
+	
+	
+	public static String getCstIcmsComOrigem(ProdutoOrigem origem, int cstIcms) {
+		return Integer.toString(origem.ordinal()) + Integer.toString(cstIcms);
+	}
+	
 	/**
 	 * Irá comparar o cnpj do emitente e destinatario
 	 * @param docFisc
