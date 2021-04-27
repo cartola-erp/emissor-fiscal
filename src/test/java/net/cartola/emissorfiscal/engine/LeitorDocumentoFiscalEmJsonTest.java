@@ -96,32 +96,31 @@ public class LeitorDocumentoFiscalEmJsonTest {
 	
 	@Test
 	public void test02_LendoNfesDocFisc() {
-		List<DocumentoFiscal> listComprasLidasJson = lerJson("nfes_doc_fisc.json");
-		List<DocumentoFiscal> listNfeToCalcularImpostos = new ArrayList<>();
-		List<DocumentoFiscal> listNfesDocsFiscToBeSaved = new ArrayList<>();
 		List<List<String>> listErros = new ArrayList<>();
+		List<DocumentoFiscal> listNfesLidasJson = lerJson("nfes_doc_fisc.json");
+		List<DocumentoFiscal> listNfeToCalcularImpostos = validarNfeOrSatESetarValoresNecessarios(listNfesLidasJson, listErros);
+		List<DocumentoFiscal> listNfesDocsFiscToBeSaved = calcularImpostosNfesOrSats(listNfeToCalcularImpostos);
 			
-		listComprasLidasJson.forEach(nfesDocFisc -> {
-			List<String> erros  = docFiscService.validaDadosESetaValoresNecessarios(nfesDocFisc, true, true);
-			LOG.log(Level.WARNING, "ERROS do Documento:  {0}  " , erros);
-			if (!erros.isEmpty()) {
-				listErros.add(erros);
-			} else {
-				listNfeToCalcularImpostos.add(nfesDocFisc);
-			}
-		});
-		
-		listNfeToCalcularImpostos.forEach(nfesDocFisc -> {
-			calcFiscEstadual.calculaImposto(nfesDocFisc);
-			calcFiscFederal.calculaImposto(nfesDocFisc);
-			listNfesDocsFiscToBeSaved.add(nfesDocFisc);
-		});
-		
 		System.out.println(listErros);
 		List<DocumentoFiscal> savedList = docFiscRepository.saveAll(listNfesDocsFiscToBeSaved);
 		
-		System.out.println("NFES salvas --> " +savedList.size()+ " >DE: " +listComprasLidasJson.size());
-		System.out.println("DIFERENÇA == " +(listComprasLidasJson.size() - savedList.size()));
+		System.out.println("NFES salvas --> " +savedList.size()+ " >DE: " +listNfesLidasJson.size());
+		System.out.println("DIFERENÇA == " +(listNfesLidasJson.size() - savedList.size()));
+	}
+
+
+	@Test
+	public void test03_LendoSatsDocFisc() {
+		List<List<String>> listErros = new ArrayList<>();
+		List<DocumentoFiscal> listSatsLidasJson = lerJson("sats_dbf_doc_fisc.json");
+		List<DocumentoFiscal> listSatsToCalcularImpostos = validarNfeOrSatESetarValoresNecessarios(listSatsLidasJson, listErros);
+		List<DocumentoFiscal> listSatsDocsFiscToBeSaved = calcularImpostosNfesOrSats(listSatsToCalcularImpostos);
+			
+		System.out.println(listErros);
+		List<DocumentoFiscal> savedList = docFiscRepository.saveAll(listSatsDocsFiscToBeSaved);
+		
+		System.out.println("SATs salvos --> " +savedList.size()+ " >DE: " +listSatsLidasJson.size());
+		System.out.println("DIFERENÇA == " +(listSatsLidasJson.size() - savedList.size()));
 	}
 
 	
@@ -138,8 +137,8 @@ public class LeitorDocumentoFiscalEmJsonTest {
                 new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
             
 			Gson gson = new GsonBuilder()
-					.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-					.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()) 
+					.registerTypeAdapter(LocalDate.class, new LocalDateGsonAdapter())
+					.registerTypeAdapter(LocalDateTime.class, new LocalDateGsonTimeAdapter()) 
 					.create();
             jsonReader.beginArray(); //start of json array
             int numberOfRecords = 0;
@@ -159,12 +158,48 @@ public class LeitorDocumentoFiscalEmJsonTest {
 		return listDocFiscal;
 	}
 	
+	/**
+	 * Irá Todos os DocumentoFiscais (Apenas as Nfes e Sats que a AG emite), E os que não tiverem erros serão adicionados numa lista para ser salva
+	 * @param listNfeOrSatsLidasJson
+	 * @param listErros -> Lista Com os erros que deu na validação dos documentos fiscais
+	 * @return
+	 */
+	private List<DocumentoFiscal> validarNfeOrSatESetarValoresNecessarios(List<DocumentoFiscal> listNfeOrSatsLidasJson, List<List<String>> listErros) {
+		List<DocumentoFiscal> listSatsToCalcularImpostos = new ArrayList<>();
+		listNfeOrSatsLidasJson.forEach(nfeOrSatDocFisc -> {
+			List<String> erros  = docFiscService.validaDadosESetaValoresNecessarios(nfeOrSatDocFisc, true, true);
+			LOG.log(Level.WARNING, "ERROS do Documento:  {0}  " , erros);
+			if (!erros.isEmpty()) {
+				erros.add("Documento: " +nfeOrSatDocFisc.getDocumento()+ " | CHAVE ACESSO= " +nfeOrSatDocFisc.getNfeChaveAcesso()+ " | Modelo = " + nfeOrSatDocFisc.getModelo());
+				listErros.add(erros);
+			} else {
+				listSatsToCalcularImpostos.add(nfeOrSatDocFisc);
+			}
+		});
+		return listSatsToCalcularImpostos;
+	}
+	
+	/**
+	 * Irá Fazer o calculo para todos os Documentos de saída que emitimos (NFE e SAT)
+	 * @param listNfeOrSatToCalcularImpostos
+	 * @return Lista de documento fiscal calculada
+	 */
+	private List<DocumentoFiscal> calcularImpostosNfesOrSats(List<DocumentoFiscal> listNfeOrSatToCalcularImpostos) {
+		List<DocumentoFiscal> listNfeOrSatsDocFiscToBeSaved = new ArrayList<>();
+
+		listNfeOrSatToCalcularImpostos.forEach(nfesDocFisc -> {
+			calcFiscEstadual.calculaImposto(nfesDocFisc);
+			calcFiscFederal.calculaImposto(nfesDocFisc);
+			listNfeOrSatsDocFiscToBeSaved.add(nfesDocFisc);
+		});
+		return listNfeOrSatsDocFiscToBeSaved;
+	}
 	
 	
 }
 
 
-class LocalDateAdapter implements JsonDeserializer<LocalDate> {
+class LocalDateGsonAdapter implements JsonDeserializer<LocalDate> {
 
 	private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 	private static final String DATE_PATTERN = "yyyy-MM-dd";
@@ -181,7 +216,7 @@ class LocalDateAdapter implements JsonDeserializer<LocalDate> {
 	}
 }
 
-final class LocalDateTimeAdapter implements JsonDeserializer<LocalDateTime> {
+final class LocalDateGsonTimeAdapter implements JsonDeserializer<LocalDateTime> {
 	
 	private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
