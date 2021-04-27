@@ -150,17 +150,17 @@ public class RegC100 {
 		this.dtDoc = docFisc.getEmissao();
 		this.dtES = docFisc.getCadastro().toLocalDate();
 		
-		this.vlDoc = getVlrOrBaseCalc(docFisc.getVlrTotalProduto(), tipoOperacao);
+		this.vlDoc = getVlrOrBaseCalc(docFisc.getValorTotalProduto(), tipoOperacao);
 
 		this.indPgto = docFisc.getIndicadorPagamento();
 		this.vlDesc = docFisc.getValorDesconto();
 		this.vlAbatNt = null;		// REMESSAS p/ ZFM
-		this.vlMerc = docFisc.getVlrTotalProduto();
+		this.vlMerc = docFisc.getValorTotalProduto();
 		this.indFrt = docFisc.getIndicadorFrete();
 		this.vlFrt = docFisc.getValorFrete();
 		this.vlSeg = docFisc.getValorSeguro();
 		this.vlOutDa = docFisc.getValorOutrasDespesasAcessorias();
-		this.vlBcIcms = getVlrOrBaseCalc(docFisc.getValorBaseCalculo(), tipoOperacao);
+		this.vlBcIcms = getVlrOrBaseCalc(docFisc.getIcmsBase(), tipoOperacao);
 		this.vlIcms = getVlrOrBaseCalc(docFisc.getIcmsValor(), tipoOperacao);
 		this.vlBcIcmsSt = getVlrOrBaseCalc(docFisc.getIcmsStBase(), tipoOperacao);
 		this.vlIcmsSt = getVlrOrBaseCalc(docFisc.getIcmsStValor(), tipoOperacao);

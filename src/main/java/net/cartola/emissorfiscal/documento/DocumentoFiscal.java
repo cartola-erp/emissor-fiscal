@@ -47,10 +47,16 @@ public class DocumentoFiscal implements Serializable {
 
 	private Long id;
     private int documento;		// Campo referente a COMPRA ou NFE (do ERP, dependendo do tipo do DocumentoFiscal, que for)
-	private Operacao operacao;
-	private IndicadorDeOperacao tipoOperacao;
-	private Long serie;
 	private Long numeroNota;
+    private Operacao operacao;
+	private IndicadorDeOperacao tipoOperacao;
+	private FinalidadeEmissao finalidadeEmissao = FinalidadeEmissao.NORMAL;
+	private ModeloDocumentoFiscal modelo = ModeloDocumentoFiscal._55;
+    private NFeStatus status;
+	private IndicadorDePagamento indicadorPagamento;
+	private String nfeChaveAcesso;
+
+	private Long serie;
 	private Pessoa emitente;
 	private Pessoa destinatario;
 	private List<DocumentoFiscalItem> itens;
@@ -61,7 +67,7 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal valorSeguro;
 	private BigDecimal valorOutrasDespesasAcessorias;
 	
-	private BigDecimal icmsBase = BigDecimal.ZERO;
+	private BigDecimal icmsBase = BigDecimal.ZERO;					// == vBC (Valor Base Calculo)
 	private BigDecimal icmsValor = BigDecimal.ZERO;
 	private BigDecimal icmsValorDesonerado = BigDecimal.ZERO;
     private BigDecimal icmsFcpValor = BigDecimal.ZERO;
@@ -70,28 +76,29 @@ public class DocumentoFiscal implements Serializable {
 //    private BigDecimal icmsFcpStValor = BigDecimal.ZERO;
 //    private BigDecimal icmsFcpStRetidoValor = BigDecimal.ZERO;
     private BigDecimal icmsValorUfDestino = BigDecimal.ZERO;		// É a soma do DIFAL
-    private BigDecimal vlrTotalProduto = BigDecimal.ZERO;
-	private BigDecimal pisBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
+    private BigDecimal valorTotalProduto = BigDecimal.ZERO;
+	private BigDecimal pisBase = BigDecimal.ZERO;				
 	private BigDecimal pisValor = BigDecimal.ZERO;
-	private BigDecimal cofinsBase = BigDecimal.ZERO;			// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
+	private BigDecimal cofinsBase = BigDecimal.ZERO;
 	private BigDecimal cofinsValor = BigDecimal.ZERO;
-	private BigDecimal ipiBase = BigDecimal.ZERO;				// Acredito que só precise da "BASE do ICMS" (aparentemente é o msm)
+	private BigDecimal ipiBase = BigDecimal.ZERO;
 	private BigDecimal ipiValor = BigDecimal.ZERO;
+    private BigDecimal valorTotalDocumento = BigDecimal.ZERO;		// vNF
     
-	private IndicadorDePagamento indicadorPagamento;
-	private ModeloDocumentoFiscal modelo = ModeloDocumentoFiscal._55;
-    private NFeStatus status;
-	private String nfeChaveAcesso;
+	private String infoAdicionalFisco;
+	private String infoComplementar;
+	private String xml;
+
+	// Para "atender" a lei "De Olho No Imposto"
+	private BigDecimal valorImpostoFederal = BigDecimal.ZERO;
+	private BigDecimal valorImpostoEstadual = BigDecimal.ZERO;
+	private BigDecimal valorImpostoMunicipal = BigDecimal.ZERO;
+	
 	private LocalDate emissao;
 	private LocalDateTime cadastro;
 	private String criadoPor;
 	private LocalDateTime alterado;
 	private String alteradoPor;
-	
-	// Para "atender" a lei "De Olho No Imposto"
-	private BigDecimal valorImpostoFederal = BigDecimal.ZERO;
-	private BigDecimal valorImpostoEstadual = BigDecimal.ZERO;
-	private BigDecimal valorImpostoMunicipal = BigDecimal.ZERO;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,6 +119,14 @@ public class DocumentoFiscal implements Serializable {
 		this.documento = documento;
 	}
 
+	public void setNumeroNota(Long numeroNota) {
+		this.numeroNota = numeroNota;
+	}
+	
+	public Long getNumeroNota() {
+		return numeroNota;
+	}
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "operacao_id", referencedColumnName = "oper_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_operacao_id"))
 	public Operacao getOperacao() {
@@ -132,20 +147,60 @@ public class DocumentoFiscal implements Serializable {
 		this.tipoOperacao = tipoOperacao;
 	}
 	
+	@Enumerated(EnumType.STRING)
+	@Column(name="fina_emiss", columnDefinition="enum('NORMAL', 'COMPLEMENTAR', 'AJUSTE', 'DEVOLUCAO_MERCADORIA') default 'NORMAL' ")
+	public FinalidadeEmissao getFinalidadeEmissao() {
+		return finalidadeEmissao;
+	}
+
+	public void setFinalidadeEmissao(FinalidadeEmissao finalidadeEmissao) {
+		this.finalidadeEmissao = finalidadeEmissao;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	public ModeloDocumentoFiscal getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(ModeloDocumentoFiscal modelo) {
+		this.modelo = modelo;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	@Column(columnDefinition="enum('DIGITACAO', 'VALIDADA', 'ASSINADA', 'PROCESSAMENTO', 'AUTORIZADA', 'CANCELADA', 'INUTILIZADA', 'DENEGADA') ")
+	public NFeStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(NFeStatus status) {
+		this.status = status;
+	}
+			
+	@Enumerated(EnumType.STRING)
+	@Column(name = "indi_paga", columnDefinition ="enum('A_VISTA', 'A_PRAZO', 'OUTROS') ")
+	public IndicadorDePagamento getIndicadorPagamento() {
+		return indicadorPagamento;
+	}
+
+	public void setIndicadorPagamento(IndicadorDePagamento indicadorPagamento) {
+		this.indicadorPagamento = indicadorPagamento;
+	}
+	
+	@Column(length = 44)
+	public String getNfeChaveAcesso() {
+		return nfeChaveAcesso;
+	}
+
+	public void setNfeChaveAcesso(String nfeChaveAcesso) {
+		this.nfeChaveAcesso = nfeChaveAcesso;
+	}
+	
 	public void setSerie(Long serie) {
 		this.serie = serie;
 	}
 	
 	public Long getSerie() {
 		return serie;
-	}
-
-	public void setNumeroNota(Long numeroNota) {
-		this.numeroNota = numeroNota;
-	}
-	
-	public Long getNumeroNota() {
-		return numeroNota;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -309,15 +364,15 @@ public class DocumentoFiscal implements Serializable {
 	public void setIcmsValorUfDestino(BigDecimal icmsValorUfDestino) {
 		this.icmsValorUfDestino = icmsValorUfDestino;
 	}
-
+	
 //	@Column(name = "vlr_tot_prod", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	@Column(name = "vlr_tot_prod", precision = 19, scale = 2, nullable = false, columnDefinition = "Numeric(19,2)")
-	public BigDecimal getVlrTotalProduto() {
-		return vlrTotalProduto;
+	public BigDecimal getValorTotalProduto() {
+		return valorTotalProduto;
 	}
 
-	public void setVlrTotalProduto(BigDecimal vlrTotalProduto) {
-		this.vlrTotalProduto = vlrTotalProduto;
+	public void setValorTotalProduto(BigDecimal valorTotalProduto) {
+		this.valorTotalProduto = valorTotalProduto;
 	}
 
 	public BigDecimal getPisBase() {
@@ -368,86 +423,42 @@ public class DocumentoFiscal implements Serializable {
 		this.ipiValor = ipiValor;
 	}
 	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "indi_paga", columnDefinition ="enum('A_VISTA', 'A_PRAZO', 'OUTROS') ")
-	public IndicadorDePagamento getIndicadorPagamento() {
-		return indicadorPagamento;
+	@Column(name = "vlr_tot_doc", precision = 19, scale = 2, nullable = false, columnDefinition = "Numeric(19,2)")
+	public BigDecimal getValorTotalDocumento() {
+		return valorTotalDocumento;
 	}
 
-	public void setIndicadorPagamento(IndicadorDePagamento indicadorPagamento) {
-		this.indicadorPagamento = indicadorPagamento;
+	public void setValorTotalDocumento(BigDecimal valorTotalDocumento) {
+		this.valorTotalDocumento = valorTotalDocumento;
 	}
 	
-	@Enumerated(EnumType.STRING)
-	public ModeloDocumentoFiscal getModelo() {
-		return modelo;
+	@Column(columnDefinition = "mediumtext")
+	public String getXml() {
+		return xml;
 	}
 
-	public void setModelo(ModeloDocumentoFiscal modelo) {
-		this.modelo = modelo;
-	}
-
-	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition="enum('DIGITACAO', 'VALIDADA', 'ASSINADA', 'PROCESSAMENTO', 'AUTORIZADA', 'CANCELADA', 'INUTILIZADA', 'DENEGADA') ")
-	public NFeStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(NFeStatus status) {
-		this.status = status;
-	}
-
-	@Column(length = 44)
-	public String getNfeChaveAcesso() {
-		return nfeChaveAcesso;
-	}
-
-	public void setNfeChaveAcesso(String nfeChaveAcesso) {
-		this.nfeChaveAcesso = nfeChaveAcesso;
-	}
-
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	public LocalDate getEmissao() {
-		return emissao;
-	}
-
-	public void setEmissao(LocalDate emissao) {
-		this.emissao = emissao;
+	public void setXml(String xml) {
+		this.xml = xml;
 	}
 	
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-	public LocalDateTime getCadastro() {
-		return cadastro;
+	@Column(name = "info_fisco", length = 2000)
+	public String getInfoAdicionalFisco() {
+		return infoAdicionalFisco;
 	}
 
-	public void setCadastro(LocalDateTime cadastro) {
-		this.cadastro = cadastro;
+	public void setInfoAdicionalFisco(String infoAdicionalFisco) {
+		this.infoAdicionalFisco = infoAdicionalFisco;
 	}
 	
-	public String getCriadoPor() {
-		return criadoPor;
+	@Column(name = "info_compl", length = 5000)
+	public String getInfoComplementar() {
+		return infoComplementar;
 	}
 
-	public void setCriadoPor(String criadoPor) {
-		this.criadoPor = criadoPor;
+	public void setInfoComplementar(String infoComplementar) {
+		this.infoComplementar = infoComplementar;
 	}
-
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-	public LocalDateTime getAlterado() {
-		return alterado;
-	}
-
-	public void setAlterado(LocalDateTime alterado) {
-		this.alterado = alterado;
-	}
-
-	public String getAlteradoPor() {
-		return alteradoPor;
-	}
-
+	
 	public void setAlteradoPor(String alteradoPor) {
 		this.alteradoPor = alteradoPor;
 	}
@@ -491,6 +502,48 @@ public class DocumentoFiscal implements Serializable {
 		this.valorImpostoMunicipal = valorImpostoMunicipal;
 	}
 
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	public LocalDate getEmissao() {
+		return emissao;
+	}
+
+	public void setEmissao(LocalDate emissao) {
+		this.emissao = emissao;
+	}
+	
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+	public LocalDateTime getCadastro() {
+		return cadastro;
+	}
+
+	public void setCadastro(LocalDateTime cadastro) {
+		this.cadastro = cadastro;
+	}
+	
+	public String getCriadoPor() {
+		return criadoPor;
+	}
+
+	public void setCriadoPor(String criadoPor) {
+		this.criadoPor = criadoPor;
+	}
+
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+	public LocalDateTime getAlterado() {
+		return alterado;
+	}
+
+	public void setAlterado(LocalDateTime alterado) {
+		this.alterado = alterado;
+	}
+
+	public String getAlteradoPor() {
+		return alteradoPor;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -529,7 +582,7 @@ public class DocumentoFiscal implements Serializable {
 		result = prime * result
 				+ ((valorOutrasDespesasAcessorias == null) ? 0 : valorOutrasDespesasAcessorias.hashCode());
 		result = prime * result + ((valorSeguro == null) ? 0 : valorSeguro.hashCode());
-		result = prime * result + ((vlrTotalProduto == null) ? 0 : vlrTotalProduto.hashCode());
+		result = prime * result + ((valorTotalProduto == null) ? 0 : valorTotalProduto.hashCode());
 		return result;
 	}
 
@@ -687,12 +740,12 @@ public class DocumentoFiscal implements Serializable {
 				return false;
 		} else if (valorSeguro.compareTo(other.valorSeguro) != 0)
 			return false;
-		if (vlrTotalProduto == null) {
-			if (other.vlrTotalProduto != null)
+		if (valorTotalProduto == null) {
+			if (other.valorTotalProduto != null)
 				return false;
-		} else if (vlrTotalProduto.compareTo(other.vlrTotalProduto) != 0)
+		} else if (valorTotalProduto.compareTo(other.valorTotalProduto) != 0)
 			return false;
 		return true;
 	}
-	
+
 }

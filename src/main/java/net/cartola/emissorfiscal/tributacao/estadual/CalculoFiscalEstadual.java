@@ -75,7 +75,8 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 //		setaFcpValor(documentoFiscal, listCalculoImpostos);
 //		setaFcpStValor(documentoFiscal, listCalculoImpostos);
 		setaIcmsStBaseEValor(documentoFiscal, listCalculoImpostos);
-		documentoFiscal.setVlrTotalProduto(totalizaVlrProdutos(documentoFiscal));
+		documentoFiscal.setValorTotalProduto(calcularValorTotalProdutos(documentoFiscal));
+		documentoFiscal.setValorTotalDocumento(calcularValorTotalDocumento(documentoFiscal));
 	}
 
 
@@ -205,11 +206,28 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		return totalFcp;
 	}
 	
-
 	/**
-	 * Soma o valor de todos os produtois para o DocumentoFiscal
+	 * Soma o valor de todos os produtos (vPROD) para o DocumentoFiscal
 	 */
-	private BigDecimal totalizaVlrProdutos(DocumentoFiscal docFiscal) {
+	private BigDecimal calcularValorTotalProdutos(DocumentoFiscal docFiscal) {
 		return docFiscal.getItens().stream().map(item -> item.getValorUnitario().multiply(item.getQuantidade())).reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
+	
+	/**
+	 * Referente ao campo vNF do XML: vNF = (vProd + vST + vFrete + vSeg + vOutro + VII + vServ) - vDesc 
+	 * 
+	 * @param documentoFiscal
+	 * @return
+	 */
+	private BigDecimal calcularValorTotalDocumento(DocumentoFiscal docFiscal) {
+		BigDecimal valorTotalDocumento = docFiscal.getValorTotalProduto();
+		
+		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorFrete());
+		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorSeguro());
+		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorOutrasDespesasAcessorias());
+		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getIpiValor());
+		valorTotalDocumento = valorTotalDocumento.subtract((docFiscal.getValorDesconto()));
+
+		return valorTotalDocumento;
 	}
 }
