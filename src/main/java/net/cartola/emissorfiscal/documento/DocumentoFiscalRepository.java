@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 
 @Repository
 public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal, Long> {
@@ -46,6 +47,18 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 
 	
 	List<DocumentoFiscal> findByNfeChaveAcessoIn(Collection<String> setChaveAcessoReferencia);
+	
+	/**
+	 * Buscando todos os DocumentoFiscais de um PERIODO para um determinado MODELO para uma Pessoa de ENTRADA ou SAÍDA
+	 * @param dataHoraInicio
+	 * @param dataHoraFim
+	 * @param emitente
+	 * @param modelo
+	 * @return
+	 */
+	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteAndModeloAndTipoOperacao(LocalDateTime dataHoraInicio,
+			LocalDateTime dataHoraFim, Pessoa emitente, ModeloDocumentoFiscal modelo, IndicadorDeOperacao tipoOperacao);
+	
 
 
 }

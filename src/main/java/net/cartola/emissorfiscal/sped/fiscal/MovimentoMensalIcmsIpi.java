@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,10 +28,11 @@ public class MovimentoMensalIcmsIpi {
 	
 //	private List<DocumentoFiscal> listCompras;
 	private List<DocumentoFiscal> listDocumentoFiscal;
+	private List<DocumentoFiscal> listSatsEmitidos; 		// DocumentoFiscal - Modelo _59
 	private List<Pessoa> listCadastros;
 	private List<PessoaAlteradoSped> listCadastrosAlteradosSped;
 	
-	private List<DocumentoFiscalItem> listItens;
+	private Set<DocumentoFiscalItem> listItens;
 	private List<ProdutoAlteradoSped> listProdutoAlteradoSped;
 	private List<ProdutoUnidade> listProdUnid;
 	private Collection<Operacao> listOperacoes;

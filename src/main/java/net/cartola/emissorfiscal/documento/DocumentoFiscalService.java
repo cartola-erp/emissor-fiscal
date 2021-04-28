@@ -29,6 +29,7 @@ import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaService;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
+import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoGuiaEstadualService;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
@@ -132,6 +133,20 @@ public class DocumentoFiscalService {
 		return documentoFiscalRepository.findByCadastroBetweenAndEmitente(dataHoraInicio, dataHoraFim, emitente);
 	}
 	
+	/**
+	 * Buscando todos os DocumentoFiscais de um PERIODO para um determinado MODELO para uma Pessoa de ENTRADA ou SAÍDA
+	 *
+	 * @param dataHoraInicio
+	 * @param dataHoraFim
+	 * @param emitente
+	 * @param modelo
+	 * @param tipoOperacao
+	 * @return
+	 */
+	public List<DocumentoFiscal> findByPeriodoCadastroAndEmitenteAndModeloAndTipoOperacao(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente, ModeloDocumentoFiscal modelo, IndicadorDeOperacao tipoOperacao) {
+		return documentoFiscalRepository.findByCadastroBetweenAndEmitenteAndModeloAndTipoOperacao(dataHoraInicio, dataHoraFim, emitente, modelo, tipoOperacao);
+	}
+	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
 		calcFiscalEstadual.calculaImposto(documentoFiscal);
 		calcFiscalFederal.calculaImposto(documentoFiscal);
@@ -157,8 +172,7 @@ public class DocumentoFiscalService {
 		compraDto.setDocFiscal(docFiscal);
 		return Optional.ofNullable(compraDto);
 	}
-	
-	
+
 	
 	/**
 	 * Método que irá preparar o newDocFiscal, para salvar no Banco de Dados.
