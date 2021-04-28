@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +42,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0200 ");
 		// TODO : Mudar a Lista de ITENS para um SET (pois da forma atual, irá repetir os itens)
 		// TODO : PS: Acredito que terei que buscar a CEST, p/ TODOS os itens (pois nas entradas eu não tenho) 
-		List<DocumentoFiscalItem> listItens = movimentosIcmsIpi.getListItens();
+		Set<DocumentoFiscalItem> listItens = movimentosIcmsIpi.getListItens();
 		List<ProdutoAlteradoSped> listProdAlterado = movimentosIcmsIpi.getListProdutoAlteradoSped();
 		populaMapItemAlterado(listItens, listProdAlterado);
 		
@@ -171,7 +172,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 		return StringUtil.somenteNumeros(nf.format(cest));
 	}
 
-	private void populaMapItemAlterado(List<DocumentoFiscalItem> listItens, List<ProdutoAlteradoSped> listProdAlterado) {
+	private void populaMapItemAlterado(Set<DocumentoFiscalItem> listItens, List<ProdutoAlteradoSped> listProdAlterado) {
 		if (mapItemAlteradoPorProduCodiErp.isEmpty()) {
 			listProdAlterado.stream().forEach(prodAlterado -> mapItemAlteradoPorProduCodiErp
 					.put(prodAlterado.getProdutoCodigoErp(), prodAlterado));

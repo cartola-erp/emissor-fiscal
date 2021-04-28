@@ -55,6 +55,14 @@ public class MovimentoMensalIcmsIpi {
 	 */
 	
 	
+	public void setListProdutoAlteradoSped(List<ProdutoAlteradoSped> listProdutoAlterado) { 
+		if ((this.listProdutoAlteradoSped == null || this.listProdutoAlteradoSped.isEmpty()) && listProdutoAlterado == null) {
+			this.listProdutoAlteradoSped = new ArrayList<>();
+		} else {
+			this.listProdutoAlteradoSped = listProdutoAlterado;
+		}
+	}
+	
 	public LocalDate getDataInicio() {
 		return dataInicio;
 	}
