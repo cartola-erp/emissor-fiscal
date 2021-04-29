@@ -1,8 +1,12 @@
 package net.cartola.emissorfiscal.util;
 
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.groupingBy;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -141,5 +145,30 @@ public final class SpedFiscalUtil {
 //		boolean isNfeReferenteASat = (setCfops.contains(5929) || setCfops.contains(6929));
 		return (setCfops.contains(5929) || setCfops.contains(6929));
 	}
+
+	public static String getNumeroSerieSat(DocumentoFiscal satEmititdo) {
+		return XmlUtil.getTagConteudo(satEmititdo.getXml(), "nserieSAT", false).get(0);
+//		return null;
+	}
+
+	/**
+	 * Irá retornar um mapa para o Registro analítico dos ITENS, do DocumentoFiscal.
+	 * 
+	 * Usado nos REGISTROS: C190 e C850
+	 * @param docFisc
+	 * @return mapPorOrigemCstCfopAliqIcms
+	 */
+	public static Map<ProdutoOrigem, Map<Integer, Map<Integer, Map<BigDecimal, List<DocumentoFiscalItem>>>>> getMapaItensParaRegistroAnalitico(DocumentoFiscal docFisc) {
+		Map<ProdutoOrigem, Map<Integer, Map<Integer, Map<BigDecimal, List<DocumentoFiscalItem>>>>> mapPorOrigemCstCfopAliqIcms = 
+				docFisc.getItens().stream().collect(groupingBy(DocumentoFiscalItem::getOrigem, 
+						groupingBy(DocumentoFiscalItem::getIcmsCst, 
+								groupingBy(DocumentoFiscalItem::getCfop, 
+										groupingBy(DocumentoFiscalItem::getIcmsAliquota)))));
+
+		return mapPorOrigemCstCfopAliqIcms;
+	}
+	
+	
+	
 	
 }

@@ -46,7 +46,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 		List<ProdutoAlteradoSped> listProdAlterado = movimentosIcmsIpi.getListProdutoAlteradoSped();
 		populaMapItemAlterado(listItens, listProdAlterado);
 		
-		List<Reg0200> listReg0200 = new ArrayList<>();
+		List<Reg0200> listReg0200 = new ArrayList<>(listItens.size());
 		listItens.stream().forEach(item -> {
 			Reg0200 reg0200 = new Reg0200();
 			Ncm ncm = item.getNcm();
