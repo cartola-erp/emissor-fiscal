@@ -1,11 +1,15 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getNumeroSerieSat;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
 
@@ -47,8 +51,8 @@ public class RegC800 {
 	private BigDecimal vlPis;
 	private BigDecimal vlCofins;
 	private Long cnpjCpf;
-	private Long nrSat;
-	private Long chvCfe;
+	private String nrSat;
+	private String chvCfe;
 	private BigDecimal vlDesc;
 	private BigDecimal vlMerc;
 	private BigDecimal vlOutDa;
@@ -59,6 +63,27 @@ public class RegC800 {
 	private List<RegC810> regC810;
 	private List<RegC850> regC850;	
 	
+	public RegC800() {	}
+	
+	public RegC800(DocumentoFiscal satEmititdo) {
+		this.codMod = satEmititdo.getModelo();
+		this.codSit = getCodSituacao(satEmititdo);
+		this.numCfe = satEmititdo.getNumeroNota();
+		this.dtDoc = satEmititdo.getEmissao();
+		this.vlCfe = satEmititdo.getValorTotalDocumento();
+		this.vlPis = satEmititdo.getPisValor();
+		this.vlCofins = satEmititdo.getCofinsValor();
+		this.cnpjCpf = null;
+		this.nrSat = getNumeroSerieSat(satEmititdo);
+		this.chvCfe = satEmititdo.getNfeChaveAcesso();
+		this.vlDesc = satEmititdo.getValorDesconto();
+		this.vlMerc = satEmititdo.getValorTotalDocumento();
+		this.vlOutDa = satEmititdo.getValorOutrasDespesasAcessorias();
+		this.vlIcms = satEmititdo.getIcmsValor();
+		this.vlPisSt = BigDecimal.ZERO;
+		this.vlCofinsSt = BigDecimal.ZERO;
+	}
+
 	public String getReg() {
 		return reg;
 	}
@@ -127,19 +152,19 @@ public class RegC800 {
 		this.cnpjCpf = cnpjCpf;
 	}
 
-	public Long getNrSat() {
+	public String getNrSat() {
 		return nrSat;
 	}
 
-	public void setNrSat(Long nrSat) {
+	public void setNrSat(String nrSat) {
 		this.nrSat = nrSat;
 	}
 
-	public Long getChvCfe() {
+	public String getChvCfe() {
 		return chvCfe;
 	}
 
-	public void setChvCfe(Long chvCfe) {
+	public void setChvCfe(String chvCfe) {
 		this.chvCfe = chvCfe;
 	}
 

@@ -25,7 +25,7 @@ import coffeepot.bean.wr.annotation.Record;
 public class RegC850 {
 	
 	private final String reg = "C850";
-	private int cstIcms;
+	private String cstIcms;
 	private int cfop;
 	private BigDecimal aliqIcms;
 	private BigDecimal vlOpr;
@@ -37,11 +37,11 @@ public class RegC850 {
 		return reg;
 	}
 
-	public int getCstIcms() {
+	public String getCstIcms() {
 		return cstIcms;
 	}
 
-	public void setCstIcms(int cstIcms) {
+	public void setCstIcms(String cstIcms) {
 		this.cstIcms = cstIcms;
 	}
 
