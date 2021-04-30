@@ -67,8 +67,8 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		Loja lojaSped = movimentosIcmsIpi.getLoja();
 		List<DocumentoFiscal> listDocFiscalEntradaEmissaoTerceiros = getDocFiscalEntradaEmissaoTerceiros(movimentosIcmsIpi);
 		List<DocumentoFiscal> listDocFiscalEmissaoPropria = getDocFiscalEmissaoPropria(movimentosIcmsIpi);
-
-		List<RegC100> listRegC100 = new ArrayList<>();
+		int initialCapacityOfList = listDocFiscalEmissaoPropria.size() + listDocFiscalEntradaEmissaoTerceiros.size();
+		List<RegC100> listRegC100 = new ArrayList<>(initialCapacityOfList);
 
 		/**
 		 * Todos os DocumentoFiscal de entrada, emitidos por terceiros e que NÃO sejam  modelo 65 (NFC-e)
@@ -102,7 +102,6 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 */
 	private RegC100 gerarRegistroC100(DocumentoFiscal docFisc, Loja lojaSped, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
-		LOG.log(Level.INFO, "Montando o Registro C100 ");
 		RegC100 regC100 = new RegC100();
 
 		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
@@ -166,8 +165,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 */
 	private TipoPreenchimentoRegC100 verificarTipoPreenchimento(DocumentoFiscal docFisc, Loja lojaSped) {
 		LOG.log(Level.INFO, "Verificando o tipo de preenchimento do Registro C100");
-		List<NFeStatus> nfesNaoAutorizadas = Arrays.asList(NFeStatus.CANCELADA, NFeStatus.DENEGADA,
-				NFeStatus.INUTILIZADA);
+		List<NFeStatus> nfesNaoAutorizadas = Arrays.asList(NFeStatus.CANCELADA, NFeStatus.DENEGADA, NFeStatus.INUTILIZADA);
 
 		if (nfesNaoAutorizadas.contains(docFisc.getStatus())) {
 			return TipoPreenchimentoRegC100.EX_1_COD_SITUACAO;
@@ -185,9 +183,12 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			return TipoPreenchimentoRegC100.EX_4_NFE_REGIME_ESPECIAL_NORMA_ESPECIFICA;
 		}
 
-		if (true) {
-			return TipoPreenchimentoRegC100.EX_5_;
-		}
+		// EXCECAO 05 - (Aparentemente é a msm coisa que a EX_4_, porém para Compra de Cana, e Venda de derivados de petróleo
+		
+		// isVendaInterestadual && itensComStNaOperacaoAnterior() 
+//		if (true) {
+//			return TipoPreenchimentoRegC100.EX_6_VENDA_COM_RESSARCIMENTO;
+//		}
 
 		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
 		return TipoPreenchimentoRegC100.NORMAL;
@@ -290,15 +291,15 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
 		regC100.setCodPart(getCodPart(docFisc));
 		regC100.setCodMod(docFisc.getModelo());
-		regC100.setCodSit(getCodSituacao(docFisc)); // --> VER ESSA PARA BRO
+		regC100.setCodSit(getCodSituacao(docFisc)); // --> VER ESSA PARADA BRO
 
 		regC100.setNumDoc(docFisc.getNumeroNota());
 		regC100.setChvNfe(docFisc.getModelo().equals(ModeloDocumentoFiscal._55) ? docFisc.getNfeChaveAcesso() : "");
 		regC100.setDtDoc(docFisc.getEmissao());
 
-		regC100.setRegC110(regC110Service.montarGrupoRegC110(docFisc, movimentosIcmsIpi));
+		regC100.setRegC110(regC110Service.montarGrupoRegC110(docFisc, lojaSped, movimentosIcmsIpi));
 		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
-		return null;
+		return regC100;
 	}
 
 	// ========================================================================================================================================================================
