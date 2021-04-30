@@ -79,6 +79,20 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		documentoFiscal.setValorTotalDocumento(calcularValorTotalDocumento(documentoFiscal));
 	}
 
+	
+	/**
+	 * Atualmente o que tem aqui é o calcular do total, que temos de crédito nas entradas. Referente ao "DocumentoFiscal" (compra)
+	 * Pois dos itens já foram feitos, calculados previamente no ERP, porém não é calculado o TOTAL que temos de crédito referente ao DocumentoFiscal.
+	 * 
+	 * @param docFiscal
+	 */
+	public void calculaImpostoEntrada(DocumentoFiscal docFiscal) {
+		BigDecimal icmsBase = docFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsBase).reduce(BigDecimal.ZERO, BigDecimal::add); 
+		BigDecimal icmsValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		docFiscal.setIcmsBase(icmsBase);
+		docFiscal.setIcmsValor(icmsValor);
+	}
 
 	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
 		LOG.log(Level.INFO, "SETANDO o ICMS BASE e o VALOR para : {0} ", documentoFiscal);

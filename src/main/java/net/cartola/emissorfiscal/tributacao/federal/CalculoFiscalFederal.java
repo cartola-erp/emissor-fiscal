@@ -63,6 +63,20 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 		setaIpiBaseValor(documentoFiscal, listaImpostos);
 	}
 
+	/**
+	 * Atualmente o que tem aqui é o calcular do total, que temos de crédito nas entradas. Referente ao "DocumentoFiscal" (compra)
+	 * Pois dos itens já foram feitos, calculados previamente no ERP, porém não é calculado o TOTAL que temos de crédito referente ao DocumentoFiscal.
+	 * 
+	 * @param docFiscal
+	 */
+	public void calculaImpostoEntrada(DocumentoFiscal docFiscal) {
+		BigDecimal pisValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getPisValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal cofinsValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getCofinsValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		docFiscal.setPisValor(pisValor);
+		docFiscal.setCofinsValor(cofinsValor);
+	}
+	
 	private void setaPisBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
 		LOG.log(Level.INFO, "Totalizando o PIS BASE e o VALOR para o DocumentoFiscal: {0} ", documentoFiscal);
 		documentoFiscal.setPisBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getPisBase)
@@ -90,5 +104,5 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	private BigDecimal totaliza(List<CalculoImposto> listaImposto) {
 		return listaImposto.stream().map(CalculoImposto::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
-	
+
 }

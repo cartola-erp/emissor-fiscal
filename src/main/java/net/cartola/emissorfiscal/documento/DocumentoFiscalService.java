@@ -168,6 +168,8 @@ public class DocumentoFiscalService {
 				calcGuiaEstaService.enviarEmail(compraDto);
 			}
 		}
+		calcFiscalEstadual.calculaImpostoEntrada(documentoFiscal);
+		calcFiscalFederal.calculaImpostoEntrada(documentoFiscal);
 		DocumentoFiscal docFiscal = documentoFiscalRepository.saveAndFlush(documentoFiscal);
 		compraDto.setDocFiscal(docFiscal);
 		return Optional.ofNullable(compraDto);
