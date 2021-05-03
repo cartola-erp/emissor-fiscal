@@ -22,6 +22,12 @@ Ex.: mvn clean install -Pproducao install -DskipTests	, etc....
 
 	gcloud config set project NOME_PROJETO
 	
+	# TESTE NA NUVEM
+		gcloud config set project erpj-dev
+	
+	# PRODUCAO
+		gcloud config set project erpj-br
+		
 # Vendo instancias SQL
 
 	gcloud sql instances list
