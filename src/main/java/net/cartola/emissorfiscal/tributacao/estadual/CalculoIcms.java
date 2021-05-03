@@ -91,6 +91,7 @@ public class CalculoIcms {
 		di.setIcmsCst(tributacao.getIcmsCst());
 		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tributacao.getCfop());
+		di.setCodigoAnp(tributacao.getCodigoAnp());
 		di.setIcmsBase(valorIcmsBase);
 		di.setIcmsReducaoBaseAliquota(tributacao.getIcmsBase());
 		di.setIcmsValor(valorIcms);
@@ -274,7 +275,7 @@ public class CalculoIcms {
 		di.setIcmsCst(tributacao.getIcmsCst());
 		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tributacao.getCfop());
-		
+		di.setCodigoAnp(tributacao.getCodigoAnp());
 		return calcImposto;
 	}
 	
@@ -327,7 +328,7 @@ public class CalculoIcms {
 		di.setIcmsCst(tributacao.getIcmsCst());
 		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tributacao.getCfop());
-		
+		di.setCodigoAnp(tributacao.getCodigoAnp());
 		di.setIcmsStBaseRetido(valorBaseIcmsStRet);
 		di.setIcmsStValorRetido(vlrIcmsStRetido);
 //		di.setIcmsAliquota(tributacao.getIcmsAliquota());
