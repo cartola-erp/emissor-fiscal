@@ -76,6 +76,9 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 //		setaFcpStValor(documentoFiscal, listCalculoImpostos);
 		setaIcmsStBaseEValor(documentoFiscal, listCalculoImpostos);
 		documentoFiscal.setValorTotalProduto(calcularValorTotalProdutos(documentoFiscal));
+		/**
+		 * No calculo abaixo, atualmente NÃO ESTOU subtraindo o desconto, pois não é informado no XML....
+		 */
 		documentoFiscal.setValorTotalDocumento(calcularValorTotalDocumento(documentoFiscal));
 	}
 
@@ -228,6 +231,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	}
 	
 	/**
+	 * NA realidade tenho que considerar o DESCONTO 
 	 * Referente ao campo vNF do XML: vNF = (vProd + vST + vFrete + vSeg + vOutro + VII + vServ) - vDesc 
 	 * 
 	 * @param documentoFiscal
@@ -240,7 +244,11 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorSeguro());
 		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorOutrasDespesasAcessorias());
 		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getIpiValor());
-		valorTotalDocumento = valorTotalDocumento.subtract((docFiscal.getValorDesconto()));
+		/**
+		 * Essa parte está comentado pois, HOJE em dia não "destacamos" o vDESC(valor desconto) no xml, porém mesmo assim esse campos estava vindo preenchido do
+		 * ERP, e como não é informado no ERP estava dando diferença
+		 */
+//		valorTotalDocumento = valorTotalDocumento.subtract((docFiscal.getValorDesconto()));
 
 		return valorTotalDocumento;
 	}
