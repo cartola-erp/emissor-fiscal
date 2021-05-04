@@ -33,6 +33,7 @@ public class Ncm implements Serializable {
 	private Long id = 0L;
 	private int numero;
 	private int excecao;
+	private boolean isAtivo;				// FALSE = NCM não é mais válido
 	private transient String descricao;
 
 	@Id
@@ -65,9 +66,19 @@ public class Ncm implements Serializable {
 	public void setExcecao(int excecao) {
 		this.excecao = excecao;
 	}
+	
+	@Column(name = "ativo", nullable = false, columnDefinition = " TINYINT DEFAULT 1") 
+	public boolean isAtivo() {
+		return isAtivo;
+	}
+
+	public void setAtivo(Boolean isAtivo) {
+		this.isAtivo = isAtivo;
+	}
 
 	@NotNull(message = "A DESCRIÇÃO, não pode ser NULA")
 	@NotBlank(message = "É obrigatória uma DESCRIÇÃO")
+	@Column(length = 1020)
 	public String getDescricao() {
 		return descricao;
 	}

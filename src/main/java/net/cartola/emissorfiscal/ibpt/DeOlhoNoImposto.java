@@ -18,14 +18,14 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "trib_olho_imposto", uniqueConstraints = {
-		@UniqueConstraint(name = "unk_olho_imposto_id_ex", columnNames = { "ncm", "exce" }) })
+		@UniqueConstraint(name = "unk_olho_imposto_id_ex", columnNames = { "ncm", "ex" }) })
 public class DeOlhoNoImposto implements Serializable{
 
 	private static final long serialVersionUID = 3206582449678382010L;
 	
 	private Long id;
 	private int ncm;
-	private String exce;
+	private String ex;
 	private int tabela;
 	private String descricaoIbpt;
 	private BigDecimal aliqFederalNacional = BigDecimal.ZERO;
@@ -57,12 +57,12 @@ public class DeOlhoNoImposto implements Serializable{
 	}
 	
 	@Column(length = 2)
-	public String getExce() {
-		return exce;
+	public String getEx() {
+		return ex;
 	}
 
-	public void setExce(String exce) {
-		this.exce = exce;
+	public void setEx(String ex) {
+		this.ex = ex;
 	}
 
 	public int getTabela() {

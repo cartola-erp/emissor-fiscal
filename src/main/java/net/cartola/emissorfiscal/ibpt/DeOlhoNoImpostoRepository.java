@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeOlhoNoImpostoRepository extends JpaRepository<DeOlhoNoImposto, Long> {
 	
-	List<DeOlhoNoImposto> findByNcmInAndExceIn(Collection<Integer> ncm, Collection<String> exce);
+	List<DeOlhoNoImposto> findByNcmInAndExIn(Collection<Integer> ncm, Collection<String> exce);
 	
 }
 

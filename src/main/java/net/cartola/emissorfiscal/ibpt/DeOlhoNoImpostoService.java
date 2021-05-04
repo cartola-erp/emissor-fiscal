@@ -28,7 +28,7 @@ public class DeOlhoNoImpostoService {
 	private DeOlhoNoImpostoRepository olhoNoImpostoRepository;
 	
 	public List<DeOlhoNoImposto> findNcmByNumeroInAndExcecaoIn(Collection<Integer> ncm, Collection<String> exce) {
-		return olhoNoImpostoRepository.findByNcmInAndExceIn(ncm, exce);
+		return olhoNoImpostoRepository.findByNcmInAndExIn(ncm, exce);
 	}
 	
 	public Optional<DeOlhoNoImposto> findOne(Long id) {
@@ -64,7 +64,7 @@ public class DeOlhoNoImpostoService {
 			List<DeOlhoNoImposto> listOlhoNoImposto = findNcmByNumeroInAndExcecaoIn(numeroNcm, excecaoNcm);
 			// SÒ VOU AO BD UMA VEZ
 			opDocFiscal.get().getItens().stream().forEach(item -> {
-				Optional<DeOlhoNoImposto> opOlhoNoImposto = listOlhoNoImposto.stream().filter( o -> o.getNcm() == item.getNcm().getNumero() && Integer.parseInt(o.getExce())== item.getNcm().getExcecao()).findAny();
+				Optional<DeOlhoNoImposto> opOlhoNoImposto = listOlhoNoImposto.stream().filter( o -> o.getNcm() == item.getNcm().getNumero() && Integer.parseInt(o.getEx())== item.getNcm().getExcecao()).findAny();
 				if (opOlhoNoImposto.isPresent()) {
 					BigDecimal totalItem = totalItem(item);
 					BigDecimal aliqEstadual = opOlhoNoImposto.get().getAliqEstadual();
