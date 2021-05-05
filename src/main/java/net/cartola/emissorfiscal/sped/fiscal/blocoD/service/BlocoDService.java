@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoD.service;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
@@ -20,13 +21,23 @@ public class BlocoDService implements MontaBloco<BlocoD, MovimentoMensalIcmsIpi>
 
 	private static final Logger LOG = Logger.getLogger(BlocoDService.class.getName());
 	
+	@Autowired
+	private RegD001Service regD001Service;
+	
+	@Autowired
+	private RegD100Service regD100Service;
+	
+	@Autowired
+	private RegD500Service RegD500Service;
+	
 	@Override
 	public BlocoD criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o bloco D, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 		BlocoD blocoD = new BlocoD();
-//		blocoD.setRegD001(regD001);
-		
+		blocoD.setRegD001(regD001Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
+		blocoD.setRegD100(regD100Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		blocoD.setRegD500(RegD500Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		blocoD.setRegD990(montarEncerramentoDoBlocoD(blocoD));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO D, TEMINADA! {0} " ,blocoD);
