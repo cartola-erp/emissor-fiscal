@@ -7,11 +7,20 @@ import java.util.List;
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import coffeepot.bean.wr.typeHandler.DefaultStringHandler;
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
+import static net.cartola.emissorfiscal.util.XmlUtil.getTagConteudo;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodPart;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+
 
 /**
  * 11/09/2020
@@ -74,7 +83,7 @@ public class RegD100 {
     private String codPart;
     private ModeloDocumentoFiscal codMod;
     private SituacaoDoDocumento codSit;
-    private String ser;
+    private Long ser;
     private String sub;
     private Long numDoc;
     private String chvCte;
@@ -105,7 +114,71 @@ public class RegD100 {
     private List<RegD190> regD190;
     private List<RegD195> regD195;
 	
-    public String getReg() {
+    public RegD100() {     }
+    
+//    private void corrigirIndicadorFreteParaCte(DocumentoFiscal documentoFiscal) {
+//		if (documentoFiscal.getXml() == null) {
+//			documentoFiscal.setIndicadorFrete(FreteConta.SEM_FRETE);
+//			return;
+//		}
+//		
+//		String rem = getTagConteudo(documentoFiscal.getXml(), "rem", false).get(0);
+//		String cnpjRemente = getTagConteudo(rem, "CNPJ", false).get(0);
+//		
+//		if (!cnpjRemente.equals(cnpjLojaAtual)) {
+//			
+//		}
+//		
+//	}
+    
+    public RegD100(DocumentoFiscal servicoTransporte, Loja lojaSped) {
+    	// TODO Auto-generated constructor stub
+		IndicadorDeOperacao tipoOperacao = servicoTransporte.getTipoOperacao();
+
+    	
+		this.indOper = tipoOperacao ;
+		this.indEmit = getIndicadorEmitente(servicoTransporte, lojaSped);
+		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
+		this.codPart = SpedFiscalUtil.getCodPart(servicoTransporte);
+		this.codMod = servicoTransporte.getModelo();
+		this.codSit = getCodSituacao(servicoTransporte);
+		this.ser = servicoTransporte.getSerie();
+//		this.sub = null
+		this.numDoc = servicoTransporte.getNumeroNota();
+		this.chvCte = servicoTransporte.getNfeChaveAcesso();
+		this.dtDoc = servicoTransporte.getEmissao();
+		this.dtAP = servicoTransporte.getCadastro().toLocalDate();
+		/**
+		 * NÃO é exatamente a "finEmiss" (campo da NFE - 55), e sim TIPO DO CT-e (tpCTe). que segundo o Manual de Integração diz que deve ser preenchido com os seguintes valores:
+		 * 
+		 * 0 - CT-e Normal;
+		 * 1 - CT-e de Complemento de Valores; 
+		 * 2 - CT-e de Anulação;
+		 * 3 - CT-e Substituto
+		 * 
+		 * Apesar disso, acredito que essa GAMBS, possa funcionar;
+		 */
+		this.tpCTe = Integer.toString(servicoTransporte.getFinalidadeEmissao().ordinal());
+//		this.chvCteRef = null;			// Para quando o tpCTE == 3, informar a chave do CTE substituto (Acredito que nunca iremos nos encaixar nisso então não fiz a lógica)
+		this.vlDoc = getVlrOrBaseCalc(servicoTransporte.getValorTotalDocumento(), tipoOperacao);
+		this.vlDesc = servicoTransporte.getValorDesconto();
+		this.indFrt = servicoTransporte.getIndicadorFrete();
+		this.vlServ = servicoTransporte.getValorTotalDocumento();
+		// ===================================================================================================================================
+		// 										ATEH acima está "OK"
+		// ===================================================================================================================================
+		this.vlBcIcms = // TENHO QUE VER COMO IREI PEGAR ESSA e as OUTRAS informações, referentes ao ICMS. do XML da CTE
+		this.vlBcIcms = getVlrOrBaseCalc(servicoTransporte.getIcmsBase(), tipoOperacao);
+		this.vlIcms = getVlrOrBaseCalc(servicoTransporte.getIcmsValor(), tipoOperacao);
+		
+		this.vlNt = BigDecimal.ZERO;
+//		this.codInf = 
+//		this.codCta = 
+		this.codMunOrig =
+		this.codMunDest = 
+    }
+
+	public String getReg() {
 		return reg;
 	}
 
@@ -149,11 +222,11 @@ public class RegD100 {
 		this.codSit = codSit;
 	}
 
-	public String getSer() {
+	public Long getSer() {
 		return ser;
 	}
 
-	public void setSer(String ser) {
+	public void setSer(Long ser) {
 		this.ser = ser;
 	}
 

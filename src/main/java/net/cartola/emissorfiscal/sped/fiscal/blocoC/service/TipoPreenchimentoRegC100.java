@@ -12,7 +12,7 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
  * @date 26 de fev. de 2021
  * @author robson.costa
  */
-public enum TipoPreenchimentoRegC100 {
+enum TipoPreenchimentoRegC100 {
 
 	
 	EX_1_COD_SITUACAO, 

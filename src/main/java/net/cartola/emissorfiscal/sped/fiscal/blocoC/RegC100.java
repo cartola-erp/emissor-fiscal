@@ -150,7 +150,7 @@ public class RegC100 {
 		this.dtDoc = docFisc.getEmissao();
 		this.dtES = docFisc.getCadastro().toLocalDate();
 		
-		this.vlDoc = getVlrOrBaseCalc(docFisc.getValorTotalProduto(), tipoOperacao);
+		this.vlDoc = getVlrOrBaseCalc(docFisc.getValorTotalDocumento(), tipoOperacao);
 
 		this.indPgto = docFisc.getIndicadorPagamento();
 		this.vlDesc = docFisc.getValorDesconto();
