@@ -25,6 +25,7 @@
 	</properties>
 	
 	<!-- Dependencias ESPECIFICAS de perfis, (passar o arg: -Pnome_perfil) quando tiver "empacotando" etc -->
+	<!-- PS: Esse perfil de "producao", NÃO tem nenhuma relação com o perfil do SPRING -->
 	<profiles>
 		<profile>
 			<id>producao</id>
@@ -55,6 +56,13 @@
 					<groupId>org.springframework.cloud</groupId>
 					<artifactId>spring-cloud-gcp-starter-trace</artifactId>
 				</dependency>
+				
+				<dependency>
+				  <groupId>com.google.cloud</groupId>
+				  <artifactId>google-cloud-secretmanager</artifactId>
+				  <version>1.5.1</version>
+				</dependency>
+				
 			</dependencies>
 		</profile>
 		
