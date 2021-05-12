@@ -263,6 +263,7 @@ public class DocumentoFiscalService {
 		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
 		
 		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
+		defineModeloDocumentoParaServico(documentoFiscal);
 		
 		if (documentoFiscal.getIndicadorPagamento() == null) {
 			documentoFiscal.setIndicadorPagamento(IndicadorDePagamento.OUTROS);
@@ -277,8 +278,40 @@ public class DocumentoFiscalService {
 		
 		return ValidationHelper.processaErros(mapErros);
 	}
-
-
+	
+	/**
+	 * Irá definir o {@link ModeloDocumentoFiscal}, para alguns tipos de servicos "essenciais". E que hoje em dia para darmos entrada não é através de um xml.
+	 * Ou seja, é os famosos "papéis" de: CONTA de ENERGIA, ÁGUA, TELEFONE  etc....
+	 * @param documentoFiscal
+	 */
+	private void defineModeloDocumentoParaServico(DocumentoFiscal docuFisc) {
+		ModeloDocumentoFiscal modelo = null;
+		switch (docuFisc.getTipoServico()) {
+		case NENHUM:
+			modelo = docuFisc.getModelo();
+		case OUTROS:
+			modelo = ModeloDocumentoFiscal.NFSE;
+			break;
+		case CTE: 
+			modelo = ModeloDocumentoFiscal._57;
+			break;
+		case ENERGIA: 
+			modelo = ModeloDocumentoFiscal._6;
+			break;
+		case AGUA: 
+			modelo = ModeloDocumentoFiscal._29;
+			break;
+		case INTERNET: 
+			modelo = ModeloDocumentoFiscal._21;
+			break;
+		case TELEFONE_FIXO_MOVEL: 
+			modelo = ModeloDocumentoFiscal._22;
+			break;
+//		default:
+//			break;
+		}
+		docuFisc.setModelo(modelo);
+	}
 
 	/**
 	 * Seta os NCMS para os Itens
