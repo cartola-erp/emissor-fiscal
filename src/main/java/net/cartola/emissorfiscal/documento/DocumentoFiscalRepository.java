@@ -33,7 +33,8 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 	 * @param indOper
 	 * @return
 	 */
-	List<DocumentoFiscal> findByCadastroBetweenAndDestinatarioAndTipoOperacao(LocalDateTime dataInicio, LocalDateTime dataFim, Pessoa destinatario, IndicadorDeOperacao indOper);
+	List<DocumentoFiscal> findByCadastroBetweenAndDestinatarioAndTipoOperacaoAndTipoServicoIn(LocalDateTime dataInicio, LocalDateTime dataFim, Pessoa destinatario, 
+			IndicadorDeOperacao indOper, Collection<TipoServico> tipoServico);
 
 	/**
 	 * Retorna todos os DocumentoFiscais, em um determinado Periodo, para um Emitente, especifico 
@@ -43,7 +44,7 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 	 * @param emitente
 	 * @return
 	 */
-	List<DocumentoFiscal> findByCadastroBetweenAndEmitente(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente);
+	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteAndTipoServicoIn(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente, Collection<TipoServico> listTipoServico);
 
 	
 	List<DocumentoFiscal> findByNfeChaveAcessoIn(Collection<String> setChaveAcessoReferencia);

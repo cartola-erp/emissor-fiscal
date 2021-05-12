@@ -28,6 +28,7 @@ public class MovimentoMensalIcmsIpi {
 	
 //	private List<DocumentoFiscal> listCompras;
 	private List<DocumentoFiscal> listDocumentoFiscal;
+	private List<DocumentoFiscal> listDocumentoFiscalServico;
 	private List<DocumentoFiscal> listSatsEmitidos; 		// DocumentoFiscal - Modelo _59
 	private List<Pessoa> listCadastros;
 	private List<PessoaAlteradoSped> listCadastrosAlteradosSped;

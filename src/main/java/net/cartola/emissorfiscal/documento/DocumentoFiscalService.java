@@ -118,8 +118,8 @@ public class DocumentoFiscalService {
 	 * @param entrada 
 	 * @return List<DocumentoFiscal> De uma loja num determinado Período
 	 */
-	public List<DocumentoFiscal> findByPeriodoCadastroAndLojaAndTipoOperacao(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa destinatario, IndicadorDeOperacao tipoOperacao) {
-		return documentoFiscalRepository.findByCadastroBetweenAndDestinatarioAndTipoOperacao(dataHoraInicio, dataHoraFim, destinatario, tipoOperacao);
+	public List<DocumentoFiscal> findByPeriodoCadastroAndLojaAndTipoOperacaoAndTipoServico(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa destinatario, IndicadorDeOperacao tipoOperacao, Collection<TipoServico> listTipoServico) {
+		return documentoFiscalRepository.findByCadastroBetweenAndDestinatarioAndTipoOperacaoAndTipoServicoIn(dataHoraInicio, dataHoraFim, destinatario, tipoOperacao, listTipoServico);
 	}
 	
 	/**
@@ -129,8 +129,8 @@ public class DocumentoFiscalService {
 	 * @param emitente
 	 * @return
 	 */
-	public List<DocumentoFiscal> findByPeriodoCadastroAndEmitente(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente) {
-		return documentoFiscalRepository.findByCadastroBetweenAndEmitente(dataHoraInicio, dataHoraFim, emitente);
+	public List<DocumentoFiscal> findByPeriodoCadastroAndEmitenteAndTipoServico(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente, Collection<TipoServico> listTipoServico) {
+		return documentoFiscalRepository.findByCadastroBetweenAndEmitenteAndTipoServicoIn(dataHoraInicio, dataHoraFim, emitente, listTipoServico);
 	}
 	
 	/**
