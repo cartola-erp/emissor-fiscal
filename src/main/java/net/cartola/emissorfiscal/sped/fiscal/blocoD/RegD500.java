@@ -1,5 +1,9 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoD;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +17,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeAssinante;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
  * 11/09/2020
@@ -25,7 +30,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeAssinante;
 	@Field(name = "reg", maxLength = 4),
 	@Field(name = "indOper"),
 	@Field(name = "indEmit"),
-	@Field(name = "codPary"),
+	@Field(name = "codPart"),
 	@Field(name = "codMod"),
 	@Field(name = "codSit"),
 	@Field(name = "ser"),
@@ -41,7 +46,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeAssinante;
 	@Field(name = "vlDa"),
 	@Field(name = "vlBcIcms"),
 	@Field(name = "vlIcms"),
-	@Field(name = "codUInf"),
+	@Field(name = "codInf"),
 	@Field(name = "vlPis"),
 	@Field(name = "vlCofins"),
 	@Field(name = "codCta"),
@@ -56,7 +61,7 @@ public class RegD500 {
 	private final String reg = "D500";
 	private IndicadorDeOperacao indOper;
 	private IndicadorDoEmitente indEmit;
-	private String codPary;
+	private String codPart;
 	private ModeloDocumentoFiscal codMod;
 	private SituacaoDoDocumento codSit;
 	private String ser;
@@ -72,7 +77,7 @@ public class RegD500 {
 	private BigDecimal vlDa;
 	private BigDecimal vlBcIcms;
 	private BigDecimal vlIcms;
-	private String codUInf;
+	private String codInf;
 	private BigDecimal vlPis;
 	private BigDecimal vlCofins;
 	private String codCta;
@@ -83,7 +88,32 @@ public class RegD500 {
 	private List<RegD590> regD590;
 	
 	public RegD500(DocumentoFiscal servico, Loja lojaSped) {
-		// TODO Auto-generated constructor stub
+		IndicadorDeOperacao tipoOperacao = servico.getTipoOperacao();
+    	
+		this.indOper = tipoOperacao;
+		this.indEmit = getIndicadorEmitente(servico, lojaSped);
+		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
+		this.codPart = SpedFiscalUtil.getCodPart(servico);
+		this.codMod = servico.getModelo();
+		this.codSit = getCodSituacao(servico);
+		this.ser = servico.getSerie() != null && servico.getSerie() != 0 ? servico.getSerie().toString() : "";		// TODO @see ATUAALMENET em DOC FISCAL, a série é um LONG
+//		this.sub = null
+		this.numDoc = servico.getNumeroNota();
+		this.dtDoc = servico.getEmissao();
+		this.dtAP = servico.getCadastro().toLocalDate();
+		this.vlDoc = servico.getValorTotalDocumento();
+		this.vlDesc = getVlrOrBaseCalc(servico.getValorDesconto(), tipoOperacao);
+		this.vlServ = BigDecimal.ZERO;
+		this.vlSerNt = null;		// Se esses campos não aceitarem null, então colocar ZERO
+		this.vlTerc = null;
+		this.vlDa = null;
+		this.vlBcIcms = null;
+		this.vlIcms = null;
+		this.codInf = null;
+		this.vlPis = getVlrOrBaseCalc(servico.getPisValor(), tipoOperacao);
+		this.vlCofins = getVlrOrBaseCalc(servico.getCofinsValor(), tipoOperacao);
+		this.codCta = null;
+		this.tpAssinante = null;
 	}
 
 	public String getReg() {
@@ -106,12 +136,12 @@ public class RegD500 {
 		this.indEmit = indEmit;
 	}
 
-	public String getCodPary() {
-		return codPary;
+	public String getCodPart() {
+		return codPart;
 	}
 
-	public void setCodPary(String codPary) {
-		this.codPary = codPary;
+	public void setCodPart(String codPart) {
+		this.codPart = codPart;
 	}
 
 	public ModeloDocumentoFiscal getCodMod() {
@@ -234,12 +264,12 @@ public class RegD500 {
 		this.vlIcms = vlIcms;
 	}
 
-	public String getCodUInf() {
-		return codUInf;
+	public String getCodInf() {
+		return codInf;
 	}
 
-	public void setCodUInf(String codUInf) {
-		this.codUInf = codUInf;
+	public void setCodinf(String codInf) {
+		this.codInf = codInf;
 	}
 
 	public BigDecimal getVlPis() {
