@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoD.service;
 import static net.cartola.emissorfiscal.documento.TipoServico.INTERNET;
 import static net.cartola.emissorfiscal.documento.TipoServico.TELEFONE_FIXO_MOVEL;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD500;
+import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD590;
 
 /**
  * @autor robson.costa
@@ -29,7 +31,6 @@ class RegD500Service implements MontaGrupoDeRegistroList<RegD500, MovimentoMensa
 	
 	@Override
 	public List<RegD500> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
-		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro D500");
 		List<RegD500> listRegD500 = new ArrayList<>();
 		
@@ -40,14 +41,38 @@ class RegD500Service implements MontaGrupoDeRegistroList<RegD500, MovimentoMensa
 			TipoServico tipoServico = servico.getTipoServico();
 			if (tipoServico.equals(INTERNET) || tipoServico.equals(TELEFONE_FIXO_MOVEL)) {
 				RegD500 regD500 = new RegD500(servico, lojaSped);
-				
-				regD500.setRegD590(null); // ni hao, Preciso setar essa parada??
+				regD500.setRegD590(montarGrupoRegD590(servico));
 				listRegD500.add(regD500);
-			}
+ 			}
 		});
 		
 		LOG.log(Level.INFO, "Registro D500, terminado. REG D500: ");
 		return listRegD500;
+	}
+	
+	/**
+	 * Preenchimento do REGISTRO ANALÍTICO D590
+	 * 
+	 * @param servico
+	 * @return
+	 */
+	private List<RegD590> montarGrupoRegD590(DocumentoFiscal servico) {
+		List<RegD590> listRegD590 = new ArrayList<>();
+		RegD590 regD590 = new RegD590();
+		
+		regD590.setCstIcms("090");
+		regD590.setCfop(1303);					//CFOP 1303 - Aquisição de serviço de comunicação por estabelecimento comercial
+		regD590.setAliqIcms(BigDecimal.ZERO);
+		regD590.setVlOpr(servico.getValorTotalDocumento());
+		regD590.setVlBcIcms(BigDecimal.ZERO);
+		regD590.setVlIcms(BigDecimal.ZERO);
+		regD590.setVlBcIcmsUf(BigDecimal.ZERO);
+		regD590.setVlBcIcmsUf(BigDecimal.ZERO);
+		regD590.setVlRedBc(BigDecimal.ZERO);
+		regD590.setCodObs(null);
+
+		listRegD590.add(regD590);
+		return listRegD590;
 	}
 
 }
