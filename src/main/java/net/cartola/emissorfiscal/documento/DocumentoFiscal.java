@@ -51,6 +51,7 @@ public class DocumentoFiscal implements Serializable {
     private Operacao operacao;
 	private IndicadorDeOperacao tipoOperacao;
 	private FinalidadeEmissao finalidadeEmissao = FinalidadeEmissao.NORMAL;
+	private TipoServico tipoServico = TipoServico.NENHUM;
 	private ModeloDocumentoFiscal modelo = ModeloDocumentoFiscal._55;
     private NFeStatus status;
 	private IndicadorDePagamento indicadorPagamento;
@@ -155,6 +156,16 @@ public class DocumentoFiscal implements Serializable {
 
 	public void setFinalidadeEmissao(FinalidadeEmissao finalidadeEmissao) {
 		this.finalidadeEmissao = finalidadeEmissao;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name="tipo_serv", columnDefinition="enum('NENHUM', 'OUTROS', 'CTE', 'ENERGIA', 'AGUA', 'INTERNET', 'TELEFONE_FIXO_MOVEL') default 'NENHUM' ")
+	public TipoServico getTipoServico() {
+		return tipoServico;
+	}
+
+	public void setTipoServico(TipoServico tipoServico) {
+		this.tipoServico = tipoServico;
 	}
 	
 	@Enumerated(EnumType.STRING)
@@ -748,4 +759,5 @@ public class DocumentoFiscal implements Serializable {
 		return true;
 	}
 
+	
 }
