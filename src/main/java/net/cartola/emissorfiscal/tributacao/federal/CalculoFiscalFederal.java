@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
+import static net.cartola.emissorfiscal.documento.TipoServico.ENERGIA;
+
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.documento.TipoServico;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
@@ -70,11 +73,30 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	 * @param docFiscal
 	 */
 	public void calculaImpostoEntrada(DocumentoFiscal docFiscal) {
-		BigDecimal pisValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getPisValor).reduce(BigDecimal.ZERO, BigDecimal::add);
-		BigDecimal cofinsValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getCofinsValor).reduce(BigDecimal.ZERO, BigDecimal::add);
-		
-		docFiscal.setPisValor(pisValor);
-		docFiscal.setCofinsValor(cofinsValor);
+		// Se TipoServico == NENHUM, então tem ITENS. E isso será usado para calcular o imposto
+		if (docFiscal.getTipoServico().equals(TipoServico.NENHUM)) {
+			BigDecimal pisValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getPisValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+			BigDecimal cofinsValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getCofinsValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+			
+			docFiscal.setPisValor(pisValor);
+			docFiscal.setCofinsValor(cofinsValor);
+		} else {
+			calculaImpostoEntradaServico(docFiscal);
+		}
+	}
+	
+	/**
+	 * Calculando os IMPOSOTO, entrada dos SERVICO: ENERGIA
+	 * @param documentoFiscal
+	 */
+	private void calculaImpostoEntradaServico(DocumentoFiscal docuFisc) {
+		TipoServico tipoServico = docuFisc.getTipoServico();
+		if (tipoServico.equals(ENERGIA)) {		// TODO Tenho que ver como que funciona para os casos que são CTEs
+			BigDecimal pisValor = docuFisc.getValorTotalDocumento().multiply(new BigDecimal(0.0165));
+			BigDecimal cofinsValor = docuFisc.getValorTotalDocumento().multiply(new BigDecimal(0.0760));
+			docuFisc.setPisValor(pisValor);
+			docuFisc.setCofinsValor(cofinsValor);
+		}
 	}
 	
 	private void setaPisBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
