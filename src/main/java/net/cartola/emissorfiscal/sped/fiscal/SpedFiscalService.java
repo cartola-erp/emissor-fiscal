@@ -74,6 +74,7 @@ public class SpedFiscalService implements MontaSpedFiscal<SpedFiscal, MovimentoM
 		 */
 		SpedFiscal spedFiscal = new SpedFiscal();
 		
+		
 		spedFiscal.setBloco0(bloco0Service.criarBloco(movimentacoesMensalIcmsIpi));
 		spedFiscal.setBlocoB(blocoBService.criarBloco(movimentacoesMensalIcmsIpi));
 		spedFiscal.setBlocoC(blocoCService.criarBloco(movimentacoesMensalIcmsIpi));

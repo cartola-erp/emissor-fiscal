@@ -87,7 +87,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			listRegC100.add(gerarRegistroC100(docFiscEmissaoPropria, lojaSped, movimentosIcmsIpi));
 		});
 
-		LOG.log(Level.INFO, "Registro C100, terminado. REG C100: {0} ", listRegC100);
+		LOG.log(Level.INFO, "Registro C100, terminado. REG C100: ");
 		return listRegC100;
 	}
 

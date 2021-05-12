@@ -6,7 +6,9 @@ import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
@@ -80,6 +82,10 @@ public class RegD500 {
 //	private List<RegD530> regD530;
 	private List<RegD590> regD590;
 	
+	public RegD500(DocumentoFiscal servico, Loja lojaSped) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getReg() {
 		return reg;
 	}

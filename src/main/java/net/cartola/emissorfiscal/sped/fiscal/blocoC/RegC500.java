@@ -1,17 +1,24 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.enums.CodConsumoEnergiaOuGas;
 import net.cartola.emissorfiscal.sped.fiscal.enums.CodTipoDeLigacao;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
  * 02/09/2020
@@ -69,10 +76,10 @@ public class RegC500 {
 	private String codPart;
 	private ModeloDocumentoFiscal codMod;
 	private SituacaoDoDocumento codSit;
-	private String ser;
+	private Long ser;
 	private Long sub;
 	private CodConsumoEnergiaOuGas codCons;
-	private Long numDOc;
+	private Long numDoc;
 	private LocalDate dtDoc;
 	private LocalDate dtES;
 	private BigDecimal vlDoc;
@@ -101,6 +108,44 @@ public class RegC500 {
 	private List<RegC510> regC510;
 	private List<RegC590> regC590;
 	private List<RegC595> regC595;
+
+	public RegC500(DocumentoFiscal servico, Loja lojaSped) {
+		IndicadorDeOperacao tipoOperacao = servico.getTipoOperacao();
+    	
+		this.indOper = tipoOperacao;
+		this.indEmit = getIndicadorEmitente(servico, lojaSped);
+		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
+		this.codPart = SpedFiscalUtil.getCodPart(servico);
+		this.codMod = servico.getModelo();
+		this.codSit = getCodSituacao(servico);
+		this.ser = servico.getSerie();
+//		this.sub = null
+		this.codCons = null; 		
+		this.numDoc = servico.getNumeroNota();
+		this.dtDoc = servico.getEmissao();
+		this.dtES = servico.getCadastro().toLocalDate();
+		this.vlDoc = servico.getValorTotalDocumento();
+		this.vlDesc = getVlrOrBaseCalc(servico.getValorDesconto(), tipoOperacao);
+		this.vlForn = servico.getValorTotalDocumento();
+		this.vlSerNt = null;		// Se esses campos não aceitarem null, então colocar ZERO
+		this.vlTerc = null;
+		this.vlDa = null;
+		this.vlBcIcms = null;
+		this.vlIcms = null;
+		this.vlBcIcmsSt = null;
+		this.vlIcmsSt = null;
+		this.codInf = null;
+		this.vlPis = getVlrOrBaseCalc(servico.getPisValor(), tipoOperacao);
+		this.vlCofins = getVlrOrBaseCalc(servico.getCofinsValor(), tipoOperacao);
+		this.tpLigacao = null;					// Se esses campos não aceitarem null, então colocar ZERO
+		this.codGrupoTensao = null;
+		this.chvDOCe = null;
+		this.finDOCe = null;
+		this.chvDOCeRef = null;
+		this.indDest = null;
+		this.codMunDest = null;
+		this.codCta = null;
+	}
 
 	public String getReg() {
 		return reg;
@@ -146,11 +191,11 @@ public class RegC500 {
 		this.codSit = codSit;
 	}
 
-	public String getSer() {
+	public Long getSer() {
 		return ser;
 	}
 
-	public void setSer(String ser) {
+	public void setSer(Long ser) {
 		this.ser = ser;
 	}
 
@@ -170,12 +215,12 @@ public class RegC500 {
 		this.codCons = codCons;
 	}
 
-	public Long getNumDOc() {
-		return numDOc;
+	public Long getNumDoc() {
+		return numDoc;
 	}
 
-	public void setNumDOc(Long numDOc) {
-		this.numDOc = numDOc;
+	public void setNumDoc(Long numDoc) {
+		this.numDoc = numDoc;
 	}
 
 	public LocalDate getDtDoc() {
