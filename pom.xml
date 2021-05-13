@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+		<spring-cloud.version>Hoxton.SR9</spring-cloud.version>
 	</properties>
 	
 	<!-- Dependencias ESPECIFICAS de perfis, (passar o arg: -Pnome_perfil) quando tiver "empacotando" etc -->
@@ -58,9 +58,8 @@
 				</dependency>
 				
 				<dependency>
-				  <groupId>com.google.cloud</groupId>
-				  <artifactId>google-cloud-secretmanager</artifactId>
-				  <version>1.5.1</version>
+					<groupId>org.springframework.cloud</groupId>
+					<artifactId>spring-cloud-gcp-starter-secretmanager</artifactId>
 				</dependency>
 				
 			</dependencies>
