@@ -77,6 +77,8 @@ public class CalculoIcms {
 	 */
 	private void calculaImpostoBase(DocumentoFiscalItem di, TributacaoEstadual tributacao, CalculoImposto calcIcms) {
 		LOG.log(Level.INFO, "Calculando o ICMS BASE");
+		// OBS: Na base de calculo do ICMS entra o VALOR do frete e ipi, - desconto (totalItem + vFRETE + vIPI - desconto), 
+		// porém ainda não foi implementado
 		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
 		BigDecimal valorIcmsBase = tributacao.getIcmsBase().multiply(valorTotal);
 		BigDecimal valorIcms = valorIcmsBase.multiply(tributacao.getIcmsAliquota());
@@ -142,8 +144,10 @@ public class CalculoIcms {
 		boolean ehEstadosDiferentes = !tributacao.getEstadoOrigem().equals(tributacao.getEstadoDestino());
 		if (ehEstadosDiferentes && destinatario.getPessoaTipo().equals(PessoaTipo.FISICA)) {
 			LOG.log(Level.INFO, "Calculando o DIFAL da TAG (ICMSUFDest) ");
-			BigDecimal valorBaseUfDest = di.getIcmsBase();
-			BigDecimal aliqInterDifal = tributacao.getIcmsAliquota().subtract(tributacao.getIcmsAliquotaDestino());
+//			BigDecimal valorBaseUfDest = di.getIcmsBase();		// Aparentemente não vai o frete na base do calculo do difal
+			BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
+			BigDecimal valorBaseUfDest = tributacao.getIcmsBase().multiply(valorTotal);
+			BigDecimal aliqInterDifal = tributacao.getIcmsAliquota().subtract(tributacao.getIcmsAliquotaDestino()).abs();
 			BigDecimal valorIcmsUfDest = valorBaseUfDest.multiply(aliqInterDifal);
 			
 			calcDifal.setVlrBaseUfDest(valorBaseUfDest);
@@ -151,6 +155,7 @@ public class CalculoIcms {
 			calcDifal.setAliquotaIcmsInter(tributacao.getIcmsAliquota()); 			// -4% - Importada (Ou seja, se ORIGEM = 1), isso vale também p/ o campo pICMS
 			calcDifal.setVlrIcmsUfDest(valorIcmsUfDest);
 			
+			di.setIcmsBaseUfDestino(valorBaseUfDest);
 			di.setIcmsValorUfDestino(valorIcmsUfDest);
 			
 			calculaIcmsFcp(di, tributacao, calcDifal);

@@ -81,6 +81,7 @@ public class DocumentoFiscalItem implements Serializable {
 //    private BigDecimal icmsAliqFcpStRetido = BigDecimal.ZERO;
 //    private BigDecimal icmsValorFcpStRetido = BigDecimal.ZERO;
 	private int icmsCst;
+	private BigDecimal icmsBaseUfDestino = BigDecimal.ZERO; 		// Aparentemente é (valorUnitario * quantidade) - desconto (ou seja, não entra o frete nessa base)
     private BigDecimal icmsValorUfDestino = BigDecimal.ZERO;		// É o VALOR do DIFAL
     // Base do ICMS ST (ULTIMA COMPRA), que foi usado quando a AG comprou o produto, p/ usar no ICMS 60
 	private BigDecimal icmsStBaseUltimaCompra = BigDecimal.ZERO; 
@@ -465,6 +466,15 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsCst = icmsCst;
 	}
 
+	@Column(name = "icms_base_uf_dest")
+	public BigDecimal getIcmsBaseUfDestino() {
+		return icmsBaseUfDestino;
+	}
+
+	public void setIcmsBaseUfDestino(BigDecimal icmsBaseUfDestino) {
+		this.icmsBaseUfDestino = icmsBaseUfDestino;
+	}
+	
 	@Column(name = "icms_vlr_uf_dest")
     public BigDecimal getIcmsValorUfDestino() {
 		return icmsValorUfDestino;
@@ -719,5 +729,4 @@ public class DocumentoFiscalItem implements Serializable {
 		return true;
 	}
 
-	
 }
