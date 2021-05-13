@@ -21,10 +21,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+		<spring-cloud.version>Hoxton.SR9</spring-cloud.version>
 	</properties>
 	
 	<!-- Dependencias ESPECIFICAS de perfis, (passar o arg: -Pnome_perfil) quando tiver "empacotando" etc -->
+	<!-- PS: Esse perfil de "producao", NÃO tem nenhuma relação com o perfil do SPRING -->
 	<profiles>
 		<profile>
 			<id>producao</id>
@@ -55,6 +56,12 @@
 					<groupId>org.springframework.cloud</groupId>
 					<artifactId>spring-cloud-gcp-starter-trace</artifactId>
 				</dependency>
+				
+				<dependency>
+					<groupId>org.springframework.cloud</groupId>
+					<artifactId>spring-cloud-gcp-starter-secretmanager</artifactId>
+				</dependency>
+				
 			</dependencies>
 		</profile>
 		

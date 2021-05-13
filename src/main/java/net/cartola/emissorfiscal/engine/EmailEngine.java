@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.sendgrid.SendGridProperties;
 import org.springframework.stereotype.Service;
 
 import com.sendgrid.Method;
@@ -13,7 +14,6 @@ import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 
-import net.cartola.emissorfiscal.properties.SendgridApiProperties;
 
 /**
   * @date 12 de mar. de 2021
@@ -26,7 +26,7 @@ public class EmailEngine {
 //	private EmailModel emailModel;
 	
 	@Autowired
-	private SendgridApiProperties sendGridApiProperties;
+	private SendGridProperties sendGridApiProperties;
 	
 	/**
 	 * Envia email usando o Sendgrid
