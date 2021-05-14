@@ -38,7 +38,7 @@ import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 	@Field(name = "ser"),
 	@Field(name = "sub"),
 	@Field(name = "codCons"),
-	@Field(name = "numDOc"),
+	@Field(name = "numDoc"),
 	@Field(name = "dtDoc"),
 	@Field(name = "dtES"),
 	@Field(name = "vlDoc"),
