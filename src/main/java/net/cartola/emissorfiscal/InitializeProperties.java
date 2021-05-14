@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import net.cartola.emissorfiscal.properties.GuiaGareEmailProperties;
+import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 
 /**
  * @date 18 de mar. de 2021
@@ -19,4 +20,10 @@ public class InitializeProperties {
 		return new GuiaGareEmailProperties();
 	}
 	
+	@Bean
+	@ConfigurationProperties(value = "sped-fiscal")
+	public SpedFiscalProperties spedFiscalProperties() {
+		return new SpedFiscalProperties();
+	}
+
 }

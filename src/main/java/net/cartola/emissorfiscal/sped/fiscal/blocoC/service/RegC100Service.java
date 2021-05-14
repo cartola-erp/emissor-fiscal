@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
@@ -37,6 +38,9 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	private static final Logger LOG = Logger.getLogger(RegC100Service.class.getName());
 
 	@Autowired
+	private RegC101Service regC101Service;
+	
+	@Autowired
 	private RegC110Service regC110Service;
 
 	@Autowired
@@ -59,7 +63,10 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 
 	@Autowired
 	private RegC195Service regC195Service;
-
+	
+	@Value("${sped-fiscal.cod-venda-interestadual-nao-contribuinte}")
+	private Long codVendaInterestadualNaoContribuinte;
+	
 	@Override
 	public List<RegC100> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		LOG.log(Level.INFO, "Montando o Registro C100");
@@ -103,7 +110,11 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	private RegC100 gerarRegistroC100(DocumentoFiscal docFisc, Loja lojaSped, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		RegC100 regC100 = new RegC100();
-
+		/* INFO COMPL. OPERACAO INTERESTADUAL (FCP)  */
+		if (docFisc.getOperacao().getId().equals(this.codVendaInterestadualNaoContribuinte)) {
+			regC100.setRegC101(regC101Service.montarRegC101(movimentosIcmsIpi, docFisc));
+		}
+		
 		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
 		TipoPreenchimentoRegC100 tipoPreenchimentoRegC100 = verificarTipoPreenchimento(docFisc, lojaSped);
 
@@ -150,7 +161,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 //			regC100.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
 			break;
 		}
-
+		
 		return regC100;
 	}
 
