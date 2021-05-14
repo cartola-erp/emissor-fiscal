@@ -63,7 +63,7 @@ public final class SpedFiscalUtil {
 	 * @return
 	 */
 	public static String getCodPart(DocumentoFiscal docFisc) {
-		LOG.log(Level.INFO, "Obtendo o CODIGO DO PARTICIPANTE para o DocumentoFiscal {0} " ,docFisc);
+//		LOG.log(Level.INFO, "Obtendo o CODIGO DO PARTICIPANTE para o DocumentoFiscal {0} " ,docFisc);
 		if (docFisc.getModelo() != ModeloDocumentoFiscal._65) {
 			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA) {
 				return SpedFiscalUtil.getCodPart(docFisc.getDestinatario());
@@ -104,7 +104,7 @@ public final class SpedFiscalUtil {
 	 * @return
 	 */
 	public static IndicadorDoEmitente getIndicadorEmitente(DocumentoFiscal docFisc, Loja lojaSped) {
-		LOG.log(Level.INFO, "Obtendo o indicador do emitente para o DocumentoFiscal {0} " ,docFisc);
+//		LOG.log(Level.INFO, "Obtendo o indicador do emitente para o DocumentoFiscal {0} " ,docFisc);
 
 		Pessoa emitente = docFisc.getEmitente();
 		if (emitente.getCnpj().equals(lojaSped.getCnpj())) {

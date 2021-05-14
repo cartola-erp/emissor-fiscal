@@ -164,7 +164,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 * @return
 	 */
 	private TipoPreenchimentoRegC100 verificarTipoPreenchimento(DocumentoFiscal docFisc, Loja lojaSped) {
-		LOG.log(Level.INFO, "Verificando o tipo de preenchimento do Registro C100");
+//		LOG.log(Level.INFO, "Verificando o tipo de preenchimento do Registro C100");
 		List<NFeStatus> nfesNaoAutorizadas = Arrays.asList(NFeStatus.CANCELADA, NFeStatus.DENEGADA, NFeStatus.INUTILIZADA);
 
 		if (nfesNaoAutorizadas.contains(docFisc.getStatus())) {
