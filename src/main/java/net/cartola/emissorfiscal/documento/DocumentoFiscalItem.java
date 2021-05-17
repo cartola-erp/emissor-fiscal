@@ -217,8 +217,6 @@ public class DocumentoFiscalItem implements Serializable {
 		this.quantidade = quantidade;
 	}
 
-	@NotNull(message = VALOR_OBRIGATORIO)
-	@Positive(message = VALOR_INVALIDO)
 	public BigDecimal getValorUnitario() {
 		return valorUnitario;
 	}
