@@ -43,7 +43,7 @@ BEGIN
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.076000, 1.000000, 1, 'CONSUMO', 0.000000, 0.000000, 1, 'Tributacao Cadastrada - 29/06 - VIA SCRIPT', 0.016500, 1.000000, 1, 'NORMAL', 7, ID_NCM);
 		SELECT "TRIB_FEDE | 7 - DEVOLUCAO PARA FORNECEDOR INTERESTADUAL", ROW_COUNT();
 		
-		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.076000, 1.000000, 1, 'CONSUMO', 0.000000, 0.000000, 1, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.016500, 1.000000, 1, 'NORMAL', 24, ID_NCM);
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 1, 'CONSUMO', 0.000000, 0.000000, 1, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 1, 'NORMAL', 24, ID_NCM);
 		SELECT "TRIB_FEDE | 24 - MOVIMENTO JA REGISTRA EM ECF", ROW_COUNT();
 		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.076000, 1.000000, 1, 'CONSUMO', 0.000000, 0.000000, 1, 'Tributacao Cadastrada - 29/06 - VIA SCRIPT', 0.016500, 1.000000, 1, 'NORMAL', 39, ID_NCM);
