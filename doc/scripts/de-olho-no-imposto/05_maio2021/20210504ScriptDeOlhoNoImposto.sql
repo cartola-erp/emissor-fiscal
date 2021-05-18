@@ -1,13 +1,13 @@
 -- Abrir o "CMD do MYSQL", onde se encontra o arquivo abaixo
 
-LOAD DATA LOCAL INFILE 'TabelaIBPTaxSP20.1.A.csv'
+LOAD DATA LOCAL INFILE 'TabelaIBPTaxSP21.1.G.csv'
 INTO TABLE trib_olho_imposto 
  CHARACTER SET latin1
 FIELDS TERMINATED BY ';'
 OPTIONALLY ENCLOSED BY '\"'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
-(ncm,exce,tabela,descricao_ibpt,aliq_fede_nacional,aliq_fede_importado,aliq_esta,aliq_municipal,@var_vigenciaInico,@var_vigenciaTermino,chave,versao, fonte)
+(ncm,ex,tabela,descricao_ibpt,aliq_fede_nacional,aliq_fede_importado,aliq_esta,aliq_municipal,@var_vigenciaInico,@var_vigenciaTermino,chave,versao, fonte)
 set vigencia_inicio = STR_TO_DATE(@var_vigencia_inicio,'%d-%m-%y'), vigencia_termino = STR_TO_DATE(@var_vigencia_termino,'%d-%m-%y');
 
 
@@ -24,11 +24,13 @@ primary key(codigo));
 
 insert into classes_fiscais_excluir (
 select n.ncm_id, n.nume, b.ncm ibpt
-  from ncms n left join trib_olho_imposto b on n.nume=b.ncm and n.exce=b.exce
+  from ncms n left join trib_olho_imposto b on n.nume=b.ncm and n.exce=b.ex
 where b.ncm is null);
 
 -- delete from compras_tributacao_cofins where `CLASSE_FISCAL_CODIGO` in (select codigo from classes_fiscais_excluir);
 -- delete from compras_tributacao_pis where `CLASSE_FISCAL_CODIGO` in (select codigo from classes_fiscais_excluir);
+delete from trib_fede where ncm_id in (select codigo from classes_fiscais_excluir);
+delete from trib_esta where ncm_id in (select codigo from classes_fiscais_excluir);
 delete from ncms where ncm_id in (select codigo from classes_fiscais_excluir);
 
 /*insert into CLASSES_FISCAIS (CLASSE_FISCAL, EXCETO, DESCRICAO, ALIQUOTA_FEDERAL_NACIONAL, ALIQUOTA_FEDERAL_IMPORTADO, ALIQUOTA_ESTADUAL, ALIQUOTA_MUNICIPAL, CADASTRO)
