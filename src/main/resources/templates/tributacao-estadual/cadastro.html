@@ -51,7 +51,7 @@
 
 					<!-- OPERAÇÃO e NCM -->
 					<div class="form-row">
-						<div class="form-group col-md-4">
+						<div class="form-group col-md-6">
 							<label for="cmbOperacao"><strong>Operação</strong></label>
 							<select class="custom-select" name="operacaoId">
 							<option selected id="opOperacao"> </option>
@@ -67,7 +67,7 @@
 							</select>
 						</div> -->
 
-						<div class="form-group col-md-6">
+						<div class="form-group col-md-4">
 							<label for="txtNcm"><strong>NCM</strong></label>
 							<input type="hidden" th:value="*{ncm.id}" id="txtNcmId" name="ncmId" readonly required /> 
 							<input type="text" class="form-control" id="txtNcmDescricao" th:value="*{ncm}" placeholder="Clique No botão (+) ao lado para buscar o NCM" disabled required />
@@ -78,7 +78,7 @@
 						</button>
 					</div>
 
-					<!-- FINALIDADE e REGIME TRIBUTARIO -->
+					<!-- FINALIDADE e REGIME TRIBUTARIO e PRODUTO ORIGEM -->
 					<div class="form-row">
 						<div class="form-group col-md-6">
 							<label for="cmbFinalidade"><strong>Finalidade</strong></label>
@@ -88,13 +88,18 @@
 							</select>
 						</div>
 						
-						<div class="form-group col-md-6">
+						<div class="form-group col-md-4">
 							<label for="cmbRegimeTributario"><strong>Regime Tributário do emitente</strong></label>
 							<select class="custom-select" id="regimeTributario" name="regimeTributario" required>
 								<option selected id="opRegimeTributario"> </option>
 								<option th:each="regimeTributario : ${listRegimeTributario}" th:value="${regimeTributario}" th:selected="${regimeTributario == regimeTributarioSelecionado}" th:text="${regimeTributario.descricao}" ></option>
 							</select>
 						</div>
+
+						<div class="form-group col-md-2">
+							<label for="chkProdutoImportado"><strong>É produto importado ?</strong></label>
+							<input type="checkbox" class="form-control " id="chkProdutoImportado" th:checked="*{produtoImportado}" name="produtoImportado" data-toggle="tooltip" data-placement="top" title="Importado é quando a origem do produto é = 1, 2, 3, 6 ou 7" />
+						</div> 
 					</div>
 
 					<!-- ALIQ DO IMPOSTO -->

@@ -43,6 +43,7 @@ public class TributacaoEstadual implements Serializable {
     private Ncm ncm = new Ncm();
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private RegimeTributario regimeTributario;
+	private boolean produtoImportado;		// ProdutoOrigem = 1, 2, 3, 6, 7 é importado (Aliq Interestadual == 4%)
     private int icmsCst;
     private BigDecimal icmsBase;
     private BigDecimal icmsAliquota;
@@ -125,6 +126,15 @@ public class TributacaoEstadual implements Serializable {
 
 	public void setRegimeTributario(RegimeTributario regimeTributario) {
 		this.regimeTributario = regimeTributario;
+	}
+	
+	@Column(name = "is_prod_impor", columnDefinition = " TINYINT NOT NULL DEFAULT FALSE")
+	public boolean isProdutoImportado() {
+		return produtoImportado;
+	}
+
+	public void setProdutoImportado(boolean produtoImportado) {
+		this.produtoImportado = produtoImportado;
 	}
 
 	@Column(name = "icms_cst", scale = 4, nullable = false)
