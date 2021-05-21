@@ -52,8 +52,8 @@ BEGIN
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.076000, 1.000000, 1, 'CONSUMO', 0.000000, 0.000000, 1, 'Tributacao Cadastrada - 29/06 - VIA SCRIPT', 0.016500, 1.000000, 1, 'NORMAL', 40, ID_NCM);
 		SELECT "TRIB_FEDE | 40 - DEVOLUCAO PARA FORNECEDOR INTERESTADUAL (TRIBUTADA)", ROW_COUNT();
 		
-		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.076000, 1.000000, 1, 'CONSUMO', 0.000000, 0.000000, 1, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.016500, 1.000000, 1, 'NORMAL', 45, ID_NCM);
-		SELECT "TRIB_FEDE | 45 - VENDA DE PRODUTO PARA ENTREGA FUTURA", ROW_COUNT();
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.076000, 1.000000, 1, 'CONSUMO', 0.000000, 0.000000, 1, 'Tributacao Cadastrada - 29/06 - VIA SCRIPT', 0.016500, 1.000000, 1, 'NORMAL', 46, ID_NCM);		
+		SELECT "TRIB_FEDE | 46 - REMESSA VINCULADA A VENDA DE ENTREGA FUTURA", ROW_COUNT();
 		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.076000, 1.000000, 1, 'CONSUMO', 0.000000, 0.000000, 1, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.016500, 1.000000, 1, 'NORMAL', 59, ID_NCM);
 		SELECT "TRIB_FEDE | 59 - VENDA DE MERCADORIA SUJEITA A ST, COM CONTRIB. SUBSTIT.", ROW_COUNT();
@@ -81,6 +81,9 @@ BEGIN
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 8,'NORMAL',41, ID_NCM);	
 		SELECT "TRIB_FEDE | 41 - TRANSFERENCIA (SAIDA) - GARANTIA", ROW_COUNT();
 		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 8,'NORMAL',45, ID_NCM);	
+		SELECT "TRIB_FEDE | 45 - VENDA DE PRODUTO PARA ENTREGA FUTURA", ROW_COUNT();
+		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 8,'NORMAL',48, ID_NCM);	
 		SELECT "TRIB_FEDE | 48 - REMESSA EM BONIFICACAO, DOACAO OU BRINDE", ROW_COUNT();
 		
@@ -91,9 +94,6 @@ BEGIN
 		SELECT "TRIB_FEDE | 67 - TRANSFERENCIA DE MATERIAL DE USO OU CONSUMO", ROW_COUNT();
 		
 		-- CST 49
-		
-		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 49, 'CONSUMO', 0.000000,0.000000, 49, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 49,'NORMAL', 46, ID_NCM);	
-		SELECT "TRIB_FEDE | 46 - REMESSA VINCULADA A VENDA DE ENTREGA FUTURA", ROW_COUNT();
 		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 49, 'CONSUMO', 0.000000,0.000000, 49, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 49,'NORMAL', 10, ID_NCM);	
 		SELECT "TRIB_FEDE | 10 - OUTRAS SAIDA NAO ESPECIFICADAS", ROW_COUNT();
