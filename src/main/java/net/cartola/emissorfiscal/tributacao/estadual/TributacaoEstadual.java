@@ -28,8 +28,8 @@ import net.cartola.emissorfiscal.pessoa.RegimeTributario;
  * @author murilo
  */
 @Entity
-@Table(name = "trib_esta", uniqueConstraints = @UniqueConstraint(name = "unk_trib_esta_oper_ncm", columnNames = {
-		"oper_id", "ncm_id", "finalidade", "regime_tributario", "esta_orig_id", "esta_dest_id" }))
+@Table(name = "trib_esta", uniqueConstraints = @UniqueConstraint(name = "unk_trib_esta_oper_ncm_fina_regi_trib_uf_prod_impor", columnNames = {
+		"oper_id", "ncm_id", "finalidade", "regime_tributario", "esta_orig_id", "esta_dest_id", "is_prod_impor" }))
 public class TributacaoEstadual implements Serializable {
 
     private static final long serialVersionUID = 970384982433L;
@@ -43,7 +43,7 @@ public class TributacaoEstadual implements Serializable {
     private Ncm ncm = new Ncm();
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private RegimeTributario regimeTributario;
-	private boolean produtoImportado;		// ProdutoOrigem = 1, 2, 3, 6, 7 é importado (Aliq Interestadual == 4%)
+	private boolean produtoImportado;		// ProdutoOrigem = 1, 2, 3, 6, 7 é importado  (Aliq Interestadual == 4%) 
     private int icmsCst;
     private BigDecimal icmsBase;
     private BigDecimal icmsAliquota;
