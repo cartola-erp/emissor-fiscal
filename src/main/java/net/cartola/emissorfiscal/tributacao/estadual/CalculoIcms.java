@@ -6,12 +6,12 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
-import net.cartola.emissorfiscal.pessoa.PessoaTipo;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoDifal;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
@@ -31,8 +31,14 @@ public class CalculoIcms {
 	
 	private static final Logger LOG = Logger.getLogger(CalculoIcms.class.getName());
 	
+	@Value("${sped-fiscal.cod-venda-interestadual-nao-contribuinte}")
+	private int codVendaInterestadualNaoContribuinte;		// (DIFAL e FCP, somente nesse caso)
+	
+	private boolean isCalculaDifalAndFcp = false;
+	
 	public Optional<CalculoImposto> calculaIcms(DocumentoFiscalItem docItem, TributacaoEstadual tributacao, DocumentoFiscal documentoFiscal) {
 		Optional<CalculoImposto> opCalcImposto;
+		this.isCalculaDifalAndFcp = codVendaInterestadualNaoContribuinte  == documentoFiscal.getOperacao().getId();
 		switch (tributacao.getIcmsCst()) {
 		case 00:
 			Pessoa destinatario = documentoFiscal.getDestinatario();
@@ -143,7 +149,8 @@ public class CalculoIcms {
 	private <T extends CalculoImpostoDifal> void calculaDifal(DocumentoFiscalItem di, TributacaoEstadual tributacao, Pessoa destinatario, T calcDifal) {
 		// Tbm tenho que verificar se é PF, para poder calcular
 		boolean ehEstadosDiferentes = !tributacao.getEstadoOrigem().equals(tributacao.getEstadoDestino());
-		if (ehEstadosDiferentes && destinatario.getPessoaTipo().equals(PessoaTipo.FISICA)) {
+//		if (ehEstadosDiferentes && destinatario.getPessoaTipo().equals(PessoaTipo.FISICA)) {
+		if (ehEstadosDiferentes && this.isCalculaDifalAndFcp) {
 			LOG.log(Level.INFO, "Calculando o DIFAL da TAG (ICMSUFDest) ");
 //			BigDecimal valorBaseUfDest = di.getIcmsBase();		// Aparentemente não vai o frete na base do calculo do difal
 			BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
