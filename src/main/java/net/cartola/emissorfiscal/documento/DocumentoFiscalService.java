@@ -230,12 +230,13 @@ public class DocumentoFiscalService {
 			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(opOperacao.get(),opEmitente.get().getRegimeTributario(), finalidades, ncmsDocFiscal);
 		}
 		
-		mapErros.put("A operação: " +documentoFiscal.getOperacao().getDescricao()+ " NÃO existe", !opOperacao.isPresent());
+		String operacaoDescricao = documentoFiscal.getOperacao().getDescricao();
+		mapErros.put("A operação: " +operacaoDescricao+ " NÃO existe", !opOperacao.isPresent());
 		mapErros.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
 		mapErros.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
 		
 		if (validaTribuEsta) {
-			validaTributosEstaduais(ncmsDocFiscal, tributacoesEstaduais, mapErros);
+			validaTributosEstaduais(ncmsDocFiscal, tributacoesEstaduais, operacaoDescricao, opUfDestino, mapErros);
 		}
 		
 		if (validaTribuFede) {
@@ -426,11 +427,16 @@ public class DocumentoFiscalService {
 	}
 	
 	// ================================================  VALIDA TRIBUTOS ESTADUAIS ================================================
-	private void validaTributosEstaduais(Set<Ncm> ncms, List<TributacaoEstadual> tributacoesEstaduais, Map<String, Boolean> mapErros) {
+	private void validaTributosEstaduais(Set<Ncm> ncms, List<TributacaoEstadual> tributacoesEstaduais, String operacaoDescricao, Optional<Estado> opUfDestino, Map<String, Boolean> mapErros) {
 		Map<Ncm, Boolean> mapaTribuEstaPorNcm = getMapaTribuEstaAchadaPorNcm(ncms, tributacoesEstaduais);
 			mapaTribuEstaPorNcm.forEach((kNcm, achouTributacao) -> {
 				if(!achouTributacao) {
-					mapErros.put("Não existe TRIBUTAÇÃO ESTADUAL para essa OPERAÇÃO e o NCM: " +kNcm.getNumero() + " | EX: " +kNcm.getExcecao(), true);
+					StringBuilder msg = new StringBuilder();
+					String ufDestinoName[] = {""};
+					opUfDestino.ifPresent(ufDestino -> ufDestinoName[0] = ufDestino.getSigla().toString());
+					msg.append("Não existe ICMS cadastrado para: | ").append(operacaoDescricao).append(" | e o NCM: ").append(kNcm.getNumero()).append(" | EX: ")
+						.append(kNcm.getExcecao()).append(" | com UF Destino: ").append(ufDestinoName[0]);
+					mapErros.put(msg.toString(), true);
 				}
 			});
 	}
