@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -146,9 +147,9 @@ public class CalculoIcms {
 			LOG.log(Level.INFO, "Calculando o DIFAL da TAG (ICMSUFDest) ");
 //			BigDecimal valorBaseUfDest = di.getIcmsBase();		// Aparentemente não vai o frete na base do calculo do difal
 			BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
-			BigDecimal valorBaseUfDest = tributacao.getIcmsBase().multiply(valorTotal);
+			BigDecimal valorBaseUfDest = tributacao.getIcmsBase().multiply(valorTotal).setScale(2, RoundingMode.HALF_EVEN);
 			BigDecimal aliqInterDifal = tributacao.getIcmsAliquota().subtract(tributacao.getIcmsAliquotaDestino()).abs();
-			BigDecimal valorIcmsUfDest = valorBaseUfDest.multiply(aliqInterDifal);
+			BigDecimal valorIcmsUfDest = valorBaseUfDest.multiply(aliqInterDifal).setScale(2, RoundingMode.HALF_EVEN);
 			
 			calcDifal.setVlrBaseUfDest(valorBaseUfDest);
 			calcDifal.setAliquotaIcmsUfDest(tributacao.getIcmsAliquotaDestino());
@@ -157,6 +158,7 @@ public class CalculoIcms {
 			
 			di.setIcmsBaseUfDestino(valorBaseUfDest);
 			di.setIcmsValorUfDestino(valorIcmsUfDest);
+			
 			
 			calculaIcmsFcp(di, tributacao, calcDifal);
 		}

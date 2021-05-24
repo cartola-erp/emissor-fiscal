@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.ncm.Ncm;
@@ -15,6 +16,9 @@ public class DocumentoFiscalItemService {
 	@Autowired
 	private DocumentoFiscalItemRepository documentoFiscalItemRepository;
 
+	@Value("${cod.origem.produto.importado}")
+	private List<Integer> listCodProdutoImportado;
+	
 	public List<DocumentoFiscalItem> findAll() {
 		return documentoFiscalItemRepository.findAll();
 	}
@@ -45,6 +49,10 @@ public class DocumentoFiscalItemService {
 	
 	public void deleteByListItens(Collection<DocumentoFiscalItem> listItens) {
 		documentoFiscalItemRepository.deleteInBatch(listItens);
+	}
+
+	public boolean verificaSeEhImportado(DocumentoFiscalItem docItem) {
+		return listCodProdutoImportado.contains(docItem.getOrigem().ordinal());
 	}
 	
 }

@@ -1,8 +1,10 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
@@ -44,6 +47,9 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	private EstadoService estadoService;
 	
 	@Autowired
+	private DocumentoFiscalItemService docFiscItemService;
+	
+	@Autowired
 	private CalculoIcms calculoIcms;
 	
 	/**
@@ -59,13 +65,13 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();
 		
 		List<TributacaoEstadual> listTributacoes = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(documentoFiscal.getOperacao(), estadoOrigem, estadoDestino, documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);
-
-		Map<Ncm, TributacaoEstadual> mapaTributacoes = ncms.stream()
-				.collect(Collectors.toMap(ncm -> ncm, ncm -> listTributacoes.stream()
-						.filter(icms -> icms.getNcm().getId().equals(ncm.getId())).findAny().get()));
+				
+		Map<Ncm, Map<Boolean, TributacaoEstadual>> mapaTributacoesPorNcmEOrigem = listTributacoes.stream().collect(groupingBy(TributacaoEstadual::getNcm,
+				Collectors.toMap(TributacaoEstadual::isProdutoImportado, (TributacaoEstadual tribEsta) -> tribEsta )));
 		
 		documentoFiscal.getItens().forEach(docItem -> {
-			TributacaoEstadual tributacao = mapaTributacoes.get(docItem.getNcm());
+			boolean isProdutoImportado = docFiscItemService.verificaSeEhImportado(docItem);
+			TributacaoEstadual tributacao = mapaTributacoesPorNcmEOrigem.get(docItem.getNcm()).get(isProdutoImportado);
 			calculoIcms.calculaIcms(docItem, tributacao, documentoFiscal).ifPresent(calcIcms -> listCalculoImpostos.add(calcIcms));;
 //			listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
 		});
@@ -203,7 +209,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	
 	
 	private BigDecimal totalizaDifal(List<CalculoImpostoIcms00> listCalculoImpostoIcms00) {
-		BigDecimal totalDifal;
+		BigDecimal totalDifal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
 		try {
 			totalDifal = listCalculoImpostoIcms00.stream().map(icms00 -> icms00.getCalcImpostoDifal().getVlrIcmsUfDest())
 					.reduce(BigDecimal.ZERO, BigDecimal::add);
