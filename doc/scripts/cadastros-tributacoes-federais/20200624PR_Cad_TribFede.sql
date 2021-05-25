@@ -112,6 +112,11 @@ BEGIN
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.076000, 1.000000, 50, 'CONSUMO', 0.000000, 0.000000, 50, 'Tributacao Cadastrada - 29/06 - VIA SCRIPT', 0.016500, 1.000000, 50, 'NORMAL', 9, ID_NCM);
 		SELECT "TRIB_FEDE | 9 - DEVOLUCAO DO CLIENTE INTERESTADUAL", ROW_COUNT();
 		
+		-- CST 98
+		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 98, 'CONSUMO', 0.000000,0.000000, 98, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 98,'NORMAL',16, ID_NCM);	
+		SELECT "TRIB_FEDE | 16 - OUTRAS ENTRADAS NAO ESPECIFICADAS", ROW_COUNT();
+		
 		
 	END LOOP updateValor;	
 	
