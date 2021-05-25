@@ -54,6 +54,8 @@ public class CalculoIcms {
 			opCalcImposto = Optional.of(((CalculoImpostoIcms30) calculaIcms30(docItem, tributacao)));
 			break;
 		case 40:
+		case 41:
+		case 50:
 			opCalcImposto = Optional.of(((CalculoImposto) calculaIcms40(docItem, tributacao)));
 			break;	
 		case 51:
@@ -272,6 +274,12 @@ public class CalculoIcms {
 		return icms30;
 	}
 
+	/**
+	 *  Método válido paras as CSTs 40, 41 e 50
+	 * @param di
+	 * @param tributacao
+	 * @return
+	 */
 	private CalculoImposto calculaIcms40(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
 		LOG.log(Level.INFO, "Calculando o ICMS 40 para o ITEM: {0} ", di);
 		CalculoImposto calcImposto = new CalculoImposto();
