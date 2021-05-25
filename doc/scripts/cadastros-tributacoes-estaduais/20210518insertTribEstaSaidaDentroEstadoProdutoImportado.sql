@@ -29,7 +29,7 @@
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, mens, regime_tributario, 
 		cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 
 	(select cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, '', regime_tributario, 
-		cod_anp, esta_dest_id, esta_orig_id, ncm_id, 4, true FROM trib_esta where oper_id = 4);
+		cod_anp, esta_dest_id, esta_orig_id, ncm_id, 4, true FROM trib_esta where oper_id = 4 and is_prod_impor = false);
 	
 -- ================================================================================================================================================================
 -- ================================================================================================================================================================
@@ -63,9 +63,17 @@
 							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 
 		(select cest, 5117, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
 				'', regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, 46, true FROM trib_esta where oper_id = 1 and is_prod_impor = true);
-
-
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+	
+	-- 63 | VENDA DE SUCATA (SAIDA) (dentro do estado) ( OBS: É para somente UM NCM)
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 
+		VALUES (199900, 5102, 0.000000, 'CONSUMO', 0.000000, 0.000000, 0.000000, 40, 0.000000, 0.000000, '', 'NORMAL', 0, 26,  26, 9902, 63, true);	
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 	
 	-- 67 | TRANSFERENCIA DE MATERIAL DE USO OU CONSUMO (CST 41 | zerado)
@@ -85,3 +93,17 @@
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+	-- 73 | COMPRA DE SUCATA PARA COMERCIALIZACAO | NCM = 85481010| EX = 0 (ENTRADA)
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 
+		VALUES (199900, 1102, 0.000000, 'CONSUMO', 0.000000, 0.000000, 0.000000, 40, 0.000000, 0.000000, '', 0, 26,  26, 9902, 73, true);	
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+	-- 81 - COMPRA DE SUCATA PARA COMERCIALIZACAO (CONTRIBUINTE)
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 
+		VALUES (199900, 1102, 0.000000, 'CONSUMO', 0.000000, 0.000000, 0.000000, 40, 0.000000, 0.000000, '', 'NORMAL', 0, 26,  26, 9902, 81, true);	
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
