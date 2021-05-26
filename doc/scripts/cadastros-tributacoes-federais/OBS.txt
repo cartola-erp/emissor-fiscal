@@ -1,0 +1,1 @@
+O ideal eh trocar as procedures, para INSERT com SELECTs, Igual das tributacoes estaduais
