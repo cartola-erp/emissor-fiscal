@@ -97,11 +97,11 @@
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
 							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 
-		VALUES (199900, 1102, 0.000000, 'CONSUMO', 0.000000, 0.000000, 0.000000, 40, 0.000000, 0.000000, '', 0, 26,  26, 9902, 73, true);	
+		VALUES (199900, 1102, 0.000000, 'CONSUMO', 0.000000, 0.000000, 0.000000, 40, 0.000000, 0.000000, '', 'NORMAL', 0, 26,  26, 9902, 73, true);	
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-	-- 81 - COMPRA DE SUCATA PARA COMERCIALIZACAO (CONTRIBUINTE)
+	-- 81 - COMPRA DE SUCATA PARA COMERCIALIZACAO (CONTRIBUINTE) ( OBS: É para somente UM NCM)
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
 							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 

@@ -2,7 +2,10 @@
  * Author:  robson.costa
  * Created: 24/06/2020
  */
-
+	-- O select do cursor era assim (apenas para os ncms que usamos alguma vez)
+-- 	DECLARE CUR_NCMS_JA_USADOS CURSOR FOR SELECT distinct(n.ncm_id) FROM ncms n INNER JOIN TODOS_NCMS_USADOS v ON (n.NUME = v.NCM AND n.EXCE = v.EXCECAO) 
+--	WHERE v.CODIGO NOT IN (select t.codigo from todos_ncms_usados t INNER JOIN ncms_monofasicos m ON (t.NCM = m.NCM AND t.EXCECAO = m.EXCECAO));
+	
 
 DROP PROCEDURE IF EXISTS emissorfiscal.`PR_CADASTRA_TRIBUTACOES_FEDERAIS`;
 
@@ -15,8 +18,7 @@ BEGIN
     DECLARE ID_NCM INT;
 	
 	-- "Selecione, todos os IDs de NCMS que estejam nos NCMS USADOS e NÃO SEJA (NOT IN) MONOFASICO
-	DECLARE CUR_NCMS_JA_USADOS CURSOR FOR SELECT distinct(n.ncm_id) FROM ncms n INNER JOIN TODOS_NCMS_USADOS v ON (n.NUME = v.NCM AND n.EXCE = v.EXCECAO) 
-	WHERE v.CODIGO NOT IN (select t.codigo from todos_ncms_usados t INNER JOIN ncms_monofasicos m ON (t.NCM = m.NCM AND t.EXCECAO = m.EXCECAO));
+	DECLARE CUR_NCMS_JA_USADOS CURSOR FOR SELECT distinct(n.ncm_id) FROM ncms n WHERE n.nume NOT IN (select m.ncm from ncms_monofasicos m);
 	
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET terminou = 1;
 	
