@@ -190,7 +190,7 @@ public class CalculoIcms {
 		if (!tributacao.getFcpAliquota().equals(BigDecimal.ZERO)) {
 			LOG.log(Level.INFO, "Calculando o FCP da TAG (ICMSUFDest)");
 			BigDecimal valorBaseFcpUfDest = calcDifal.getVlrBaseUfDest();
-			BigDecimal valorFcpUfDest = valorBaseFcpUfDest.multiply(tributacao.getFcpAliquota());
+			BigDecimal valorFcpUfDest = valorBaseFcpUfDest.multiply(tributacao.getFcpAliquota()).setScale(2, RoundingMode.HALF_EVEN);;
 			
 			calcDifal.setVlrBaseFcpUfDest(valorBaseFcpUfDest);
 			calcDifal.setAliquotaFcpUfDest(tributacao.getFcpAliquota());
