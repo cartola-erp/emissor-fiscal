@@ -88,7 +88,7 @@ public class DocumentoFiscal implements Serializable {
     
 	private String infoAdicionalFisco;
 	private String infoComplementar;
-	private String xml;
+	@ToString.Exclude String xml;
 
 	// Para "atender" a lei "De Olho No Imposto"
 	private BigDecimal valorImpostoFederal = BigDecimal.ZERO;
