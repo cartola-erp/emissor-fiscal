@@ -12,7 +12,7 @@ update trib_esta set mens = "";
 -- Da CST 60 --> p/ 00 (que é tributado) 
 
 
-SELECT * FROM trib_esta where ncm_id in (select ncm_id from ncms where nume = 38112190);
+-- SELECT * FROM trib_esta where ncm_id in (select ncm_id from ncms where nume = 38112190);
 
 update trib_esta SET cod_anp = 740101006 where ncm_id in (select ncm_id from ncms where nume = 38112190);
 
@@ -20,9 +20,9 @@ update trib_esta SET cod_anp = 740101006 where ncm_id in (select ncm_id from ncm
 
 -- RODAR NO EMISSORFISCAL (CORRIGINDO os NCMS que estão na CST 60 para a CST 00)
 -- 1 - VENDA
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300 )
-) and oper_id = 1 ;
+-- SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
+--	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300 )
+-- ) and oper_id = 1 ;
 
 UPDATE emissorfiscal.trib_esta t 
 		SET t.fcp_aliq = 0.000000,
@@ -40,9 +40,9 @@ WHERE t.ncm_id IN (
 
 
 -- 4 - TRANSFERENCIA
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300 )
-) and oper_id = 4 ;
+-- SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
+--	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300 )
+-- ) and oper_id = 4 ;
 
 UPDATE emissorfiscal.trib_esta t 
 		SET t.fcp_aliq = 0.000000,
@@ -64,12 +64,12 @@ WHERE t.ncm_id IN (
 -- ATUALIZANDO CFOP de OLEO
 
 -- VENDA
-select * from emissorfiscal.trib_esta t where cod_anp != 0 and oper_Id = 1;
+-- select * from emissorfiscal.trib_esta t where cod_anp != 0 and oper_Id = 1;
 
 update emissorfiscal.trib_esta set cfop = 5656 where cod_anp != 0 and oper_Id = 1;
 
 
 -- TRANSFERENCIA
-select * from emissorfiscal.trib_esta t where cod_anp != 0 and oper_Id = 4;
+-- select * from emissorfiscal.trib_esta t where cod_anp != 0 and oper_Id = 4;
 
 update emissorfiscal.trib_esta set cfop = 5659 where cod_anp != 0 and oper_Id = 4;

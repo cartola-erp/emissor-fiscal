@@ -76,10 +76,23 @@ public class PessoaService {
 			opPessoaBuscada = findPessoaByCpf(pessoa.getCpf());
 		}
 		
-		if (!opPessoaBuscada.isPresent()) {
+		if (!opPessoaBuscada.isPresent() || mudouAlgumaInfo(pessoa, opPessoaBuscada)) {
 			return save(pessoa);
 		}
 		return opPessoaBuscada;
+	}
+
+	private boolean mudouAlgumaInfo(Pessoa pessoa, Optional<Pessoa> opPessoaBuscada) {
+		if(!opPessoaBuscada.isPresent()) {
+			return false;
+		} else {
+			Pessoa pessoaNoBancoDeDados = opPessoaBuscada.get();
+			pessoa.setId(pessoaNoBancoDeDados.getId());
+			
+			boolean isPessoaEqualPessoaInDb = !pessoa.equals(pessoaNoBancoDeDados);
+			return isPessoaEqualPessoaInDb;
+		}
+		
 	}
 
 }
