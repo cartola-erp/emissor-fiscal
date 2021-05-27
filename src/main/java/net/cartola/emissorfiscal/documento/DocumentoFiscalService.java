@@ -290,6 +290,7 @@ public class DocumentoFiscalService {
 		switch (docuFisc.getTipoServico()) {
 		case NENHUM:
 			modelo = docuFisc.getModelo();
+			break;
 		case OUTROS:
 			modelo = ModeloDocumentoFiscal.NFSE;
 			break;

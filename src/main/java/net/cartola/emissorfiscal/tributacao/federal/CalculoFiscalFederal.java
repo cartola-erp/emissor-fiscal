@@ -100,7 +100,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	}
 	
 	private void setaPisBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
-		LOG.log(Level.INFO, "Totalizando o PIS BASE e o VALOR para o DocumentoFiscal: {0} ", documentoFiscal);
+		LOG.log(Level.INFO, "Totalizando o PIS BASE e o VALOR para o DocFiscId: {0} ", documentoFiscal.getId());
 		documentoFiscal.setPisBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getPisBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setPisValor(totaliza(listaImpostos.stream()
@@ -108,7 +108,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	}
 
 	private void setaCofinsBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
-		LOG.log(Level.INFO, "Totalizando o COFINS BASE e o VALOR para o DocumentoFiscal: {0} ", documentoFiscal);
+		LOG.log(Level.INFO, "Totalizando o COFINS BASE e o VALOR para o DocFiscId: {0} ", documentoFiscal.getId());
 		documentoFiscal.setCofinsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getCofinsBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setCofinsValor(totaliza(listaImpostos.stream()

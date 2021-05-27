@@ -104,7 +104,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	}
 
 	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
-		LOG.log(Level.INFO, "SETANDO o ICMS BASE e o VALOR para : {0} ", documentoFiscal);
+		LOG.log(Level.INFO, "SETANDO o ICMS BASE e o VALOR para o DocFiscId : {0} ",  documentoFiscal.getId());
 //		documentoFiscal.setIcmsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsBase)
 //				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		
@@ -117,7 +117,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	}
 
 	private void setaIcmsStBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
-		LOG.log(Level.INFO, "SETANDO o ICMS ST BASE e o VALOR para : {0} ", documentoFiscal);
+		LOG.log(Level.INFO, "SETANDO o ICMS ST BASE e o VALOR  : {0} ", documentoFiscal);
 		List<CalculoImpostoIcmsSt> listCalculoIcmsSt = new ArrayList<>();
 		
 		listCalculoImpostos.forEach(calcImp -> {
@@ -131,7 +131,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	}
 	
 	private void setaIcmsFcpEDifal(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {
-		LOG.log(Level.INFO, "SETANDO o ICMS FCP e DIFAL : {0} ", documentoFiscal);
+		LOG.log(Level.INFO, "SETANDO o ICMS FCP e DIFAL para o DocFiscId: {0} ",  documentoFiscal.getId());
 		
 		List<CalculoImposto> listCalculoIcms = listCalculoImpostos.stream().filter(calcImp -> calcImp.getImposto().equals(Imposto.ICMS_00)).collect(toList());
 		List<CalculoImpostoIcms00> listCalculoIcms00 = new ArrayList<>();
