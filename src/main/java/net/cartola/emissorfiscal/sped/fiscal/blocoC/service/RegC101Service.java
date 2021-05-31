@@ -37,12 +37,12 @@ class RegC101Service {
 		regC101.setVlFcpUfDest(docFisc.getIcmsFcpValor());
 		regC101.setVlIcmsUfDest(docFisc.getIcmsValorUfDestino());
 		regC101.setVlIcmsUfRem(BigDecimal.ZERO);
+			
+		/** ADICIONANDO O DOCUMENTO FISCAL, na LISTA de DocumentosFiscais, que tem DIFAL**/
+		movimentosIcmsIpi.addDocFiscInterestadualComDifal(docFisc);
 		LOG.log(Level.INFO, "Registro E100, terminado. REG C101: ");
 		return regC101;
 	}
 	
-	
-	QUALQUER COISA ERRADA apenas para eu lembrar de abrir essa classe
-	e ler o TODO
 	
 }

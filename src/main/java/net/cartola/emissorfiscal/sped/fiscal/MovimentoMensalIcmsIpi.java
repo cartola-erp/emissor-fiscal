@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.cartola.emissorfiscal.contador.Contador;
@@ -27,6 +28,8 @@ import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 public class MovimentoMensalIcmsIpi {
 	
 //	private List<DocumentoFiscal> listCompras;
+	@Setter(value = AccessLevel.NONE)
+	private List<DocumentoFiscal> listDocFiscInterestadualComDifal;
 	private List<DocumentoFiscal> listDocumentoFiscal;
 	private List<DocumentoFiscal> listDocumentoFiscalServico;
 	private List<DocumentoFiscal> listSatsEmitidos; 		// DocumentoFiscal - Modelo _59
@@ -46,6 +49,23 @@ public class MovimentoMensalIcmsIpi {
 	
 	private LocalDate dataInicio;
 	private LocalDate dataFim;
+	
+	
+	/**
+	 * Método Chamado dentro do REG C101Service.
+	 * Usado para adicionar o DocumentoFiscal, com DIFA e/ou FCP
+	 * @param docuFiscComDifal
+	 */
+	public void addDocFiscInterestadualComDifal(DocumentoFiscal docuFiscComDifal) {
+		// @Todo
+//		if (AQUI TENHO QUE FAZER UMA VALIDAÇÃO VERIFICANDO SE TEM DIFAL) {
+			if (this.listDocFiscInterestadualComDifal == null) {
+				listDocFiscInterestadualComDifal = new ArrayList<>();
+			}
+			this.listDocFiscInterestadualComDifal.add(docuFiscComDifal);
+//		}
+	}
+	
 	
 	/***
 	 * 
