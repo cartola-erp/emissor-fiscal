@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoDifal;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
@@ -36,39 +37,38 @@ public class CalculoIcms {
 	
 	private boolean isCalculaDifalAndFcp = false;
 	
-	public Optional<CalculoImposto> calculaIcms(DocumentoFiscalItem docItem, TributacaoEstadual tributacao, DocumentoFiscal documentoFiscal) {
+	public Optional<CalculoImposto> calculaIcms(DocumentoFiscalItem docItem, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		Optional<CalculoImposto> opCalcImposto;
-		this.isCalculaDifalAndFcp = codVendaInterestadualNaoContribuinte  == documentoFiscal.getOperacao().getId();
+		this.isCalculaDifalAndFcp = codVendaInterestadualNaoContribuinte  == docFiscal.getOperacao().getId();
 		switch (tributacao.getIcmsCst()) {
 		case 00:
-			Pessoa destinatario = documentoFiscal.getDestinatario();
-			opCalcImposto = Optional.of(((CalculoImpostoIcms00) calculaIcms00(docItem, tributacao, destinatario)));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms00) calculaIcms00(docItem, tributacao, docFiscal)));
 			break;
 		case 10:
-			opCalcImposto = Optional.of(((CalculoImpostoIcms10) calculaIcms10(docItem, tributacao)));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms10) calculaIcms10(docItem, tributacao, docFiscal)));
 			break;
 		case 20:
-			opCalcImposto = Optional.of(((CalculoImpostoIcms20) calculaIcms20(docItem, tributacao)));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms20) calculaIcms20(docItem, tributacao, docFiscal)));
 			break;
 		case 30:
-			opCalcImposto = Optional.of(((CalculoImpostoIcms30) calculaIcms30(docItem, tributacao)));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms30) calculaIcms30(docItem, tributacao, docFiscal)));
 			break;
 		case 40:
 		case 41:
 		case 50:
-			opCalcImposto = Optional.of(((CalculoImposto) calculaIcms40(docItem, tributacao)));
+			opCalcImposto = Optional.of(((CalculoImposto) calculaIcms40(docItem, tributacao, docFiscal)));
 			break;	
 		case 51:
-			opCalcImposto = Optional.of(((CalculoImpostoIcms51) calculaIcms51(docItem, tributacao)));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms51) calculaIcms51(docItem, tributacao, docFiscal)));
 			break;
 		case 60:
-			opCalcImposto = Optional.of(((CalculoImpostoIcms60) calculaIcms60(docItem, tributacao)));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms60) calculaIcms60(docItem, tributacao, docFiscal)));
 			break;
 		case 70: 
-			opCalcImposto = Optional.of(((CalculoImpostoIcms70) calculaIcms70(docItem, tributacao)));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms70) calculaIcms70(docItem, tributacao, docFiscal)));
 			break;
 		case 90:
-			opCalcImposto = Optional.of(((CalculoImpostoIcms90) calculaIcms90(docItem, tributacao)));
+			opCalcImposto = Optional.of(((CalculoImpostoIcms90) calculaIcms90(docItem, tributacao, docFiscal)));
 			break;
 		default:
 			opCalcImposto = Optional.empty();
@@ -83,15 +83,20 @@ public class CalculoIcms {
 	 * @param di (DocumentoFiscalItem)
 	 * @param tributacao
 	 * @param calcIcms
+	 * @param docFiscal 
 	 */
-	private void calculaImpostoBase(DocumentoFiscalItem di, TributacaoEstadual tributacao, CalculoImposto calcIcms) {
+	private void calculaImpostoBase(DocumentoFiscalItem di, TributacaoEstadual tributacao, CalculoImposto calcIcms, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS BASE");
 		// OBS: Na base de calculo do ICMS entra o VALOR do frete e ipi, - desconto (totalItem + vFRETE + vIPI - desconto), 
 		// porém ainda não foi implementado
 		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
+		
+		if (isFretePagoPeloEmitente(docFiscal)) {
+			valorTotal = valorTotal.add(di.getValorFrete());
+		}
+		
 		BigDecimal valorIcmsBase = tributacao.getIcmsBase().multiply(valorTotal);
 		BigDecimal valorIcms = valorIcmsBase.multiply(tributacao.getIcmsAliquota());
-		
 		calcIcms.setValorUnitario(di.getValorUnitario());
 		calcIcms.setQuantidade(di.getQuantidade());
 		calcIcms.setBaseDeCalculo(valorIcmsBase);
@@ -110,6 +115,19 @@ public class CalculoIcms {
 		di.setIcmsAliquotaDestino(tributacao.getIcmsAliquotaDestino());
 	}
 	
+	/**
+	 * Se o frete é pago pelo EMITENTE (AG), o Mesmo deverá ser incluído na Base de Calculo do ICMS
+	 * 
+	 * @param docFiscal
+	 * @return
+	 */
+	private boolean isFretePagoPeloEmitente(DocumentoFiscal docFiscal) {
+		if (docFiscal.getIndicadorFrete().equals(FreteConta.EMITENTE) || docFiscal.getIndicadorFrete().equals(FreteConta.EMITENTE_PROPRIO)) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Irá Calcular o ICMS ST, que PODEM ser usados nas CSTs do ICMS (10, 30, 70 e 90)
 	 * E setar os valores referente ao ICMS ST, no <strong>DocumentoFiscalItem</strong>
@@ -221,12 +239,13 @@ public class CalculoIcms {
 	 * @param tributacao
 	 * @return
 	 */
-	private CalculoImpostoIcms00 calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao, Pessoa destinatario) {
+	private CalculoImpostoIcms00 calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} ", di);
 		CalculoImpostoIcms00 icms00 = new CalculoImpostoIcms00();
+		Pessoa destinatario = docFiscal.getDestinatario();
 
 		icms00.setImposto(Imposto.ICMS_00);
-		calculaImpostoBase(di, tributacao, icms00);
+		calculaImpostoBase(di, tributacao, icms00, docFiscal);
 		
 		di.setIcmsCst(tributacao.getIcmsCst());				
 
@@ -234,12 +253,12 @@ public class CalculoIcms {
 		return icms00;
 	}
 	
-	private CalculoImpostoIcms10 calculaIcms10(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms10 calculaIcms10(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 10 para o ITEM: {0} ", di);
 		CalculoImpostoIcms10 icms10 = new CalculoImpostoIcms10();
 		
 		icms10.setImposto(Imposto.ICMS_10);
-		calculaImpostoBase(di, tributacao, icms10);
+		calculaImpostoBase(di, tributacao, icms10, docFiscal);
 //		calculaIcmsFcp(di, tributacao, icms10);
 		
 		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
@@ -251,22 +270,22 @@ public class CalculoIcms {
 	}
 
 	
-	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 20 para o ITEM: {0} ", di);
 		CalculoImpostoIcms20 icms20 = new CalculoImpostoIcms20();
 		icms20.setImposto(Imposto.ICMS_20);
 
-		calculaImpostoBase(di, tributacao, icms20);
+		calculaImpostoBase(di, tributacao, icms20, docFiscal);
 		icms20.setAliqReducaoBase(tributacao.getIcmsBase());
 		return icms20;
 	}
 
-	private CalculoImpostoIcms30 calculaIcms30(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms30 calculaIcms30(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 30 para o ITEM: {0} ", di);
 		CalculoImpostoIcms30 icms30 = new CalculoImpostoIcms30();
 
 		icms30.setImposto(Imposto.ICMS_30);
-		calculaImpostoBase(di, tributacao, icms30);
+		calculaImpostoBase(di, tributacao, icms30, docFiscal);
 		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
 		icms30.setCalcIcmsSt(icmsSt);
 		icms30.setIva(tributacao.getIcmsIva());
@@ -278,9 +297,10 @@ public class CalculoIcms {
 	 *  Método válido paras as CSTs 40, 41 e 50
 	 * @param di
 	 * @param tributacao
+	 * @param docFiscal 
 	 * @return
 	 */
-	private CalculoImposto calculaIcms40(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImposto calculaIcms40(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 40 para o ITEM: {0} ", di);
 		CalculoImposto calcImposto = new CalculoImposto();
 		
@@ -301,7 +321,7 @@ public class CalculoIcms {
 		return calcImposto;
 	}
 	
-	private CalculoImpostoIcms51 calculaIcms51(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms51 calculaIcms51(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		// TODO Auto-generated method stub
 		return new CalculoImpostoIcms51();
 	}
@@ -316,7 +336,7 @@ public class CalculoIcms {
 				&& !di.getItemQtdCompradaUltimaCompra().equals(BigDecimal.ZERO) && !di.getIcmsStAliqUltimaCompra().equals(BigDecimal.ZERO));
 	}
 	
-	private CalculoImpostoIcms60 calculaIcms60(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms60 calculaIcms60(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 60 para o ITEM ");
 		CalculoImpostoIcms60 icms60 = new CalculoImpostoIcms60();
 		BigDecimal valorBaseIcmsStRet = BigDecimal.ZERO;
@@ -358,12 +378,12 @@ public class CalculoIcms {
 		return icms60;
 	}
 	
-	private CalculoImpostoIcms70 calculaIcms70(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms70 calculaIcms70(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 70 para o ITEM ");
 		CalculoImpostoIcms70 icms70 = new CalculoImpostoIcms70();
 		
 		icms70.setImposto(Imposto.ICMS_70);
-		calculaImpostoBase(di, tributacao, icms70);
+		calculaImpostoBase(di, tributacao, icms70, docFiscal);
 		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
 		icms70.setCalcIcmsSt(icmsSt);
 		icms70.setIva(tributacao.getIcmsIva());
@@ -371,12 +391,12 @@ public class CalculoIcms {
 		return icms70;
 	}
 
-	private CalculoImpostoIcms90 calculaIcms90(DocumentoFiscalItem di, TributacaoEstadual tributacao) {
+	private CalculoImpostoIcms90 calculaIcms90(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 90 para o ITEM ");
 		CalculoImpostoIcms90 icms90 = new CalculoImpostoIcms90();
 
 		icms90.setImposto(Imposto.ICMS_90);
-		calculaImpostoBase(di, tributacao, icms90);
+		calculaImpostoBase(di, tributacao, icms90, docFiscal);
 		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
 		icms90.setCalcIcmsSt(icmsSt);
 		icms90.setIva(tributacao.getIcmsIva());
