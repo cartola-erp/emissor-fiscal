@@ -208,8 +208,8 @@ public class DocumentoFiscalItem implements Serializable {
 		this.origem = origem;
 	}
 
-	@NotNull(message = QUANTIDADE_OBRIGATORIA)
-	@Positive(message = QUANTIDADE_INVALIDA)
+//	@NotNull(message = QUANTIDADE_OBRIGATORIA)
+//	@Positive(message = QUANTIDADE_INVALIDA)
 	public BigDecimal getQuantidade() {
 		return quantidade;
 	}
