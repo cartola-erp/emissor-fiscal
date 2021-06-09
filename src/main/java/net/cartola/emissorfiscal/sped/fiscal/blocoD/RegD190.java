@@ -24,7 +24,7 @@ import coffeepot.bean.wr.types.Align;
 public class RegD190 {
 
 	private final String reg = "D190";
-	private int cstIcms;
+	private String cstIcms;
 	private int cfop;
 	private BigDecimal aliqIcms;
 	private BigDecimal vlOpr;
@@ -37,11 +37,11 @@ public class RegD190 {
 		return reg;
 	}
 
-	public int getCstIcms() {
+	public String getCstIcms() {
 		return cstIcms;
 	}
 
-	public void setCstIcms(int cstIcms) {
+	public void setCstIcms(String cstIcms) {
 		this.cstIcms = cstIcms;
 	}
 

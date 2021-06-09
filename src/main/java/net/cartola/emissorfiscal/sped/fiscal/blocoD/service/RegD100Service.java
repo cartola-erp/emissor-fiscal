@@ -80,7 +80,6 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 		
 		default:
 			regD100 = new RegD100(servicoTransporte, lojaSped);
-			// TENHO QUE FAZER O PREENCHIMENTO ABAIXO AINDA
 			regD100.setRegD190(regD190Service.montarGrupoRegC190(servicoTransporte));
 			break;
 		}

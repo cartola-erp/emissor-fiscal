@@ -1,5 +1,10 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoD;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
+import static net.cartola.emissorfiscal.util.XmlUtil.getTagConteudo;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,11 +20,6 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
 import net.cartola.emissorfiscal.util.SpedFiscalUtil;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
-import static net.cartola.emissorfiscal.util.XmlUtil.getTagConteudo;
-import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodPart;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 
 
 /**
@@ -135,7 +135,6 @@ public class RegD100 {
     	// TODO Auto-generated constructor stub
 		IndicadorDeOperacao tipoOperacao = servicoTransporte.getTipoOperacao();
 
-    	
 		this.indOper = tipoOperacao ;
 		this.indEmit = getIndicadorEmitente(servicoTransporte, lojaSped);
 		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
@@ -143,7 +142,7 @@ public class RegD100 {
 		this.codMod = servicoTransporte.getModelo();
 		this.codSit = getCodSituacao(servicoTransporte);
 		this.ser = servicoTransporte.getSerie();
-//		this.sub = null
+//		this.sub = null; 
 		this.numDoc = servicoTransporte.getNumeroNota();
 		this.chvCte = servicoTransporte.getNfeChaveAcesso();
 		this.dtDoc = servicoTransporte.getEmissao();
@@ -167,15 +166,15 @@ public class RegD100 {
 		// ===================================================================================================================================
 		// 										ATEH acima está "OK"
 		// ===================================================================================================================================
-		this.vlBcIcms = // TENHO QUE VER COMO IREI PEGAR ESSA e as OUTRAS informações, referentes ao ICMS. do XML da CTE
+		// TENHO QUE VER COMO IREI PEGAR ESSA e as OUTRAS informacoes, referentes ao ICMS. do XML da CTE
 		this.vlBcIcms = getVlrOrBaseCalc(servicoTransporte.getIcmsBase(), tipoOperacao);
 		this.vlIcms = getVlrOrBaseCalc(servicoTransporte.getIcmsValor(), tipoOperacao);
 		
 		this.vlNt = BigDecimal.ZERO;
-//		this.codInf = 
-//		this.codCta = 
-		this.codMunOrig =
-		this.codMunDest = 
+//		this.codInf = null; 					// ATUALMENTE é deixado como vazio
+//		this.codCta = null; 					// ATUALMENTE é deixado como vazio
+		this.codMunOrig = getTagConteudo(servicoTransporte.getXml(), "cMunIni", false).get(0);
+		this.codMunDest = getTagConteudo(servicoTransporte.getXml(), "cMunFim", false).get(0);
     }
 
 	public String getReg() {
