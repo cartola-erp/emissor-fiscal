@@ -1,15 +1,28 @@
 # emissor-fiscal
 
 Projeto criado para um analista fiscal, ser o responsável por manter as tributações estaduais e federais que serão usadas no cálculo, 
-de documentos fiscais recebidos. 
+de documentos fiscais de saídas (emitidos), assim como a geração do arquivo SPED FISCAL (EFD ICMS IPI). Até o Momento funciona basicamente da seguinte forma:  
 
-### 1. Criando login
+BREVE RESUMO
+---- 
+- Ao receber um **DocumentoFiscal (de emissão própria, que geralmente é de saída)**, com as devidas tributações cadastradas, será calculado os impostos (que é retornado num JSON), caso não tenha a tributação para algum item do DocumentoFiscal, não será calculado NADA, e apenas retornando que falta X tributação para o NCM do item, que está sem. (A intenção no futuro é fazer com que esse projeto também faça toda a parte de comunicação com a SEFAZ (geração do xml, envio, cancelamento, consulta etc....)
 
- **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as 2 propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I
+- Ao receber um **DocumentoFiscal (de emissão de terceiros, que é entradas)**, apenas será salvo na tabela docu_fisc. Exceto se for alguma NFE que **seja de SC, ES, MG** (nesses casos, será verificado na tabela **trib_esta_guia**, se algum item dessa nota de entrada, teremos que recolher o ICMS ST pela Guia gare, caso sim será enviado um email para o setor fiscal, utilizando API do sendgrid com os devidos calculos e retornado um JSON com os valores desse calculo). 
+  * PS¹: Atualmente, toda a parte de calculo de impostos na entrada que teremos crédito é feita pelo ERPJ.
+  * PS²: Não é feita nenhuma emissão de guia gare (das entrada de SC, ES e MG), pois não encontrei nenhuma forma de integração para fazer isso
+
+- **SPED FISCAL** -> Parte que está atualmente em desenvolvimento. Antes de começarmos a gerar os arquivos, é necessário que de fato todos os DocumentoFiscais sejam salvos nesse projeto (hoje em dia é a maioria). Ao menos nesse primeiro momento, a preocupação é fazer com que gere o arquivo corretamente igual é gerado hoje em dia utilizando o software de terceiros. Após isso terá a parte de **Assinatura** e **Envio** etc...
+
+- **TODO** -> Integração para ser emitida as guias GNRE (Que é necessário quando vendemos para outro estado e a pessoa seja PF ou PJ não seja contribuinte de icms, ou seja, é quando tem o calculo de DIFAL na nota que emitimos) 
+
+### 2. Criando login
+
+ **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as 3 propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I
 
 ```
 emissor-fiscal.ativo=true
-emissor-fiscal.server=http://localhost:8080          (TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL)  
+emissor-fiscal.server=http://localhost:8080          (TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL) 
+emissor-fiscal.compra.ativo=true                     (Até o momento somente é salvo, a compra no emissor-fiscal, não fazendo nenhum calculo (exceto as de SC que é feito da guia Gare))
 ```
 
 <p align="left">
@@ -24,175 +37,78 @@ Na tela aberta teremos os seguintes botões:
 2. **Atualizar Usuário** - Caso tenha feito, alguma alteração no usuário do ERP (EX.: de Senha) e queira que essas alterações tenham efeito no emissor-fiscal, clique nesse botão.
 3. **Efetuar Cadastro** - Irá criar um usuário no emissor-fiscal, com as mesmas informações do ERP.
 
-### 1.1 Fazendo Login
-
-**Vá para** o endereço configurado nas properties acima, no nosso exemplo: **http://localhost:8080**
-
-![Tela de login](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/01.2%20-%20Tela%20de%20Login.png?raw=true)
-
-Informe os dados solicitados, e clique no botão **ENTRAR**
-
-### 2. Tela de simulação
-
-Ao efetuar o login no sistema a imagem abaixo, será a tela inicial. Na parte superior temos os seguintes menus:
-* **Cadastrar** ([CFOP](https://github.com/cartola-erp/emissor-fiscal/#3-cadastrando-uma-cfop), 
-[NCM](https://github.com/cartola-erp/emissor-fiscal/#4-cadastrando-um-ncm), 
-[Estado](https://github.com/cartola-erp/emissor-fiscal/#5-cadastrando-um-estado), 
-[Operação](https://github.com/cartola-erp/emissor-fiscal/#6-cadastrando-uma-opera%C3%A7%C3%A3o), 
-[Tributação Estadual](https://github.com/cartola-erp/emissor-fiscal#7-cadastrando-uma-tributa%C3%A7%C3%A3o-estadual) e 
-[Federal](https://github.com/cartola-erp/emissor-fiscal#7-cadastrando-uma-tributa%C3%A7%C3%A3o-federal))
-* **Consultar** ([CFOP](https://github.com/cartola-erp/emissor-fiscal/blob/master/README.md#7-consultando-uma-cfop),
-[NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/README.md#8-consultando-um-ncm),
-Estado, Operação, Tributação Estadual e Federal)
-* **Simulação** ([Essa tela](https://github.com/cartola-erp/emissor-fiscal/#2-tela-de-simula%C3%A7%C3%A3o))
-* **Sair** (Irá deslogar do sistema, voltando assim para a página de login)
-
-Já essa página inicial, servirá apenas para: Fazer uma simulação de como as informações de um item deverá sair num documento fiscal. E para isso ser feito será preciso, "alimentar/parametrizar o sistema nas telas seguintes".
-
-![Simulação de calculo](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/02%20-%20Simula%C3%A7%C3%A3o.png)
-**Figura 02** - Simulação de cálculo 
-
-### 3. Cadastrando uma CFOP
-
-Informe o número de 4 dígitos da CFOP e sua descrição. 
-
-![Cadastrar CFOP](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/03%20-%20Cadastrar%20CFOP.png)
-**Figura 03** - Cadastrar CFOP 
-
-Após preencher o formulário acima, ao clicar no botão **ALTERAR/CADASTRAR**, a msg abaixo deverá ser mostrada, na parte superior do formulário.
-
-![Mensagem de Alterado/Cadastrado com sucesso](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/12%20-%20Mensagem%20Alterado-Cadastrado%20Sucesso.png?raw=true)
-
-Caso ocorra algum **erro ou falte preencher algum campo**, será mostrada alguma mensagem semelhante a essa embaixo
-
-![Mensagem de erro](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/13%20-%20Mensagem%20Erro.png?raw=true)
-
-### 4. Cadastrando um NCM
-
-Semelhante a tela anterior, nessa deverá ser informado:
-
-1. NCM("classe fiscal"), que deverá ter no máximo 8 digítos
-2. Exceção com até 2 números 
-3. Descrição do NCM que está sendo cadastrado.
-4. Click em "ALTERAR/CADASTRAR"
-
-![Cadastrar NCM](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/04%20-%20Cadastrar%20NCM.png?raw=true)
-**Figura 04** - Cadastrar um NCM 
-
-### 5. Cadastrando um ESTADO
-
-OBS: O estado será usado, para fazer o cadastro das **tributações estaduais** para isso na tela abaixo:
-
-1. Informe a **sigla** do estado
-2. E o nome
-
-![Cadastrar ESTADO](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/05%20-%20Cadastrar%20Estado.png
-)
-**Figura 05** - Cadastrar um ESTADO 
-
-### 6. Cadastrando uma OPERAÇÃO
-
-Nessa tela tem que informar apenas a descrição da OPERAÇÃO, que é a mesma que será usado no documento fiscal. (EX.: VENDA, VENDA INTERESTADUAL, DEVOLUÇÃO etc)
-
-![Cadastrar uma operação](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/06%20-%20Cadastrar%20Opera%C3%A7%C3%A3o.png?raw=true)
-**Figura 06** - Cadastrar uma OPERAÇÃO 
-
-### 7. Cadastrando uma TRIBUTAÇÃO ESTADUAL
-OBS IMPORTANTE: Para inserir uma tributação, é OBRIGATÓRIO, realizar os cadastros nas telas anteriores, caso ainda **NÃO EXISTA** essas informações, que serão necessárias para a tributação que será cadastrada.
-
-1. **UF. Origem** - **Estado** de onde a mercadoria está **saindo**.
-2. **UF. Destino** - **Estado destino** da "mercadoria".
-3. **Operação** - Venda, Venda Interestadual, devolução etc.
-4. **NCM** - Ncm do "item" que será cadastrado a **tributação estadual**
-5. **Finalidade** - Qual é a finalidade do item? Revenda, Brinde, Doação, Patrimônio ou Consumo ?
-6. **Regime tributário do emitente** - O regime tribuário da PESSOA que está emitindo o documento fiscal. SIMPLES, PRESUMIDO ou REAL ?
-
-**OBS:** A COMBINAÇÃO dessas SEIS INFORMAÇÕES, será o que o ERP, usará como base para procurar as ALÍQUOTAS, CST etc (que serão usadas nos cálculos), quando estiver cadastrando um DOCUMENTO FISCAL. Ou seja, mesmo que ja tenha o cadastro para algum NCM, porém na hora do preenchimento do Documento qualquer um dos outros parametros acima for diferente, NÃO FUNCIONARÁ.
-
-Ex.: (Tenho a seguinte tributação cadastrada):
+### 2.1. Criando Login através do envio/exportação de um documento fiscal
+Quando o usuário enviar/exportar uma NFE e estiver com as properties acima ativadas, também será criado um usuário (com o Perfil de ***API_ACESS***), veja os outros perfis no enum: 
 ```
-UF ORIGEM = SP
-UF DESTINO = SP
-OPERAÇÃO = VENDA
-NCM = 7031011
-FINALIDADE = CONSUMO
-REGIME DO EMITENTE = REAL
+net.cartola.emissorfiscal.usuario.Perfil
 ```
-Porém estamos preenchendo um documento fiscal, cujo o mesmo terá apenas uma informação diferente do de cima (no nosso exemplo a finalidade):
+
+### 3. Arquivos de configurações (application.properties e bootstrap.properties)
+Temos quatro arquivos aplication.properties, sendo eles:
+
+|nome|Usado em|
+|----|---------|
+|application.properties|Arquivo principal, todos os application dos perfis abaixo, herdarão o que estiver nesse|
+|application-dev.properties|Para rodar a aplicação no localhost (etapa de desenvolvimento)|
+|application-homologacao.properties|Para fazer o deploy no [GAE](https://cloud.google.com/appengine). E conseguirmos testar a aplicação no mesmo ambiente do usuário |
+|application-producao.properties|Para fazer o deploy em produção no GAE|
+|application-test.properties|Para rodar os testes no localhost, usando o DB (emissorfiscal_teste) |
+|bootstrap.properties|Para utilizarmos o serviço [Secret Manager do GCP](https://cloud.google.com/secret-manager). Quando é feito o deploy esse arquivo é carregado antes do application|
+|bootstrap-homologacao.properties|Deploy no projeto do GCP de homologacao|
+|bootstrap-producao.properties|Deploy em produção|
+
+PS: No aplication.properties, temos algumas propriedades, que são referente a "regras de negócios". Exemplos: codigos das origens dos produtos que são importados, email para
+quem é enviado os calculos das GUIA GARE (entradas de SC, MS e ES) etc...
+
+### 4. "Parametrização/Inserção", das tributações federais e estadual (PIS/COFINS e ICMS) (nos DocumentosFiscais emitidos por nóis)
+Dentro da pasta **./doc/scripts**, temos as duas pastas a seguir, que serviram para cadastrar as tributações, em três tabelas (Tais informações foram passados pela Contabilidade/Fiscal): 
+  * trib_fede
+  * trib_esta
+  * trib_esta_guia 
+
+![image](https://user-images.githubusercontent.com/29218270/121573885-1b2fef80-c9fc-11eb-92c8-f32691b1015b.png)
+
+Dentro das tributações federais temos os scripts abaixo (Devem ser rodados na ordem que estão no print)
+PS: O último script, contém todos os inserts das duas procedures acima. (Sim, o melhor era ter feito INSERT com subquery, igual foi feito nas trib_esta)
+![image](https://user-images.githubusercontent.com/29218270/121576332-a7dbad00-c9fe-11eb-8f45-30b61c7cc4e9.png)
+
+As tributações federais (PIS/COFINS), funcionam basicamente da seguinte forma (estamos considerando a operação 1 - VENDA), Se o NCM é:
 
 ```
-FINALIDADE = REVENDA
-```
-Logo no preenchimento desse Documento Fiscal (no ERP), receberá uma mensagem semelhante a: "Não existe tributação cadastrada para esse item".
+ Monofásico - CST 04  (Sem tributação, Base de calculo, aliq, e valor imposto ZERADO)
+ Se não é monofásico - CST 01 - Pis Aliq = 1,65% | Cofins Aliq = 7,60%
+``` 
+  OBS: ***Dependendo da operação a CST poderá ser diferente*** (conforme está nos scripts), assim como não ocorrer a incidência de impostos. PORÉM, sempre que um NCM for monofásico essa será a regra que tem prevalência;
 
-Para corrigir isso deverá realizar o cadastro de uma nova tributação, que se encaixe nessa finalidade.
+### 4.1. trib_esta (inserindo informações referente a Aliq de ICMS, CFOP, CEST COD ANP etc)
 
-Já os campos abaixo do formulário, é o que de fato será usado no calculo, para o item, que se encaixe nas combinações acima.
+- Na primeira pasta do print abaixo, temos o script para inserir a tributação na tabela: **trib_esta_guia** (Todos os ncms que tiverem nessa tabela serão calculados, 
+o valor da guia gare quando derem entrada em um DocumentoFiscal)
+PS: Ao invés de usar um campo do tipo enum para considerar a Origem do produto (o ideal é trocar, para um boolean para saber se a tributação é ou não para um produto importado)
 
-7. **ICMS CST** - Código da substitução tributária do icms.
-8. **ICMS BASE RED.** - Porcentagem de redução na base de calculo. Ex.: Se informar 20% O sistema irá reduzir a base do produto em 80%, ou seja, apenas será considerado 20% do valor do produto, para realizar os calculos dos impostos estaduais. (
-9. **ICMS Aliq.** - **Alíquota** do estado de **origem**
-10. **ICMS IVA/MVA** - Porcentagem(referente ao estado de origem) de IVA/MVA do item que está sendo cadastrado. Ex.: Se informar 70%, nesse campo, o sistema irá considerar 70% do valor do produto. (Mesmo funcionamento que o campo:  **ICMS BASE RED.**). 
-11. **Aliq. Interna Destino** - **Alíquota** do estado de **destino**
-12. **FCP Aliq.** Alíquota do Fundo de combate a pobreza, do estado de destino.
-13. **ICMS ST Aliq.** Alíquota do icms de substituição tributária.
-14. **CEST** - Código especificador da substituição tributária. (Relacionado ao NCM)
-15. **CFOP** - Qual a CFOP, deverá sair para o item/produto, conforme as 6 primeiras opções preenchidas? (uf origem, destino, operação, ncm, finalidade, e regime tributário do emitente).
-16. **Mensagem** Uma observação/mensagem, para essa tributação. (não há interferência no cálculo)
+- **Interestadual** Script com todas as tributações em VENDAS interestaduais de SP x Qualquer outra UF. No caso das operações foi feito o seguinte para saber se tem que calcular ou não difal/fcp. Equivalência de operações: 
 
-![Cadastrar uma tributação estadual](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/07%20-%20Cadastrar%20Tributacao%20Estadual%20-%20(ICMS).png?raw=true)
-**Figura 06** - Cadastrar uma TRIBUTAÇÃO ESTADUAL 
 
-### 7. Cadastrando uma TRIBUTAÇÃO FEDERAL
+|Operação|Equivalente a|
+|---|----|
+|2 - VENDA INTERESTADUAL (JURIDICA)|Pessoa contribuinte de icms, ou seja, quando usar as tributações dessa operação para fazer o calculo NUNCA será calculado o DIFAL e FCP|
+|3 - VENDA INTERESTADUAL (FISICA) |Pessoa não contribuinte, sempre será calculado o DIFAL, e o FCP para os estados que tiverem|
 
-Na tela de cadastro de **tributação federal**, vale a mesma regra das **combinações** da [TRIBUTAÇÃO ESTADUAL](https://github.com/cartola-erp/emissor-fiscal#7-cadastrando-uma-tributa%C3%A7%C3%A3o-estadual) que o (ERP usará para encontrar as CST, ALIQ. etc, da tributação), com a diferença, que como é uma **TRIBUTAÇÃO FEDERAL**, não precisará dos **UF origem** e nem de **destino**, ou seja, serão as QUATROS combinações abaixo:
+Problemas que possamos ter ao utilizar essa abordagem: Nem todos os PJ, são contribuintes, ou seja, caso calcule, um DocumentoFiscal, cujo o destinatário seja Pessoa Juridica, 
+NÃO contribuinte, deverá ser calculado o DIFAL, mas não será. 
 
-1. **Operação** - Venda, Venda Interestadual, devolução etc.
-2. **NCM** - Ncm do "item" que será cadastrado a **tributação estadual**
-3. **Finalidade** - Qual é a finalidade do item? Revenda, Brinde, Doação, Patrimônio ou Consumo ?
-4. **Regime tributário do emitente** - O regime tribuário da PESSOA que está emitindo o documento fiscal. SIMPLES, PRESUMIDO ou REAL ?
+PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o **DocumentoFiscal**, se a pessoa é ou não contribuinte de icms, para assim ser buscada a tributação correta.
 
-![Cadastrar uma tributação federal](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/08%20-%20Cadastrar%20Tributacao%20Federal%20-%20(PIS%20&%20COFINS).png?raw=true)
-**Figura 07** - Cadastrar uma TRIBUTAÇÃO FEDERAL 
+![image](https://user-images.githubusercontent.com/29218270/121577555-0190a700-ca00-11eb-9597-24be7f46b3c7.png)
 
-Já nesses abaixo, são os valores que serão usados nos cálculos:
+- Os dois últimos, scripts do print: Pode se dizer que são "repetidos", já que a tributação dentro do estado não muda quando o produto é ou não importado (porém tem os dois para ser calculados em ambos os casos). A informação do produto ser ou não importado, tem grande importancia nas VENDAS interestaduais, pois é essa aliquota (4%) que tem prevalência
+(conforme está nos scripts mencionados acima) caso o produto seja importado.
 
-5. **PIS CST** - Código da substitução tributária do PIS.
-6. **PIS Base Red.** - Porcentagem de redução na base de calculo do PIS. Funciona da mesma forma que o campo **ICMS BASE RED.**, no cadastro de tributação estadual.  Ex.: Se informar 20% O sistema irá reduzir a base do produto em 80%, ou seja, apenas será considerado 20% do valor do produto, para realizar os calculos dos impostos federais.
-7. **PIS Alíquota** - A alíquota do PIS. (GERALMENTE **1,65%**)
-8. **COFINS CST** - Código da substitução tributária do COFINS. (GERALMENTE, é o mesmo que o do PIS)
-9. **COFINS Base Red.** - Porcentagem de redução na base de calculo do COFINS. (GERALMENTE, é o mesmo que o do PIS). Mesmo funcionamento que o campo: **PIS Base Red.**
-10. **COFINS Alíquota** - A alíquota do COFINS. (GERALMENTE **7,60%**)
-11. **IPI CST** - Código da substitução tributária do IPI.
-12. **IPI Base** - Porcentagem de redução na base de calculo do IPI.
-13. **IPI Alíquota** - A alíquota do IPI.
-14. **Mensagem** - Uma observação/mensagem, para essa tributação. (não há interferência no cálculo)
+- Esses dois scripts funcionam com as tributações de vendas, que já foram inseridas previamente, ao iniciar o projeto utilizando o **flyway**
 
-### 7. Consultando uma CFOP
+![image](https://user-images.githubusercontent.com/29218270/121580538-39e5b480-ca03-11eb-8562-0ae71ce307e0.png)
 
-No menu superior vá para **Consultar**>**CFOP**. Será aberta a tela abaixo.
-  
-![Consultar uma CFOP](https://github.com/cartola-erp/emissor-fiscal/blob/master/doc/Telas%20do%20Sistema/09%20-%20Consultar%20CFOP.png?raw=true)
-**Figura 08** - Consultar uma CFOP 
 
-As telas de consulta sempre serão no mesmo padrão:
-1. Na parte superior -> Uma **caixa de texto** para informar o parâmetro de pesquisa(**nº da cfop**) de um registro especifico
-e ao lado um **botão com icone de lupa**, para procurar.
-2. Na parte inferior (tabela) é onde os registros são mostrados. E na mesma sempre terá pelo menos 2 colunas:
-  * 1. **[Editar](https://github.com/cartola-erp/emissor-fiscal/blob/master/README.md#9-editandodeletando-uma-cfop)** - Irá carregar a tela de cadastro (do registro daquela linha) com todas as informações cadastradas preenchidas.
-  * 2. **[Deletar](https://github.com/cartola-erp/emissor-fiscal/blob/master/README.md#9-editandodeletando-uma-cfop)** - Será deletado o registro daquela linha.
-
-### 8. Consultando um NCM
-
-### 9. Editando/deletando uma CFOP
-
-~~Tudo que for relacionado a "alteração e o delete" de algum registro, sempre irá seguir o **mesmo fluxo**. No menu superior clique, em **Consultar** e no que pretende editar, no nosso exemplo a **CFOP**.
-Então a tela abaixo será aberta.~~
-
-~~2. Na tabela embaixo é onde os registros são mostrados. E na mesma sempre terá pelo menos 2 colunas:
-  * 1. Editar - Irá carregar a tela de cadastro (do registro daquela linha) com todas as informações cadastradas preenchidas.
-  * 2. Deletar - Será deltetado o registro daquela linha.~~
-  
 ## Começando
 
 Clone esse projeto em um diretório de sua máquina
