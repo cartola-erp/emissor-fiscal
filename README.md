@@ -108,6 +108,33 @@ PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o
 
 ![image](https://user-images.githubusercontent.com/29218270/121580538-39e5b480-ca03-11eb-8562-0ae71ce307e0.png)
 
+### 5. DocumentoFiscal (package extremamente importante), breve explicação sobre as classes do projeto
+
+* 1 - O projeto é feito utilizando Hibernate;
+* 2 - Os pacotes do projeto, é separados por "módulos", exemplo na imagem cfop, contador e documento.
+   * Podendo ter dentro do pacote todas as camadas (ApiController, Controller, Service, Repository, Model)
+ 
+![image](https://user-images.githubusercontent.com/29218270/121585029-7f58b080-ca08-11eb-9c83-e4c0055b6fdb.png)
+
+DocumentoFiscalApiController, é a classe utilizada para fazer integração com o ERP. Através dela terá mapeamentos de recursos para atualizar e ou salvar um DocumentoFiscal, seja de compra ou de saída. Nela também é que está "integrado", a chamada dos métodos na service para calcular os impostos (que é necessários em todos os DocumentoFiscais, que emitimos);
+
+
+### 6. SpedFiscal (ICMS IPI)
+* Essa parte ainda está em desenvolvimento, porém os layout do arquivo foi criado da seguinte forma: cada bloco tem seu pacote com sua modelagem:
+
+![image](https://user-images.githubusercontent.com/29218270/121586857-8a144500-ca0a-11eb-86b1-3001ca3faeb6.png)
+
+1 - Cada registro tem sua classe (isso equivale a uma linha no arquivo txt);
+2 - Um registro de Nivel DOIS tem como um (objeto) "registro filho" que é de nivel 3, E o de nivel três terá o registro de Nivel QUATRO, como registro filho (essa informação de registros filhos etc é consultado na documentação do governo)...
+3 - Exemplo Registro C100 (RegC100.java), que além de seus campos, tem os registros filhos que podem ou não serem preenchidos, porém somente poderão caso tenha preenchido a linha do REG C100. 
+
+![image](https://user-images.githubusercontent.com/29218270/121588139-f3e11e80-ca0b-11eb-8a80-17c36a10b1f8.png)
+
+- **SpedFiscalArquivoController** -> Classe que irá carregar a tela, para a geração do arquivo SPED e receber os parametros (data inicio, fim, loja e contador) para processar o arquivo.
+- **SpedFiscalArquivoService** -> As informações acima serão passadas para o método **gerarAquivoSpedFiscal(...)**, da Service, que será responsável por buscar todas as informações fiscais do período, e popular um objeto do tipo **MovimentoMensalIcmsIpi**
+- **SpedFiscalService** -> Recebe um objeto do tipo **MovimentoMensalIcmsIpi**, e chama as services de cada bloco, para preencher os registros do SpedFiscal, que precisamos escriturar e devolve um objeto do tipo **SpedFiscal** que nada mais é do que a modelagem que citamos anteriormente (SpedFiscal -> Blocos do Sped -> Registros dos Blocos)
+- **SpedFiscalArquivoService** -> Com todos os registros necessários preenchidos/escriturados, ainda dentro do método **gerarArquivoSpedFiscal(...)**, será chamado o método 
+**gerarArquivoSped(....)**, dentro dessa service, que é o "transformará", no arquivo **.txt** (utilzando a **lib: coffeepot-bean-wr**). E salvará o arquivo na tabela **sped_fisc_aqu** (SpedFiscalArquivo). OBS: No futuro isso será mudado, para salvar somente o link do arquivo que está no bucket do GCP.
 
 ## Começando
 
