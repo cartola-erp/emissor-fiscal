@@ -67,10 +67,13 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	@Value("${sped-fiscal.cod-venda-interestadual-nao-contribuinte}")
 	private Long codVendaInterestadualNaoContribuinte;
 	
+	private MovimentoMensalIcmsIpi movimentosIcmsIpi;
+	
 	@Override
 	public List<RegC100> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		LOG.log(Level.INFO, "Montando o Registro C100");
-
+		this.movimentosIcmsIpi = movimentosIcmsIpi;
+		
 		Loja lojaSped = movimentosIcmsIpi.getLoja();
 		List<DocumentoFiscal> listDocFiscalEntradaEmissaoTerceiros = getDocFiscalEntradaEmissaoTerceiros(movimentosIcmsIpi);
 		List<DocumentoFiscal> listDocFiscalEmissaoPropria = getDocFiscalEmissaoPropria(movimentosIcmsIpi);
@@ -157,7 +160,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			 **/
 			regC100 = new RegC100(docFisc, lojaSped);
 			regC100.setRegC170(regC170Service.montarGrupoRegC170(docFisc));
-			regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
+			regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, movimentosIcmsIpi));
 //			regC100.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
 			break;
 		}
@@ -262,7 +265,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		 * 
 		 */
 		RegC100 regC100 = new RegC100(docFisc, lojaSped);
-		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
+		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, this.movimentosIcmsIpi));
 
 		return regC100;
 	}
@@ -280,7 +283,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
 		regC100.setDtDoc(docFisc.getEmissao());
 
-		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
+		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, this.movimentosIcmsIpi));
 		return regC100;
 	}
 
@@ -309,7 +312,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		regC100.setDtDoc(docFisc.getEmissao());
 
 		regC100.setRegC110(regC110Service.montarGrupoRegC110(docFisc, lojaSped, movimentosIcmsIpi));
-		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc));
+		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, this.movimentosIcmsIpi));
 		return regC100;
 	}
 

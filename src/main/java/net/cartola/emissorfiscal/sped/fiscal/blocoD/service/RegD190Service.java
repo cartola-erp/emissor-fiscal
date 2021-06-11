@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC190;
 import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD190;
 
@@ -37,7 +38,7 @@ class RegD190Service {
 	 * @param servicoTransporte
 	 * @return
 	 */
-	public List<RegD190> montarGrupoRegC190(DocumentoFiscal servicoTransporte) {
+	public List<RegD190> montarGrupoRegC190(DocumentoFiscal servicoTransporte, MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		List<RegD190> listRegD190 = new ArrayList<>();
 		
 		servicoTransporte.getItens().stream().forEach(impostoCte -> {
@@ -55,7 +56,7 @@ class RegD190Service {
 			
 			listRegD190.add(regD190);
 		});
-
+		movimentoMensalIcmsIpi.addRegistroAnalitico(listRegD190);
 		return listRegD190;
 	}
 

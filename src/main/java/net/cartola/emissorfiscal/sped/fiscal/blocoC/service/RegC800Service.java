@@ -53,7 +53,7 @@ class RegC800Service implements MontaGrupoDeRegistroList<RegC800, MovimentoMensa
 		}
 		RegC800 regC800 = new RegC800(satEmititdo);
 		/// VERIFICAR como preencher o REG C815
-		regC800.setRegC850(regC850Service.montarGrupoRegC850(satEmititdo));
+		regC800.setRegC850(regC850Service.montarGrupoRegC850(satEmititdo, movimentosIcmsIpi));
 		return regC800;
 	}
 

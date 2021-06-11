@@ -34,6 +34,10 @@ import coffeepot.bean.wr.annotation.Record;
 public class RegE110 {
 	
 	private final String reg = "E110";
+	/***
+	 * "....O valor neste campo deve ser igual à soma dos VL_ICMS de todos os registros C190, C320, C390, C490, C590, C690, C790,
+	 * 		C850, C890, D190, D300, D390, D410, D590, D690, D696..."
+	 */
 	private BigDecimal vlTotDebitos;
 	private BigDecimal vlAjDebitos;
 	private BigDecimal vlTotAjDebitos;

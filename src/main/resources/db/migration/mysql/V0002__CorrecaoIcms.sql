@@ -74,6 +74,20 @@ update emissorfiscal.trib_esta set cfop = 5656 where cod_anp != 0 and oper_Id = 
 
 update emissorfiscal.trib_esta set cfop = 5659 where cod_anp != 0 and oper_Id = 4;
 
+-- Atualizando para CST 60, os ncms de óleo (os que tem cod_ANP), na VENDA e TRANSFERENCIA
+UPDATE emissorfiscal.trib_esta t 
+		SET t.fcp_aliq = 0.000000,
+		t.icms_aliq =  0.180000,
+		t.icms_aliq_dest = 0.000000,
+		t.icms_base = 1.000000,
+		t.icms_cst = 60,
+		t.icms_iva = 1.000000,
+		t.icms_st_aliq = 0.180000 
+WHERE t.ncm_id IN ( 
+	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(27101992, 38112190, 27101931, 27101932)
+) and t.oper_id not in (2,3) AND  t.icms_cst = 0;
+
+
 
 -- Atualizando ALIQUOTAS de 12% p/ 13,3%
 

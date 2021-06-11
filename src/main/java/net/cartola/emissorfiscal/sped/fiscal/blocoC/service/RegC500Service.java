@@ -28,7 +28,6 @@ class RegC500Service implements MontaGrupoDeRegistroList<RegC500, MovimentoMensa
 
 	@Override
 	public List<RegC500> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
-		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro C500");
 		List<RegC500> listRegC500 = new ArrayList<>();
 		
@@ -38,7 +37,7 @@ class RegC500Service implements MontaGrupoDeRegistroList<RegC500, MovimentoMensa
 		listDocumentoFiscalServico.stream().forEach(servico -> {
 			if (servico.getTipoServico().equals(TipoServico.ENERGIA)) {
 				RegC500 regC500 = new RegC500(servico, lojaSped);
-				regC500.setRegC590(montarGrupoRegC590(servico)); 
+				regC500.setRegC590(montarGrupoRegC590(servico, movimentosIcmsIpi)); 
 				listRegC500.add(regC500);
 			}
 		});
@@ -48,12 +47,14 @@ class RegC500Service implements MontaGrupoDeRegistroList<RegC500, MovimentoMensa
 	}
 
 	/**
+	 * 
 	 * Preenchimento do REGISTRO ANALÍTICO C590
 	 * 
 	 * @param servico
+	 * @param movimentosIcmsIpi 
 	 * @return
 	 */
-	private List<RegC590> montarGrupoRegC590(DocumentoFiscal servico) {
+	private List<RegC590> montarGrupoRegC590(DocumentoFiscal servico, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		List<RegC590> listRegC590 = new ArrayList<>();
 		RegC590 regC590 = new RegC590();
 		
@@ -69,6 +70,7 @@ class RegC500Service implements MontaGrupoDeRegistroList<RegC500, MovimentoMensa
 		regC590.setCodObs(null);
 		
 		listRegC590.add(regC590);
+		movimentosIcmsIpi.addRegistroAnalitico(listRegC590);
 		return listRegC590;
 	}
 

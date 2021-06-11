@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC190;
 
 @Service
@@ -26,7 +27,7 @@ class RegC190Service {
 	 * @param docFisc
 	 * @return
 	 */
-	public List<RegC190> montarGrupoRegC190(DocumentoFiscal docFisc) {
+	public List<RegC190> montarGrupoRegC190(DocumentoFiscal docFisc, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		List<RegC190> listRegC190 = new ArrayList<>();
 		
 		/**Um mapa dentro do outro, até retornar uma lista no ultimo. Sendo as seguintes Chaves:
@@ -56,6 +57,8 @@ class RegC190Service {
 											regC190.setCodObs("");			// TODO
 											listRegC190.add(regC190);
 										}))));
+		
+		movimentosIcmsIpi.addRegistroAnalitico(listRegC190);
 		return listRegC190;
 	}
 

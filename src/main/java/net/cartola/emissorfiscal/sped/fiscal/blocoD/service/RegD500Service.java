@@ -41,7 +41,7 @@ class RegD500Service implements MontaGrupoDeRegistroList<RegD500, MovimentoMensa
 			TipoServico tipoServico = servico.getTipoServico();
 			if (tipoServico.equals(INTERNET) || tipoServico.equals(TELEFONE_FIXO_MOVEL)) {
 				RegD500 regD500 = new RegD500(servico, lojaSped);
-				regD500.setRegD590(montarGrupoRegD590(servico));
+				regD500.setRegD590(montarGrupoRegD590(servico, movimentosIcmsIpi));
 				listRegD500.add(regD500);
  			}
 		});
@@ -54,9 +54,10 @@ class RegD500Service implements MontaGrupoDeRegistroList<RegD500, MovimentoMensa
 	 * Preenchimento do REGISTRO ANALÍTICO D590
 	 * 
 	 * @param servico
+	 * @param movimentosIcmsIpi 
 	 * @return
 	 */
-	private List<RegD590> montarGrupoRegD590(DocumentoFiscal servico) {
+	private List<RegD590> montarGrupoRegD590(DocumentoFiscal servico, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		List<RegD590> listRegD590 = new ArrayList<>();
 		RegD590 regD590 = new RegD590();
 		
@@ -72,6 +73,7 @@ class RegD500Service implements MontaGrupoDeRegistroList<RegD500, MovimentoMensa
 		regD590.setCodObs(null);
 
 		listRegD590.add(regD590);
+		movimentosIcmsIpi.addRegistroAnalitico(listRegD590);
 		return listRegD590;
 	}
 

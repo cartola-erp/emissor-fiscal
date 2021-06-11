@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.sped.fiscal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -47,10 +48,19 @@ public class MovimentoMensalIcmsIpi {
 	
 	private List<CodificacaoReg0450InfoComplementarFisco> listCodInfoComplementarFisco;
 	
+	/**
+	 * Registro, Filho do E100. Apesar de poder ter vários E100, no DocumentoFiscal. Acredito que sempre
+	 * terá 1 nos SPED que geramos. Por isso estarei somandos os valores, no momento que em que estiver
+	 * preenchendo os registros do SPED. E não depois ao final;
+	 * 
+	 */
+	private Set<RegistroAnalitico> setRegistroAnalitico;
+
+//	public RegE110 regE110 = new RegE110();
+	
 	private LocalDate dataInicio;
 	private LocalDate dataFim;
-	
-	
+
 	/**
 	 * Método Chamado dentro do REG C101Service.
 	 * Usado para adicionar o DocumentoFiscal, com DIFA e/ou FCP
@@ -119,5 +129,36 @@ public class MovimentoMensalIcmsIpi {
 		this.listCodInfoComplementarFisco = listCodInfoComplementarFisco;
 	}
 	
+	/**
+	 * Adiciona os Objetos que são do tipo -> {@linkplain RegistroAnalitico};
+	 * No Set -> "setRegistroAnalitico", que será usado para escriturar o REGISTRO E110
+	 * 
+	 * @param <T>
+	 * @param t
+	 */
+	public <T extends RegistroAnalitico> void addRegistroAnalitico(T t) {
+		if (this.setRegistroAnalitico == null) {
+			this.setRegistroAnalitico = new HashSet<>();
+		}
+		this.setRegistroAnalitico.add(t);
+	}
+	
+	/**
+	 * Adiciona um Lista Objetos que são do tipo -> {@linkplain RegistroAnalitico};
+	 * No Set -> "setRegistroAnalitico", que será usado para escriturar o REGISTRO E110
+	 * 
+	 * @param <T>
+	 * @param t
+	 */
+	public <T extends RegistroAnalitico> void addRegistroAnalitico(List<T> t) {
+		if (this.setRegistroAnalitico == null) {
+			this.setRegistroAnalitico = new HashSet<>();
+		}
+		this.setRegistroAnalitico.addAll(t);
+	}
+	
+	public Set<RegistroAnalitico> getSetRegistroAnalitico() {
+		return this.setRegistroAnalitico;
+	}
 	
 }

@@ -39,11 +39,16 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 
 	@Autowired
 	private RegD190Service regD190Service;
+
+	private MovimentoMensalIcmsIpi movimentosIcmsIpi;
+	
 	
 	@Override
 	public List<RegD100> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Registro D100");
+		this.movimentosIcmsIpi = movimentosIcmsIpi;
+		
 		Loja lojaSped = movimentosIcmsIpi.getLoja();
 		Set<DocumentoFiscal> listDocFiscalServicoTransporte = getDocFiscalServicoTransporte(movimentosIcmsIpi);
 		
@@ -80,7 +85,7 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 		
 		default:
 			regD100 = new RegD100(servicoTransporte, lojaSped);
-			regD100.setRegD190(regD190Service.montarGrupoRegC190(servicoTransporte));
+			regD100.setRegD190(regD190Service.montarGrupoRegC190(servicoTransporte, this.movimentosIcmsIpi));
 			break;
 		}
 		return regD100;
@@ -158,7 +163,7 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 		regD100.setChvCte(servicoTransporte.getNfeChaveAcesso());
 		regD100.setDtDoc(servicoTransporte.getEmissao());
 
-		regD100.setRegD190(regD190Service.montarGrupoRegC190(servicoTransporte));
+		regD100.setRegD190(regD190Service.montarGrupoRegC190(servicoTransporte, this.movimentosIcmsIpi));
 		return regD100;
 	}
 	

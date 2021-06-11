@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import coffeepot.bean.wr.types.Align;
+import net.cartola.emissorfiscal.sped.fiscal.RegistroAnalitico;
 
 /**
  * 11/09/2020
@@ -21,15 +22,15 @@ import coffeepot.bean.wr.types.Align;
     @Field(name = "vlRedBc"),
     @Field(name = "codObs")
 })
-public class RegD190 {
+public class RegD190 extends RegistroAnalitico {
 
 	private final String reg = "D190";
-	private String cstIcms;
-	private int cfop;
-	private BigDecimal aliqIcms;
-	private BigDecimal vlOpr;
-	private BigDecimal vlBcIcms;
-	private BigDecimal vlIcms;
+//	private String cstIcms;
+//	private int cfop;
+//	private BigDecimal aliqIcms;
+//	private BigDecimal vlOpr;
+//	private BigDecimal vlBcIcms;
+//	private BigDecimal vlIcms;
 	private BigDecimal vlRedBc;
 	private String codObs;
 	
@@ -37,53 +38,53 @@ public class RegD190 {
 		return reg;
 	}
 
-	public String getCstIcms() {
-		return cstIcms;
-	}
-
-	public void setCstIcms(String cstIcms) {
-		this.cstIcms = cstIcms;
-	}
-
-	public int getCfop() {
-		return cfop;
-	}
-
-	public void setCfop(int cfop) {
-		this.cfop = cfop;
-	}
-
-	public BigDecimal getAliqIcms() {
-		return aliqIcms;
-	}
-
-	public void setAliqIcms(BigDecimal aliqIcms) {
-		this.aliqIcms = aliqIcms;
-	}
-
-	public BigDecimal getVlOpr() {
-		return vlOpr;
-	}
-
-	public void setVlOpr(BigDecimal vlOpr) {
-		this.vlOpr = vlOpr;
-	}
-
-	public BigDecimal getVlBcIcms() {
-		return vlBcIcms;
-	}
-
-	public void setVlBcIcms(BigDecimal vlBcIcms) {
-		this.vlBcIcms = vlBcIcms;
-	}
-
-	public BigDecimal getVlIcms() {
-		return vlIcms;
-	}
-
-	public void setVlIcms(BigDecimal vlIcms) {
-		this.vlIcms = vlIcms;
-	}
+//	public String getCstIcms() {
+//		return cstIcms;
+//	}
+//
+//	public void setCstIcms(String cstIcms) {
+//		this.cstIcms = cstIcms;
+//	}
+//
+//	public int getCfop() {
+//		return cfop;
+//	}
+//
+//	public void setCfop(int cfop) {
+//		this.cfop = cfop;
+//	}
+//
+//	public BigDecimal getAliqIcms() {
+//		return aliqIcms;
+//	}
+//
+//	public void setAliqIcms(BigDecimal aliqIcms) {
+//		this.aliqIcms = aliqIcms;
+//	}
+//
+//	public BigDecimal getVlOpr() {
+//		return vlOpr;
+//	}
+//
+//	public void setVlOpr(BigDecimal vlOpr) {
+//		this.vlOpr = vlOpr;
+//	}
+//
+//	public BigDecimal getVlBcIcms() {
+//		return vlBcIcms;
+//	}
+//
+//	public void setVlBcIcms(BigDecimal vlBcIcms) {
+//		this.vlBcIcms = vlBcIcms;
+//	}
+//
+//	public BigDecimal getVlIcms() {
+//		return vlIcms;
+//	}
+//
+//	public void setVlIcms(BigDecimal vlIcms) {
+//		this.vlIcms = vlIcms;
+//	}
 
 	public BigDecimal getVlRedBc() {
 		return vlRedBc;

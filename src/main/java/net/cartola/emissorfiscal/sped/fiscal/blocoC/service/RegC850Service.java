@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC850;
 
 /**
@@ -22,7 +23,7 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC850;
 @Service
 public class RegC850Service {
 
-	public List<RegC850> montarGrupoRegC850(DocumentoFiscal satEmititdo) {
+	public List<RegC850> montarGrupoRegC850(DocumentoFiscal satEmititdo, MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		List<RegC850> listRegC850 = new ArrayList<>();
 		
 		Map<ProdutoOrigem, Map<Integer, Map<Integer, Map<BigDecimal, List<DocumentoFiscalItem>>>>> mapPorOrigemCstCfopAliqIcms = getMapaItensParaRegistroAnalitico(satEmititdo);
@@ -41,6 +42,7 @@ public class RegC850Service {
 										regC850.setCodObs("");
 										listRegC850.add(regC850);
 								}))));
+		movimentoMensalIcmsIpi.addRegistroAnalitico(listRegC850);
 		return listRegC850;
 	}
 
