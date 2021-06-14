@@ -73,7 +73,7 @@ class RegD500Service implements MontaGrupoDeRegistroList<RegD500, MovimentoMensa
 		regD590.setCodObs(null);
 
 		listRegD590.add(regD590);
-		movimentosIcmsIpi.addRegistroAnalitico(listRegD590);
+		movimentosIcmsIpi.addRegistroAnalitico(listRegD590, servico);
 		return listRegD590;
 	}
 

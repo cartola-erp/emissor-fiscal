@@ -58,7 +58,7 @@ class RegC190Service {
 											listRegC190.add(regC190);
 										}))));
 		
-		movimentosIcmsIpi.addRegistroAnalitico(listRegC190);
+		movimentosIcmsIpi.addRegistroAnalitico(listRegC190, docFisc);
 		return listRegC190;
 	}
 

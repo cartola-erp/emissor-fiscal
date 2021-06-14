@@ -42,7 +42,7 @@ public class RegC850Service {
 										regC850.setCodObs("");
 										listRegC850.add(regC850);
 								}))));
-		movimentoMensalIcmsIpi.addRegistroAnalitico(listRegC850);
+		movimentoMensalIcmsIpi.addRegistroAnalitico(listRegC850, satEmititdo);
 		return listRegC850;
 	}
 

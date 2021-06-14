@@ -56,7 +56,7 @@ class RegD190Service {
 			
 			listRegD190.add(regD190);
 		});
-		movimentoMensalIcmsIpi.addRegistroAnalitico(listRegD190);
+		movimentoMensalIcmsIpi.addRegistroAnalitico(listRegD190, servicoTransporte);
 		return listRegD190;
 	}
 

@@ -1,10 +1,15 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
+import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
+import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import lombok.AccessLevel;
@@ -13,12 +18,14 @@ import lombok.Setter;
 import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
+import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeOperacao;
 
 /**
  * 21/09/2020
@@ -54,8 +61,8 @@ public class MovimentoMensalIcmsIpi {
 	 * preenchendo os registros do SPED. E não depois ao final;
 	 * 
 	 */
-	private Set<RegistroAnalitico> setRegistroAnalitico;
-
+	private Map<IndicadorDeOperacao, Set<RegistroAnalitico>> mapRegistroAnaliticoPorTipoOperacao;
+	
 //	public RegE110 regE110 = new RegE110();
 	
 	private LocalDate dataInicio;
@@ -96,21 +103,6 @@ public class MovimentoMensalIcmsIpi {
 		}
 	}
 	
-	public LocalDate getDataInicio() {
-		return dataInicio;
-	}
-	
-	public void setDataInicio(LocalDate dataInicio) {
-		this.dataInicio = dataInicio;
-	}
-
-	public LocalDate getDataFim() {
-		return dataFim;
-	}
-	
-	public void setDataFim(LocalDate dataFim) {
-		this.dataFim = dataFim;
-	}
 
 	public List<CodificacaoReg0450InfoComplementarFisco> getListCodInfoComplementarFisco() {
 		if (this.listCodInfoComplementarFisco == null || this.listCodInfoComplementarFisco.isEmpty()) {
@@ -129,36 +121,81 @@ public class MovimentoMensalIcmsIpi {
 		this.listCodInfoComplementarFisco = listCodInfoComplementarFisco;
 	}
 	
+
+	
+	public Map<IndicadorDeOperacao, Set<RegistroAnalitico>> getMapRegistroAnaliticoPorTipoOperacao() {
+		return mapRegistroAnaliticoPorTipoOperacao;
+	}
+	
+			
 	/**
 	 * Adiciona os Objetos que são do tipo -> {@linkplain RegistroAnalitico};
-	 * No Set -> "setRegistroAnalitico", que será usado para escriturar o REGISTRO E110
+	 * No Map -> "setRegistroAnalitico", que será usado para escriturar o REGISTRO E110
 	 * 
 	 * @param <T>
 	 * @param t
 	 */
-	public <T extends RegistroAnalitico> void addRegistroAnalitico(T t) {
-		if (this.setRegistroAnalitico == null) {
-			this.setRegistroAnalitico = new HashSet<>();
+	public <T extends RegistroAnalitico> void addRegistroAnalitico(T t, DocumentoFiscal docFisc) {
+		if (this.mapRegistroAnaliticoPorTipoOperacao == null) {
+			this.mapRegistroAnaliticoPorTipoOperacao = new HashMap<>();
 		}
-		this.setRegistroAnalitico.add(t);
+		Set<RegistroAnalitico> setRegistroAnalitico = new HashSet<>();
+		setRegistroAnalitico.add(t);
+		addRegistroAnalitico(setRegistroAnalitico, docFisc);
 	}
 	
 	/**
 	 * Adiciona um Lista Objetos que são do tipo -> {@linkplain RegistroAnalitico};
-	 * No Set -> "setRegistroAnalitico", que será usado para escriturar o REGISTRO E110
+	 * No Mapa ->  "Map<IndicadorDeOperacao, Set<RegistroAnalitico>>", que será usado para escriturar o REGISTRO E110
 	 * 
 	 * @param <T>
 	 * @param t
 	 */
-	public <T extends RegistroAnalitico> void addRegistroAnalitico(List<T> t) {
-		if (this.setRegistroAnalitico == null) {
-			this.setRegistroAnalitico = new HashSet<>();
+	public <T extends RegistroAnalitico> void addRegistroAnalitico(List<T> t, DocumentoFiscal docFisc) {
+		if (this.mapRegistroAnaliticoPorTipoOperacao == null) {
+			this.mapRegistroAnaliticoPorTipoOperacao = new HashMap<>();
 		}
-		this.setRegistroAnalitico.addAll(t);
+		Set<RegistroAnalitico> setRegistroAnalitico = new HashSet<>();
+		setRegistroAnalitico.addAll(t);
+		addRegistroAnalitico(setRegistroAnalitico, docFisc);
 	}
 	
-	public Set<RegistroAnalitico> getSetRegistroAnalitico() {
-		return this.setRegistroAnalitico;
+	/**
+	 * 
+	 * @param setRegistroAnalitico
+	 * @param docFisc
+	 */
+	private void addRegistroAnalitico(Set<RegistroAnalitico> setRegistroAnalitico, DocumentoFiscal docFisc) {
+		if (docFisc.getTipoOperacao().equals(ENTRADA)) {
+			if (!this.mapRegistroAnaliticoPorTipoOperacao.containsKey(ENTRADA)) {
+				this.mapRegistroAnaliticoPorTipoOperacao.put(ENTRADA, setRegistroAnalitico);
+			} else {
+				this.mapRegistroAnaliticoPorTipoOperacao.get(ENTRADA).addAll(setRegistroAnalitico);
+			}
+		} else {
+			if (!this.mapRegistroAnaliticoPorTipoOperacao.containsKey(SAIDA)) {
+				this.mapRegistroAnaliticoPorTipoOperacao.put(SAIDA, setRegistroAnalitico);
+			} else {
+				this.mapRegistroAnaliticoPorTipoOperacao.get(SAIDA).addAll(setRegistroAnalitico);
+			}
+		}
 	}
 	
+	public LocalDate getDataInicio() {
+		return dataInicio;
+	}
+	
+	public void setDataInicio(LocalDate dataInicio) {
+		this.dataInicio = dataInicio;
+	}
+
+	public LocalDate getDataFim() {
+		return dataFim;
+	}
+	
+	public void setDataFim(LocalDate dataFim) {
+		this.dataFim = dataFim;
+	}
+
+
 }
