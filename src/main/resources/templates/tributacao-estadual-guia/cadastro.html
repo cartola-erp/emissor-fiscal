@@ -57,15 +57,11 @@
 							</select>
 						</div>
 
-						<div class="form-group col-md-5">
-							<label for="cmbProdutoOrigem"><strong>Origem do Produto</strong></label>
-							<select class="custom-select" id="tipoGuia" name="produtoOrigem" required>
-								<option selected id="opProdutoOrigem"> </option>
-								<option th:each="produtoOrigem: ${listProdutoOrigem}" th:value="${produtoOrigem}" th:selected="${produtoOrigem ==tipoProdutoOrigemSelecionado}" th:text="${produtoOrigem.getDescricaoComOrdinal()}" ></option>
-							</select>
-						</div>
+						<div class="form-group col-md-2">
+							<label for="chkProdutoImportado"><strong>É produto importado ?</strong></label>
+							<input type="checkbox" class="form-control " id="chkProdutoImportado" th:checked="*{produtoImportado}" name="produtoImportado" data-toggle="tooltip" data-placement="top" title="Importado é quando a origem do produto é = 1, 2, 3, 6 ou 7" />
+						</div> 
 						
-	
 					</div>
 
 					<!-- OPERAÇÃO e NCM -->

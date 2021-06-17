@@ -1,5 +1,8 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import com.sendgrid.helpers.mail.Mail;
 import net.cartola.emissorfiscal.documento.CompraDto;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.engine.EmailEngine;
 import net.cartola.emissorfiscal.engine.EmailModel;
@@ -65,6 +69,9 @@ public class CalculoGuiaEstadualService {
 	@Autowired
 	private EmailEngine emailEngine;
 	
+	@Autowired
+	private DocumentoFiscalItemService docFiscItemService;
+	
 //	private SpringTemplateEngine templateEngine;
 	
 
@@ -75,24 +82,22 @@ public class CalculoGuiaEstadualService {
 		Optional<Loja> opLoja = lojaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
 		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getEndereco().getUf()).get();
 		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();
-		Set<ProdutoOrigem> produtoOrigens = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getOrigem).collect(Collectors.toSet());
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
 
-		List<TributacaoEstadualGuia> listTribEstaGuiaGare = tribEstaGuiaService.findTribEstaGuiaByTipoGuiaUfOrigemUfDestinoProdutoOrigemOperENcms(TipoGuia.GARE_ICMS, estadoOrigem, estadoDestino, produtoOrigens, documentoFiscal.getOperacao(), ncms);
+		List<TributacaoEstadualGuia> listTribEstaGuiaGare = tribEstaGuiaService.findTribEstaGuiaByTipoGuiaUfOrigemUfDestinoOperENcms(TipoGuia.GARE_ICMS, estadoOrigem, estadoDestino, documentoFiscal.getOperacao(), ncms);
 		
-		Map<Ncm, Map<ProdutoOrigem, TributacaoEstadualGuia>> mapTribEstaGuiaPorNcmAndProdutoOrigem = listTribEstaGuiaGare
-				.stream()
-				.collect(Collectors.groupingBy(TributacaoEstadualGuia::getNcm,
-						Collectors.toMap(TributacaoEstadualGuia::getProdutoOrigem,
-								(TributacaoEstadualGuia tribEstaGuia) -> tribEstaGuia)));
+		Map<Ncm, Map<Boolean, TributacaoEstadualGuia>> mapTribEstaGuiaPorNcmAndOrigem = listTribEstaGuiaGare.stream()
+				.collect(groupingBy(TributacaoEstadualGuia::getNcm, 
+						toMap(TributacaoEstadualGuia::isProdutoImportado, (TributacaoEstadualGuia tribEstaGuia) -> tribEstaGuia)));
 		
 		CompraDto compraDto = new CompraDto();
 		compraDto.setDocFiscal(documentoFiscal);
 		
 		documentoFiscal.getItens().stream().forEach(docItem -> {
-			boolean existeIcmStParaNcm = mapTribEstaGuiaPorNcmAndProdutoOrigem.containsKey(docItem.getNcm());
+			boolean existeIcmStParaNcm = mapTribEstaGuiaPorNcmAndOrigem.containsKey(docItem.getNcm());
 			if (existeIcmStParaNcm) {
-				TributacaoEstadualGuia tribEstaGuia = mapTribEstaGuiaPorNcmAndProdutoOrigem.get(docItem.getNcm()).get(docItem.getOrigem());
+				boolean isProdutoImportado = docFiscItemService.verificaSeEhImportado(docItem);
+				TributacaoEstadualGuia tribEstaGuia = mapTribEstaGuiaPorNcmAndOrigem.get(docItem.getNcm()).get(isProdutoImportado);
 				CalculoGareCompra calcGareIcmsStEntr = calcularIcmsStParaOItemDaCompra(docItem, tribEstaGuia, documentoFiscal, opLoja);
 				listCalculoIcmsStCompra.add(calcGareIcmsStEntr);
 //				mapCalcGarePorItem.put(docItem, calcGareIcmsStEntr);
@@ -126,6 +131,7 @@ public class CalculoGuiaEstadualService {
 		
 		/** Fazendo calculo de ICMS ST, para o item */
 		BigDecimal aliqIvaMva = BigDecimal.ONE.add(tribEstaGuia.getIcmsIva());
+		// Como as entradas em si não é calculada aqui, e sim no ERP, a base é a msm que recebeu de lá previamente
 		BigDecimal baseCalcIcms =  docItem.getIcmsBase(); //docItem.getQuantidade().multiply(docItem.getValorUnitario());
 		BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getValorFrete()).add(docItem.getIpiValor());
 		
