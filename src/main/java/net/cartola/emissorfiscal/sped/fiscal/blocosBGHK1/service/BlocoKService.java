@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoK.BlocoK;
+import net.cartola.emissorfiscal.sped.fiscal.blocoK.RegK001AberturaDoBlocoK;
 import net.cartola.emissorfiscal.sped.fiscal.blocoK.RegK990EncerramentoDoBlocoK;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeMovimento;
 import net.cartola.emissorfiscal.util.RecordCounter;
 
 /**
@@ -26,7 +28,8 @@ public class BlocoKService implements MontaBloco<BlocoK, MovimentoMensalIcmsIpi>
 		LOG.log(Level.INFO, "Montando o BLOCO K, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 
 		BlocoK blocoK = new BlocoK();
-		
+		RegK001AberturaDoBlocoK regK001 = new RegK001AberturaDoBlocoK(IndicadorDeMovimento.BLOCO_SEM_DADOS_INFORMADOS);
+		blocoK.setRegK001(regK001);
 		blocoK.setRegK990(montarEncerramentoDoBlocoK(blocoK));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO K, TEMINADA! {0} " ,blocoK);

@@ -17,6 +17,10 @@ public class RegG001AberturaDoBlocoG {
 	private final String reg = "G001";
 	private IndicadorDeMovimento indMov = IndicadorDeMovimento.BLOCO_SEM_DADOS_INFORMADOS;
 
+	public RegG001AberturaDoBlocoG(IndicadorDeMovimento indMov) {
+		this.indMov = indMov;
+	}
+	
 	public String getReg() {
 		return reg;
 	}

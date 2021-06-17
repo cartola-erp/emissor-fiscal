@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0001AberturaDoBloco;
 import net.cartola.emissorfiscal.sped.fiscal.blocoG.BlocoG;
+import net.cartola.emissorfiscal.sped.fiscal.blocoG.RegG001AberturaDoBlocoG;
 import net.cartola.emissorfiscal.sped.fiscal.blocoG.RegG990EncerramentoDoBlocoG;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeMovimento;
 import net.cartola.emissorfiscal.util.RecordCounter;
 
 /**
@@ -25,7 +28,9 @@ public class BlocoGService implements MontaBloco<BlocoG, MovimentoMensalIcmsIpi>
 		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o BLOCO G, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 		BlocoG blocoG = new BlocoG();
-
+		
+		RegG001AberturaDoBlocoG regG001 = new RegG001AberturaDoBlocoG(IndicadorDeMovimento.BLOCO_SEM_DADOS_INFORMADOS);
+		blocoG.setRegG001(regG001);
 		blocoG.setRegG990(montarEncerramentoDoBlocoG(blocoG));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO G, TEMINADA! {0} " ,blocoG);

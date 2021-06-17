@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoH.BlocoH;
+import net.cartola.emissorfiscal.sped.fiscal.blocoH.RegH001AberturaDoBlocoH;
 import net.cartola.emissorfiscal.sped.fiscal.blocoH.RegH990EncerramentoDoBlocoH;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeMovimento;
 import net.cartola.emissorfiscal.util.RecordCounter;
 
 /**
@@ -23,10 +25,13 @@ public class BlocoHService implements MontaBloco<BlocoH, MovimentoMensalIcmsIpi>
 	@Override
 	public BlocoH criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
+		// Pelo menos uma vez por ano terá que ser informado o inventário
+		// TODO - TENHO QUE MONTAR A LÓGICA AINDA
 		LOG.log(Level.INFO, "Montando o BLOCO H, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 		BlocoH blocoH = new BlocoH();
 		
-		
+		RegH001AberturaDoBlocoH regH001 = new RegH001AberturaDoBlocoH(IndicadorDeMovimento.BLOCO_SEM_DADOS_INFORMADOS);
+		blocoH.setRegH001(regH001);
 		blocoH.setRegH990(montarEncerramentoDoBlocoH(blocoH));
 
 		LOG.log(Level.INFO, "Montagem do BLOCO H, TEMINADA! {0} " ,blocoH);
