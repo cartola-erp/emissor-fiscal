@@ -36,7 +36,7 @@ import net.cartola.emissorfiscal.pessoa.PessoaEndereco;
   * @date 10 de mar. de 2021
   * @author robson.costa
   */
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
