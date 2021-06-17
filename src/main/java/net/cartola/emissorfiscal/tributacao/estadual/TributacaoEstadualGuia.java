@@ -51,7 +51,7 @@ import net.cartola.emissorfiscal.operacao.Operacao;
 @Setter
 @Entity
 @Table(name = "trib_esta_guia", uniqueConstraints = @UniqueConstraint(name = "unk_trib_esta_guia_tipo_oper_uf_origem_dest_ncm", columnNames = {
-		"tipo_guia", "produto_origem", "esta_orig_id", "esta_dest_id", "ncm_id", "oper_id" }))
+		"tipo_guia", "is_prod_impor", "esta_orig_id", "esta_dest_id", "ncm_id", "oper_id" }))
 public class TributacaoEstadualGuia implements Serializable {
 
 	private static final long serialVersionUID = 8190985020309716307L;
@@ -72,10 +72,9 @@ public class TributacaoEstadualGuia implements Serializable {
     @JoinColumn(name = "esta_dest_id", referencedColumnName = "esta_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_trib_esta_guia_dest_id"))
 	private Estado estadoDestino;
 	
-	@Enumerated(EnumType.ORDINAL)
-	@Column(name = "produto_origem")
-	private ProdutoOrigem produtoOrigem;
-	
+	@Column(name = "is_prod_impor", columnDefinition = " TINYINT NOT NULL DEFAULT FALSE")
+	private boolean produtoImportado;		// ProdutoOrigem = 1, 2, 3, 6, 7 é importado  (Aliq Interestadual == 4%) 
+
 	@ManyToOne
     @JoinColumn(name = "oper_id", referencedColumnName = "oper_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_trib_esta_guia_oper_id"))
 	private Operacao operacao;

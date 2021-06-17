@@ -124,7 +124,6 @@ public class TributacaoEstadualGuiaController {
 		model.addAttribute("tipoGuiaSelecionado", tribEstaGuia.getTipoGuia());
 		model.addAttribute("ufOrigemIdSelecionado", tribEstaGuia.getEstadoOrigem().getId());
 		model.addAttribute("ufDestinoIdSelecionado", tribEstaGuia.getEstadoDestino().getId());
-		model.addAttribute("tipoProdutoOrigemSelecionado", tribEstaGuia.getProdutoOrigem());
 		model.addAttribute("operacaoIdSelecionado", tribEstaGuia.getOperacao().getId());
 		model.addAttribute("ncmdIdSelecionado", tribEstaGuia.getNcm().getId());
 		

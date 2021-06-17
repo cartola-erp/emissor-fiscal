@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
@@ -98,11 +97,20 @@ public class TributacaoEstadualGuiaService {
 		return tribEstaGuiaRepository.findByNcmIn(ncms, pr);
 	}
 	
-	public List<TributacaoEstadualGuia> findTribEstaGuiaByTipoGuiaUfOrigemUfDestinoProdutoOrigemOperENcms(TipoGuia tipoGuia, Estado estadoOrigem, Estado estadoDestino, 
-			Set<ProdutoOrigem> produtoOrigens, Operacao operacao, Set<Ncm> ncms) {
-		return tribEstaGuiaRepository.findByTipoGuiaAndEstadoOrigemAndEstadoDestinoAndProdutoOrigemInAndOperacaoAndNcmIn(tipoGuia,
-				estadoOrigem, estadoDestino, produtoOrigens, operacao,
-				ncms);
+	/**
+	 * Será retornado as tributacoes tanto para produto importado como nacional;
+	 * @param tipoGuia
+	 * @param estadoOrigem
+	 * @param estadoDestino
+	 * @param produtoOrigens
+	 * @param operacao
+	 * @param ncms
+	 * @return
+	 */
+	public List<TributacaoEstadualGuia> findTribEstaGuiaByTipoGuiaUfOrigemUfDestinoOperENcms(TipoGuia tipoGuia, Estado estadoOrigem, Estado estadoDestino, 
+			Operacao operacao, Set<Ncm> ncms) {
+		return tribEstaGuiaRepository.findByTipoGuiaAndEstadoOrigemAndEstadoDestinoAndOperacaoAndNcmIn(tipoGuia,
+				estadoOrigem, estadoDestino,  operacao, ncms);
 	}
 	
 //	public List<TributacaoEstadualGuia> findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(Operacao operacao, Estado estadoOrigem, Estado estadoDestino, RegimeTributario regimeTributario,

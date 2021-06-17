@@ -92,7 +92,7 @@
                     <th>VLR IPI</th>
                     <th>Desconto (R$)</th>
                     <th>MVA (%)</th>
-                    <th>Prod. Origem</th>
+                    <th>É prod. importado ?</th>
                     <th>ICMS Aliq. Cred. (%)</th>
                     <th>Aliq. Interna Dest. (%)</th>
                     <!-- VALORES REFERENTES ao CALCULO de ICMS ST ref. a Cada ITEM -->
@@ -112,7 +112,7 @@
                     <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.ipiValor, 0, 'POINT', 4, 'COMMA') }" > </td>                   <!-- VLR IPI -->
                     <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.desconto, 0, 'POINT', 4, 'COMMA') }" > </td>                   <!-- Desconto -->
                     <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsIva, 0, 'POINT', 4, 'COMMA') }"> </td>                    <!-- IVA/MVA -->
-                    <td th:text="${calcGare.tribEstaGuia.produtoOrigem.ordinal()}"> </td>      <!-- Origem -->
+                    <td th:text="${calcGare.tribEstaGuia.produtoImportado} ? 'SIM' : 'NÃO' "> </td>      <!-- Origem -->
                     <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsAliquota, 0, 'POINT', 4, 'COMMA') }"> </td>               <!-- Aliq. Cred -->
                     <td th:text="${#numbers.formatDecimal(calcGare.tribEstaGuia.icmsAliqInternaDestino, 0, 'POINT', 4, 'COMMA') }"> </td>     <!-- Aliq. Interna Dest. -->
                     <!-- VALORES REFERENTES ao CALCULO de ICMS ST ref. a Cada ITEM -->

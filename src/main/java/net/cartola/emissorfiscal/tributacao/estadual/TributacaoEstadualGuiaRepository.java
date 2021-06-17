@@ -27,9 +27,8 @@ public interface TributacaoEstadualGuiaRepository  extends JpaRepository<Tributa
 	
 	Page<TributacaoEstadualGuia> findByNcmIn(List<Ncm> ncms, Pageable pr);
 
-	List<TributacaoEstadualGuia> findByTipoGuiaAndEstadoOrigemAndEstadoDestinoAndProdutoOrigemInAndOperacaoAndNcmIn(
-			TipoGuia tipoGuia, Estado estadoOrigem, Estado estadoDestino, Collection<ProdutoOrigem> produtoOrigens,
-			Operacao operacao, Collection<Ncm> ncms);
+	List<TributacaoEstadualGuia> findByTipoGuiaAndEstadoOrigemAndEstadoDestinoAndOperacaoAndNcmIn(
+			TipoGuia tipoGuia, Estado estadoOrigem, Estado estadoDestino, Operacao operacao, Collection<Ncm> ncms);
 
 	
 	
