@@ -11,11 +11,11 @@ import net.cartola.emissorfiscal.sped.fiscal.bloco9.Bloco9;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.service.BlocoCService;
 import net.cartola.emissorfiscal.sped.fiscal.blocoD.service.BlocoDService;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.service.BlocoEService;
-import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK1.service.Bloco1Service;
-import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK1.service.BlocoBService;
-import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK1.service.BlocoGService;
-import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK1.service.BlocoHService;
-import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK1.service.BlocoKService;
+import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK19.service.Bloco1Service;
+import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK19.service.BlocoBService;
+import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK19.service.BlocoGService;
+import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK19.service.BlocoHService;
+import net.cartola.emissorfiscal.sped.fiscal.blocosBGHK19.service.BlocoKService;
 
 /**
  * 21/09/2020

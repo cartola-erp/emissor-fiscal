@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.sped.fiscal.blocosBGHK1.service;
+package net.cartola.emissorfiscal.sped.fiscal.blocosBGHK19.service;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
