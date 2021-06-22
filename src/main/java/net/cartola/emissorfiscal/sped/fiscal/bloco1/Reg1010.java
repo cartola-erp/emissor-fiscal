@@ -41,7 +41,27 @@ public class Reg1010 {
     private Boolean indGiaf4;
     private Boolean indRestRessarcComplIcms;
 	
-    public String getReg() {
+    
+    /**
+     * Será gerado o Registro com todos os campos setados como "false"
+     */
+    public Reg1010() {
+		this.indExp = false;
+		this.indCcrf = false;
+		this.indComb = false;
+		this.indUsina = false;
+		this.indVa = false;
+		this.indEe = false;
+		this.indCart = false;
+		this.indForm = false;
+		this.indAer = false;
+		this.indGiaf1 = false;
+		this.indGiaf3 = false;
+		this.indGiaf4 = false;
+		this.indRestRessarcComplIcms = false;
+	}
+
+	public String getReg() {
 		return reg;
 	}
 
