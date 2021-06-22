@@ -42,7 +42,7 @@ public class SpedFiscalArquivo {
 	private LocalDateTime dataHoraInicioGeracao;
 	private LocalDateTime dataHoraFimGeracao;
 	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "enum('GERANDO', 'ERRO', 'SUCESSO', 'ASSINADO') ")
+	@Column(columnDefinition = "enum('GERANDO', 'SALVOU_DIR_TEMP', 'ERRO', 'SUCESSO', 'ASSINADO') ")
 	private Status status = Status.GERANDO;
 	
 	

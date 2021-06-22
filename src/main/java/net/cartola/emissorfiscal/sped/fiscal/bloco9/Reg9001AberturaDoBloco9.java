@@ -17,6 +17,10 @@ public class Reg9001AberturaDoBloco9 {
 	private final String reg = "9001";
 	private IndicadorDeMovimento indMov = IndicadorDeMovimento.BLOCO_COM_DADOS_INFORMADOS;
 	
+	public Reg9001AberturaDoBloco9(IndicadorDeMovimento indMov) {
+		this.indMov = indMov;
+	}
+
 	public String getReg() {
 		return reg;
 	}

@@ -1,14 +1,13 @@
 package net.cartola.emissorfiscal.util;
 
-import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
@@ -167,8 +166,6 @@ public final class SpedFiscalUtil {
 
 		return mapPorOrigemCstCfopAliqIcms;
 	}
-	
-	
 	
 	
 }

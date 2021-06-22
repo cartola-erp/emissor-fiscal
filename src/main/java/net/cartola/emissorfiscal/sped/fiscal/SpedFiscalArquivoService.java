@@ -1,16 +1,16 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
+import static net.cartola.emissorfiscal.sped.fiscal.Status.ERRO;
+import static net.cartola.emissorfiscal.sped.fiscal.Status.SALVOU_DIR_TEMP;
+import static net.cartola.emissorfiscal.util.SpedFiscalWriterUtil.criarNomeArquivo;
+import static net.cartola.emissorfiscal.util.SpedFiscalWriterUtil.getDiretorioTemporarioAbsoluto;
+
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,7 @@ import coffeepot.bean.wr.writer.DelimitedWriter;
 import net.cartola.emissorfiscal.contador.ContadorService;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.loja.LojaService;
-import net.cartola.emissorfiscal.sped.fiscal.typeHandler.CustomEnumHandler;
-import net.cartola.emissorfiscal.sped.fiscal.typeHandler.LocalDateHandler;
-import net.cartola.emissorfiscal.sped.fiscal.typeHandler.LocalDateTimeHandler;
-import net.cartola.emissorfiscal.sped.fiscal.typeHandler.LocalTimeHandler;
+import net.cartola.emissorfiscal.util.SpedFiscalWriterUtil;
 
 
 /**
@@ -113,94 +110,74 @@ public class SpedFiscalArquivoService {
 	}
 	
 	
+	/**
+	 * 
+	 * @param spedFiscal -> 
+	 * @param spedFiscArqu -> 
+	 */
 	private void gerarArquivoSped(SpedFiscal spedFiscal, SpedFiscalArquivo spedFiscArqu) {
 		LOG.log(Level.INFO, "Gerando arquivo .txt da EFD ");
-		Path path = criarDiretorioTemporario();
+		Path path = SpedFiscalWriterUtil.criarDiretorioTemporario();
 
-		if (path != null) {
-			String dirArquivoSpedIcmsIpi = path.toAbsolutePath() + "//" + spedFiscArqu.getNomeArquivo();
+		if (path != null && gerouBloco9(spedFiscal, spedFiscArqu)) {
+			String dirArquivoSpedIcmsIpi = getDiretorioTemporarioAbsoluto(path, spedFiscArqu.getNomeArquivo());
 //			String dirArquivoSpedIcmsIpi = spedFiscArqu.getNomeArquivo();
 			LOG.log(Level.INFO, "Diretorio temporário do arquivo criado em -> {0} ", dirArquivoSpedIcmsIpi);
 			File fileSpedFiscal = new File(dirArquivoSpedIcmsIpi);
 			fileSpedFiscal.deleteOnExit();
 
-			DelimitedWriter dw = criarDelimitedWriterSped(fileSpedFiscal);
-		
-			try {
-				dw.write(spedFiscal);
-				dw.flush();
-				dw.close();
-			} catch (IOException ex) {
-				spedFiscArqu.setStatus(Status.ERRO);
-				ex.printStackTrace();
-				LOG.log(Level.WARNING, "Houve algum erro, ao tentar criar o arquivo .txt: {0} " ,ex);
-			}
-//			try {
-//				SpedFiscalWriter spedFiscWriter = new SpedFiscalWriter(fileSpedFiscal);
-//				spedFiscWriter.flush();
-//				spedFiscWriter.close();
-//				spedFiscWriter.cleanParsers();
-//			} catch (IOException ex) {
-//				// TODO Auto-generated catch block
-//				ex.printStackTrace();
-//			}
+			DelimitedWriter dw = SpedFiscalWriterUtil.criarDelimitedWriterSped(fileSpedFiscal);
 			
-			try {
-				spedFiscArqu.setArquivo(Files.readAllBytes(Paths.get(dirArquivoSpedIcmsIpi)));
-				spedFiscArqu.setStatus(Status.SUCESSO);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-				spedFiscArqu.setStatus(Status.ERRO);
-				LOG.log(Level.WARNING, "Houve algum erro, ao tentar ler o arquivo gerado: {0} " ,ex);
+			Status status =  gerarArquivoSped(spedFiscal, dw);
+			spedFiscArqu.setStatus(status);
+			
+			// Se salvou o arquivo no DIRETÓRIO temporário, então leia ele
+			if (status.equals(Status.SALVOU_DIR_TEMP)) {
+//				Status statusLeitura = lerBytesDoArquivoGerado(spedFiscArqu, dirArquivoSpedIcmsIpi);
+				byte[] bytesArquGerado = SpedFiscalWriterUtil.lerBytesDoArquivoGerado(dirArquivoSpedIcmsIpi);
+
+				Status statusLeitura = (bytesArquGerado != null && bytesArquGerado.length > 0) ? Status.SUCESSO : ERRO;
+				spedFiscArqu.setArquivo(bytesArquGerado);
+				spedFiscArqu.setStatus(statusLeitura);
 			}
+				
 			LOG.log(Level.INFO, "Geração do arquivo .txt/bytes da EFD, terminada ");
 		}
 	}
 	
-
-	private String criarNomeArquivo(SpedFiscalArquivo spedFiscArqu) {
-		StringBuilder nome = new StringBuilder();
-		nome.append(spedFiscArqu.getLoja().getId())
-			.append("_SpedEFD_ICMS_IPI_")
-			.append(spedFiscArqu.getLoja().getCnpj())
-			.append("__")
-			.append(spedFiscArqu.getDataInicioSped())
-			.append("__")
-			.append(spedFiscArqu.getDataFimSped())
-			.append(".txt");
-		return nome.toString();
-	}
-	
-	private Path criarDiretorioTemporario() {
-		Path path = null;
+	/**
+	 * @param spedFiscal - Layout do SPED com os Registros preenchidos
+	 * @param dw - Escritor que será usado para gerar o arquivo (Nele tem as formatações de delimitador de campo, dos LocalDate/LocalDateTime etc...)
+	 * @return {@link	Status.ERRO} -> Houve algum erro ao tentar gravar o arquivo no diretório temporário (dw) </br> 
+	 * 		   {@link	Status.GERANDO} -> Conseguiu gerar e gravar na pasta temporária, o arquivo
+	 */
+	private Status gerarArquivoSped(SpedFiscal spedFiscal, DelimitedWriter dw) {
+		Status status = SALVOU_DIR_TEMP;
 		try {
-			path = Files.createTempDirectory("java-");
+			dw.write(spedFiscal);
+			dw.flush();
 		} catch (IOException ex) {
-			ex.printStackTrace();
-			LOG.log(Level.SEVERE, "Erro ao tentar criar o diretório temporário para salvar o ,txt do SPED ICMS IPI: {0} ", ex);
-		} 
-		return path;
-	}
-	
-	private DelimitedWriter criarDelimitedWriterSped(File fileSpedFiscal) {
-		Writer w = null;
-		DelimitedWriter dw = null;
-		try {
-			w = new FileWriter(fileSpedFiscal);
-			dw = new DelimitedWriter(w);
-			dw.setDelimiter('|');
-			dw.setEscape('\\');
-			dw.setRecordInitializator("|");
-			dw.setRecordTerminator("|\r\n");
-		} catch (IOException e) {
-			e.printStackTrace();
+//			spedFiscArqu.setStatus(Status.ERRO);
+			LOG.log(Level.SEVERE, "Houve algum erro, ao tentar criar o arquivo .txt: {0} " ,ex.getStackTrace());
+			status = ERRO;
+		} finally {
+			try {
+				dw.close();
+				dw.clearMappers();
+			} catch (IOException ex) {
+				LOG.log(Level.SEVERE, "Erro ao tentar fechar o 'escritor', do arquivo SPED {0} " ,ex.getStackTrace());
+				status = ERRO;
+			}
 		}
+		return status;
+	}
 
-		dw.getObjectMapperFactory().getHandlerFactory().registerTypeHandlerClassFor(LocalDate.class,LocalDateHandler.class);
-		dw.getObjectMapperFactory().getHandlerFactory().registerTypeHandlerClassFor(LocalTime.class, LocalTimeHandler.class);
-		dw.getObjectMapperFactory().getHandlerFactory().registerTypeHandlerClassFor(LocalDateTime.class,LocalDateTimeHandler.class);
-		dw.getObjectMapperFactory().getHandlerFactory().registerTypeHandlerClassFor(Enum.class,CustomEnumHandler.class);
-		return dw;
+	private boolean gerouBloco9(SpedFiscal spedFiscal, SpedFiscalArquivo spedFiscArqu) {
+		if (spedFiscal.getBloco9() != null) {
+			return true;
+		}
+		spedFiscArqu.setStatus(ERRO);
+		return false;
 	}
 	
 	private List<Loja> buscaLojas(Long lojaId) {
