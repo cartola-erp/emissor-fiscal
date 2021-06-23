@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.sped.fiscal.OutrasObrigacoesEAjustes;
 
 /**
  * 11/09/2020
@@ -18,15 +19,15 @@ import coffeepot.bean.wr.annotation.Record;
 	@Field(name = "aliqIcms"),
 	@Field(name = "vlOutros"),
 })
-public class RegD197 {
+public class RegD197 extends OutrasObrigacoesEAjustes {
 	
 	private final String reg = "D197";
-	private String codAj;
-	private String descrComplAj;
-	private String codItem;
-	private BigDecimal vlBcIcms;
-	private BigDecimal aliqIcms;
-	private BigDecimal vlOutros;
+//	private String codAj;
+//	private String descrComplAj;
+//	private String codItem;
+//	private BigDecimal vlBcIcms;
+//	private BigDecimal aliqIcms;
+//	private BigDecimal vlOutros;
 	
 	public String getReg() {
 		return reg;
