@@ -2,6 +2,9 @@ package net.cartola.emissorfiscal.documento;
 
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.DESTINATARIO;
+import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.DESTINATARIO_PROPRIO;
+import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.TERCEIROS;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaService;
+import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
@@ -175,6 +179,19 @@ public class DocumentoFiscalService {
 		return Optional.ofNullable(compraDto);
 	}
 
+	
+	/**
+	 * Se o frete é pago pelo DESTINATARIO ou TERCEIROS, o Mesmo deverá ser incluído na base de Calculo do ICMS
+	 * 
+	 * @param docFiscal
+	 * @return
+	 */
+	public boolean isAdicionaFreteNoTotal(DocumentoFiscal docFiscal) {
+		FreteConta freteConta = docFiscal.getIndicadorFrete();
+	        return ((freteConta != null) && (freteConta.equals(DESTINATARIO) || freteConta.equals(DESTINATARIO_PROPRIO) || freteConta.equals(TERCEIROS)));
+//	        		&& 	                (this.freteCalculoPeso || this.freteCalculoPreco || this.freteCalculoUnidade || this.freteCalculoVenda));
+	}
+	
 	
 	/**
 	 * Método que irá preparar o newDocFiscal, para salvar no Banco de Dados.

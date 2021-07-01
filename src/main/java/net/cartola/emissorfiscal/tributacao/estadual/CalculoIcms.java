@@ -6,13 +6,14 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
-import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoDifal;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
@@ -34,6 +35,9 @@ public class CalculoIcms {
 	
 	@Value("${sped-fiscal.cod-venda-interestadual-nao-contribuinte}")
 	private int codVendaInterestadualNaoContribuinte;		// (DIFAL e FCP, somente nesse caso)
+	
+	@Autowired
+	private DocumentoFiscalService docuFiscService;
 	
 	private boolean isCalculaDifalAndFcp = false;
 	
@@ -91,7 +95,7 @@ public class CalculoIcms {
 		// porém ainda não foi implementado
 		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
 		
-		if (isFretePagoPeloEmitente(docFiscal)) {
+		if (docuFiscService.isAdicionaFreteNoTotal(docFiscal)) {
 			valorTotal = valorTotal.add(di.getValorFrete());
 		}
 		
@@ -115,18 +119,18 @@ public class CalculoIcms {
 		di.setIcmsAliquotaDestino(tributacao.getIcmsAliquotaDestino());
 	}
 	
-	/**
-	 * Se o frete é pago pelo EMITENTE (AG), o Mesmo deverá ser incluído na Base de Calculo do ICMS
-	 * 
-	 * @param docFiscal
-	 * @return
-	 */
-	private boolean isFretePagoPeloEmitente(DocumentoFiscal docFiscal) {
-		if (docFiscal.getIndicadorFrete().equals(FreteConta.EMITENTE) || docFiscal.getIndicadorFrete().equals(FreteConta.EMITENTE_PROPRIO)) {
-			return true;
-		}
-		return false;
-	}
+//	/**
+//	 * Se o frete é pago pelo EMITENTE (AG), o Mesmo deverá ser incluído na Base de Calculo do ICMS
+//	 * 
+//	 * @param docFiscal
+//	 * @return
+//	 */
+//	private boolean isFretePagoPeloEmitente(DocumentoFiscal docFiscal) {
+//		if (docFiscal.getIndicadorFrete().equals(FreteConta.EMITENTE) || docFiscal.getIndicadorFrete().equals(FreteConta.EMITENTE_PROPRIO)) {
+//			return true;
+//		}
+//		return false;
+//	}
 
 	/**
 	 * Irá Calcular o ICMS ST, que PODEM ser usados nas CSTs do ICMS (10, 30, 70 e 90)
