@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
@@ -35,6 +36,7 @@ import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms90;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcmsSt;
 import net.cartola.emissorfiscal.tributacao.Imposto;
 
+
 @Service
 public class CalculoFiscalEstadual implements CalculoFiscal {
 
@@ -45,6 +47,9 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 
 	@Autowired
 	private EstadoService estadoService;
+	
+	@Autowired
+	private DocumentoFiscalService docuFiscService;
 	
 	@Autowired
 	private DocumentoFiscalItemService docFiscItemService;
@@ -246,7 +251,9 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	private BigDecimal calcularValorTotalDocumento(DocumentoFiscal docFiscal) {
 		BigDecimal valorTotalDocumento = docFiscal.getValorTotalProduto();
 		
-		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorFrete());
+		if (docuFiscService.isAdicionaFreteNoTotal(docFiscal)) {
+			valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorFrete());
+		}
 		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorSeguro());
 		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorOutrasDespesasAcessorias());
 		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getIpiValor());
@@ -258,4 +265,6 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 
 		return valorTotalDocumento;
 	}
+	
+
 }
