@@ -31,8 +31,14 @@ class RegE110Service {
 		regE110.setVlTotDebitos(calcularVlTotalDebitos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));	/** CAMPO 02  **/ 
 		regE110.setVlAjDebitos(calcularVlAjusteDebitos(movimentosIcmsIpi.getSetOutrasObrigacoesEAjustes()));			/** CAMPO 03  **/ 
 		
-		
-		
+		/**
+		 *  LEMBRANDO que algumas coisas do registro E111  são preenchidas manualmente com base... ex.: estornos de devolucoes, difal etc...
+		 *  mas acredito que consigo "prever a maioria desses casos, fazendo "uma pré consulta", e mostrando para o usuário antes de gerar",
+		 *  acho que inclusive, isso seja viável salvar numa tabela, em que o Analista fiscal, possa editar ou até msm adicionar esses tipos de informações
+		 *  antes de gerar o SPED FISCAL, 
+		 */
+//		(Ref.: Reg E111)		/** CAMPO 04  **/ 
+//		(Ref.: Reg E111)		/** CAMPO 05  **/
 		
 		regE110.setVlTotCreditos(calcularVlTotalCreditos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));	/** CAMPO 06  **/ 
 		regE110.setVlAjCreditos(calcularVlAjusteCreditos(movimentosIcmsIpi.getSetOutrasObrigacoesEAjustes()));			/** CAMPO 07  **/ 
