@@ -1,4 +1,4 @@
-package net.cartola.emissorfiscal.sped.fiscal.tabelas;
+package net.cartola.emissorfiscal.model.sped.fiscal.tabelas;
 
 import java.time.LocalDate;
 
