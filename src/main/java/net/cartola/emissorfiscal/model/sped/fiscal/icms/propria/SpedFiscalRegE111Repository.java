@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SpedFiscalRegE111Repository extends JpaRepository<SpedFiscalRegE111, Long> {
 
-	Optional<SpedFiscalRegE111> findByDataInicioSpedAndDataFimSped(LocalDate dataInicio, LocalDate dataFim);
+	Optional<SpedFiscalRegE111> findByDataInicioAndDataFim(LocalDate dataInicio, LocalDate dataFim);
 
 	
 }

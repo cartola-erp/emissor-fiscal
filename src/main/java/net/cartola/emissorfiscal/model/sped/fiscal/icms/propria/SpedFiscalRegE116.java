@@ -38,8 +38,8 @@ public class SpedFiscalRegE116 {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private LocalDate dataInicioSped;
-	private LocalDate dataFimSped;
+	private LocalDate dataInicio;
+	private LocalDate dataFim;
 	
 //	private final String reg = "E116";
 	private ObrigacaoIcmsARecolher codOr;

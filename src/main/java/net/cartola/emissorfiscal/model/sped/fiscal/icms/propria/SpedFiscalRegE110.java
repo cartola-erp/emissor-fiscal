@@ -59,8 +59,8 @@ public class SpedFiscalRegE110 implements Serializable {
 	@ManyToOne()
 	@JoinColumn(foreignKey = @ForeignKey(name = "fnk_reg_e110_loja_id"))
 	private Loja loja;
-	private LocalDate dataInicioSped;
-	private LocalDate dataFimSped;
+	private LocalDate dataInicioApuracao;
+	private LocalDate dataFimApuracao;
 	
 	// Registro E110 (Registro "PAI"), basicamente é o TOTAL dos registro filhos
 //	private final String reg = "E110";

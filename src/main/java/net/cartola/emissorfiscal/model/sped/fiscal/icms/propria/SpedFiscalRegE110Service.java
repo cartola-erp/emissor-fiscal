@@ -44,6 +44,6 @@ public class SpedFiscalRegE110Service {
 	
 	
 	public Optional<SpedFiscalRegE111> findRegE110ByPeriodoAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja) {
-		return spedFiscRegE110Repo.findByDataInicioSpedAndDataFimSpedAndLoja(dataInicio, dataFim, loja);
+		return spedFiscRegE110Repo.findByDataInicioApuracaoAndDataFimApuracaoAndLoja(dataInicio, dataFim, loja);
 	}
 }

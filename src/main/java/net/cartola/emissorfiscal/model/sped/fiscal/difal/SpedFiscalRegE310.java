@@ -40,8 +40,8 @@ public class SpedFiscalRegE310 implements Serializable {
 	@ManyToOne()
 	@JoinColumn(foreignKey = @ForeignKey(name = "fnk_reg_e310_loja_id"))
 	private Loja loja;
-	private LocalDate dataInicioSped;
-	private LocalDate dataFimSped;
+	private LocalDate dataInicioApuracao;
+	private LocalDate dataFimApuracao;
 
 	private IndicadorDeMovimentoFcp indMovFcpDifal;
 	private BigDecimal vlSldCredAntDifal;

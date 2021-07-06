@@ -36,11 +36,14 @@ public class SpedFiscalRegE111 implements Serializable {
 	private Long id;
 //	@ManyToOne
 //	private Loja loja;
-	private LocalDate dataInicioSped;
-	private LocalDate dataFimSped;
+	private LocalDate dataInicio;
+	private LocalDate dataFim;
 	
 //	private final String reg = "E111";
-	private String codAjApur;			// São Códigos da tabela 5.1.1 (@see AjusteApuracaoIcmsSp )	
+	// São Códigos da tabela 5.1.1 (@see AjusteApuracaoIcmsSp )	
+	// Quando for o Sistema que gerar esse registro, o campo abaixo será preenchido HARCODED
+	// Quando for, abro um MODAL, para ele pesquisar pelos códigos da tabela acima, e o que ele selecionar eu pego a String do códigoAjuste, e passo para essa tabela
+	private String codAjApur;			
 	private String descrComplAj;
 	private BigDecimal vlAjApur;		// Referente aos campos: 4, 5, 8,9  do REG E110 |  (o reg E110 é somado com base no valor que estiver aqui
 	// e o "codAjApur", que é o que irá definir em qual campo irá o valor

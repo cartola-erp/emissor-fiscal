@@ -44,7 +44,7 @@ public class SpedFiscalRegE316Service {
 	
 	
 	public Optional<SpedFiscalRegE316> findRegE111ByPeriodo(LocalDate dataInicio, LocalDate dataFim) {
-		return spedFiscRegE316Repo.findByDataInicioSpedAndDataFimSped(dataInicio, dataFim);
+		return spedFiscRegE316Repo.findByDataInicioAndDataFim(dataInicio, dataFim);
 	}
 	
 }

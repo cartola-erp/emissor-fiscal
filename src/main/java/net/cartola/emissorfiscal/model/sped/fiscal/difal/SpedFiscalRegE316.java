@@ -36,8 +36,8 @@ public class SpedFiscalRegE316 implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private LocalDate dataInicioSped;
-	private LocalDate dataFimSped;
+	private LocalDate dataInicio;
+	private LocalDate dataFim;
 	
 	private ObrigacaoIcmsARecolher codOr;
 	private BigDecimal vlOr;

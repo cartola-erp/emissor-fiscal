@@ -15,7 +15,7 @@ import net.cartola.emissorfiscal.loja.Loja;
 @Repository
 public interface SpedFiscalRegE310Repository extends JpaRepository<SpedFiscalRegE310, Long> {
 
-	Optional<SpedFiscalRegE310> findByDataInicioSpedAndDataFimSpedAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja);
+	Optional<SpedFiscalRegE310> findByDataInicioApuracaoAndDataFimApuracaoAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja);
 	
 	
 }
