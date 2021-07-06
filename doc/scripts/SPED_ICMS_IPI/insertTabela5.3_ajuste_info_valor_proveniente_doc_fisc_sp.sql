@@ -1,7 +1,7 @@
 -- Abrir o "CMD do MYSQL", onde se encontra o arquivo abaixo
 
-LOAD DATA LOCAL INFILE 'Tabela_5.3.txt'
-INTO TABLE ajust_info_vlr_doc_fisc  
+LOAD DATA LOCAL INFILE 'Tabela_5.3_ajuste_info_valor_proveniente_doc_fisc_sp.txt'
+INTO TABLE tbl_53_ajust_info_vlr_doc_fisc  
  CHARACTER SET latin1
 FIELDS TERMINATED BY '|'
 OPTIONALLY ENCLOSED BY '\"'

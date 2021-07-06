@@ -1,8 +1,8 @@
 -- Abrir o "CMD do MYSQL", onde se encontra o arquivo abaixo
 
 
-LOAD DATA LOCAL INFILE 'Tabela_5.1.1.txt'
-INTO TABLE ajust_apura_icms_sp   
+LOAD DATA LOCAL INFILE 'Tabela_5.1.1_ajuste_apuracao_icms_sp.txt'
+INTO TABLE tbl_5_1_1_ajust_apura_icms_sp   
  CHARACTER SET latin1
 FIELDS TERMINATED BY '|'
 OPTIONALLY ENCLOSED BY '\"'

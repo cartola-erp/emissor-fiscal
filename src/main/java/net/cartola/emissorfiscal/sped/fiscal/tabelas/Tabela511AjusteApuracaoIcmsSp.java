@@ -13,31 +13,32 @@ import lombok.Setter;
 
 /**
  * 
- * Conteúdo da tabela: 5.3 - Tabela de Ajustes e Informações de Valores Provenientes de Documento Fiscal SP
+ * Conteúdo da tabela: 5.1.1- Tabela de Códigos de Ajustes da Apuração do ICMS - SP
  * 
  * 
- * Classe Reponsavel, por salvar a tabela 5.3, cujo os códigos são usados em alguns registros do SPED
+ * Classe Reponsavel, por salvar a tabela 5.1, cujo os códigos são usados em alguns registros do SPED
  * 
  * @see http://www.sped.fazenda.gov.br/spedtabelas/AppConsulta/publico/aspx/ConsultaTabelasExternas.aspx?CodSistema=SpedFiscal
  * 
  * @autor robson.costa
  * @data 19 de abr. de 2021
  */
-@Entity(name = "ajust_info_vlr_doc_fisc")
+
+// tabela_5_1_1_ajust_apura_icms_sp 
+// tbl_5_1_1_ajust_apura_icms_sp
+//@Entity(name = "ajust_apura_icms_sp")
+@Entity(name = "tbl_5_1_1_ajust_apura_icms_sp")
 @Getter
 @Setter
-public class AjusteEInfoDeValoresProvenientesDeDocFiscal {
+public class Tabela511AjusteApuracaoIcmsSp {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(name = "cod_ajust_bene_ince", length = 30)
-	private String codigoAjusteBeneficioIncentivo;
+	@Column(name = "cod_ajust", length = 30)
+	private String codigoAjuste;
 	@Column(name = "dscr")
 	private String descricao;
 	private LocalDate dataInicio;
 	private LocalDate dataFim;
-//    @ManyToOne
-//    @JoinColumn(name = "uf", referencedColumnName = "esta_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_ajust_info_vlr_doc_fisc_uf"))
-//	private Estado uf;
 	
 }
