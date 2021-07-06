@@ -1,0 +1,58 @@
+Nesse package, estam as Camadas (Controller, Service, Repository, Model), referente a ALGUNS REGISTROS do SPED FISCAL ICMS IPI;
+
+Pois no fechamento do mês, o SISTEMA irá gerar e salvar o arquivo do SPED.
+Como pode ser que alguma situação que vá no BLOCO E, ele não tenha conseguido "prever" (porque é algo sazonal), ele irá 
+salvar nas tabelas do banco de dados o que conseguiu gerar, para assim então mostrar para o usuário.
+
+-> Dando a opção, para que o mesmo adicione um novo registro no Bloco E (atualmente isso no sistema de terceiros utilizado, 
+é tudo manualmente a inserção de registros no Bloco E, )
+
+-> Ou até mesmo delete/edite um que esteja errado
+
+- Hirarquia dos Registros do BLOCO E, a hierarquia abaixo é referente a "três módulos" ("APURAÇÃO DO ICMS PRÓPRIA", 
+"APURAÇÃO DO ICMS ST", "DIFAL - EC 87/15), do bloco E, onde será possível o usuário
+editar/informar novos registros referente a "apuração dos impostos";
+
+legenda 
+(numero) --> é a Hierarquia que está na documentação do governo
+
+############ APURAÇÃO DO ICMS PRÓPRIA ############
+
+- E100 (2)
+	- E110 (3)
+		- E111 (4)
+			- E112 (5)
+			- E113 (5)
+		- E115 (4)
+		- E116 (4)
+
+
+############ APURAÇÃO DO ICMS ST ############
+
+- E200 (2)
+	- E210 (3)
+		- E220 (4)
+			- E230 (5)
+			- E240 (5)
+		- E250 (4)
+
+
+############ DIFAL - EC 87/15 ############
+- E300 (2) 
+	- E310 (3)
+		- E311 (4)
+			- E312 (5)
+			- E313 (5)
+		- E316 (4) 
+
+
+(Esse do E500 é referente ao IPI)
+- E500 (2)
+			
+	
+	
+	
+	
+			
+	
+	
