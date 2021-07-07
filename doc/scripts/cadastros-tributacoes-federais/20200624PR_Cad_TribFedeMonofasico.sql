@@ -84,6 +84,10 @@ BEGIN
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',30, ID_NCM);
 		SELECT "TRIB_FEDE | 30 - OUTRAS SAIDAS (SIMPLES REMESSA)", ROW_COUNT();
 		
+		-- CST = 98 para a OPERAÇÃO == 34 
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 98, 'CONSUMO', 0.000000,0.000000, 98, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 98,'NORMAL',34, ID_NCM);	
+		SELECT "TRIB_FEDE | 34 - AQUISICAO DE MERCADORIAS DENTRO DO ESTADO PARA CONSUMO", ROW_COUNT();
+		
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',39, ID_NCM);	
 		SELECT "TRIB_FEDE | 39 - DEVOLUCAO PARA FORNECEDOR (TRIBUTADA)", ROW_COUNT();
 		
@@ -111,6 +115,9 @@ BEGIN
 		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, 'Tributacao Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 8,'NORMAL',67, ID_NCM);	
 		SELECT "TRIB_FEDE | 67 - TRANSFERENCIA DE MATERIAL DE USO OU CONSUMO (CST - 08)", ROW_COUNT();
 		
+		INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) VALUES (0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, 'Tributacao MONOFÀSICO Cadastrada - 24/06 - VIA SCRIPT', 0.000000, 0.000000, 4,'NORMAL',83, ID_NCM);
+		SELECT "TRIB_FEDE | 83 - DISTRIBUICAO GRATUITA DE ITEM DE ESTOQUE", ROW_COUNT();
+			
 	END LOOP insertNcmMono;	
 	
 	CLOSE CUR_NCMS_MONO_EXCE_0;
