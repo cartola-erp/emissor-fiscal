@@ -20,8 +20,24 @@
 -- ================================================================================================================================================================
 
 
+	-- 34 | AQUISICAO DE MERCADORIAS DENTRO DO ESTADO PARA CONSUMO | (É uma entrada que temos que emitir quando o fornecedor for por ex.: MEI ) 
+	-- ICMS → CST = 90 | CFOP = 1407 (Para qualquer ncm nessa operação) 
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id ) 
+		(select cest, 1407, fcp_aliq, finalidade, 0.000000, 0.000000, 0.000000, 90, 0.000000, 0.000000, 
+				'', regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, 34 FROM trib_esta where oper_id = 1 and is_prod_impor = false);
+	
+	-- 34 | AQUISICAO DE MERCADORIAS DENTRO DO ESTADO PARA CONSUMO | Cadastrando para os outros ncms (que PROVAVELMENTE não SÃO de AUTOPEÇAS)
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id )
+		(select 199900, 1407, 0, "CONSUMO", 0.000000, 0.000000, 0.000000, 90, 0.000000, 0.000000, 
+				'', "NORMAL", 0, 26, 26, ncm_id, 34 FROM ncms where ncm_id not in (select ncm_id from trib_esta where oper_id = 34 and is_prod_impor = false));
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-	-- 45 | VENDA DE PRODUTO PARA  ENTREGA FUTURA
+
+
+	-- 45 | VENDA DE PRODUTO PARA  ENTREGA FUTURA (CST 90 - CFOP - 5922, para qualquer ncm)
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
 							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id ) 
@@ -32,7 +48,7 @@
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
 							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id )
 		(select 199900, 5922, 0, "CONSUMO", 0.000000, 0.000000, 0.000000, 90, 0.000000, 0.000000, 
-				'', "NORMAL", 0, 26, 26, ncm_id, 45 FROM ncms where ncm_id not in (select ncm_id from trib_esta where oper_id = 45 ));
+				'', "NORMAL", 0, 26, 26, ncm_id, 45 FROM ncms where ncm_id not in (select ncm_id from trib_esta where oper_id = 45 and is_prod_impor = false));
 -- ---------------------------------------------- Para Quando o produto for importado (dentro do estado é a mesma tributacao -------------------------------	
 	
 	
@@ -41,14 +57,13 @@
 -- =========================================================================================================================================================
 
 
-	-- 46 | REMESSA VINCULADA A VENDA DE ENTREGA FUTURA
+	-- 46 | REMESSA VINCULADA A VENDA DE ENTREGA FUTURA (O que muda é a CFOP, mas a tributação é a mesma lógica da OPERACAO 01 - VENDA) 
+	-- A CFOP -> 5117 (É a mesma para as CSTs 60 e 00, nessa operação)
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
 							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id ) 
 		(select cest, 5117, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
 				'', regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, 46 FROM trib_esta where oper_id = 1 and is_prod_impor = false);
-
-
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -93,4 +108,15 @@
 		VALUES (199900, 1102, 0.000000, 'CONSUMO', 0.000000, 0.000000, 0.000000, 40, 0.000000, 0.000000, '', 'NORMAL', 0, 26,  26, 9902, 81);	
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
+
+	-- 83 | DISTRIBUICAO GRATUITA DE ITEM DE ESTOQUE (O que muda é a CFOP, mas a tributação é a mesma lógica da OPERACAO 01 - VENDA) 
+	-- A CFOP -> 5949 (É a mesma para as CSTs 60 e 00, nessa operação)
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id ) 
+		(select cest, 5949, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+				'', regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, 83 FROM trib_esta where oper_id = 1 and is_prod_impor = false);
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
 
