@@ -52,50 +52,50 @@ update trib_esta SET cod_anp = 740101006 where ncm_id in (select ncm_id from ncm
 -- ###############################	RODAR NO EMISSORFISCAL (CORRIGINDO os NCMS que estão na CST 60 para a CST 00)	########################################
 -- =========================================================================================================================================================
 -- 1 - VENDA
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
+SELECT * FROM  trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
 ) and oper_id = 1 ;
 
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000, 		t.icms_aliq =  0.180000, 
 		t.icms_aliq_dest = 0.000000, 	t.icms_base = 1.000000,
 		t.icms_cst = 0, 				t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000, 		t.mens =  '',
 		t.cfop = 5102 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
+	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
 ) and t.oper_id = 1 AND  t.icms_cst = 60;
 
 
 -- 4 - TRANSFERENCIA
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
+SELECT * FROM  trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
 ) and oper_id = 4 ;
 
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000, 		t.icms_aliq =  0.180000,
 		t.icms_aliq_dest = 0.000000, 	t.icms_base = 1.000000,
 		t.icms_cst = 0, 				t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000, 		t.mens =  '',
 		t.cfop = 5152 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
+	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
 ) and t.oper_id = 4 AND  t.icms_cst = 60;
 
 -- ############### Aqui é para quando a CFOP não será mudado (ou seja, PERMANECE a que já estava. São p/ OPERACOES que a CFOP p/ as CSTs 00 e 60 são as mesmas) ######
 -- 46 - REMESSA VINCULADA A VENDA DE ENTREGA FUTURA
 -- 83 - DISTRIBUICAO GRATUITA DE ITEM DE ESTOQUE
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
+SELECT * FROM  trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
 ) and oper_id  IN (46, 83) ;
 
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000, 		t.icms_aliq =  0.180000,
 		t.icms_aliq_dest = 0.000000, 	t.icms_base = 1.000000,
 		t.icms_cst = 0, 				t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000, 		t.mens =  '' 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
+	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090 )
 ) and t.oper_id IN (46, 83) AND  t.icms_cst = 60;
 
 -- =========================================================================================================================================================
@@ -103,53 +103,53 @@ WHERE t.ncm_id IN (
 
 
 -- =========================================================================================================================================================
--- ###############################	RODAR NO EMISSORFISCAL (CORRIGINDO os NCMS que estão na CST 00 para a CST 60)	########################################
+-- ###############################	RODAR NO (CORRIGINDO os NCMS que estão na CST 00 para a CST 60)	########################################
 -- =========================================================================================================================================================
 -- 1 - VENDA
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (87089100)
+SELECT * FROM trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (87089100)
 ) and oper_id = 1 ;
 
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000, 		t.icms_aliq =  0.000000,
 		t.icms_aliq_dest = 0.000000, 	t.icms_base = 1.000000,
 		t.icms_cst = 60, 				t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000, 		t.mens =  '',
 		t.cfop = 5405 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(87089100)
+	SELECT ncm_id FROM ncms WHERE nume IN(87089100)
 ) and t.oper_id = 1 AND  t.icms_cst = 0;
 
 
 -- 4 - TRANSFERENCIA
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (87089100 )
+SELECT * FROM  trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (87089100 )
 ) and oper_id = 4 ;
 
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000,		t.icms_aliq =  0.000000,
 		t.icms_aliq_dest = 0.000000,	t.icms_base = 1.000000,
 		t.icms_cst = 60,				t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000,		t.mens =  '',
 		t.cfop = 5409	
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(87089100 )
+	SELECT ncm_id FROM ncms WHERE nume IN(87089100 )
 ) and t.oper_id = 4 AND  t.icms_cst = 0;
 
 -- ############### Aqui é para quando a CFOP não será mudado (ou seja, PERMANECE a que já estava. São p/ OPERACOES que a CFOP p/ as CSTs 00 e 60 são as mesmas) ######
 -- 46 - REMESSA VINCULADA A VENDA DE ENTREGA FUTURA
 -- 83 - DISTRIBUICAO GRATUITA DE ITEM DE ESTOQUE
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (87089100 )
+SELECT * FROM  trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (87089100 )
 ) and oper_id IN (46, 83);
 
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000,		t.icms_aliq =  0.000000,
 		t.icms_aliq_dest = 0.000000,	t.icms_base = 1.000000,
 		t.icms_cst = 60,				t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000,		t.mens =  '' 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(87089100 )
+	SELECT ncm_id FROM ncms WHERE nume IN(87089100 )
 ) and t.oper_id IN (46,83) AND  t.icms_cst = 0;
 
 
@@ -162,15 +162,15 @@ WHERE t.ncm_id IN (
 -- ########################################################	 	ATUALIZANDO a CFOP de OLEO		############################################################
 -- =========================================================================================================================================================
 -- VENDA
-select * from emissorfiscal.trib_esta t where cod_anp != 0 and oper_Id = 1;
+select * from trib_esta t where cod_anp != 0 and oper_Id = 1;
 
-update emissorfiscal.trib_esta set cfop = 5656 where cod_anp != 0 and oper_Id = 1;
+update trib_esta set cfop = 5656 where cod_anp != 0 and oper_Id = 1;
 
 
 -- TRANSFERENCIA
-select * from emissorfiscal.trib_esta t where cod_anp != 0 and oper_Id = 4;
+select * from trib_esta t where cod_anp != 0 and oper_Id = 4;
 
-update emissorfiscal.trib_esta set cfop = 5659 where cod_anp != 0 and oper_Id = 4;
+update trib_esta set cfop = 5659 where cod_anp != 0 and oper_Id = 4;
 -- =========================================================================================================================================================
 
 
@@ -179,50 +179,50 @@ update emissorfiscal.trib_esta set cfop = 5659 where cod_anp != 0 and oper_Id = 
 -- ##################################################	 Atualizando ALIQUOTAS de 12% p/ 13,3%		###########################################################
 -- =========================================================================================================================================================
 -- 1 - VENDA
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (84818021, 90271000, 85432000)
+SELECT * FROM  trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (84818021, 90271000, 85432000)
 ) and oper_id = 1 ;
 
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000,		t.icms_aliq =  0.133000,
 		t.icms_aliq_dest = 0.000000,	t.icms_base = 1.000000,
 		t.icms_cst = 0,					t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000,		t.mens =  '',
 		t.cfop = 5102 					
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(84818021, 90271000, 85432000)
+	SELECT ncm_id FROM ncms WHERE nume IN(84818021, 90271000, 85432000)
 ) and t.oper_id = 1;
 
 
 
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (84818021, 90271000, 85432000 )
+SELECT * FROM  trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (84818021, 90271000, 85432000 )
 ) and oper_id = 4 ;
 
 -- 4 - TRANSFERENCIA
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000,		t.icms_aliq =  0.133000,
 		t.icms_aliq_dest = 0.000000,	t.icms_base = 1.000000,
 		t.icms_cst = 0,					t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000,		t.mens =  '',
 		t.cfop = 5152 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(84818021, 90271000, 85432000)
+	SELECT ncm_id FROM ncms WHERE nume IN(84818021, 90271000, 85432000)
 ) and t.oper_id = 4;
 
 -- ############### Aqui é para quando a CFOP não será mudado (ou seja, PERMANECE a que já estava. São p/ OPERACOES que a CFOP p/ as CSTs 00 e 60 são as mesmas) ######
 -- 46 - REMESSA VINCULADA A VENDA DE ENTREGA FUTURA
 -- 83 - DISTRIBUICAO GRATUITA DE ITEM DE ESTOQUE
-SELECT * FROM  emissorfiscal.trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN (84818021, 90271000, 85432000 )
+SELECT * FROM  trib_esta WHERE ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN (84818021, 90271000, 85432000 )
 ) and oper_id IN (46, 83) ;
 
-UPDATE emissorfiscal.trib_esta t 
+UPDATE trib_esta t 
 		SET t.fcp_aliq = 0.000000,		t.icms_aliq =  0.133000,
 		t.icms_aliq_dest = 0.000000,	t.icms_base = 1.000000,
 		t.icms_cst = 0,					t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000,		t.mens =  ''
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM emissorfiscal.ncms WHERE nume IN(84818021, 90271000, 85432000)
+	SELECT ncm_id FROM ncms WHERE nume IN(84818021, 90271000, 85432000)
 ) and t.oper_id IN (46, 83);
 -- =========================================================================================================================================================
