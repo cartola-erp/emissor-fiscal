@@ -9,7 +9,7 @@
 		VALUES (199900, 5605, 0.000000, 'CONSUMO', 0.000000, 0.000000, 0.000000, 90, 0.000000, 0.000000, 
 		'TRANSFERENCIA DE SALDO DEVEVDOR DO ICMS DE R$ %s - APURACAO MES DE %s', 'NORMAL', 0, 26,  26, 11848, 13, true);	
 
-	-- 14 | TRANSFERENCIA DE SALDO CREDOR  ART.98 DO RICMS |
+	-- 14 | TRANSFERENCIA DE SALDO CREDOR  ART.98 DO RICMS 
 		INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
 							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 
 		VALUES (199900, 5602, 0.000000, 'CONSUMO', 0.000000, 0.000000, 0.000000, 90, 0.000000, 0.000000, 

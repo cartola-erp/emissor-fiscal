@@ -24,7 +24,7 @@ INSERT INTO trib_esta_guia
 -- ============================================================================================================================================================
 
 
--- DE MS p/ SP - Aliq == 4%
+-- DE MS p/ SP - Aliq == 4%   (Produto IMPORTADO)
 INSERT INTO trib_esta_guia  
     (icms_Aliq_interna_dest,  icms_Aliq, icms_iva, mens, is_prod_impor, tipo_guia, esta_dest_id, esta_orig_id, ncm_id, oper_id)  
     (SELECT 0.18, 0.04, 0.7148, "", 1, "GARE_ICMS", 26, 12, ncm_id, 33 FROM ncms 
@@ -44,7 +44,7 @@ INSERT INTO trib_esta_guia
 -- ============================================================================================================================================================
 
 
--- DE ES p/ SP - Aliq == 4%
+-- DE ES p/ SP - Aliq == 4%   (Produto IMPORTADO)
 INSERT INTO trib_esta_guia  
     (icms_Aliq_interna_dest,  icms_Aliq, icms_iva, mens, is_prod_impor, tipo_guia, esta_dest_id, esta_orig_id, ncm_id, oper_id)  
     (SELECT 0.18, 0.04, 0.7148, "", 1, "GARE_ICMS", 26, 8, ncm_id, 33 FROM ncms 
