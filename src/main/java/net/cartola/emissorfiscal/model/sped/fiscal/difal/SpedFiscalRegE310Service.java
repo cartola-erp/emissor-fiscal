@@ -1,10 +1,16 @@
 package net.cartola.emissorfiscal.model.sped.fiscal.difal;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import net.cartola.emissorfiscal.loja.Loja;
 
 /**
  * @date 6 de jul. de 2021
@@ -34,6 +40,15 @@ public class SpedFiscalRegE310Service {
 		 * 
 		 */
 		return Optional.ofNullable(spedFiscReg310Repo.saveAndFlush(spedFiscRegE310));
+	}
+
+
+	public Set<SpedFiscalRegE310> findRegE310ByPeriodoAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja) {
+		Set<SpedFiscalRegE310> listREgE310 = spedFiscReg310Repo.findByDataInicioApuracaoGreaterThanEqualAndDataFimApuracaoLessThanEqualAndLoja(dataInicio, dataFim, loja);
+		if (listREgE310 != null) {
+			return listREgE310;
+		}
+		return new HashSet<>();
 	}
 	
 	

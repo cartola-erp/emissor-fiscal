@@ -31,6 +31,10 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.TipoServico;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.model.sped.fiscal.difal.SpedFiscalRegE310;
+import net.cartola.emissorfiscal.model.sped.fiscal.difal.SpedFiscalRegE310Service;
+import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE110;
+import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE110Service;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
@@ -79,7 +83,15 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	
 	@Autowired
 	private ContadorService contadorService;
-
+	
+	
+	@Autowired
+	private SpedFiscalRegE110Service spedFiscRegE110ApuracaoPropriaService;
+	
+	@Autowired
+	private SpedFiscalRegE310Service spedFiscRegE310DifalService;
+	
+	
 	@Override
 	public MovimentoMensalIcmsIpi buscarMovimentacoesDoPeriodo(Loja loja, Long contadorId, LocalDate dataInicio, LocalDate dataFim) {
 		LOG.log(Level.INFO, "Inicio da busca das movimentações para a LOJA {0}, no PERIODO de {1} a {2} " , new Object[]{loja, dataInicio, dataFim});
@@ -102,7 +114,8 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		Set<Operacao> operacoesSet = getListOperacoes(listDocFiscal, listSatsEmitidos, listDocFiscalServico); //listDocFiscal.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
 		
 		Contador contador = contadorService.findOne(contadorId).get();
-
+		Set<SpedFiscalRegE110> setRegE110ApuracaoPropria = spedFiscRegE110ApuracaoPropriaService.findRegE110ByPeriodoAndLoja(dataInicio, dataFim, loja);
+		Set<SpedFiscalRegE310> setRegE310Difal = spedFiscRegE310DifalService.findRegE310ByPeriodoAndLoja(dataInicio, dataFim, loja);
 		
 		// ########## Setando os valores buscados acima que, para retornar o Obj de MOVIMENTACAO MENSAL ##########
 //		TODO	-> SETAR no obj de movimentos --> 	Produto alterado Sped
@@ -119,6 +132,10 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		movimentoMensalIcmsIpi.setListOperacoes(operacoesSet);
 		movimentoMensalIcmsIpi.setLoja(loja);
 		movimentoMensalIcmsIpi.setContador(contador);
+		
+		movimentoMensalIcmsIpi.setSetSpedFiscRegE110ApuracaoPropria(setRegE110ApuracaoPropria);
+		movimentoMensalIcmsIpi.setSetSpedFiscRegE310Difal(setRegE310Difal);
+		
 		
 		movimentoMensalIcmsIpi.setDataInicio(dataInicio);
 		movimentoMensalIcmsIpi.setDataFim(dataFim);

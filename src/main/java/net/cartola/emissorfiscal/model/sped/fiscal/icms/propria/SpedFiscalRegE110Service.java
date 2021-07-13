@@ -1,8 +1,11 @@
 package net.cartola.emissorfiscal.model.sped.fiscal.icms.propria;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +46,12 @@ public class SpedFiscalRegE110Service {
 	}
 	
 	
-	public Optional<SpedFiscalRegE111> findRegE110ByPeriodoAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja) {
-		return spedFiscRegE110Repo.findByDataInicioApuracaoAndDataFimApuracaoAndLoja(dataInicio, dataFim, loja);
+	public Set<SpedFiscalRegE110> findRegE110ByPeriodoAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja) {
+		Set<SpedFiscalRegE110> listRegE110 = spedFiscRegE110Repo.findByDataInicioApuracaoGreaterThanEqualAndDataFimApuracaoLessThanEqualAndLoja(dataInicio, dataFim, loja);
+		if (listRegE110 != null) {
+			return listRegE110;
+		}
+		return new HashSet<>();
 	}
+	
 }

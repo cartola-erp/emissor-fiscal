@@ -20,12 +20,13 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.model.sped.fiscal.difal.SpedFiscalRegE310;
+import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE110;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
-import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeOperacao;
 
 /**
  * 21/09/2020
@@ -63,7 +64,11 @@ public class MovimentoMensalIcmsIpi {
 	 */
 	private Map<IndicadorDeOperacao, Set<RegistroAnalitico>> mapRegistroAnaliticoPorTipoOperacao;
 	
-//	public RegE110 regE110 = new RegE110();
+	private Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes;
+
+	private Set<SpedFiscalRegE110> setSpedFiscRegE110ApuracaoPropria;
+	
+	private Set<SpedFiscalRegE310> setSpedFiscRegE310Difal;
 	
 	private LocalDate dataInicio;
 	private LocalDate dataFim;
@@ -127,6 +132,10 @@ public class MovimentoMensalIcmsIpi {
 		return mapRegistroAnaliticoPorTipoOperacao;
 	}
 	
+//	public Set<OutrasObrigacoesEAjustes> getSetOutrasObrigacoesEAjuste() {
+//		return this.setOutrasObrigacoesEAjustes;
+//	}
+//	
 			
 	/**
 	 * Adiciona os Objetos que são do tipo -> {@linkplain RegistroAnalitico};
