@@ -176,9 +176,9 @@ public class CalculoIcms {
 //		if (ehEstadosDiferentes && destinatario.getPessoaTipo().equals(PessoaTipo.FISICA)) {
 		if (ehEstadosDiferentes && this.isCalculaDifalAndFcp) {
 			LOG.log(Level.INFO, "Calculando o DIFAL da TAG (ICMSUFDest) ");
-//			BigDecimal valorBaseUfDest = di.getIcmsBase();		// Aparentemente não vai o frete na base do calculo do difal
-			BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
-			BigDecimal valorBaseUfDest = tributacao.getIcmsBase().multiply(valorTotal).setScale(2, RoundingMode.HALF_EVEN);
+//			BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
+//			BigDecimal valorBaseUfDest = tributacao.getIcmsBase().multiply(valorTotal).setScale(2, RoundingMode.HALF_EVEN);
+			BigDecimal valorBaseUfDest = di.getIcmsBase();		// Segundo a Gabi, a base de calculo do difal é a msm do icms normal
 			BigDecimal aliqInterDifal = tributacao.getIcmsAliquota().subtract(tributacao.getIcmsAliquotaDestino()).abs();
 			BigDecimal valorIcmsUfDest = valorBaseUfDest.multiply(aliqInterDifal).setScale(2, RoundingMode.HALF_EVEN);
 			
