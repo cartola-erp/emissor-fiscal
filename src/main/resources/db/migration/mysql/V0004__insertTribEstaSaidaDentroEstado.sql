@@ -101,6 +101,24 @@
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+	-- 79 | LANCAMENTO EFETUADO A TITULO DE BAIXA DE ESTOQUE (CST 90 | zerado)
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id ) 
+		(select cest, 5927, fcp_aliq, finalidade, 0.000000, 0.000000, 0.000000, 90, 0.000000, 0.000000, 
+				'NOTA FISCAL EMITIDA NOS TERMOS DO ARTIGO 125 INCISO VI E PARAGRAFO OITVAVO DO RICMS/2000.', regime_tributario, 
+				cod_anp, esta_dest_id, esta_orig_id, ncm_id, 79 FROM trib_esta where oper_id = 1 and is_prod_impor = false);
+	
+	-- 79 | LANCAMENTO EFETUADO A TITULO DE BAIXA DE ESTOQUE (CST 90 | zerado) Cadastrando para os outros ncms (que PROVAVELMENTE não SÃO de AUTOPEÇAS)
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id )
+		(select 199900, 5927, 0, "CONSUMO", 0.000000, 0.000000, 0.000000, 90, 0.000000, 0.000000, 
+				'NOTA FISCAL EMITIDA NOS TERMOS DO ARTIGO 125 INCISO VI E PARAGRAFO OITVAVO DO RICMS/2000.', "NORMAL", 
+				0, 26, 26, ncm_id, 79 FROM ncms where ncm_id not in (select ncm_id from trib_esta where oper_id = 79));
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 	-- 81 - COMPRA DE SUCATA PARA COMERCIALIZACAO (CONTRIBUINTE) ( OBS: É para somente UM NCM)
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 

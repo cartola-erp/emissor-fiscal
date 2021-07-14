@@ -156,6 +156,13 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',67, ncm_id FROM vw_ncm_id_mono;	
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-- --------------------------------------------------------- 	79 | LANCAMENTO EFETUADO A TITULO DE BAIXA DE ESTOQUE 	---------------------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',79, ncm_id FROM vw_ncm_id_mono;	
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- ========================================================================================================================================================
 
 
