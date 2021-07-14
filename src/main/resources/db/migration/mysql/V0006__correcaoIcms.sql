@@ -6,7 +6,7 @@
 
 
 -- Deixando o campo "mens", vazio, pois será usado como info complementar;
-update trib_esta set mens = "";
+-- update trib_esta set mens = "";
 
 -- O script abaixo é para atualizar o ICMS na VENDA e TRANSFERENCIA, para os NCMS (73181500, 73181600, 76161000, 73182400, 84814000, 84818099)
 -- Da CST 60 --> p/ 00 (que é tributado) 
