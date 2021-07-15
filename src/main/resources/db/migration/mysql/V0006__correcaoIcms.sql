@@ -135,13 +135,39 @@ WHERE t.ncm_id IN (
 -- VENDA
 select * from trib_esta t where cod_anp != 0 and oper_Id = 1;
 
-update trib_esta set cfop = 5656 where cod_anp != 0 and oper_Id = 1;
+UPDATE trib_esta t 
+		SET t.fcp_aliq = 0.000000, 		t.icms_aliq =  0.000000,
+		t.icms_aliq_dest = 0.000000, 	t.icms_base = 1.000000,
+		t.icms_cst = 60, 				t.icms_iva = 1.000000,
+		t.icms_st_aliq = 0.000000, 		t.mens =  '',
+		t.cfop = 5656 
+WHERE t.ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN(27101931, 27101932, 27101992, 27129000, 34031900, 38112190)
+) and t.oper_id = 1;
 
 
 -- TRANSFERENCIA
 select * from trib_esta t where cod_anp != 0 and oper_Id = 4;
 
-update trib_esta set cfop = 5659 where cod_anp != 0 and oper_Id = 4;
+UPDATE trib_esta t 
+		SET t.fcp_aliq = 0.000000,		t.icms_aliq =  0.000000,
+		t.icms_aliq_dest = 0.000000,	t.icms_base = 1.000000,
+		t.icms_cst = 60,				t.icms_iva = 1.000000,
+		t.icms_st_aliq = 0.000000,		t.mens =  '',
+		t.cfop = 5659	
+WHERE t.ncm_id IN ( 
+	SELECT ncm_id FROM ncms WHERE nume IN(87089100 )
+) and t.oper_id = 4;
+
+-- 
+UPDATE trib_esta SET cod_anp = 620101008 WHERE ncm_id IN (27101931) ;
+UPDATE trib_esta SET cod_anp = 620501002 WHERE ncm_id IN (27101932);
+UPDATE trib_esta SET cod_anp = 620504001 WHERE ncm_id IN (27101992);
+UPDATE trib_esta SET cod_anp = 650101001 WHERE ncm_id IN (27129000);
+UPDATE trib_esta SET cod_anp = 620503001 WHERE ncm_id IN (34031900);
+UPDATE trib_esta SET cod_anp = 740101006 WHERE ncm_id IN (38112190);
+
+
 -- =========================================================================================================================================================
 
 
