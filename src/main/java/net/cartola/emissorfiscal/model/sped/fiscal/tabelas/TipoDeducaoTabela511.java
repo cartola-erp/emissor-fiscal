@@ -14,7 +14,7 @@ package net.cartola.emissorfiscal.model.sped.fiscal.tabelas;
  * @date 12 de jul. de 2021
  * @author robson.costa
  */
-enum TipoDeducaoTabela511 {
+public enum TipoDeducaoTabela511 {
 	
 	
 	OUTROS_DEBITOS('0'),

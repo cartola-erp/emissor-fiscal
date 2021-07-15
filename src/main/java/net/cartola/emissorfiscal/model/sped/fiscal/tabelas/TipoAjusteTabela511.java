@@ -11,7 +11,7 @@ package net.cartola.emissorfiscal.model.sped.fiscal.tabelas;
  * @date 12 de jul. de 2021
  * @author robson.costa
  */
-enum TipoAjusteTabela511 {
+public enum TipoAjusteTabela511 {
 	
 	ICMS_PROPRIA('0'),
 	ICMS_ST('1'),

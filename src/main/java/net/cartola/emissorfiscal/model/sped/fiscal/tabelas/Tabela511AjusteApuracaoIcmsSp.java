@@ -10,6 +10,7 @@ import javax.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 
@@ -28,6 +29,7 @@ import lombok.Setter;
 // tbl_5_1_1_ajust_apura_icms_sp
 //@Entity(name = "ajust_apura_icms_sp")
 @Entity(name = "tbl_5_1_1_ajust_apura_icms_sp")
+@ToString
 @Getter
 @Setter
 public class Tabela511AjusteApuracaoIcmsSp {
