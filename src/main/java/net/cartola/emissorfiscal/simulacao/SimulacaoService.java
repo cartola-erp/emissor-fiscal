@@ -59,7 +59,7 @@ public class SimulacaoService {
 		
 		List<String> erros = validaTributacaoFederalAndEstadual(documentoFiscal);
 		
-		if (!ValidationHelper.collectionEmpty(erros)) {
+		if (!ValidationHelper.collectionIsEmptyOrNull(erros)) {
 			return erros;
 		}
 		DocumentoFiscalItem item = documentoFiscal.getItens().get(0);

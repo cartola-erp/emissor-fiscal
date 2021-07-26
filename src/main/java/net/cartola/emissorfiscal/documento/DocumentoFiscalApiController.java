@@ -78,7 +78,7 @@ public class DocumentoFiscalApiController {
 		Response<DocumentoFiscal> response = new Response<>();
 		
 		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, true);
-		if (!ValidationHelper.collectionEmpty(erros)) {
+		if (!ValidationHelper.collectionIsEmptyOrNull(erros)) {
 			LOG.log(Level.WARNING, "ERROS na validação do DocumentoFiscal: {0} ", erros);
 			response.setErrors(erros);
 			return ResponseEntity.badRequest().body(response);
@@ -114,7 +114,7 @@ public class DocumentoFiscalApiController {
 		Response<CompraDto> response = new Response<>();
 		
 		List<String> erros = docFiscalService.setaValoresNecessariosCompra(docFiscal);
-		if(!ValidationHelper.collectionEmpty(erros)) {
+		if(!ValidationHelper.collectionIsEmptyOrNull(erros)) {
 			LOG.log(Level.WARNING, "ERROS ao tentar salvar a compra -> {0} " ,erros);
 			return ResponseEntity.noContent().build();
 		}
