@@ -549,7 +549,7 @@ CREATE TABLE `pess_end` (
   `ibge_cod` int(11) DEFAULT NULL,
   `logra_end` varchar(255) DEFAULT NULL,
   `tipo` enum('PRINCIPAL','FATURAMENTO','FINANCEIRO','ENTREGA','TRABALHO') DEFAULT NULL,
-  `uf` varchar(255) DEFAULT NULL,
+  `uf` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`pess_end_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
