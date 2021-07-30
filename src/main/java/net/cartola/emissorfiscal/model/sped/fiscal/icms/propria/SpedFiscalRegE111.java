@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -43,7 +45,8 @@ public class SpedFiscalRegE111 implements Serializable {
 	// São Códigos da tabela 5.1.1 (@see AjusteApuracaoIcmsSp )	
 	// Quando for o Sistema que gerar esse registro, o campo abaixo será preenchido HARCODED
 	// Quando for, abro um MODAL, para ele pesquisar pelos códigos da tabela acima, e o que ele selecionar eu pego a String do códigoAjuste, e passo para essa tabela
-	private String codAjApur;			
+	private String codAjApur;		
+	@Length(max = 1000)
 	private String descrComplAj;
 	private BigDecimal vlAjApur;		// Referente aos campos: 4, 5, 8,9  do REG E110 |  (o reg E110 é somado com base no valor que estiver aqui
 	// e o "codAjApur", que é o que irá definir em qual campo irá o valor
