@@ -47,6 +47,12 @@ class RegE111Service {
 	@Autowired
 	private CalculoGuiaEstadualService calcGuiaEstaService;
 	
+	// Aliquotas usadas para calcular o Crédito/Debitos do DIFAL das compras interestaduais de CONSUMO/ATIVO
+	private static final BigDecimal ICMS_ALIQ_IMPORTADO = new BigDecimal(0.04D);
+	private static final BigDecimal ICMS_ALIQ_NACIONAL = new BigDecimal(0.12D);		// OBS: de Qualquer UF -> SP, é 12% a aliquota
+	private static final BigDecimal ICMS_ALIQ_INTERNA_SP = new BigDecimal(0.18D);
+	
+
 	
 	/**
 	 * Aqui é onde, de fato que eu tenho que tentar "prever" as situações que acontece/aconteceu no mês:
@@ -69,15 +75,21 @@ class RegE111Service {
 		
 		Set<SpedFiscalRegE110> opRegE110preenchidoPeloUser = spedFiscRegE110Service.findRegE110ByPeriodoAndLoja(movimentosIcmsIpi.getDataInicio(), movimentosIcmsIpi.getDataFim(), movimentosIcmsIpi.getLoja());
 		
-		RegE111 regE111EntradaUsoConsumoOuAtivoInterestadual = gerarDebitosUsoConsumoAtivoInterestadual(movimentosIcmsIpi);
+		// DIFAL, de uso e consumo/ativo (interestadual) 
+		List<RegE111> listRegE111DebitoECreditoDifalConsumoAtivo = gerarDebitoECreditoUsoConsumoOuAtivoInterestadual(movimentosIcmsIpi);
+		
+		
+		// Estorno de Debito de devolucao p/ fornecedor 
 		RegE111 regE111EstornoDebitoDevolucaoParaFornecedor = gerarEstornoDebitoDevolucaoParaFornecedor(movimentosIcmsIpi);
 		
+		// Referentes as notas de SC, ES e MG
 		BigDecimal totalIcmsNotasDeSc = totalizarIcmsNotasDeSc(movimentosIcmsIpi);
 		RegE111 regE111CreditosIcmsNotasDeSc = gerarCreditosNotasDeSantaCatarina(totalIcmsNotasDeSc);
 		RegE111 regE111DebitosIcmsNotasDeSc = gerarDebitosNotasDeSantaCatarina(totalIcmsNotasDeSc);
 		
+		
+		listRegE111.addAll(listRegE111DebitoECreditoDifalConsumoAtivo);
 		listRegE111.add(regE111EstornoDebitoDevolucaoParaFornecedor);
-		listRegE111.add(regE111EntradaUsoConsumoOuAtivoInterestadual);
 		
 		listRegE111.add(regE111CreditosIcmsNotasDeSc);
 		listRegE111.add(regE111DebitosIcmsNotasDeSc);
@@ -94,6 +106,9 @@ class RegE111Service {
 		
 		return listRegE111;
 	}
+
+
+	
 
 	/**
 	 * Será Calculado o Total de ICMS, das notas de SC, MG e ES, que foram pagas no período;
@@ -153,34 +168,7 @@ class RegE111Service {
 		return regE111;
 	}
 
-	/**
-	 * Será calculado o DIFAL, para os ITENS que serão usados como Consumo/Ativo, cujo a entrada sejam INTERESTADUAL; <\br>
-	 * 
-	 * CODIGO AJUSTE -> SP000207 (Tabela 5.1.1)
-	 * 
-	 * @param movimentosIcmsIpi
-	 * @return
-	 */
-	private RegE111 gerarDebitosUsoConsumoAtivoInterestadual(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
-		// TODO Auto-generated method stub
-		RegE111 regE111 = new RegE111();
-		// TODO => Ainda, tenho minhas dúvidas se o melhor é considerar as CFOP que estiver no ITEM, ou a OPERAÇÃO em que a nota foi dado entrada;
-		List<Integer> listCfopsAtivoOuConsumo = asList(2551, 2407, 2556);
-		
-		Set<DocumentoFiscalItem> listDocFiscItemAtivoOuConsumoInterestadual = movimentosIcmsIpi.getListItens().stream().filter(item -> listCfopsAtivoOuConsumo.contains(item.getCfop())).collect(Collectors.toSet());
-		Set<Long> setDocFiscIdCompraAtivoOuConsumoInterestadual = listDocFiscItemAtivoOuConsumoInterestadual.stream().map(DocumentoFiscalItem::getId).collect(toSet());
-		Map<Long, List<DocumentoFiscal>> mapDocFiscConsumoInterestadualPorIdFornecedor = getMapaDocFiscAtivoConsumoPorIdFornecedor(setDocFiscIdCompraAtivoOuConsumoInterestadual, movimentosIcmsIpi.getMapDocumentoFiscalPorCodigo());
-		
-		String descComplAjApura = montarDescrAtivoOuConsumoInterestadual(mapDocFiscConsumoInterestadualPorIdFornecedor, setDocFiscIdCompraAtivoOuConsumoInterestadual);
-		
-		regE111.setCodAjApur("SP000207");				// SP000207|Entrada de mercadoria, oriunda de outro Estado, destinada a uso, consumo ou integração no ativo imobilizado ou utilização de serviço iniciado fora do território paulista - Diferencial de alíquota.|01012015|
-		regE111.setDescrComplAj(descComplAjApura);
-		regE111.setVlAjApur(calcularDifalParaConsumoEAtivoInterestadual(listDocFiscItemAtivoOuConsumoInterestadual));
-		
-		return regE111;
-	}
-
-
+	
 
 	/**
 	 * - Algumas entradas nossa de compra para comercialização NÃO TEMOS direito a crédito de ICMS mesmo o item vindo com icms; </br>
@@ -214,35 +202,116 @@ class RegE111Service {
 	}
 	
 	
-	// ---------======
+	/**
+	 * Será feito a apuração do DIFAL, para UsoConsumoOuAtivoInterestadual
+	 * 
+	 * 
+	 * 
+	 * @param movimentosIcmsIpi
+	 * @return 
+	 */
+	private List<RegE111> gerarDebitoECreditoUsoConsumoOuAtivoInterestadual(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
+		List<RegE111> listRegE111 = new ArrayList<>();
+		Set<DocumentoFiscalItem> listDocFiscItemAtivoOuConsumoInterestadual = getListDocFiscItemAtivoOuConsumoInterestadual(movimentosIcmsIpi);
+		Set<Long> setDocFiscIdCompraAtivoOuConsumoInterestadual = listDocFiscItemAtivoOuConsumoInterestadual.stream().map(DocumentoFiscalItem::getId).collect(toSet());
+		Map<Long, List<DocumentoFiscal>> mapDocFiscConsumoInterestadualPorIdFornecedor = getMapaDocFiscAtivoConsumoPorIdFornecedor(setDocFiscIdCompraAtivoOuConsumoInterestadual, movimentosIcmsIpi.getMapDocumentoFiscalPorCodigo());
+		String descComplAjApura = montarDescrAtivoOuConsumoInterestadual(mapDocFiscConsumoInterestadualPorIdFornecedor, setDocFiscIdCompraAtivoOuConsumoInterestadual);
+
+		RegE111 regE111DebitoUsoConsumoOuAtivoInterestadual = gerarDebitosUsoConsumoAtivoInterestadual(listDocFiscItemAtivoOuConsumoInterestadual, descComplAjApura);
+		RegE111 regE111CreditoUsoConsumoOuAtivoInterestadual = gerarCreditosUsoConsumoAtivoInterestadual(listDocFiscItemAtivoOuConsumoInterestadual, descComplAjApura);
+		
+		listRegE111.add(regE111DebitoUsoConsumoOuAtivoInterestadual);
+		listRegE111.add(regE111CreditoUsoConsumoOuAtivoInterestadual);
+		
+		return listRegE111;
+	}
+
+	
+	// ==================================================================================================================================================================
+	// ==================================================================================================================================================================
+	// ==================================================================================================================================================================
+	
+
+	private Set<DocumentoFiscalItem> getListDocFiscItemAtivoOuConsumoInterestadual(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
+		// TODO Auto-generated method stub
+		// TODO => Ainda, tenho minhas dúvidas se o melhor é considerar as CFOP que estiver no ITEM, ou a OPERAÇÃO em que a nota foi dado entrada;
+		List<Integer> listCfopsAtivoOuConsumo = asList(2551, 2407, 2556);
+		Set<DocumentoFiscalItem> listDocFiscItemAtivoOuConsumoInterestadual = movimentosIcmsIpi.getListItens().stream().filter(item -> listCfopsAtivoOuConsumo.contains(item.getCfop())).collect(Collectors.toSet());
+	
+		return listDocFiscItemAtivoOuConsumoInterestadual;
+	}
 	
 	
 	/**
-	 * Será calculado o DIFAL, das ENTRADAS INTERESTADUAL, que sejam para CONSUMO e/ou ATIVO;
+	 * Será calculado o DIFAL, para os ITENS que serão usados como Consumo/Ativo, cujo a entrada sejam INTERESTADUAL; <\br>
 	 * 
-	 * @param listDocFiscItemAtivoOuConsumoInterestadual - Lista dos itens 
+	 * CODIGO AJUSTE -> SP000207 (Tabela 5.1.1)
+	 * 
+	 * @param movimentosIcmsIpi
+	 * @param descComplAjApura 
 	 * @return
 	 */
-	private BigDecimal calcularDifalParaConsumoEAtivoInterestadual(Set<DocumentoFiscalItem> listDocFiscItemAtivoOuConsumoInterestadual) {
-		BigDecimal aliqImportado = new BigDecimal(0.04D);
-		BigDecimal aliqNacional = new BigDecimal(0.12D);		// OBS: de Qualquer UF -> SP, é 12% a aliquota
-		
-		BigDecimal aliqInternaSp = new BigDecimal(0.18D);
-//		BigDecimal aliqDifal = aliqInternaSp - (aliqImportado ou do nacional) ;
-		
+	private RegE111 gerarDebitosUsoConsumoAtivoInterestadual(Set<DocumentoFiscalItem> listDocFiscItemAtivoOuConsumoInterestadual, String descComplAjApura) {
+		// TODO Auto-generated method stub
+		RegE111 regE111 = new RegE111();
+		// TODO => Ainda, tenho minhas dúvidas se o melhor é considerar as CFOP que estiver no ITEM, ou a OPERAÇÃO em que a nota foi dado entrada;
+
 		
 		BigDecimal icmsValorInterestadualConsumoImportado = listDocFiscItemAtivoOuConsumoInterestadual.stream()
+				.filter(item -> docFiscItemService.verificaSeEhImportado(item))
+				.map(itemImportado -> itemImportado.getIcmsBase().multiply(ICMS_ALIQ_IMPORTADO))
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+			
+		BigDecimal icmsValorInterestadualConsumoNacional = listDocFiscItemAtivoOuConsumoInterestadual.stream()
+				.filter(item -> !docFiscItemService.verificaSeEhImportado(item))
+				.map(itemNacional -> itemNacional.getIcmsBase().multiply(ICMS_ALIQ_NACIONAL))
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+			
+		BigDecimal debitoDifalUsoConsumo = icmsValorInterestadualConsumoImportado.add(icmsValorInterestadualConsumoNacional);
+		
+		
+		regE111.setCodAjApur("SP000207");				// SP000207|Entrada de mercadoria, oriunda de outro Estado, destinada a uso, consumo ou integração no ativo imobilizado ou utilização de serviço iniciado fora do território paulista - Diferencial de alíquota.|01012015|
+		regE111.setDescrComplAj(descComplAjApura);
+		regE111.setVlAjApur(debitoDifalUsoConsumo);
+
+		return regE111; 
+	}
+
+	/***
+	 * 
+	 * Será calculado o DIFAL, para os ITENS que serão usados como Consumo/Ativo, cujo a entrada sejam INTERESTADUAL; <\br>
+	 * 
+	 * CODIGO AJUSTE -> SP020718 (Tabela 5.1.1)
+	 * 
+	 * @param listDocFiscItemAtivoOuConsumoInterestadual
+	 * @param descComplAjApura
+	 * @return
+	 */
+	private RegE111 gerarCreditosUsoConsumoAtivoInterestadual(Set<DocumentoFiscalItem> listDocFiscItemAtivoOuConsumoInterestadual, String descComplAjApura) {
+		// TODO Auto-generated method stub
+		RegE111 regE111 = new RegE111();
+		BigDecimal icmsAliqDifalImportado = ICMS_ALIQ_INTERNA_SP.subtract(ICMS_ALIQ_IMPORTADO);
+		BigDecimal icmsAliqDifalNacional = ICMS_ALIQ_INTERNA_SP.subtract(ICMS_ALIQ_NACIONAL);
+
+		BigDecimal icmsValorInterestadualConsumoImportado = listDocFiscItemAtivoOuConsumoInterestadual.stream()
 			.filter(item -> docFiscItemService.verificaSeEhImportado(item))
-			.map(itemImportado -> itemImportado.getIcmsBase().multiply(aliqImportado))
+			.map(itemImportado -> itemImportado.getIcmsBase().multiply(icmsAliqDifalImportado))
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 		
 		BigDecimal icmsValorInterestadualConsumoNacional = listDocFiscItemAtivoOuConsumoInterestadual.stream()
 			.filter(item -> !docFiscItemService.verificaSeEhImportado(item))
-			.map(itemNacional -> itemNacional.getIcmsBase().multiply(aliqNacional))
+			.map(itemNacional -> itemNacional.getIcmsBase().multiply(icmsAliqDifalNacional))
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 		
-		return icmsValorInterestadualConsumoImportado.add(icmsValorInterestadualConsumoNacional);
+		 BigDecimal creditoDifalUsoConsumo = icmsValorInterestadualConsumoImportado.add(icmsValorInterestadualConsumoNacional);
+		
+		regE111.setCodAjApur("SP020718");				// SP020718|Entrada de mercadoria, oriunda de outro Estado, destinada a uso, consumo ou integração no ativo imobilizado, ou utilização de serviço iniciado noutro Estado - Diferencial de alíquota.|01012015|
+		regE111.setDescrComplAj(descComplAjApura);
+		regE111.setVlAjApur(creditoDifalUsoConsumo);
+
+		return regE111;
 	}
+	
 	
 	
 	/**
