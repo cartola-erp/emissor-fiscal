@@ -1,12 +1,13 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoE.service;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.CompraDto;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
@@ -24,6 +26,7 @@ import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE11
 import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE111Service;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE111;
+import net.cartola.emissorfiscal.tributacao.estadual.CalculoGuiaEstadualService;
 
 /**
  * @date 6 de jul. de 2021
@@ -32,16 +35,17 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE111;
 @Service
 class RegE111Service {
 
-	
 	@Autowired // usarei para buscar se tem registros gerardos/preenchidos pelo usuarioo no periodo
 	private SpedFiscalRegE110Service spedFiscRegE110Service;
-	
 	
 	@Autowired // (salvos os registros gerados usando a service abaixo)
 	private SpedFiscalRegE111Service spedFiscRegE111Service;
 	
 	@Autowired
 	private DocumentoFiscalItemService docFiscItemService;
+	
+	@Autowired
+	private CalculoGuiaEstadualService calcGuiaEstaService;
 	
 	
 	/**
@@ -59,7 +63,7 @@ class RegE111Service {
 	
 	public List<RegE111> montarGrupoRegE111(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
-		List<RegE111> listE111 = new ArrayList<>();
+		List<RegE111> listRegE111 = new ArrayList<>();
 		
 		Set<SpedFiscalRegE110> setSpedFiscRegE110ApuracaoPropria = movimentosIcmsIpi.getSetSpedFiscRegE110ApuracaoPropria();
 		
@@ -68,9 +72,15 @@ class RegE111Service {
 		RegE111 regE111EntradaUsoConsumoOuAtivoInterestadual = gerarDebitosUsoConsumoAtivoInterestadual(movimentosIcmsIpi);
 		RegE111 regE111EstornoDebitoDevolucaoParaFornecedor = gerarEstornoDebitoDevolucaoParaFornecedor(movimentosIcmsIpi);
 		
-		listE111.add(regE111EstornoDebitoDevolucaoParaFornecedor);
-		listE111.add(regE111EntradaUsoConsumoOuAtivoInterestadual);
-
+		BigDecimal totalIcmsNotasDeSc = totalizarIcmsNotasDeSc(movimentosIcmsIpi);
+		RegE111 regE111CreditosIcmsNotasDeSc = gerarCreditosNotasDeSantaCatarina(totalIcmsNotasDeSc);
+		RegE111 regE111DebitosIcmsNotasDeSc = gerarDebitosNotasDeSantaCatarina(totalIcmsNotasDeSc);
+		
+		listRegE111.add(regE111EstornoDebitoDevolucaoParaFornecedor);
+		listRegE111.add(regE111EntradaUsoConsumoOuAtivoInterestadual);
+		
+		listRegE111.add(regE111CreditosIcmsNotasDeSc);
+		listRegE111.add(regE111DebitosIcmsNotasDeSc);
 		
 		/**
 		 * Acredito que isso abaixo conseguirei, descobrir depois que terminar de montar o REG E110 (então terei que salvar tais informações no DB);
@@ -82,10 +92,75 @@ class RegE111Service {
 			// --> SP000218|Transferência de saldo credor  para estabelecimento centralizador.|01012015|
 			// --> SP020729|Transferência de saldo devedor para estabelecimento centralizador.|01012015|
 		
-		return listE111;
+		return listRegE111;
 	}
 
-	
+	/**
+	 * Será Calculado o Total de ICMS, das notas de SC, MG e ES, que foram pagas no período;
+	 * 
+	 * @param movimentosIcmsIpi
+	 * @return totalcms, pagos das entradas de para comercialização, de itens das UF, SC, MG e/ou ES;
+	 * 
+	 */
+	private BigDecimal totalizarIcmsNotasDeSc(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
+		Set<DocumentoFiscal> listDocFiscSantaCatarina = movimentosIcmsIpi.getListDocFiscSantaCatarina();
+//		Set<CompraDto> setCompraDtoNotasSc = new HashSet<>();
+		Set<BigDecimal> totalGareCompra = new HashSet<>();
+		for (DocumentoFiscal docFiscDeSc : listDocFiscSantaCatarina) {
+			CompraDto compraDto = calcGuiaEstaService.calculaGuiaGareIcmsStEntrada(docFiscDeSc);
+			if (compraDto.isFoiCalculadoIcmsSt()) {
+				BigDecimal total = compraDto.getTotalCalcGareCompra().getTotal() != null ? compraDto.getTotalCalcGareCompra().getTotal() : BigDecimal.ZERO;
+				totalGareCompra.add(total);
+			}
+		}
+		BigDecimal totalIcmsDasNotasDeSC = totalGareCompra.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+		return totalIcmsDasNotasDeSC;
+	}
+
+	/**
+	 * - Será gerado um REG  E111, com o valor que pagamos de ICMS das notas de SC, ES e MG (vide a tabela trib_esta_guia) <\br>
+	 * - COD AJUSSTE -> SP020799|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015|	<\br>
+	 * 
+	 * - PS: <b> Tem que ser gerado um REGISTRO E111, com o valor que pagamos de ICMS, com um COD de CRÉDITO e OUTRO com o COD de DÉBITO, para "abater", os valores<\b> <\br>
+	 * 		 <b> Conforme o que foi passado pela contabilidade/fiscal </b>
+	 * 
+	 * @param totalIcmsNotasDeSc
+	 * @return
+	 */
+	private RegE111 gerarCreditosNotasDeSantaCatarina(BigDecimal totalIcmsNotasDeSc) {
+		RegE111 regE111 = new RegE111();
+		regE111.setCodAjApur("SP020799");
+		regE111.setDescrComplAj("");
+		regE111.setVlAjApur(totalIcmsNotasDeSc);
+		return regE111;
+	}
+
+	/**
+	 * - Será gerado um REG  E111, com o valor que pagamos de ICMS das notas de SC, ES e MG (vide a tabela trib_esta_guia) <\br>
+	 * - SP000299|OUTRAS HIPÓTESES - PREENCHIDA PELO CONTRIBUINTE.|01012015| <\br>
+	 * - 
+	 * - PS: <b> Tem que ser gerado um REGISTRO E111, com o valor que pagamos de ICMS, com um COD de CRÉDITO e OUTRO com o COD de DÉBITO, para "abater", os valores<\b> <\br>
+	 * 		 <b> Conforme o que foi passado pela contabilidade/fiscal </b>
+	 * 
+	 * @param totalIcmsNotasDeSc
+	 * @return
+	 */
+	private RegE111 gerarDebitosNotasDeSantaCatarina(BigDecimal totalIcmsNotasDeSc) {
+		RegE111 regE111 = new RegE111();
+		regE111.setCodAjApur("SP000299");
+		regE111.setDescrComplAj("");
+		regE111.setVlAjApur(totalIcmsNotasDeSc);
+		return regE111;
+	}
+
+	/**
+	 * Será calculado o DIFAL, para os ITENS que serão usados como Consumo/Ativo, cujo a entrada sejam INTERESTADUAL; <\br>
+	 * 
+	 * CODIGO AJUSTE -> SP000207 (Tabela 5.1.1)
+	 * 
+	 * @param movimentosIcmsIpi
+	 * @return
+	 */
 	private RegE111 gerarDebitosUsoConsumoAtivoInterestadual(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		RegE111 regE111 = new RegE111();
@@ -105,31 +180,6 @@ class RegE111Service {
 		return regE111;
 	}
 
-
-
-	/**
-	 * Será calculado o DIFAL, das ENTRADAS INTERESTADUAL, que sejam para CONSUMO e/ou ATIVO;
-	 * 
-	 * @param listDocFiscItemAtivoOuConsumoInterestadual - Lista dos itens 
-	 * @return
-	 */
-	private BigDecimal calcularDifalParaConsumoEAtivoInterestadual(Set<DocumentoFiscalItem> listDocFiscItemAtivoOuConsumoInterestadual) {
-		BigDecimal aliqImportado = new BigDecimal(0.04D);
-		BigDecimal aliqNacional = new BigDecimal(0.12D);		// OBS: de Qualquer UF -> SP, é 12% a aliquota
-		
-		BigDecimal icmsValorInterestadualConsumoImportado = listDocFiscItemAtivoOuConsumoInterestadual.stream()
-			.filter(item -> docFiscItemService.verificaSeEhImportado(item))
-			.map(itemImportado -> itemImportado.getIcmsBase().multiply(aliqImportado))
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
-		
-		BigDecimal icmsValorInterestadualConsumoNacional = listDocFiscItemAtivoOuConsumoInterestadual.stream()
-			.filter(item -> !docFiscItemService.verificaSeEhImportado(item))
-			.map(itemNacional -> itemNacional.getIcmsBase().multiply(aliqNacional))
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
-		
-		return icmsValorInterestadualConsumoImportado.add(icmsValorInterestadualConsumoNacional);
-	}
-	
 
 
 	/**
@@ -165,6 +215,35 @@ class RegE111Service {
 	
 	
 	// ---------======
+	
+	
+	/**
+	 * Será calculado o DIFAL, das ENTRADAS INTERESTADUAL, que sejam para CONSUMO e/ou ATIVO;
+	 * 
+	 * @param listDocFiscItemAtivoOuConsumoInterestadual - Lista dos itens 
+	 * @return
+	 */
+	private BigDecimal calcularDifalParaConsumoEAtivoInterestadual(Set<DocumentoFiscalItem> listDocFiscItemAtivoOuConsumoInterestadual) {
+		BigDecimal aliqImportado = new BigDecimal(0.04D);
+		BigDecimal aliqNacional = new BigDecimal(0.12D);		// OBS: de Qualquer UF -> SP, é 12% a aliquota
+		
+		BigDecimal aliqInternaSp = new BigDecimal(0.18D);
+//		BigDecimal aliqDifal = aliqInternaSp - (aliqImportado ou do nacional) ;
+		
+		
+		BigDecimal icmsValorInterestadualConsumoImportado = listDocFiscItemAtivoOuConsumoInterestadual.stream()
+			.filter(item -> docFiscItemService.verificaSeEhImportado(item))
+			.map(itemImportado -> itemImportado.getIcmsBase().multiply(aliqImportado))
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		BigDecimal icmsValorInterestadualConsumoNacional = listDocFiscItemAtivoOuConsumoInterestadual.stream()
+			.filter(item -> !docFiscItemService.verificaSeEhImportado(item))
+			.map(itemNacional -> itemNacional.getIcmsBase().multiply(aliqNacional))
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		return icmsValorInterestadualConsumoImportado.add(icmsValorInterestadualConsumoNacional);
+	}
+	
 	
 	/**
 	 * Retornar a descrição das Notas de entradas de CONSUMO/ATIVO, que serão escrituradas no Registro E111 - com o CODIGO (da tabela 5.1.1) -> SP000207
