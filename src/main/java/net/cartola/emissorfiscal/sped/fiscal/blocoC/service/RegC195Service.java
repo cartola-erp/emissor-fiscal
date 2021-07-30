@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC195;
 
 
@@ -55,11 +56,28 @@ class RegC195Service {
 	
 	/**
 	 * 
+	 * @param regC100 
 	 * @param docFisc
 	 * @return
 	 */
-	public List<RegC195> montarGrupoRegC195(DocumentoFiscal docFisc) {
+	public List<RegC195> montarGrupoRegC195(RegC100 regC100, DocumentoFiscal docFisc) {
 		// TODO Auto-generated method stub
+		
+		basicamente o preenchimento será feito usando um dos dois codigos abaixo (ps: um é ipi e outro icms st)
+		
+		PS: Os codigos que vão no REG C197 é da tabela 5.3 (referentes a ajustes no DOCUMENTO, e não na APURACAO)		
+		
+		E o codiog do REG C195 (deverá já estar, lançado/ (ou no caso lançar) no  REG 0460)
+		
+		
+		Portanto é preciso de pensar em uma forma de salvar esses códigos numa lista do OBJETO movimentosIcmsIpi (para serem escriturados), 
+		
+		
+		
+//		|C195|1403||
+//		|C197|SP90090104|1403||||0,00|2756,13|
+//		|C197|SP90090278|1403||||354,53||
+
 		return null;
 	}
 

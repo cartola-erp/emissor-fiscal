@@ -165,7 +165,29 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			break;
 		}
 		
+		if(isGeraRegC195(regC100, docFisc)) {
+			regC100.setRegC195(regC195Service.montarGrupoRegC195(regC100, docFisc));
+		}
+		
 		return regC100;
+	}
+
+	/**
+	 * Aqui irei verificar conforme a portaria CAT 66/2018, se terei que preencher o REG C195/C197
+	 * 	- (Colunas/Isentas nao tributadas, IPI)
+	 * @param regC100
+	 * @param docFisc
+	 * @return
+	 */
+	private boolean isGeraRegC195(RegC100 regC100, DocumentoFiscal docFisc) {
+		// TODO Auto-generated method stub
+		
+		* Aqui irei verificar conforme a portaria CAT 66/2018, se terei que preencher o REG C195/C197
+		 * 	- (Colunas/Isentas nao tributadas, IPI)
+		 
+		 PS: acho que o ideal é fazer um método genérico que recebera um registro analitico, e o docFisc
+		 e daí nele será verificado tanto o preenchimento do C195 (nfes entradas/saidas) e do D195 (que são as CTEs de entradas)
+		return false;
 	}
 
 	/**
