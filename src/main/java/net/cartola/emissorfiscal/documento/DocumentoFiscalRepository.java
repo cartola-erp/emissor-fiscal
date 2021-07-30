@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import net.cartola.emissorfiscal.operacao.Operacao;
@@ -60,6 +62,20 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteAndModeloAndTipoOperacao(LocalDateTime dataHoraInicio,
 			LocalDateTime dataHoraFim, Pessoa emitente, ModeloDocumentoFiscal modelo, IndicadorDeOperacao tipoOperacao);
 	
+	
+	// OBS: Será retornado todos os doc fiscais, do periodo independente da loja que deram entrada
+	// OBS2: Não necessariamente os DocumentoFiscais que foram retornados aqui, seram pagos/ (ou foram pagos o ICMS na entrada)
+	// OBS3: Para descobrir isso terei que ver com base nos itens dos doc fiscais, se eles tem tributacoes na tabela trib_eta_guia
+	// (Basta em chamar o método que calcula isso)
+	@Query(value =  "SELECT * FROM docu_fisc d \r\n"
+			+ "  		INNER JOIN pess p ON (d.emit_id = p.id) \r\n"
+			+ "     		INNER JOIN pess_end e ON (p.end_id = e.pess_end_id) \r\n"
+			+ "           		INNER JOIN esta uf ON (e.uf = uf.sigla)	\r\n"
+			+ "                		INNER JOIN trib_esta_guia t ON (t.esta_orig_id  = uf.esta_id AND d.oper_id = t.oper_id) "
+			+ "	   	 WHERE d.cadastro BETWEEN :dtInicio AND :dtFim ;", nativeQuery = true)
+	Set<DocumentoFiscal> findAllDocsInterestadualQuePagamosIcmsNaEntradaPorPeriodo(LocalDateTime dtInicio, LocalDateTime dtFim);
 
-
+	
+	
+	
 }
