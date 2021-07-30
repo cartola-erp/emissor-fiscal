@@ -151,6 +151,18 @@ public class DocumentoFiscalService {
 		return documentoFiscalRepository.findByCadastroBetweenAndEmitenteAndModeloAndTipoOperacao(dataHoraInicio, dataHoraFim, emitente, modelo, tipoOperacao);
 	}
 	
+	/**
+	 * Será retornado, todos os DocumentoFiscais, de SC, ES e ou MG (ou qualquer outro estado X operacao, que estiver na tabela trib_esta_guia); <\br>
+	 * que deram entrada no periodo informado;
+	 * 
+	 * @param dataHoraInicio
+	 * @param dataHoraFim
+	 * @return
+	 */
+	public Set<DocumentoFiscal> findDocsQueRecolhemosIcmsNaEntradaDeSantaCatarinaPorPeriodo(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim) {
+		return documentoFiscalRepository.findAllDocsInterestadualQuePagamosIcmsNaEntradaPorPeriodo(dataHoraInicio, dataHoraFim);
+	}
+	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
 		calcFiscalEstadual.calculaImposto(documentoFiscal);
 		calcFiscalFederal.calculaImposto(documentoFiscal);
