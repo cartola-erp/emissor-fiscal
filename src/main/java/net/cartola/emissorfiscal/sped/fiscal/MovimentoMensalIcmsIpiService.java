@@ -46,6 +46,7 @@ import net.cartola.emissorfiscal.produto.ProdutoAlteradoSpedService;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 import net.cartola.emissorfiscal.produto.ProdutoUnidadeService;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
+import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadualGuiaService;
 
 /**
  * @date 21 de jan. de 2021
@@ -84,6 +85,8 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	@Autowired
 	private ContadorService contadorService;
 	
+	@Autowired
+	private TributacaoEstadualGuiaService tribEstaGuiaService;
 	
 	@Autowired
 	private SpedFiscalRegE110Service spedFiscRegE110ApuracaoPropriaService;
@@ -113,6 +116,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		List<ProdutoUnidade> listProdUnid = getListProdutoUnidade(setItens);
 		Set<Operacao> operacoesSet = getListOperacoes(listDocFiscal, listSatsEmitidos, listDocFiscalServico); //listDocFiscal.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
 		
+		Set<DocumentoFiscal> setDocFiscalSantaCatarina = getListDocFiscalSantaCatarina(dataHoraInicio, dataHoraFim, lojaEmitOrDest);
 		Contador contador = contadorService.findOne(contadorId).get();
 		Set<SpedFiscalRegE110> setRegE110ApuracaoPropria = spedFiscRegE110ApuracaoPropriaService.findRegE110ByPeriodoAndLoja(dataInicio, dataFim, loja);
 		Set<SpedFiscalRegE310> setRegE310Difal = spedFiscRegE310DifalService.findRegE310ByPeriodoAndLoja(dataInicio, dataFim, loja);
@@ -132,7 +136,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		movimentoMensalIcmsIpi.setListOperacoes(operacoesSet);
 		movimentoMensalIcmsIpi.setLoja(loja);
 		movimentoMensalIcmsIpi.setContador(contador);
-		
+		movimentoMensalIcmsIpi.setListDocFiscSantaCatarina(setDocFiscalSantaCatarina);			// Documentos Fiscais de comercialização de santa catarina
 		movimentoMensalIcmsIpi.setSetSpedFiscRegE110ApuracaoPropria(setRegE110ApuracaoPropria);
 		movimentoMensalIcmsIpi.setSetSpedFiscRegE310Difal(setRegE310Difal);
 		
@@ -143,7 +147,6 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		LOG.log(Level.INFO, "Terminado a busca das movimentações para a LOJA {0}" ,loja);
 		return movimentoMensalIcmsIpi;
 	}
-
 
 
 	private Set<String> getListCpfCnpj(List<Pessoa> listCadPessoas) {
@@ -238,6 +241,27 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		setOperacoes.addAll(setOperacoesServico);
 		return setOperacoes;
 	}
+	
+	/**
+	 * Será retornado todos os DocumentoFiscais de ENTRADA, cujo a Origem esteja na TABELA "trib_esta_guia";	<\br>
+	 * O nome está como de "SC - Santa Catarina", pois é de lá que a maioria são, e é como a contabilidade acaba se referindo para essas notas/compras, 
+	 * que "nóis", que somos obrigados por recolher o ICMS 
+	 * 
+	 * @param dataHoraInicio
+	 * @param dataHoraFim
+	 * @param lojaEmitOrDest
+	 * @return
+	 */
+	private Set<DocumentoFiscal> getListDocFiscalSantaCatarina(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Optional<Pessoa> lojaEmitOrDest) {
+		Set<DocumentoFiscal> setDocFiscSantaCatarina = docFiscService.findDocsQueRecolhemosIcmsNaEntradaDeSantaCatarinaPorPeriodo(dataHoraInicio, dataHoraFim);
+		Pessoa loja = lojaEmitOrDest.get();
+
+		Set<DocumentoFiscal> listDocFiscSCLojaAtual = setDocFiscSantaCatarina.stream().filter(docFiscSc -> docFiscSc.getDestinatario().getId().equals(loja.getId()) 
+				&& docFiscSc.getDestinatario().getCnpj().equals(loja.getCnpj())).collect(toSet());
+		
+		return listDocFiscSCLojaAtual;
+	}
+
 
 	
 }
