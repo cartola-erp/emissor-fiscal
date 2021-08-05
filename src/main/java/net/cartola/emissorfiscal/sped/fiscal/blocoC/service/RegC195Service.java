@@ -1,13 +1,18 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
-import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC190;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC195;
+import static java.util.stream.Collectors.groupingBy;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsSemOrigem;
 
 
 /**
@@ -56,29 +61,38 @@ class RegC195Service {
 	
 	/**
 	 * 
-	 * @param regC100 
+	 * @param listRegC190 
 	 * @param docFisc
+	 * @param movimentosIcmsIpi
 	 * @return
 	 */
-	public List<RegC195> montarGrupoRegC195(RegC100 regC100, DocumentoFiscal docFisc) {
+	public List<RegC195> montarGrupoRegC195PortariaCat66De2018(List<RegC190> listRegC190, DocumentoFiscal docFisc, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
+		List<RegC195> listRegC195 = new ArrayList<>();
 		
-		basicamente o preenchimento será feito usando um dos dois codigos abaixo (ps: um é ipi e outro icms st)
+//		basicamente o preenchimento será feito usando um dos dois codigos abaixo (ps: um é ipi e outro icms st)
+//		PS: Os codigos que vão no REG C197 é da tabela 5.3 (referentes a ajustes no DOCUMENTO, e não na APURACAO)		
+//		E o codiog do REG C195 (deverá já estar, lançado/ (ou no caso lançar) no  REG 0460)
+//		
+//		Portanto é preciso de pensar em uma forma de salvar esses códigos numa lista do OBJETO movimentosIcmsIpi (para serem escriturados), 
 		
-		PS: Os codigos que vão no REG C197 é da tabela 5.3 (referentes a ajustes no DOCUMENTO, e não na APURACAO)		
+//		Map<Integer, List<RegC190>> mapRegistroAnaliticoPorCfop = listRegC190.stream().collect(groupingBy(RegC190::getCfop));
 		
-		E o codiog do REG C195 (deverá já estar, lançado/ (ou no caso lançar) no  REG 0460)
+		Map<Integer, Map<String, List<RegC190>>> mapRegistroAnaliticoPorCfopECst = listRegC190.stream().
+				collect(groupingBy(RegC190::getCfop, 
+							groupingBy(regC190 -> getCstIcmsSemOrigem(regC190.getCstIcms()))));
 		
-		
-		Portanto é preciso de pensar em uma forma de salvar esses códigos numa lista do OBJETO movimentosIcmsIpi (para serem escriturados), 
-		
-		
-		
-//		|C195|1403||
-//		|C197|SP90090104|1403||||0,00|2756,13|
-//		|C197|SP90090278|1403||||354,53||
+		for (Integer cfop : mapRegistroAnaliticoPorCfopECst.keySet()) {
+			Map<String, List<RegC190>> mapRegistroAnaliticoPorCst = mapRegistroAnaliticoPorCfopECst.get(cfop);
 
-		return null;
+			RegC195 regC195 = new RegC195();
+			regC195.setCodObs(Integer.toString(cfop));
+			regC195.setRegC197(regC197Service.montarGrupoRegC197PortariaCat66De2018(cfop, mapRegistroAnaliticoPorCst, movimentosIcmsIpi));
+			
+			listRegC195.add(regC195);
+		}
+		
+		return listRegC195;
 	}
 
 	
