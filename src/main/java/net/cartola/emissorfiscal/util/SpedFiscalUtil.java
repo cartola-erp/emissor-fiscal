@@ -8,6 +8,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
@@ -33,6 +34,9 @@ public final class SpedFiscalUtil {
 	private static final Logger LOG = Logger.getLogger(SpedFiscalUtil.class.getName());
 
 
+	private SpedFiscalUtil() {}
+	
+	
 	/**
 	 * Obtem o <b> "Código do Participante" </b>
 	 * Usos nos REGISTROS: 0150 e C100;
@@ -122,6 +126,31 @@ public final class SpedFiscalUtil {
 		return Integer.toString(origem.ordinal()) + Integer.toString(cstIcms);
 	}
 	
+	
+	/**
+	 * Irá devolver somente a CST do icms, referente a "tabela B" (ou seja, sem a origem do produto concatenada)
+	 * @param cstIcms
+	 * @return
+	 */
+	public static String getCstIcmsSemOrigem(String cstIcms) {
+		if (cstIcms != null && cstIcms.length() == 3) {
+			return cstIcms.substring(1);
+		}
+		return cstIcms;
+	}
+	
+	/**
+	 * 
+	 * @param icmsCst
+	 * @return true -> Se icmsCst for igual a => 30, 40 ou 41 
+	 * 
+	 */
+	public static boolean isIcmsCstIsentaOuNaoTributada(String icmsCst) {
+		Predicate<String> predicateIsIcmsCstIsentaOuNt = (p) -> p.equals("30") || p.equals("40") || p.equals("41");
+		return predicateIsIcmsCstIsentaOuNt.test(icmsCst);
+	}
+	
+	
 	/**
 	 * Irá comparar o cnpj do emitente e destinatario
 	 * @param docFisc
@@ -166,6 +195,5 @@ public final class SpedFiscalUtil {
 
 		return mapPorOrigemCstCfopAliqIcms;
 	}
-	
 	
 }

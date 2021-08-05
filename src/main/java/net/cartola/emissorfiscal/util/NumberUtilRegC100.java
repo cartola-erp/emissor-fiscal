@@ -75,5 +75,17 @@ public final class NumberUtilRegC100 {
 		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? null : BigDecimal.ZERO;
 	}
 	
+	/**
+	 * 
+	 * @param value
+	 * 
+	 * @return (0) -> ZERO, se o valor recebido for nulo
+	 */
+	public static BigDecimal getBigDecimalNullSafe(BigDecimal value) {
+		if (value == null) {
+			return BigDecimal.ZERO;
+		}
+		return value;
+	}
 
 }
