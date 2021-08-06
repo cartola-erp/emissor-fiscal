@@ -11,6 +11,8 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC190;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC197;
@@ -23,10 +25,11 @@ class RegC197Service {
 	 * 
 	 * @param cfop -> CFOP, referente ao: "mapRegistroAnaliticoPorCst"
 	 * @param mapRegistroAnaliticoPorCst -> mapa da atual cfop, separado por CST
+	 * @param docFisc 
 	 * @param movimentosIcmsIpi	->
 	 * @return 
 	 */
-	public List<RegC197> montarGrupoRegC197PortariaCat66De2018(Integer cfop, Map<String, List<RegC190>> mapRegistroAnaliticoPorCst, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
+	public List<RegC197> montarGrupoRegC197PortariaCat66De2018(Integer cfop, Map<String, List<RegC190>> mapRegistroAnaliticoPorCst, DocumentoFiscal docFisc, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		List<RegC197> listRegC197 = new ArrayList<>();
 		
@@ -36,18 +39,22 @@ class RegC197Service {
 //		Portanto é preciso de pensar em uma forma de salvar esses códigos numa lista do OBJETO movimentosIcmsIpi (para serem escriturados), 
 		
 		
-		//	SP90090104
+		//	SP90090104 
 		RegC197 regC197VlIcmsIsentasNtOutras = gerarRegC197ParaOValorIcmsIsentasNaoTributadasOutras(cfop, mapRegistroAnaliticoPorCst);
 		
-//		RegC197 regC197VlIcmsSt = gerarRegC197IcmsStPagoPeloForencedor();
+		// 	SP90090278 
+		RegC197 regC197VlIcmsSt = gerarRegC197IcmsStPagoPeloFornecedor(cfop, mapRegistroAnaliticoPorCst, docFisc);
 		
 		listRegC197.add(regC197VlIcmsIsentasNtOutras);
+		listRegC197.add(regC197VlIcmsSt);
+		
 //		|C195|1403||
 //		|C197|SP90090104|1403||||0,00|2756,13|
 //		|C197|SP90090278|1403||||354,53||
 
 		return listRegC197;
 	}
+
 
 	/**
 	 * Irá calcular o VL_OUTROS, para o ICMS; para o Codigo ajuste == "SP90090104", da tabela 5.3
@@ -67,7 +74,7 @@ class RegC197Service {
 		regC197.setCodItem(null);
 		regC197.setVlBcIcms(null);
 		regC197.setAliqIcms(null);
-//		regC197.setVlIcms(vlIcmsIsentaNaoTributadaPorCfop);
+//		regC197.setVlIcms(vlIcmsIsentaNaoTributadaOutrasPorCfop);
 		regC197.setVlIcms(null);
 		regC197.setVlOutros(vlIcmsIsentaNaoTributadaOutrasPorCfop);
 
@@ -134,9 +141,57 @@ class RegC197Service {
 	
 	
 	
+	private RegC197 gerarRegC197IcmsStPagoPeloFornecedor(Integer cfop, Map<String, List<RegC190>> mapRegistroAnaliticoPorCst, DocumentoFiscal docFisc) {
+		RegC197 regC197 = new RegC197();
+		
+		BigDecimal vlIcmsOuIcmsSt = funcao5ValorColunaOutras(cfop, mapRegistroAnaliticoPorCst, docFisc);
+		
+		regC197.setCodAj("SP90090278");
+		regC197.setDescrComplAj(Integer.toString(cfop));
+		regC197.setCodItem(null);
+		regC197.setVlBcIcms(null);
+		regC197.setAliqIcms(null);
+		regC197.setVlIcms(vlIcmsOuIcmsSt);
+//		regC197.setVlIcms(null);
+//		regC197.setVlOutros(vlIcmsIsentaNaoTributadaOutrasPorCfop);
+
+		return regC197;
+	}
 	
-	private BigDecimal funcao5ValorColunaOutras(List<RegC190> listRegC190_SP90090104) {
-		return null;
+	/**
+	 * Para todas as CSTs diferentes (!=) de 30, 40  e 41
+	 * @param cfop 
+	 * 
+	 * @param mapRegistroAnaliticoPorCst
+	 * @param docFisc -> DocumentoFiscal, que será filtrado os itens por CFOP, e totalizar o VST (ICMS ST SUBSTITUIDO)
+	 * @return
+	 */
+	private BigDecimal funcao5ValorColunaOutras(Integer cfop, Map<String, List<RegC190>> mapRegistroAnaliticoPorCst, DocumentoFiscal docFisc) {
+		Function<RegC190, BigDecimal> funcao5 = regC190 -> getBigDecimalNullSafe(regC190.getVlOpr())
+				.subtract(getBigDecimalNullSafe(regC190.getVlBcIcms()))
+				.subtract(getBigDecimalNullSafe(regC190.getVlIcmsSt()))
+				.subtract(getBigDecimalNullSafe(regC190.getVlRedBc()))
+				.subtract(getBigDecimalNullSafe(regC190.getVlIpi()));
+//				.subtract(getBigDecimalNullSafe(totalVlIcmsStPorCfop));
+		
+		List<RegC190> listRegC190ToBeCalculeted = new ArrayList<>();
+		mapRegistroAnaliticoPorCst.forEach( (icmsCst, rec190NoMapa) -> {
+			if (!isIcmsCstIsentaOuNaoTributada(icmsCst)) {
+				listRegC190ToBeCalculeted.addAll(rec190NoMapa);
+			}
+		});
+		
+		List<BigDecimal> listResultFuncao5 = new ArrayList<>();
+		listRegC190ToBeCalculeted.stream().forEach(regC190ToBeCalc -> listResultFuncao5.add(funcao5.apply(regC190ToBeCalc)));
+		
+		// Total do ICMS ST, que veio no DocumentoFiscal, (totalizado, pela CFOP)
+		BigDecimal totalVlIcmsStPorCfop = docFisc.getItens().stream().filter(item -> item.getCfop() == cfop)
+					.map(DocumentoFiscalItem::getIcmsStValor)
+					.reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		BigDecimal vlIcmsOuIcmsSt = listResultFuncao5.stream().reduce(BigDecimal.ZERO, BigDecimal::add).subtract(totalVlIcmsStPorCfop);
+		
+		return (vlIcmsOuIcmsSt.compareTo(BigDecimal.ZERO) <= 0) ? BigDecimal.ZERO : vlIcmsOuIcmsSt;
 	}
 
 	

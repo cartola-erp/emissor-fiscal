@@ -87,7 +87,7 @@ class RegC195Service {
 
 			RegC195 regC195 = new RegC195();
 			regC195.setCodObs(Integer.toString(cfop));
-			regC195.setRegC197(regC197Service.montarGrupoRegC197PortariaCat66De2018(cfop, mapRegistroAnaliticoPorCst, movimentosIcmsIpi));
+			regC195.setRegC197(regC197Service.montarGrupoRegC197PortariaCat66De2018(cfop, mapRegistroAnaliticoPorCst, docFisc, movimentosIcmsIpi));
 			
 			listRegC195.add(regC195);
 		}
