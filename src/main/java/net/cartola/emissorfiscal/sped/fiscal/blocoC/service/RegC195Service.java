@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getMapaRegistroAnaliticoPorCfopECst;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +13,6 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC190;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC195;
-import static java.util.stream.Collectors.groupingBy;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsSemOrigem;
 
 
 /**
@@ -75,12 +75,12 @@ class RegC195Service {
 //		E o codiog do REG C195 (deverá já estar, lançado/ (ou no caso lançar) no  REG 0460)
 //		
 //		Portanto é preciso de pensar em uma forma de salvar esses códigos numa lista do OBJETO movimentosIcmsIpi (para serem escriturados), 
+
 		
-//		Map<Integer, List<RegC190>> mapRegistroAnaliticoPorCfop = listRegC190.stream().collect(groupingBy(RegC190::getCfop));
-		
-		Map<Integer, Map<String, List<RegC190>>> mapRegistroAnaliticoPorCfopECst = listRegC190.stream().
-				collect(groupingBy(RegC190::getCfop, 
-							groupingBy(regC190 -> getCstIcmsSemOrigem(regC190.getCstIcms()))));
+//		Map<Integer, Map<String, List<RegC190>>> mapRegistroAnaliticoPorCfopECst = listRegC190.stream().
+//				collect(groupingBy(RegC190::getCfop, 
+//							groupingBy(regC190 -> getCstIcmsSemOrigem(regC190.getCstIcms()))));
+		Map<Integer, Map<String, List<RegC190>>> mapRegistroAnaliticoPorCfopECst = getMapaRegistroAnaliticoPorCfopECst(listRegC190);
 		
 		for (Integer cfop : mapRegistroAnaliticoPorCfopECst.keySet()) {
 			Map<String, List<RegC190>> mapRegistroAnaliticoPorCst = mapRegistroAnaliticoPorCfopECst.get(cfop);

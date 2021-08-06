@@ -22,7 +22,9 @@ import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD100;
+import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD195;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
+import net.cartola.emissorfiscal.util.ValidationHelper;
 
 /**
  * 
@@ -40,6 +42,9 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 	@Autowired
 	private RegD190Service regD190Service;
 
+	@Autowired
+	private RegD195Service regD195Service;
+	
 	private MovimentoMensalIcmsIpi movimentosIcmsIpi;
 	
 	
@@ -88,10 +93,24 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 			regD100.setRegD190(regD190Service.montarGrupoRegC190(servicoTransporte, this.movimentosIcmsIpi));
 			break;
 		}
+		
+		if (isGeraRegD195PortariaCat66de2018(regD100)) {
+			List<RegD195> listRegD195 = regD195Service.montarGrupoRegD195PortariaCat66De2018(regD100.getRegD190(), servicoTransporte, this.movimentosIcmsIpi);
+			movimentosIcmsIpi.addObservacaoLancamentoFiscal(listRegD195);
+			regD100.setRegD195(listRegD195);
+		}
+		
 		return regD100;
 	}
 
 	
+	private boolean isGeraRegD195PortariaCat66de2018(RegD100 regD100) {
+		if (regD100 != null && ValidationHelper.collectionNotEmptyOrNull(regD100.getRegD190())) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * OBS: Não está verificando TODAS as EXCEÇÕES do GUIA PRATICO. 
 	 * E sim somente, aquelas em que podemos nos encaixar, atualmente.

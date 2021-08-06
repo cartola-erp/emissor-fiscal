@@ -17,6 +17,15 @@ import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC190;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC197;
 
+/**
+ *  * Portaria CAT 66 de 2018
+ * 
+ * https://portal.fazenda.sp.gov.br/servicos/sped/Downloads/ManualPcat662018.pdf
+ * https://portal.fazenda.sp.gov.br/servicos/sped/Paginas/Orienta%C3%A7%C3%B5es%20Portaria%20CAT%2066%20de%202018.aspx
+ * 
+ * @author robson.costa
+ *
+ */
 @Service
 class RegC197Service {
 
@@ -99,9 +108,9 @@ class RegC197Service {
 //				listRegC190IsentaOuNT.addAll(regC190NoMapa);
 //			}
 //		}
-		mapRegistroAnaliticoPorCst.forEach( (icmsCst, rec190NoMapa) -> {
+		mapRegistroAnaliticoPorCst.forEach( (icmsCst, regC190NoMapa) -> {
 			if (isIcmsCstIsentaOuNaoTributada(icmsCst)) {
-				listRegC190IsentaOuNT.addAll(rec190NoMapa);
+				listRegC190IsentaOuNT.addAll(regC190NoMapa);
 			}
 		});
 
