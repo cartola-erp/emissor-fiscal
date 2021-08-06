@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
-import net.cartola.emissorfiscal.sped.fiscal.RegistroAnalitico;
+import net.cartola.emissorfiscal.sped.fiscal.ObservacoesLancamentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0460;
 
 /**
@@ -31,23 +32,24 @@ class Reg0460Service implements MontaGrupoDeRegistroList<Reg0460, MovimentoMensa
 	 */
 	@Override
 	public List<Reg0460> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
-		// TODO Auto-generated method stub
 		LOG.log(Level.INFO, "Montando o Grupo de Registro 0460 ");
-		List<RegistroAnalitico> listRegistroAnalitico = movimentosIcmsIpi.getListDoMapRegistroAnaliticoPorTipoOperacao();
 		List<Reg0460> listReg0460 = new ArrayList<>();
+
+		Set<ObservacoesLancamentoFiscal> setObservacoesLancamentoFiscal = movimentosIcmsIpi.getSetObservacoesLancamentoFiscal();
+
 		
 //		|0460|1102|ObservaCAo para CFOP 1102Conforme Portaria CAT 662018|
-//		 TODO TEREI QUE RECEBR UMA LISTA DE CODIGOS DE CFOP, que será foi atribuido observações na geração do SPED FISCAL 
-// 			e para cada elemento da lista eu crio a parada
 		
-		for (RegistroAnalitico registroAnalitico : listRegistroAnalitico) {
-			int cfop = registroAnalitico.getCfop();
-//			Observacao para CFOP 1102 Conforme Portaria CAT 662018
-			String descricao = "Observacao para CFOP " +cfop+ " Conforme Portaria CAT 662018";
-			Reg0460 reg0460 = new Reg0460();
-			reg0460.setCodObs(Integer.toString(cfop));
-			reg0460.setTxt(descricao);
-			listReg0460.add(reg0460);
+		for (ObservacoesLancamentoFiscal observacaoLancamentoFiscal : setObservacoesLancamentoFiscal) {
+			String codObs = observacaoLancamentoFiscal.getCodObs();
+			if (codObs.length() == 4) {
+				// Observacao para CFOP 1102 Conforme Portaria CAT 662018
+				String descricao = "Observacao para CFOP " +codObs+ " Conforme Portaria CAT 662018";
+				Reg0460 reg0460 = new Reg0460();
+				reg0460.setCodObs(codObs);
+				reg0460.setTxt(descricao);
+				listReg0460.add(reg0460);
+			}
 		}
 	
 		return listReg0460;

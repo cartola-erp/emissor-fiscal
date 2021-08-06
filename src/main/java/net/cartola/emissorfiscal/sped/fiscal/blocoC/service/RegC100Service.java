@@ -25,7 +25,9 @@ import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
+import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC195;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
+import net.cartola.emissorfiscal.util.ValidationHelper;
 
 /**
  * 18/09/2020
@@ -165,8 +167,14 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			break;
 		}
 		
-		if(isGeraRegC195(regC100, docFisc)) {
-			regC100.setRegC195(regC195Service.montarGrupoRegC195(regC100, docFisc));
+		/**
+		 * Atualmente, somente no caso abaixo que é gerado os REGISTROS C195 e D195. POIS somente esses casos que tinham no ARQUIVO (gerado pelo sistema de terceiros), 
+		 * que a GABI(contabilidade/fiscal) me passou
+		 */
+		if(isGeraRegC195PortariaCat66De2018(regC100)) {
+			List<RegC195> listRegC195 = regC195Service.montarGrupoRegC195PortariaCat66De2018(regC100.getRegC190(), docFisc, movimentosIcmsIpi);
+			movimentosIcmsIpi.addObservacaoLancamentoFiscal(listRegC195);
+			regC100.setRegC195(listRegC195);
 		}
 		
 		return regC100;
@@ -175,18 +183,24 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	/**
 	 * Aqui irei verificar conforme a portaria CAT 66/2018, se terei que preencher o REG C195/C197
 	 * 	- (Colunas/Isentas nao tributadas, IPI)
+	 * 
+	 * OBS: A validação aqui é somente para esse caso atualmente. Ou seja se REG C190 != null (está preenchido), 
+	 * tenta gerar o REG C195/C197
+	 * 
 	 * @param regC100
 	 * @param docFisc
 	 * @return
 	 */
-	private boolean isGeraRegC195(RegC100 regC100, DocumentoFiscal docFisc) {
-		// TODO Auto-generated method stub
+	private boolean isGeraRegC195PortariaCat66De2018(RegC100 regC100) {
+		if (regC100 != null && ValidationHelper.collectionNotEmptyOrNull(regC100.getRegC190())) {
+			return true;
+		}
 		
-		* Aqui irei verificar conforme a portaria CAT 66/2018, se terei que preencher o REG C195/C197
-		 * 	- (Colunas/Isentas nao tributadas, IPI)
+//		* Aqui irei verificar conforme a portaria CAT 66/2018, se terei que preencher o REG C195/C197
+//		 * 	- (Colunas/Isentas nao tributadas, IPI)
 		 
-		 PS: acho que o ideal é fazer um método genérico que recebera um registro analitico, e o docFisc
-		 e daí nele será verificado tanto o preenchimento do C195 (nfes entradas/saidas) e do D195 (que são as CTEs de entradas)
+//		 PS: acho que o ideal é fazer um método genérico que recebera um registro analitico, e o docFisc
+//		 e daí nele será verificado tanto o preenchimento do C195 (nfes entradas/saidas) e do D195 (que são as CTEs de entradas)
 		return false;
 	}
 

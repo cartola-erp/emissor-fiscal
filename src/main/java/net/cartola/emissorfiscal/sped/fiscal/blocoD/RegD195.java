@@ -4,6 +4,7 @@ import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.sped.fiscal.ObservacoesLancamentoFiscal;
 
 /**
  * 11/09/2020
@@ -16,11 +17,11 @@ import coffeepot.bean.wr.annotation.Record;
     // ==================== FILHO ====================
 	@Field(name = "regD197")
 })
-public class RegD195 {
+public class RegD195 extends ObservacoesLancamentoFiscal {
 	
 	private final String reg = "D195";
-	private String codObs;
-	private String txtCompl;
+//	private String codObs;
+//	private String txtCompl;
     // ==================== FILHO ====================
 	private List<RegD197> regD197;
 	
