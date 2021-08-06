@@ -19,6 +19,7 @@ import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.sped.fiscal.RegistroAnalitico;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
@@ -195,5 +196,21 @@ public final class SpedFiscalUtil {
 
 		return mapPorOrigemCstCfopAliqIcms;
 	}
+	
+	
+	/**
+	 * Será retornado uma map de registro analiticio, por CFOP e CST
+	 * 
+	 * @param <T>
+	 * @param listRegistroAnalitico
+	 * @return 
+	 */
+	public static <T extends RegistroAnalitico> Map<Integer, Map<String, List<T>>> getMapaRegistroAnaliticoPorCfopECst(List<T> listRegistroAnalitico) {
+		Map<Integer, Map<String, List<T>>> mapRegistroAnaliticoPorCfopECst = listRegistroAnalitico.stream().
+					collect(groupingBy(RegistroAnalitico::getCfop, 
+								groupingBy(regAnalitico -> getCstIcmsSemOrigem(regAnalitico.getCstIcms()))));
+		return mapRegistroAnaliticoPorCfopECst;
+	}
+
 	
 }
