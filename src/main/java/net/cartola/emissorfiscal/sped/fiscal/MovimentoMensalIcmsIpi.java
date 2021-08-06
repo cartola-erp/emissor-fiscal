@@ -1,7 +1,10 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
+import static java.util.stream.Collectors.toMap;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
+import static net.cartola.emissorfiscal.util.ValidationHelper.collectionNotEmptyOrNull;
+import static net.cartola.emissorfiscal.util.ValidationHelper.isMapNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,7 +31,17 @@ import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 
+
 /**
+ * 
+ * Essa classe deverá encapsular os objetos, que tem no ERP (banco autogeral)
+ * Pois será a responsavel de receber o JSON no Controller, e gerar o ARQUIVO do SPED FISCAL
+ * Caso eu pense em um nome melhor, basta eu mudar aqui, já que criei apenas para colocar nos
+ * generics das interface que irei usar nas Services
+ * 
+ * PS: Tbm tenho que ver se esse é o melhor pacote para ficar essa model ( @MovimentacoesMensalIcmsIpi)
+ *
+ * 
  * 21/09/2020
  * @author robson.costa
  */
@@ -39,8 +52,10 @@ public class MovimentoMensalIcmsIpi {
 //	private List<DocumentoFiscal> listCompras;
 	@Setter(value = AccessLevel.NONE)
 	private List<DocumentoFiscal> listDocFiscInterestadualComDifal;
+	@Setter(value = AccessLevel.NONE) private Map<Long, DocumentoFiscal> mapDocumentoFiscalPorCodigo;
 	private List<DocumentoFiscal> listDocumentoFiscal;
 	private List<DocumentoFiscal> listDocumentoFiscalServico;
+	private Set<DocumentoFiscal> listDocFiscSantaCatarina;
 	private List<DocumentoFiscal> listSatsEmitidos; 		// DocumentoFiscal - Modelo _59
 	private List<Pessoa> listCadastros;
 	private List<PessoaAlteradoSped> listCadastrosAlteradosSped;
@@ -55,6 +70,12 @@ public class MovimentoMensalIcmsIpi {
 	private Contador contador;
 	
 	private List<CodificacaoReg0450InfoComplementarFisco> listCodInfoComplementarFisco;
+	/**
+	 * Atualmente é usado para Gerar o REGISTRO 0460 (e também quando tudo que teve ajuste)
+	 * 
+	 */
+	private Set<ObservacoesLancamentoFiscal> setObservacoesLancamentoFiscal = new HashSet<>();
+//	private Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes;
 	
 	/**
 	 * Registro, Filho do E100. Apesar de poder ter vários E100, no DocumentoFiscal. Acredito que sempre
@@ -64,7 +85,11 @@ public class MovimentoMensalIcmsIpi {
 	 */
 	private Map<IndicadorDeOperacao, Set<RegistroAnalitico>> mapRegistroAnaliticoPorTipoOperacao;
 	
-	private Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes;
+	/**
+	 * São as mesmas inforações do mapa (acima ^^), mapAnaliticoPorTipoOpereacao, porém esse é por Documento Fiscal
+	 */
+//	private Map<DocumentoFiscal, Set<RegistroAnalitico>> mapRegistroAnaliticoPorDocFisc;
+
 
 	private Set<SpedFiscalRegE110> setSpedFiscRegE110ApuracaoPropria;
 	
@@ -88,16 +113,6 @@ public class MovimentoMensalIcmsIpi {
 //		}
 	}
 	
-	
-	/***
-	 * 
-	 * Essa classe deverá encapsular os objetos, que tem no ERP (banco autogeral)
-	 * Pois será a responsavel de receber o JSON no Controller, e gerar o ARQUIVO do SPED FISCAL
-	 * Caso eu pense em um nome melhor, basta eu mudar aqui, já que criei apenas para colocar nos
-	 * generics das interface que irei usar nas Services
-	 * 
-	 * PS: Tbm tenho que ver se esse é o melhor pacote para ficar essa model ( @MovimentacoesMensalIcmsIpi)
-	 */
 	
 	
 	public void setListProdutoAlteradoSped(List<ProdutoAlteradoSped> listProdutoAlterado) { 
@@ -127,16 +142,24 @@ public class MovimentoMensalIcmsIpi {
 	}
 	
 
-	
 	public Map<IndicadorDeOperacao, Set<RegistroAnalitico>> getMapRegistroAnaliticoPorTipoOperacao() {
 		return mapRegistroAnaliticoPorTipoOperacao;
 	}
 	
-//	public Set<OutrasObrigacoesEAjustes> getSetOutrasObrigacoesEAjuste() {
-//		return this.setOutrasObrigacoesEAjustes;
-//	}
-//	
-			
+	
+	/**
+	 * Será adicionado no a ObservacaoDeLancamentoFiscal (REG C195 ou REG D195) <\br>
+	 * no  <b> this.setOservacoesLancamentoFiscal <\b>
+	 * 
+	 * @param <T>
+	 * @param t
+	 */
+	public <T extends ObservacoesLancamentoFiscal> void addObservacaoLancamentoFiscal(List<T> t) {
+		if (t != null) {
+			this.setObservacoesLancamentoFiscal.addAll(t);
+		}
+	}
+	
 	/**
 	 * Adiciona os Objetos que são do tipo -> {@linkplain RegistroAnalitico};
 	 * No Map -> "setRegistroAnalitico", que será usado para escriturar o REGISTRO E110
@@ -188,23 +211,61 @@ public class MovimentoMensalIcmsIpi {
 				this.mapRegistroAnaliticoPorTipoOperacao.get(SAIDA).addAll(setRegistroAnalitico);
 			}
 		}
+//		this.mapRegistroAnaliticoPorDocFisc.put(docFisc, setRegistroAnalitico);
 	}
 	
-	public LocalDate getDataInicio() {
-		return dataInicio;
-	}
-	
-	public void setDataInicio(LocalDate dataInicio) {
-		this.dataInicio = dataInicio;
-	}
+	/**
+	 * Será montado um Mapa, com todos os DocumentosFiscais, que foram buscado no PERÍODO; <\br>
+	 * 
+	 * Key -> Id do DocumentoFiscal <\br>
+	 * Value -> DocumentoFiscal		<\br>
+	 * 
+	 * OBS: Para preencher esse mapa, as Listas de DocumentosFiscais, já deveram estar preenchidas (pois não será feito uma nova busca para preencher elas);
+	 * 
+	 * @return
+	 * 
+	 */
+	public  Map<Long, DocumentoFiscal> getMapDocumentoFiscalPorCodigo() {
+		if(isMapNull(mapDocumentoFiscalPorCodigo)) {
+			this.mapDocumentoFiscalPorCodigo = new HashMap<>();
+		}
 
-	public LocalDate getDataFim() {
-		return dataFim;
+		if (mapDocumentoFiscalPorCodigo.isEmpty()) {
+			if (collectionNotEmptyOrNull(this.listDocumentoFiscal)) {
+				mapDocumentoFiscalPorCodigo = this.listDocumentoFiscal.stream().collect(toMap(DocumentoFiscal::getId, (DocumentoFiscal docFisc) -> docFisc ));
+			}
+			
+			if (collectionNotEmptyOrNull(this.listDocumentoFiscalServico)) {
+				mapDocumentoFiscalPorCodigo = this.listDocumentoFiscalServico.stream().collect(toMap(DocumentoFiscal::getId, (DocumentoFiscal docFisc) -> docFisc));
+			}
+			
+			if (collectionNotEmptyOrNull(this.listSatsEmitidos)) {
+				mapDocumentoFiscalPorCodigo = this.listDocumentoFiscalServico.stream().collect(toMap(DocumentoFiscal::getId, (DocumentoFiscal docFisc) -> docFisc));
+			}
+		}
+		return mapDocumentoFiscalPorCodigo;
 	}
 	
-	public void setDataFim(LocalDate dataFim) {
-		this.dataFim = dataFim;
-	}
+	
+	
+	
+	
+	
+//	public LocalDate getDataInicio() {
+//		return dataInicio;
+//	}
+//	
+//	public void setDataInicio(LocalDate dataInicio) {
+//		this.dataInicio = dataInicio;
+//	}
+//
+//	public LocalDate getDataFim() {
+//		return dataFim;
+//	}
+//	
+//	public void setDataFim(LocalDate dataFim) {
+//		this.dataFim = dataFim;
+//	}
 
 
 }
