@@ -167,12 +167,24 @@ public class Tabela511AjusteApuracaoIcmsSpService {
 
 
 	/**
+	 * Irá obter o TipoAjuste, pela a String do Cod de ajuste 
+	 * @param codAjApur
+	 * @return
+	 */
+	public static TipoAjusteTabela511 getTipoAjuste(String codAjApur) {
+		if (codAjApur != null && codAjApur.length() == 8) {
+			return getTipoAjuste(codAjApur.charAt(2));
+		}
+		return null;
+	}
+	
+	/**
 	 * Será retornado o de TipoAjuste, de ICMS, conforme o pelo TERCEIRO CARACTERE do COD. AJUSTE;
 	 * 
 	 * @param terceiroCaracter
 	 * @return
 	 */
-	private TipoAjusteTabela511 getTipoAjuste(Character terceiroCaracter) {
+	private static TipoAjusteTabela511 getTipoAjuste(Character terceiroCaracter) {
 		TipoAjusteTabela511 tipoAjuste = null;
 		for (TipoAjusteTabela511 tpAjuste : getListTiposAjustes()) {
 			if (tpAjuste.getTerceiroCodigo().equals(terceiroCaracter)) {
@@ -182,6 +194,13 @@ public class Tabela511AjusteApuracaoIcmsSpService {
 		return tipoAjuste;
 	}
 
+
+	public static TipoDeducaoTabela511 getTipoDeducao(String codAjApur) {
+		if (codAjApur != null && codAjApur.length() == 8) {
+			return getTipoDeducao(codAjApur.charAt(3));
+		}
+		return null;
+	}
 	
 	private TipoDeducaoTabela511 getTipoDeducao(Tabela511AjusteApuracaoIcmsSp tbl511) {
 		Character quartoCaracter = tbl511.getCodigoAjuste().charAt(3);
@@ -196,7 +215,7 @@ public class Tabela511AjusteApuracaoIcmsSpService {
 	 * @param quartoCaracter
 	 * @return
 	 */
-	private TipoDeducaoTabela511 getTipoDeducao(Character quartoCaracter) {
+	private static TipoDeducaoTabela511 getTipoDeducao(Character quartoCaracter) {
 		TipoDeducaoTabela511 tipoDeducao = null;
 		 for (TipoDeducaoTabela511 tpDeducao : getListTiposDeducao()) {
 			if (tpDeducao.getQuartoCodigo().equals(quartoCaracter)) {
@@ -207,12 +226,12 @@ public class Tabela511AjusteApuracaoIcmsSpService {
 	}
 	
 	
-	private List<TipoAjusteTabela511> getListTiposAjustes() {
+	private static List<TipoAjusteTabela511> getListTiposAjustes() {
 		List<TipoAjusteTabela511> listTipoAjust =  Arrays.asList(TipoAjusteTabela511.values());
 		return listTipoAjust;
 	}
 	
-	private List<TipoDeducaoTabela511> getListTiposDeducao() {
+	private static List<TipoDeducaoTabela511> getListTiposDeducao() {
 		List<TipoDeducaoTabela511> listTipoDeducao = Arrays.asList(TipoDeducaoTabela511.values());
 		return listTipoDeducao;
 	}

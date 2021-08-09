@@ -13,9 +13,24 @@ package net.cartola.emissorfiscal.model.sped.fiscal.tabelas;
  */
 public enum TipoAjusteTabela511 {
 	
+	/**
+	 * Terceiro Caracter == <b> 0 <b>
+	 */
 	ICMS_PROPRIA('0'),
+	
+	/**
+	 * Terceiro Caracter == <b> 1 <b>
+	 */
 	ICMS_ST('1'),
+
+	/**
+	 * Terceiro Caracter == <b> 2 <b>
+	 */
 	DIFAL('2'),
+	
+	/**
+	 * Terceiro Caracter == <b> 3 <b> 
+	 */
 	FCP('3');
 	
 	private Character terceiroCodigo;

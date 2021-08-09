@@ -2,6 +2,13 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoE.service;
 
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.Tabela511AjusteApuracaoIcmsSpService.getTipoAjuste;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.Tabela511AjusteApuracaoIcmsSpService.getTipoDeducao;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoAjusteTabela511.ICMS_PROPRIA;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.ESTORNO_DE_CREDITOS;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.ESTORNO_DE_DEBITOS;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.OUTROS_CREDITOS;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.OUTROS_DEBITOS;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -15,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE110Service;
+import net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoAjusteTabela511;
+import net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.ObservacoesLancamentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.OutrasObrigacoesEAjustes;
@@ -39,6 +48,9 @@ class RegE110Service {
 	@Autowired
 	private SpedFiscalRegE110Service spedFiscRegE110Service;
 
+//	@Autowired
+//	private Tabela511AjusteApuracaoIcmsSpService tbl511AjusteApuracaoIcmsSpService;
+	
 	private Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes;
 
 	
@@ -57,13 +69,37 @@ class RegE110Service {
 		 *  acho que inclusive, isso seja viável salvar numa tabela, em que o Analista fiscal, possa editar ou até msm adicionar esses tipos de informações
 		 *  antes de gerar o SPED FISCAL, 
 		 */
-//		(Ref.: Reg E111)		/** CAMPO 04  **/ 
-//		(Ref.: Reg E111)		/** CAMPO 05  **/
+		regE110.setVlTotDebitos(calcularVlAjApur(listRegE111, ICMS_PROPRIA, OUTROS_DEBITOS));					/** (Ref.: Reg E111)	CAMPO 04  **/ 
+		regE110.setVlEstornosCred(calcularVlAjApur(listRegE111, ICMS_PROPRIA, ESTORNO_DE_CREDITOS));			/** (Ref.: Reg E111)	CAMPO 05  **/
 		
-		regE110.setVlTotCreditos(calcularVlTotalCreditos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));	/** CAMPO 06  **/ 
-		regE110.setVlAjCreditos(calcularVlAjusteCreditos(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal()));			/** CAMPO 07  **/ 
+		/** CAMPO 06  **/
+		regE110.setVlTotCreditos(calcularVlTotalCreditos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));		
+		/** CAMPO 07  **/
+		regE110.setVlAjCreditos(calcularVlAjusteCreditos(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal()));			
+		
+		regE110.setVlTotAjCreditos(calcularVlAjApur(listRegE111, ICMS_PROPRIA, OUTROS_CREDITOS));			/** (Ref.: Reg E111)	CAMPO 08  **/
+		regE110.setVlEstornosDeb(calcularVlAjApur(listRegE111, ICMS_PROPRIA, ESTORNO_DE_DEBITOS)); 			/** (Ref.: Reg E111)	CAMPO 09  **/
+		
+		
 //		movimentosIcmsIpi.getSetRegistroAnalitico().stream().forEach();
 		return regE110;
+	}
+
+
+	/**
+	 * Será calculado o "VL AJ APUR", do registro E111, conforme o código de apura;
+	 * 
+	 * @param listRegE111
+	 * @param tipoAjuste -> Terceiro caracter do codigo de apuração
+	 * @param tipoDeducao -> Quarto caracter do código de apuração
+	 * @return total do "VL AJ APUR", para a combinação de "Tipo Ajuste" e "Tipo Deducao";
+	 */
+	private BigDecimal calcularVlAjApur(List<RegE111> listRegE111, TipoAjusteTabela511 tipoAjuste, TipoDeducaoTabela511 tipoDeducao) {
+		BigDecimal totalVlAjApur = listRegE111.stream()
+							.filter(regE111 -> tipoAjuste.equals(getTipoAjuste(regE111.getCodAjApur())) && tipoDeducao.equals(getTipoDeducao(regE111.getCodAjApur())))
+							.map(RegE111::getVlAjApur)
+							.reduce(BigDecimal.ZERO, BigDecimal::add);
+		return totalVlAjApur;
 	}
 
 

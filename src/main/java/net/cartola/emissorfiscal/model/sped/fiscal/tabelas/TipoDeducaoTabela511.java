@@ -17,11 +17,34 @@ package net.cartola.emissorfiscal.model.sped.fiscal.tabelas;
 public enum TipoDeducaoTabela511 {
 	
 	
+	/**
+	 * Quarto Caracter == <b> 0 <b>
+	 */
 	OUTROS_DEBITOS('0'),
+	
+	/**
+	 * Quarto Caracter == <b> 1 <b>
+	 */
 	ESTORNO_DE_CREDITOS('1'),
+	
+	/**
+	 * Quarto Caracter == <b> 2 <b>
+	 */
 	OUTROS_CREDITOS('2'),
+	
+	/**
+	 * Quarto Caracter == <b> 3 <b>
+	 */
 	ESTORNO_DE_DEBITOS('3'),
+	
+	/**
+	 * Quarto Caracter == <b> 4 <b>
+	 */
 	DEDUCOES_DO_IMPOSTO_APURADO('4'),
+	
+	/**
+	 * Quarto Caracter == <b> 5 <b>
+	 */
 	DEBITOS_ESPECIAIS('5');
 
 
