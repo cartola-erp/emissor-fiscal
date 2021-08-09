@@ -1,7 +1,5 @@
 package net.cartola.emissorfiscal.sped.fiscal.tabelas;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
 import java.util.Set;
 
 import org.junit.FixMethodOrder;

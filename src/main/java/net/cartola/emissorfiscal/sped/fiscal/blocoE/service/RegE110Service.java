@@ -9,6 +9,9 @@ import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTab
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.ESTORNO_DE_DEBITOS;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.OUTROS_CREDITOS;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.OUTROS_DEBITOS;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.DEDUCOES_DO_IMPOSTO_APURADO;
+
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -16,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +55,9 @@ class RegE110Service {
 //	@Autowired
 //	private Tabela511AjusteApuracaoIcmsSpService tbl511AjusteApuracaoIcmsSpService;
 	
+	/** 
+	 * Super Classe do REG C 197 e D197 
+	 */
 	private Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes;
 
 	
@@ -80,7 +87,27 @@ class RegE110Service {
 		regE110.setVlTotAjCreditos(calcularVlAjApur(listRegE111, ICMS_PROPRIA, OUTROS_CREDITOS));			/** (Ref.: Reg E111)	CAMPO 08  **/
 		regE110.setVlEstornosDeb(calcularVlAjApur(listRegE111, ICMS_PROPRIA, ESTORNO_DE_DEBITOS)); 			/** (Ref.: Reg E111)	CAMPO 09  **/
 		
+		/** CAMPO 10  **/
+		/** TODO 
+		 * Está com "NULL", mas acredito que esse campo terei pedir para o usuário "CONTADOR/FISCAL", informar esse valor;
+		 * AO MENOS, no começo do sistema já que não terei como buscar essas informações das escriturações anteriores
+		 * 
+		 */
+		regE110.setVlSldCredorAnt(null);
+
+		/** CAMPO 11  **/
+		BigDecimal vlSldApurado = calcularVlSldApurado(regE110);
+		boolean isSldApuradoMaiorQueZero = isVlSldApuradoMaiorQueZero(vlSldApurado);
+		regE110.setVlSldApurado(isSldApuradoMaiorQueZero ? vlSldApurado : BigDecimal.ZERO);
+		/** CAMPO 12  **/
+		regE110.setVlTotDed(calcularVlTotDed(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal(), listRegE111, vlSldApurado));
 		
+		/** CAMPO 13  **/
+		// TODO 
+		
+		
+		/** CAMPO 14  **/
+		regE110.setVlSldCredorTransportar(isSldApuradoMaiorQueZero ? BigDecimal.ZERO : vlSldApurado.abs());
 //		movimentosIcmsIpi.getSetRegistroAnalitico().stream().forEach();
 		return regE110;
 	}
@@ -144,6 +171,58 @@ class RegE110Service {
 		return (vlAjusteCreditos == null) ? BigDecimal.ZERO : vlAjusteCreditos;
 	}
 
+	
+	// CAMPO 11
+	private boolean isVlSldApuradoMaiorQueZero(BigDecimal vlSldApurado) {
+		if (vlSldApurado != null && (vlSldApurado.compareTo(BigDecimal.ZERO)) >= 0) {
+//			return vlSldApurado;
+			return true;
+		}
+		return false;
+//		return BigDecimal.ZERO;
+	}
+
+
+	// CAMPO 11
+	private BigDecimal calcularVlSldApurado(RegE110 regE110) {
+		BigDecimal vlSldApurado = BigDecimal.ZERO;
+		
+		Function<RegE110, BigDecimal> fnCalcVlSldApura = e110 -> getBigDecimalNullSafe(e110.getVlTotDebitos())
+							.add(getBigDecimalNullSafe(e110.getVlAjDebitos())
+							.add(getBigDecimalNullSafe(e110.getVlTotAjDebitos()))
+							.add(getBigDecimalNullSafe(e110.getVlEstornosCred()))
+							.subtract(getBigDecimalNullSafe(e110.getVlTotCreditos()))
+							.subtract(getBigDecimalNullSafe(e110.getVlAjCreditos()))
+							.subtract(getBigDecimalNullSafe(e110.getVlTotAjCreditos()))
+							.subtract(getBigDecimalNullSafe(e110.getVlEstornosDeb()))
+							.subtract(getBigDecimalNullSafe(e110.getVlSldCredorAnt())));
+		
+		vlSldApurado = fnCalcVlSldApura.apply(regE110);
+		return vlSldApurado;
+	}
+
+	// CAMPO 12
+	private BigDecimal calcularVlTotDed(Set<ObservacoesLancamentoFiscal> setObservacoesLancamentoFiscal, List<RegE111> listRegE111, BigDecimal vlSldApurado) {
+		boolean isSldApuradoMaiorQueZero = isVlSldApuradoMaiorQueZero(vlSldApurado);
+		Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes = getSetOutrasObrigacoesEAjustes(setObservacoesLancamentoFiscal);
+		List<String> listTerceiroChar = Arrays.asList("6");
+		List<String> listQuartoChar = Arrays.asList("0");
+				
+		BigDecimal totalVlIcmsOutrasObrigacoes = setOutrasObrigacoesEAjustes.stream()
+									.filter(outraObrigacao -> isValorAjusteCreditoOrDebito(outraObrigacao, listTerceiroChar, listQuartoChar))
+									.map(OutrasObrigacoesEAjustes::getVlIcms)
+									.reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal totalRegE111DeducaoIcms = calcularVlAjApur(listRegE111, ICMS_PROPRIA, DEDUCOES_DO_IMPOSTO_APURADO);
+		
+		BigDecimal vlTotDed = BigDecimal.ZERO;
+
+		if (!isSldApuradoMaiorQueZero) {
+			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms).add(vlSldApurado);	
+		} else {
+			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms);
+		}
+		return vlTotDed;
+	}
 	
 	/**
 	 * @param setObservacoesLancamentoFiscal
