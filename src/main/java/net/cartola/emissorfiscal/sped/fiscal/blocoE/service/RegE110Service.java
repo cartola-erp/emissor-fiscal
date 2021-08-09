@@ -5,6 +5,7 @@ import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,8 +16,13 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE110Service;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
+import net.cartola.emissorfiscal.sped.fiscal.ObservacoesLancamentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.OutrasObrigacoesEAjustes;
 import net.cartola.emissorfiscal.sped.fiscal.RegistroAnalitico;
+import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC195;
+import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC197;
+import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD195;
+import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD197;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE110;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE111;
 
@@ -33,6 +39,9 @@ class RegE110Service {
 	@Autowired
 	private SpedFiscalRegE110Service spedFiscRegE110Service;
 
+	private Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes;
+
+	
 	public RegE110 montaGrupoRegE110(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		RegE110 regE110 = new RegE110();
@@ -40,7 +49,7 @@ class RegE110Service {
 		List<RegE111> listRegE111 = reg111Service.montarGrupoRegE111(movimentosIcmsIpi);
 		
 		regE110.setVlTotDebitos(calcularVlTotalDebitos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));	/** CAMPO 02  **/ 
-		regE110.setVlAjDebitos(calcularVlAjusteDebitos(movimentosIcmsIpi.getSetOutrasObrigacoesEAjustes()));			/** CAMPO 03  **/ 
+		regE110.setVlAjDebitos(calcularVlAjusteDebitos(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal()));			/** CAMPO 03  **/ 
 		
 		/**
 		 *  LEMBRANDO que algumas coisas do registro E111  são preenchidas manualmente com base... ex.: estornos de devolucoes, difal etc...
@@ -52,7 +61,7 @@ class RegE110Service {
 //		(Ref.: Reg E111)		/** CAMPO 05  **/
 		
 		regE110.setVlTotCreditos(calcularVlTotalCreditos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));	/** CAMPO 06  **/ 
-		regE110.setVlAjCreditos(calcularVlAjusteCreditos(movimentosIcmsIpi.getSetOutrasObrigacoesEAjustes()));			/** CAMPO 07  **/ 
+		regE110.setVlAjCreditos(calcularVlAjusteCreditos(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal()));			/** CAMPO 07  **/ 
 //		movimentosIcmsIpi.getSetRegistroAnalitico().stream().forEach();
 		return regE110;
 	}
@@ -69,11 +78,13 @@ class RegE110Service {
 	}
 	
 	// Campo 03
-	private BigDecimal calcularVlAjusteDebitos(Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes) {
+	private BigDecimal calcularVlAjusteDebitos(Set<ObservacoesLancamentoFiscal> setObservacoesLancamentoFiscal) {
+		Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes = getSetOutrasObrigacoesEAjustes(setObservacoesLancamentoFiscal);
 		BigDecimal vlAjusteDebitos = setOutrasObrigacoesEAjustes.stream().filter(outraObrigacao -> isValorAjusteDebitos(outraObrigacao))
 				.map(OutrasObrigacoesEAjustes::getVlIcms).reduce(BigDecimal.ZERO, BigDecimal::add);
 		return (vlAjusteDebitos == null) ? BigDecimal.ZERO : vlAjusteDebitos;
 	}
+
 
 
 	// Campo 06
@@ -87,12 +98,40 @@ class RegE110Service {
 	}
 
 	// CAMPO 07
-	private BigDecimal calcularVlAjusteCreditos(Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes) {
+	private BigDecimal calcularVlAjusteCreditos(Set<ObservacoesLancamentoFiscal> setObservacoesLancamentoFiscal) {
+		Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes = getSetOutrasObrigacoesEAjustes(setObservacoesLancamentoFiscal);
+		
 		BigDecimal vlAjusteCreditos = setOutrasObrigacoesEAjustes.stream().filter(outraObrigacao -> isValorAjusteCredito(outraObrigacao))
 				.map(OutrasObrigacoesEAjustes::getVlIcms)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		return (vlAjusteCreditos == null) ? BigDecimal.ZERO : vlAjusteCreditos;
+	}
+
+	
+	/**
+	 * @param setObservacoesLancamentoFiscal
+	 * @return 
+	 */
+	private Set<OutrasObrigacoesEAjustes> getSetOutrasObrigacoesEAjustes(Set<ObservacoesLancamentoFiscal> setObservacoesLancamentoFiscal) {
+		// Irei receber no metodo um set de obs. de lancamento fiscal
+		
+		if (this.setOutrasObrigacoesEAjustes == null || this.setOutrasObrigacoesEAjustes.isEmpty()) {
+			 this.setOutrasObrigacoesEAjustes = new HashSet<>();
+			
+			for (ObservacoesLancamentoFiscal obsLancamentoFiscal : setObservacoesLancamentoFiscal) {
+				if (obsLancamentoFiscal instanceof RegC195) {
+					List<RegC197> regC197 = ((RegC195) obsLancamentoFiscal).getRegC197();
+					setOutrasObrigacoesEAjustes.addAll(regC197);
+				}
+				
+				if (obsLancamentoFiscal instanceof RegD195) {
+					List<RegD197> regD197 = ((RegD195) obsLancamentoFiscal).getRegD197();
+					setOutrasObrigacoesEAjustes.addAll(regD197);
+				}
+			}
+		}
+		return this.setOutrasObrigacoesEAjustes;
 	}
 
 	
