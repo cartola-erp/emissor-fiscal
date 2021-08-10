@@ -5,12 +5,14 @@ import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.Tabela511AjusteApuracaoIcmsSpService.getTipoAjuste;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.Tabela511AjusteApuracaoIcmsSpService.getTipoDeducao;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoAjusteTabela511.ICMS_PROPRIA;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.DEBITOS_ESPECIAIS;
+import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.DEDUCOES_DO_IMPOSTO_APURADO;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.ESTORNO_DE_CREDITOS;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.ESTORNO_DE_DEBITOS;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.OUTROS_CREDITOS;
 import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.OUTROS_DEBITOS;
-import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTabela511.DEDUCOES_DO_IMPOSTO_APURADO;
-
+import static net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento.ESCRITURACAO_EXTEMPORANEA_DE_DOCUMENTO_COMPLEMENTAR;
+import static net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento.ESCRITURAÇÃO_EXTEMPORÂNEA_DE_DOCUMENTO_REGULAR;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
 
 import java.math.BigDecimal;
@@ -24,6 +26,7 @@ import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE110Service;
 import net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoAjusteTabela511;
@@ -38,6 +41,8 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD195;
 import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD197;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE110;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE111;
+import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
+import net.cartola.emissorfiscal.util.NumberUtilRegC100;
 
 /**
  * @data 11 de jun. de 2021
@@ -106,7 +111,7 @@ class RegE110Service {
 		BigDecimal vlSldCredorTransportar = calcularVlSldCredorTransportar(regE110);
 		regE110.setVlSldCredorTransportar(vlSldCredorTransportar);
 		/** CAMPO 15 **/
-		
+		regE110.setDebEsp(calcularDebEsp(movimentosIcmsIpi, listRegE111));
 		
 		return regE110;
 	}
@@ -261,6 +266,34 @@ class RegE110Service {
 		
 		return isValorMaiorQueZero(vlSldCredorTransportar) ? BigDecimal.ZERO : vlSldCredorTransportar;
 	}
+	
+	// CAMPO 15
+	private BigDecimal calcularDebEsp(MovimentoMensalIcmsIpi movimentosIcmsIpi, List<RegE111> listRegE111) {
+		// TODO Auto-generated method stub
+		List<String> listTerceiroCharOutrasObriga = Arrays.asList("7");
+		List<String> listQuartoCharOutrasObriga = Arrays.asList("0");
+		
+		Map<SituacaoDoDocumento, Set<DocumentoFiscal>> mapDocFiscPorSituacao = movimentosIcmsIpi.getMapDocumentoFiscalPorSituacao();
+		Set<DocumentoFiscal> setDocFiscExtemporaneo = new HashSet<>();
+		setDocFiscExtemporaneo.addAll(mapDocFiscPorSituacao.get(ESCRITURAÇÃO_EXTEMPORÂNEA_DE_DOCUMENTO_REGULAR));
+		setDocFiscExtemporaneo.addAll(mapDocFiscPorSituacao.get(ESCRITURACAO_EXTEMPORANEA_DE_DOCUMENTO_COMPLEMENTAR));
+		
+		BigDecimal totalDebEspDocFiscExtemporaneo = setDocFiscExtemporaneo.stream()
+			.map( docFisc -> NumberUtilRegC100.getVlrOrBaseCalc(docFisc.getIcmsValor(), docFisc.getTipoOperacao()))
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes = getSetOutrasObrigacoesEAjustes(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal());
+		BigDecimal totalDebEspOperacoesProprias = setOutrasObrigacoesEAjustes.stream()
+			.filter(outraObrigacao -> isValorAjusteCreditoOrDebito(outraObrigacao, listTerceiroCharOutrasObriga, listQuartoCharOutrasObriga))
+			.map(OutrasObrigacoesEAjustes::getVlIcms)
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		BigDecimal totalVlAjApurDebitosEspeciais = calcularVlAjApur(listRegE111, ICMS_PROPRIA, DEBITOS_ESPECIAIS);
+		
+		BigDecimal totalDebitosEspeciais = totalDebEspDocFiscExtemporaneo.add(totalDebEspOperacoesProprias).add(totalVlAjApurDebitosEspeciais);
+		return totalDebitosEspeciais;
+	}
+	
 	
 	/**
 	 * @param setObservacoesLancamentoFiscal
