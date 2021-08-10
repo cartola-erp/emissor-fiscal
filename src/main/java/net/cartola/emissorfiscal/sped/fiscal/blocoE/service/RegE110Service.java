@@ -69,7 +69,6 @@ class RegE110Service {
 		
 		regE110.setVlTotDebitos(calcularVlTotalDebitos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));	/** CAMPO 02  **/ 
 		regE110.setVlAjDebitos(calcularVlAjusteDebitos(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal()));			/** CAMPO 03  **/ 
-		
 		/**
 		 *  LEMBRANDO que algumas coisas do registro E111  são preenchidas manualmente com base... ex.: estornos de devolucoes, difal etc...
 		 *  mas acredito que consigo "prever a maioria desses casos, fazendo "uma pré consulta", e mostrando para o usuário antes de gerar",
@@ -78,12 +77,10 @@ class RegE110Service {
 		 */
 		regE110.setVlTotDebitos(calcularVlAjApur(listRegE111, ICMS_PROPRIA, OUTROS_DEBITOS));					/** (Ref.: Reg E111)	CAMPO 04  **/ 
 		regE110.setVlEstornosCred(calcularVlAjApur(listRegE111, ICMS_PROPRIA, ESTORNO_DE_CREDITOS));			/** (Ref.: Reg E111)	CAMPO 05  **/
-		
 		/** CAMPO 06  **/
 		regE110.setVlTotCreditos(calcularVlTotalCreditos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));		
 		/** CAMPO 07  **/
 		regE110.setVlAjCreditos(calcularVlAjusteCreditos(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal()));			
-		
 		regE110.setVlTotAjCreditos(calcularVlAjApur(listRegE111, ICMS_PROPRIA, OUTROS_CREDITOS));			/** (Ref.: Reg E111)	CAMPO 08  **/
 		regE110.setVlEstornosDeb(calcularVlAjApur(listRegE111, ICMS_PROPRIA, ESTORNO_DE_DEBITOS)); 			/** (Ref.: Reg E111)	CAMPO 09  **/
 		
@@ -97,21 +94,22 @@ class RegE110Service {
 
 		/** CAMPO 11  **/
 		BigDecimal vlSldApurado = calcularVlSldApurado(regE110);
-		boolean isSldApuradoMaiorQueZero = isVlSldApuradoMaiorQueZero(vlSldApurado);
+		boolean isSldApuradoMaiorQueZero = isValorMaiorQueZero(vlSldApurado);
 		regE110.setVlSldApurado(isSldApuradoMaiorQueZero ? vlSldApurado : BigDecimal.ZERO);
 		/** CAMPO 12  **/
 		regE110.setVlTotDed(calcularVlTotDed(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal(), listRegE111, vlSldApurado));
-		
 		/** CAMPO 13  **/
-		// TODO 
-		
-		
+		BigDecimal vlIcmsRecolher = calcularVlIcmsRecolher(regE110);
+		boolean isVlIcmsRecolherMaiorQueZero = isValorMaiorQueZero(vlIcmsRecolher);
+		regE110.setVlIcmsRecolher(isVlIcmsRecolherMaiorQueZero ? vlIcmsRecolher : BigDecimal.ZERO);
 		/** CAMPO 14  **/
-		regE110.setVlSldCredorTransportar(isSldApuradoMaiorQueZero ? BigDecimal.ZERO : vlSldApurado.abs());
-//		movimentosIcmsIpi.getSetRegistroAnalitico().stream().forEach();
+		BigDecimal vlSldCredorTransportar = calcularVlSldCredorTransportar(regE110);
+		regE110.setVlSldCredorTransportar(vlSldCredorTransportar);
+		/** CAMPO 15 **/
+		
+		
 		return regE110;
 	}
-
 
 	/**
 	 * Será calculado o "VL AJ APUR", do registro E111, conforme o código de apura;
@@ -172,9 +170,9 @@ class RegE110Service {
 	}
 
 	
-	// CAMPO 11
-	private boolean isVlSldApuradoMaiorQueZero(BigDecimal vlSldApurado) {
-		if (vlSldApurado != null && (vlSldApurado.compareTo(BigDecimal.ZERO)) >= 0) {
+	// CAMPO 11 e 13
+	private boolean isValorMaiorQueZero(BigDecimal value) {
+		if (value != null && (value.compareTo(BigDecimal.ZERO)) >= 0) {
 //			return vlSldApurado;
 			return true;
 		}
@@ -182,28 +180,31 @@ class RegE110Service {
 //		return BigDecimal.ZERO;
 	}
 
-
+	
+	// CAMPO 11 Funcao que calcular o VL SLD APURADO
+	Function<RegE110, BigDecimal> fnCalcVlSldApuracao = e110 -> getBigDecimalNullSafe(e110.getVlTotDebitos())
+			.add(getBigDecimalNullSafe(e110.getVlAjDebitos())
+			.add(getBigDecimalNullSafe(e110.getVlTotAjDebitos()))
+			.add(getBigDecimalNullSafe(e110.getVlEstornosCred()))
+			.subtract(getBigDecimalNullSafe(e110.getVlTotCreditos()))
+			.subtract(getBigDecimalNullSafe(e110.getVlAjCreditos()))
+			.subtract(getBigDecimalNullSafe(e110.getVlTotAjCreditos()))
+			.subtract(getBigDecimalNullSafe(e110.getVlEstornosDeb()))
+			.subtract(getBigDecimalNullSafe(e110.getVlSldCredorAnt())));
+	
 	// CAMPO 11
 	private BigDecimal calcularVlSldApurado(RegE110 regE110) {
 		BigDecimal vlSldApurado = BigDecimal.ZERO;
-		
-		Function<RegE110, BigDecimal> fnCalcVlSldApura = e110 -> getBigDecimalNullSafe(e110.getVlTotDebitos())
-							.add(getBigDecimalNullSafe(e110.getVlAjDebitos())
-							.add(getBigDecimalNullSafe(e110.getVlTotAjDebitos()))
-							.add(getBigDecimalNullSafe(e110.getVlEstornosCred()))
-							.subtract(getBigDecimalNullSafe(e110.getVlTotCreditos()))
-							.subtract(getBigDecimalNullSafe(e110.getVlAjCreditos()))
-							.subtract(getBigDecimalNullSafe(e110.getVlTotAjCreditos()))
-							.subtract(getBigDecimalNullSafe(e110.getVlEstornosDeb()))
-							.subtract(getBigDecimalNullSafe(e110.getVlSldCredorAnt())));
-		
-		vlSldApurado = fnCalcVlSldApura.apply(regE110);
+		vlSldApurado = fnCalcVlSldApuracao.apply(regE110);
 		return vlSldApurado;
 	}
+	
+
+
 
 	// CAMPO 12
 	private BigDecimal calcularVlTotDed(Set<ObservacoesLancamentoFiscal> setObservacoesLancamentoFiscal, List<RegE111> listRegE111, BigDecimal vlSldApurado) {
-		boolean isSldApuradoMaiorQueZero = isVlSldApuradoMaiorQueZero(vlSldApurado);
+		boolean isSldApuradoMaiorQueZero = isValorMaiorQueZero(vlSldApurado);
 		Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes = getSetOutrasObrigacoesEAjustes(setObservacoesLancamentoFiscal);
 		List<String> listTerceiroChar = Arrays.asList("6");
 		List<String> listQuartoChar = Arrays.asList("0");
@@ -222,6 +223,43 @@ class RegE110Service {
 			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms);
 		}
 		return vlTotDed;
+	}
+	
+	// CAMPO 13
+	private BigDecimal calcularVlIcmsRecolher(RegE110 regE110) {
+		BigDecimal vlIcmsRecolher = regE110.getVlSldApurado().subtract(regE110.getVlTotDed());
+		return vlIcmsRecolher;
+	}
+
+//	/**
+//	 * CAMPO 14
+//	 * 
+//	 * TODO -> Tenho minhas dúvidas, se é para ser "somado/adicionado", o vlIcmsRecolher no SALDO CREDOR da FORMA que está abaixo
+//	 * 
+//	 * @param isSldApuradoMaiorQueZero
+//	 * @param vlSldApurado
+//	 * @param isVlIcmsRecolherMaiorQueZero
+//	 * @param vlIcmsRecolher
+//	 * @return
+//	 */
+//	private BigDecimal calcularVlSldCredorTransportar(boolean isSldApuradoMaiorQueZero, BigDecimal vlSldApurado, boolean isVlIcmsRecolherMaiorQueZero, BigDecimal vlIcmsRecolher) {
+//		BigDecimal vldSldCredorTransportar = BigDecimal.ZERO;
+//		if (!isSldApuradoMaiorQueZero) {
+//			 vldSldCredorTransportar = vldSldCredorTransportar.add(vlSldApurado.abs());
+//		}
+//		
+//		if (!isVlIcmsRecolherMaiorQueZero) {
+//			vldSldCredorTransportar = vldSldCredorTransportar.add(vlIcmsRecolher.abs());
+//		}
+//		return isValorMaiorQueZero(vldSldCredorTransportar) ? BigDecimal.ZERO : vldSldCredorTransportar.abs();
+//	}
+
+	// CAMPO 14
+	private BigDecimal calcularVlSldCredorTransportar(RegE110 regE110) {
+		BigDecimal vlSldCredorTransportar = BigDecimal.ZERO;
+		vlSldCredorTransportar = fnCalcVlSldApuracao.apply(regE110).subtract(getBigDecimalNullSafe(regE110.getVlTotDed()));
+		
+		return isValorMaiorQueZero(vlSldCredorTransportar) ? BigDecimal.ZERO : vlSldCredorTransportar;
 	}
 	
 	/**
