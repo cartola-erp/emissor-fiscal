@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.sped.fiscal;
 import static java.util.stream.Collectors.toMap;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.ValidationHelper.collectionNotEmptyOrNull;
 import static net.cartola.emissorfiscal.util.ValidationHelper.isMapNull;
 
@@ -30,6 +31,7 @@ import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSped;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
+import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
 
 
 /**
@@ -53,6 +55,13 @@ public class MovimentoMensalIcmsIpi {
 	@Setter(value = AccessLevel.NONE)
 	private List<DocumentoFiscal> listDocFiscInterestadualComDifal;
 	@Setter(value = AccessLevel.NONE) private Map<Long, DocumentoFiscal> mapDocumentoFiscalPorCodigo;
+	
+	/**
+	 * Mapa preenchido em RUNTIME, depois de ser gerado o REG C100/ D100
+	 * Até o momento, é usado somente no REG E110, para calcular o campo 15 (DEB_ESP)
+	 */
+	@Setter(value = AccessLevel.NONE) private Map<SituacaoDoDocumento, Set<DocumentoFiscal>> mapDocumentoFiscalPorSituacao;
+	
 	private List<DocumentoFiscal> listDocumentoFiscal;
 	private List<DocumentoFiscal> listDocumentoFiscalServico;
 	private Set<DocumentoFiscal> listDocFiscSantaCatarina;
@@ -71,6 +80,7 @@ public class MovimentoMensalIcmsIpi {
 	
 	private List<CodificacaoReg0450InfoComplementarFisco> listCodInfoComplementarFisco;
 	/**
+	 * Super Classe, dos REGISTROS -> C195 e D195
 	 * Atualmente é usado para Gerar o REGISTRO 0460 (e também quando tudo que teve ajuste)
 	 * 
 	 */
@@ -84,6 +94,7 @@ public class MovimentoMensalIcmsIpi {
 	 * 
 	 */
 	private Map<IndicadorDeOperacao, Set<RegistroAnalitico>> mapRegistroAnaliticoPorTipoOperacao;
+	
 	
 	/**
 	 * São as mesmas inforações do mapa (acima ^^), mapAnaliticoPorTipoOpereacao, porém esse é por Documento Fiscal
@@ -157,6 +168,27 @@ public class MovimentoMensalIcmsIpi {
 	public <T extends ObservacoesLancamentoFiscal> void addObservacaoLancamentoFiscal(List<T> t) {
 		if (t != null) {
 			this.setObservacoesLancamentoFiscal.addAll(t);
+		}
+	}
+	
+	
+	/**
+	 * O DocumentoFiscal, será adicionado no mapa de DocumentoFiscal, por situacão
+	 * 
+	 * @param docFisc
+	 */
+	public void addDocumentoFiscalPorSituacao(DocumentoFiscal docFisc) {
+		if (this.mapDocumentoFiscalPorSituacao == null) {
+			this.mapDocumentoFiscalPorSituacao = new HashMap<>();
+		}
+		SituacaoDoDocumento codSit = getCodSituacao(docFisc);
+		
+		if (this.mapDocumentoFiscalPorSituacao.containsKey(codSit)) {
+			this.mapDocumentoFiscalPorSituacao.get(codSit).add(docFisc);
+		} else {
+			Set<DocumentoFiscal> setDocFisc = new HashSet<>();
+			setDocFisc.add(docFisc);
+			this.mapDocumentoFiscalPorSituacao.put(codSit, setDocFisc);
 		}
 	}
 	
