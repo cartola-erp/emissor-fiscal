@@ -71,7 +71,6 @@ class RegE110Service {
 
 	
 	public RegE110 montaGrupoRegE110(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
-		// TODO Auto-generated method stub
 		RegE110 regE110 = new RegE110();
 		
 		List<RegE111> listRegE111 = reg111Service.montarGrupoRegE111(movimentosIcmsIpi);

@@ -88,4 +88,15 @@ public final class NumberUtilRegC100 {
 		return value;
 	}
 
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static boolean isValorMaiorIgualAZero(BigDecimal value) {
+		if (value != null && (value.compareTo(BigDecimal.ZERO)) >= 0) {
+			return true;
+		}
+		return false;
+	}
 }
