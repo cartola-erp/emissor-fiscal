@@ -176,7 +176,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			movimentosIcmsIpi.addObservacaoLancamentoFiscal(listRegC195);
 			regC100.setRegC195(listRegC195);
 		}
-		
+		movimentosIcmsIpi.addDocumentoFiscalPorSituacao(docFisc);
 		return regC100;
 	}
 

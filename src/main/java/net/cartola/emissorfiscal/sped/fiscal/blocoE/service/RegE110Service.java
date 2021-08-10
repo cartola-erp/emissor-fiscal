@@ -55,6 +55,9 @@ class RegE110Service {
 	private RegE111Service reg111Service;
 	
 	@Autowired
+	private RegE116Service regE116Service;
+	
+	@Autowired
 	private SpedFiscalRegE110Service spedFiscRegE110Service;
 
 //	@Autowired
@@ -64,6 +67,7 @@ class RegE110Service {
 	 * Super Classe do REG C 197 e D197 
 	 */
 	private Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes;
+
 
 	
 	public RegE110 montaGrupoRegE110(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
@@ -113,6 +117,7 @@ class RegE110Service {
 		/** CAMPO 15 **/
 		regE110.setDebEsp(calcularDebEsp(movimentosIcmsIpi, listRegE111));
 		
+		regE110.setRegE116(regE116Service.montarGrupoDeRegistro(movimentosIcmsIpi, regE110));
 		return regE110;
 	}
 

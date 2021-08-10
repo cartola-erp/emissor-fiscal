@@ -22,7 +22,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.OrigemDoProcesso;
 		@Field(name = "indProc"),
 		@Field(name = "proc"),
 		@Field(name = "txtCompl"),
-		@Field(name = "mesRef")
+		@Field(name = "mesRef", length = 6, padding = 0)
 })
 public class RegE116 {
 
