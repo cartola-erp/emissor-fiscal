@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -161,7 +163,7 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 		if (pessAlterado.getCodMunAnt() != pessAlterado.getCodMunNovo()) {
 			listCamposAlterados.add(Reg0175CamposAlterados.COD_MUN);
 		}
-		if (!pessAlterado.getSuframaAnt().equalsIgnoreCase(pessAlterado.getSuframaNovo())) {
+		if (pessAlterado.getSuframaAnt() != null && pessAlterado.getSuframaNovo() != null &&  !isDiferente(pessAlterado.getSuframaAnt(), pessAlterado.getSuframaNovo())) {
 			listCamposAlterados.add(Reg0175CamposAlterados.SUFRAMA);
 		}
 		if (!pessAlterado.getEnderecoAnt().equalsIgnoreCase(pessAlterado.getEnderecoNovo())) {
@@ -170,7 +172,8 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 		if (pessAlterado.getNumeroAnt() != pessAlterado.getNumeroNovo()) {
 			listCamposAlterados.add(Reg0175CamposAlterados.NUM);
 		}
-		if (!pessAlterado.getComplementoAnt().equalsIgnoreCase(pessAlterado.getComplementoNovo())) {
+		
+		if (pessAlterado.getComplementoAnt() != null && pessAlterado.getComplementoNovo() != null && !isDiferente(pessAlterado.getComplementoAnt(), pessAlterado.getComplementoNovo())) {
 			listCamposAlterados.add(Reg0175CamposAlterados.COMPL);
 		}
 		if (!pessAlterado.getBairroAnt().equalsIgnoreCase(pessAlterado.getBairroNovo())) {
@@ -179,6 +182,9 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 		return listCamposAlterados;
 	}
 
+	private boolean isDiferente(String stringUm, String stringDois) {
+		return stringUm.equalsIgnoreCase(stringDois);
+	}
 
 	/* Ver como irá funcionar a atualização do cadastro de pessoa. Ex.:
 	 * Quando atualizar no ERP, manda atualizar aqui no emissor-fiscal ?
@@ -187,12 +193,12 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 		if (mapPessoaAlteradoPorCnpjNovo.isEmpty()) {
 //			listCadPessoaAlterado.stream().forEach(pessoaAlterado -> mapPessoaAlteradoPorCnpjNovo
 //					.put(pessoaAlterado.getCnpjNovo(), pessoaAlterado));
-			listCadPessoaAlterado.stream().filter(pessAlterado -> !pessAlterado.getCnpjNovo().isEmpty()).forEach(
+			listCadPessoaAlterado.stream().filter(pessAlterado -> hasText(pessAlterado.getCnpjNovo())).forEach(
 					pessoaAlterado -> mapPessoaAlteradoPorCnpjNovo.put(pessoaAlterado.getCnpjNovo(), pessoaAlterado));
 		}
 		
 		if (mapPessoaAlteradoPorCpfNovo.isEmpty()) {
-			listCadPessoaAlterado.stream().filter(pessAlterado -> !pessAlterado.getCpfNovo().isEmpty())
+			listCadPessoaAlterado.stream().filter(pessAlterado -> hasText(pessAlterado.getCpfNovo()))
 					.forEach(pessAlterado -> mapPessoaAlteradoPorCpfNovo.put(pessAlterado.getCpfNovo(), pessAlterado));
 		}
 	}

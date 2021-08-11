@@ -3,6 +3,8 @@ package net.cartola.emissorfiscal.documento;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,8 +37,8 @@ public class DocumentoFiscalItemService {
 		return documentoFiscalItemRepository.findByNcmIn(ncms);
 	}
 
-	public List<DocumentoFiscalItem> findItensByVariosDocumentoFiscal(Collection<DocumentoFiscal> listDocumentosFiscais) {
-		return documentoFiscalItemRepository.findByDocumentoFiscalIn(listDocumentosFiscais);
+	public List<DocumentoFiscalItem> findItensByVariosDocumentoFiscal(Set<Long> listDocFiscIds) {
+		return documentoFiscalItemRepository.findByDocumentoFiscalIdIn(listDocFiscIds);
 	}
 	
 	public Optional<DocumentoFiscalItem> findOne(Long id) {

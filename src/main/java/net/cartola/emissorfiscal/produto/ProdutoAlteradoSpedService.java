@@ -33,7 +33,7 @@ public class ProdutoAlteradoSpedService {
 	 * @param setCodigoProdutoErp
 	 * @return
 	 */
-	public List<ProdutoAlteradoSped> findProdutoAlteradoPorPeriodoSped(LocalDate dataInicio, LocalDate dataFim, Collection<Integer> setCodigoProdutoErp) {
+	public List<ProdutoAlteradoSped> findProdutoAlteradoPorPeriodoSpedEProdutoCodigo(LocalDate dataInicio, LocalDate dataFim, Collection<Integer> setCodigoProdutoErp) {
 		return prodAlterSpedRepository.findByDataUsadaSpedInicioBetweenOrDataUsadaSpedInicioAndProdutoCodigoErpIn(dataInicio, dataFim, null, setCodigoProdutoErp);
 	}
 	
