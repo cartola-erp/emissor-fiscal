@@ -35,7 +35,7 @@ public class RegE316 {
 	private OrigemDoProcesso indProc;
 	private String proc;
 	private String txtCompl;
-	private LocalDate mesRef;	//Informe o mês de referência no formato “mmaaaa | 6 caracteres”
+	private String mesRef;	//Informe o mês de referência no formato “mmaaaa | 6 caracteres”
 	
 	public String getReg() {
 		return reg;
@@ -105,11 +105,11 @@ public class RegE316 {
 		this.txtCompl = txtCompl;
 	}
 
-	public LocalDate getMesRef() {
+	public String getMesRef() {
 		return mesRef;
 	}
 
-	public void setMesRef(LocalDate mesRef) {
+	public void setMesRef(String mesRef) {
 		this.mesRef = mesRef;
 	}
 }

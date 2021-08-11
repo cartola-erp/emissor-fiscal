@@ -17,7 +17,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.ObrigacaoIcmsARecolher;
  * @author robson.costa
  */
 @Service
-public class RegE116Service {
+class RegE116Service {
 
 	
 	public List<RegE116> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi, RegE110 regE110) {

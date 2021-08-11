@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
@@ -18,8 +19,10 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeMovimentoFcp;
  * @author robson.costa
  */
 @Service
-public class RegE310Service {
+class RegE310Service {
 	
+	@Autowired
+	private RegE316Service regE316Service;
 
 	public RegE310 montarGrupoRegE310(MovimentoMensalIcmsIpi movimentosIcmsIpi, List<DocumentoFiscal> listDocFiscNaUf) {
 		RegE310 regE310 = new RegE310();
@@ -67,6 +70,7 @@ public class RegE310Service {
 		// CAMPO 22
 		regE310.setDebEspFcp(BigDecimal.ZERO);
 		
+		regE310.setRegE316(regE316Service.montrarGrupoRegistro(movimentosIcmsIpi, listDocFiscNaUf));
 		return regE310;
 	}
 

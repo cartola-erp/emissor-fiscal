@@ -1,11 +1,12 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoE.service;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ class RegE300Service implements MontaGrupoDeRegistroList<RegE300, MovimentoMensa
 		List<RegE300> listE300 = new ArrayList<>();
 		Map<EstadoSigla, List<DocumentoFiscal>> mapDocFiscInterestadualComDifalPorUf = movimentosIcmsIpi
 				.getListDocFiscInterestadualComDifal().stream()
-				.collect(Collectors.groupingBy((docFisc) -> docFisc.getEmitente().getEndereco().getUf()));
+				.collect(groupingBy((docFisc) -> docFisc.getEmitente().getEndereco().getUf()));
 		
 		
 		for (EstadoSigla uf : mapDocFiscInterestadualComDifalPorUf.keySet()) {
