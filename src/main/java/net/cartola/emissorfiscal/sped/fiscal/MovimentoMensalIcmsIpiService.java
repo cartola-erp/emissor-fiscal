@@ -161,12 +161,15 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	
 	
 	private List<DocumentoFiscal> getListDocumentoFiscal(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Optional<Pessoa> lojaEmitOrDest, List<TipoServico> listTipoServico ) {
+		LOG.log(Level.INFO, "Buscando DocumentoFiscais, que o Tipo Servico seja == NENHUM" );
+
 		List<DocumentoFiscal> listDocFiscal = new ArrayList<>();
 		List<DocumentoFiscal> listDocFiscalEntradaEmitidoTerceiros = docFiscService.findByPeriodoCadastroAndLojaAndTipoOperacaoAndTipoServico(dataHoraInicio, dataHoraFim, lojaEmitOrDest.get(), IndicadorDeOperacao.ENTRADA, listTipoServico);
 		List<DocumentoFiscal> listDocFiscalEmitidasPelaLojaAtual = docFiscService.findByPeriodoCadastroAndEmitenteAndTipoServico(dataHoraInicio, dataHoraFim, lojaEmitOrDest.get(), listTipoServico);
 		
 		listDocFiscal.addAll(listDocFiscalEntradaEmitidoTerceiros);
 		listDocFiscal.addAll(listDocFiscalEmitidasPelaLojaAtual);
+		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, DocumentosFiscais == TipoServico.NENHUM  ", listDocFiscal.size());
 		return listDocFiscal;
 	}
 	
@@ -178,8 +181,11 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	 * @return Todos os DocumentoFiscal do Periodo, Cujo O TipoServico seja algums dos -> OUTROS, CTE, ENERGIA, AGUA, INTERNET ou TELEFONE_FIXO_MOVEL
 	 */
 	private List<DocumentoFiscal> getListDocumentoFiscalServico(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Optional<Pessoa> lojaEmitOrDest) {
+		LOG.log(Level.INFO, "Buscando DocumentoFiscais, que sejam de SERVICO" );
 		List<TipoServico> listTipoServico = asList(TipoServico.OUTROS, CTE, ENERGIA, AGUA, INTERNET, TELEFONE_FIXO_MOVEL);
-		return getListDocumentoFiscal(dataHoraInicio, dataHoraFim, lojaEmitOrDest, listTipoServico);
+		List<DocumentoFiscal> listDocFiscServico = getListDocumentoFiscal(dataHoraInicio, dataHoraFim, lojaEmitOrDest, listTipoServico);
+		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, DocumentosFiscais de SERVICO  ", listDocFiscServico.size());
+		return listDocFiscServico;
 	}
 	
 	
@@ -189,44 +195,54 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	}
 	
 	private List<Pessoa> getListCadastrosPessoas(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listDocFiscalServico) {
+		LOG.log(Level.INFO, "Buscando todos os cadastros de Pessoas, com base nos DocumentoFiscais" );
+
 		Set<Long> pessoasId = listDocFiscal.stream().map(docFiscal -> docFiscal.getEmitente().getId()).collect(toSet());
 		pessoasId.addAll(listDocFiscal.stream().map(docFiscal -> docFiscal.getDestinatario().getId()).collect(toSet()));
-		
 		pessoasId.addAll(listDocFiscal.stream().map(docFiscalServico -> docFiscalServico.getEmitente().getId()).collect(toSet()));
 		pessoasId.addAll(listDocFiscalServico.stream().map(docFiscalServico -> docFiscalServico.getDestinatario().getId()).collect(toSet()));
 		List<Pessoa> listCadPessoas = pessoaService.findByIdsIn(pessoasId);
+		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, cadastro de pessoas (PF/PJ)  ", listCadPessoas.size());
 		return listCadPessoas;
 	}
 
 	private List<PessoaAlteradoSped> getListCadastroPessoaAlteradoSped(LocalDate dataInicio, LocalDate dataFim, List<Pessoa> listCadPessoas) {
+		LOG.log(Level.INFO, "Buscando todos os cadastros de PessoaAlteradoSped (que foram alteradas), no PERIODO de {0} a {1} " , new Object[]{dataInicio, dataFim});
 		Set<String> cpfCnpjSet = getListCpfCnpj(listCadPessoas);
 		List<PessoaAlteradoSped> listPessAlteradoSped = pessAlterSpedService.findPessoaAlteradoPorPeriodoSped(dataInicio, dataFim, cpfCnpjSet);
+		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, PessoaAlteradoSped (PF/PJ)  ", listPessAlteradoSped.size());
 		return listPessAlteradoSped;
 	}
 
 
 	private Set<DocumentoFiscalItem> getSetDeItens(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listSatsEmitidos) {
+		LOG.log(Level.INFO, "Buscando todos os ITENS que estão em uma NFE e/ou SAT" );
 		Set<DocumentoFiscalItem> setItens = new HashSet<>();
 		
 		List<DocumentoFiscalItem> listDocFiscItens = docFiscalItemService.findItensByVariosDocumentoFiscal(listDocFiscal);
 		List<DocumentoFiscalItem> listItensDosSats = docFiscalItemService.findItensByVariosDocumentoFiscal(listSatsEmitidos);
-		
 		setItens.addAll(listDocFiscItens);
 		setItens.addAll(listItensDosSats);
+		
+		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, ITENS ", setItens.size());
 		return setItens;
 	}
 	
 	private List<ProdutoAlteradoSped> getListProdAlteradoSped(LocalDate dataInicio, LocalDate dataFim, Set<DocumentoFiscalItem> setItens) {
+		LOG.log(Level.INFO, "Buscando todos os produtos de ProdutoAlteradoSped (produtos que foram alteradas), no PERIODO de {0} a {1} " , new Object[]{dataInicio, dataFim});
+
 		Set<Integer> setCodigoProdutoErp = new HashSet<>();
 		setCodigoProdutoErp = setItens.stream().map(DocumentoFiscalItem::getProdutoCodigoErp).collect(toSet());
 		List<ProdutoAlteradoSped> listProdAlteradoSped = prodAlterSpedService.findProdutoAlteradoPorPeriodoSped(dataInicio, dataFim, setCodigoProdutoErp);
+		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, ProdutoAlteradoSped  ", listProdAlteradoSped.size());
 		return listProdAlteradoSped;
 	}
 	
 	private List<ProdutoUnidade> getListProdutoUnidade(Set<DocumentoFiscalItem> listItens) {
+		LOG.log(Level.INFO, "Buscando todas as UNIDADES dos ITENS que estão em uma NFE e/ou SAT" );
 		Set<String> unidadesSet = listItens.stream().map(DocumentoFiscalItem::getUnidade).collect(toSet());
 		List<ProdutoUnidade> listProdUnid = prodUnidService.findByListSiglas(unidadesSet);
-
+		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, ProdutoUnidade  ", listProdUnid.size());
 		return listProdUnid;
 	}
 
