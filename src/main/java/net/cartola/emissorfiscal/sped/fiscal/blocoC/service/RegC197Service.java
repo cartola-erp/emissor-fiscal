@@ -144,7 +144,7 @@ class RegC197Service {
 		});
 		
 //		mapRegistroAnaliticoPorCst.forEach((icmsCst, listRegC190NoMapa) -> listRegC190ToBeCalculeted.addAll(listRegC190ToBeCalculeted));
-		BigDecimal totalVlRedBc = listRegC190ToBeCalculeted.stream().map(RegC190::getVlRedBc).reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal totalVlRedBc = listRegC190ToBeCalculeted.stream().map(regC190 -> getBigDecimalNullSafe(regC190.getVlRedBc())).reduce(BigDecimal.ZERO, BigDecimal::add);
 		return totalVlRedBc;
 	}
 	

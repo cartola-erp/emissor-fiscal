@@ -69,21 +69,28 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 		LOG.log(Level.INFO, "Grupo de Registro 0150, terminado: {0} " ,listReg0150);
 		return listReg0150;
 	}
-
+	
+	/**
+	 * REG 0175 = Alteração da Tabela de Cadastro de Participante
+	 * @param pessoa
+	 * @return
+	 */
 	private List<Reg0175> montaReg0175(Pessoa pessoa) {
-		LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 ");
 
 		List<Reg0175> listReg0175 = null;
 		if (mapPessoaAlteradoPorCnpjNovo.containsKey(pessoa.getCnpj())) {
+			LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 para o CNPJ: {0} " ,pessoa.getCnpj());
 			PessoaAlteradoSped pessAlteradoSped = mapPessoaAlteradoPorCnpjNovo.get(pessoa.getCnpj());
 			List<Reg0175CamposAlterados> listCampAlterado = findFieldsUpdates(pessAlteradoSped);
 			listReg0175 = preencheReg0175(listCampAlterado, pessAlteradoSped);
+			LOG.log(Level.INFO, "Grupo de Registro 0175 (alteracao de cadastro da PJ), terminado: {0} " ,listReg0175);
 		} else if (mapPessoaAlteradoPorCpfNovo.containsKey(pessoa.getCpf())) {
+			LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 para o CPF: {0} " ,pessoa.getCpf());
 			PessoaAlteradoSped pessAlteradoSped = mapPessoaAlteradoPorCpfNovo.get(pessoa.getCpf());
 			List<Reg0175CamposAlterados> listCampAlterado = findFieldsUpdates(pessAlteradoSped);
 			listReg0175 = preencheReg0175(listCampAlterado, pessAlteradoSped);
+			LOG.log(Level.INFO, "Grupo de Registro 0175 (alteracao de cadastro da PF), terminado: {0} " ,listReg0175);
 		}
-		LOG.log(Level.INFO, "Grupo de Registro 0175, terminado: {0} " ,listReg0175);
 		return listReg0175;
 	}
 	

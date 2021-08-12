@@ -40,7 +40,7 @@ class RegC101Service {
 			
 		/** ADICIONANDO O DOCUMENTO FISCAL, na LISTA de DocumentosFiscais, que tem DIFAL**/
 		movimentosIcmsIpi.addDocFiscInterestadualComDifal(docFisc);
-		LOG.log(Level.INFO, "Registro E100, terminado. REG C101: ");
+		LOG.log(Level.INFO, "Registro C100, terminado. REG C101: ");
 		return regC101;
 	}
 	

@@ -83,16 +83,16 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 	 * @return List<Reg0205> - Retorna lista de campos alterados
 	 */
 	private List<Reg0205> montaReg0205ItemAlterado(DocumentoFiscalItem item) {
-		LOG.log(Level.INFO, "Montando o Grupo de Registro 0205 ");
 
 		List<Reg0205> listReg0205 = null;
 		if(mapItemAlteradoPorProduCodiErp.containsKey(item.getProdutoCodigoErp())) {
+			LOG.log(Level.INFO, "Montando o Grupo de Registro 0205 ");
 			ProdutoAlteradoSped itemAlteradoSped = mapItemAlteradoPorProduCodiErp.get(item.getProdutoCodigoErp());
 			List<Reg0205CamposAlterados> listCampAlterado = findFieldsUpdates(itemAlteradoSped);
 			listReg0205 = preencheReg0205(listCampAlterado, itemAlteradoSped);
+			LOG.log(Level.INFO, "Grupo de Registro 0205, terminado: {0} " ,listReg0205);
 		}
 		
-		LOG.log(Level.INFO, "Grupo de Registro 0205, terminado: {0} " ,listReg0205);
 		return listReg0205;
 	}
 	

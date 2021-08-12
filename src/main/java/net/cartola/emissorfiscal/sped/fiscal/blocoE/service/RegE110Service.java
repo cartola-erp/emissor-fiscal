@@ -14,6 +14,7 @@ import static net.cartola.emissorfiscal.model.sped.fiscal.tabelas.TipoDeducaoTab
 import static net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento.ESCRITURACAO_EXTEMPORANEA_DE_DOCUMENTO_COMPLEMENTAR;
 import static net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento.ESCRITURAÇÃO_EXTEMPORÂNEA_DE_DOCUMENTO_REGULAR;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -42,7 +43,6 @@ import net.cartola.emissorfiscal.sped.fiscal.blocoD.RegD197;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE110;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE111;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
-import net.cartola.emissorfiscal.util.NumberUtilRegC100;
 
 /**
  * @data 11 de jun. de 2021
@@ -279,11 +279,15 @@ class RegE110Service {
 		
 		Map<SituacaoDoDocumento, Set<DocumentoFiscal>> mapDocFiscPorSituacao = movimentosIcmsIpi.getMapDocumentoFiscalPorSituacao();
 		Set<DocumentoFiscal> setDocFiscExtemporaneo = new HashSet<>();
-		setDocFiscExtemporaneo.addAll(mapDocFiscPorSituacao.get(ESCRITURAÇÃO_EXTEMPORÂNEA_DE_DOCUMENTO_REGULAR));
-		setDocFiscExtemporaneo.addAll(mapDocFiscPorSituacao.get(ESCRITURACAO_EXTEMPORANEA_DE_DOCUMENTO_COMPLEMENTAR));
+		if (mapDocFiscPorSituacao.containsKey(ESCRITURAÇÃO_EXTEMPORÂNEA_DE_DOCUMENTO_REGULAR)) {
+			setDocFiscExtemporaneo.addAll(mapDocFiscPorSituacao.get(ESCRITURAÇÃO_EXTEMPORÂNEA_DE_DOCUMENTO_REGULAR));
+		}
+		if (mapDocFiscPorSituacao.containsKey(ESCRITURACAO_EXTEMPORANEA_DE_DOCUMENTO_COMPLEMENTAR)) {
+			setDocFiscExtemporaneo.addAll(mapDocFiscPorSituacao.get(ESCRITURACAO_EXTEMPORANEA_DE_DOCUMENTO_COMPLEMENTAR));
+		}
 		
 		BigDecimal totalDebEspDocFiscExtemporaneo = setDocFiscExtemporaneo.stream()
-			.map( docFisc -> NumberUtilRegC100.getVlrOrBaseCalc(docFisc.getIcmsValor(), docFisc.getTipoOperacao()))
+			.map( docFisc -> getVlrOrBaseCalc(docFisc.getIcmsValor(), docFisc.getTipoOperacao()))
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 		
 		Set<OutrasObrigacoesEAjustes> setOutrasObrigacoesEAjustes = getSetOutrasObrigacoesEAjustes(movimentosIcmsIpi.getSetObservacoesLancamentoFiscal());
