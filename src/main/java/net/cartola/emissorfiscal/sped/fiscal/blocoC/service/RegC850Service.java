@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.multiplicaAliqPorCem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getMapaItensParaRegistroAnalitico;
 
@@ -35,7 +36,7 @@ public class RegC850Service {
 										RegC850 regC850 = new RegC850();
 										regC850.setCstIcms(getCstIcmsComOrigem(origem, cstIcms));
 										regC850.setCfop(cfop);
-										regC850.setAliqIcms(aliqIcms);
+										regC850.setAliqIcms(multiplicaAliqPorCem(aliqIcms));
 										regC850.setVlOpr(calcularTotalVlrOperacao(lisItens));
 										regC850.setVlBcIcms(calcularTotalVlrBcIcms(lisItens));
 										regC850.setVlIcms(calcularTotalValorIcms(lisItens));

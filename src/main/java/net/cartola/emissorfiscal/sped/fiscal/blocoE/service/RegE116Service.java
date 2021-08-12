@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoE.service;
 
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getMesReferencia;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,14 +33,12 @@ class RegE116Service {
 		regE116.setDtVcto(LocalDate.now().withDayOfMonth(20));
 		regE116.setCodRec("046-2");
 		
-		LocalDate dataInicio = movimentosIcmsIpi.getDataInicio();
-		final String mesRef = Integer.toString(dataInicio.getMonthValue()) + (Integer.toString(dataInicio.getYear()));
+		final String mesRef = getMesReferencia(movimentosIcmsIpi.getDataInicio());
 		
 		regE116.setMesRef(mesRef);
 		listRegE116.add(regE116);
 		return listRegE116;
 	}
 
-	
 	
 }

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toSet;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,6 +125,9 @@ public final class SpedFiscalUtil {
 	
 	
 	public static String getCstIcmsComOrigem(ProdutoOrigem origem, int cstIcms) {
+		if (cstIcms == 0) {
+			return Integer.toString(origem.ordinal()) + "00";
+		}
 		return Integer.toString(origem.ordinal()) + Integer.toString(cstIcms);
 	}
 	
@@ -161,6 +165,17 @@ public final class SpedFiscalUtil {
 		return docFisc.getEmitente().getCnpj().equals(docFisc.getDestinatario().getCnpj());
 	}
 	
+	/**
+	 * Irá retornar o mês de referência no formato MM/YYYY
+	 * @param dataInicio
+	 * @return
+	 */
+	public static String getMesReferencia(LocalDate dataInicio) {
+		 if (dataInicio.getMonthValue() <= 9) {
+			 return "0"+ Integer.toString(dataInicio.getMonthValue()) + (Integer.toString(dataInicio.getYear()));
+		 }
+		return Integer.toString(dataInicio.getMonthValue()) + (Integer.toString(dataInicio.getYear()));
+	}
 	
 	/**
 	 * Se a CFOP de algum DocumentoFiscalItem, for igual a 5929 ou 6929, então o DocumentoFiscal(NFE) "recebido" é referente, a 
@@ -175,8 +190,16 @@ public final class SpedFiscalUtil {
 		return (setCfops.contains(5929) || setCfops.contains(6929));
 	}
 
+	/**
+	 * TODOs os SATS AUTORIZADOS, tem que ter um XML, se não tiver é porque não foi autorizado <\br> 
+	 * Ou ao menos, não atualizou o status aqui no emissor-fiscal
+	 * 
+	 * @param satEmititdo
+	 * @return
+	 */
 	public static String getNumeroSerieSat(DocumentoFiscal satEmititdo) {
-		return XmlUtil.getTagConteudo(satEmititdo.getXml(), "nserieSAT", false).get(0);
+		List<String> listNserieSAT = XmlUtil.getTagConteudo(satEmititdo.getXml(), "nserieSAT", false);
+		return listNserieSAT == null ? "" : listNserieSAT.get(0);
 //		return null;
 	}
 

@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoE.service;
 
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getMesReferencia;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,9 +27,8 @@ class RegE316Service {
 		// TODO Auto-generated method stub
 		List<RegE316> listRegE316 = new ArrayList<>();
 		
-		LocalDate dataInicio = movimentosIcmsIpi.getDataInicio();
-		final String mesRef = Integer.toString(dataInicio.getMonthValue()) + (Integer.toString(dataInicio.getYear()));
-		
+		final String mesRef = getMesReferencia(movimentosIcmsIpi.getDataInicio());
+
 		listDocFiscNaUf.forEach(docFiscNaUf -> {
 			RegE316 regE316 = new RegE316();
 			
