@@ -7,6 +7,7 @@ import static net.cartola.emissorfiscal.documento.TipoServico.CTE;
 import static net.cartola.emissorfiscal.documento.TipoServico.ENERGIA;
 import static net.cartola.emissorfiscal.documento.TipoServico.INTERNET;
 import static net.cartola.emissorfiscal.documento.TipoServico.TELEFONE_FIXO_MOVEL;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodItem;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,11 +17,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.google.common.base.Predicate;
 
 import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.contador.ContadorService;
@@ -224,8 +229,24 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		setItens.addAll(listDocFiscItens);
 		setItens.addAll(listItensDosSats);
 		
+		Set<DocumentoFiscalItem> setItensUnicos = setItens.stream().filter(distinctByKey(item -> getCodItem(item))).collect(toSet());
+		
 		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, ITENS ", setItens.size());
-		return setItens;
+		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, ITENS ÚNICOS", setItensUnicos.size());
+
+		return setItensUnicos;
+	}
+	
+	/**
+	 * Predicate usado, para Filtrar os elementos de uma lista, por uma PROPRIEDADE ESPECIFICA
+	 * 
+	 * @param <T>
+	 * @param KeyExtractor
+	 * @return
+	 */
+	private static <T> Predicate <T> distinctByKey(Function<? super T, ?> KeyExtractor) {
+		Set<Object> seen = ConcurrentHashMap.newKeySet();
+		return t -> seen.add(KeyExtractor.apply(t));
 	}
 	
 	private List<ProdutoAlteradoSped> getListProdAlteradoSped(LocalDate dataInicio, LocalDate dataFim, Set<DocumentoFiscalItem> setItens) {
