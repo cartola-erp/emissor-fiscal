@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
+import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getNumeroSerieSat;
 
@@ -10,6 +11,8 @@ import java.util.List;
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
 
@@ -65,7 +68,9 @@ public class RegC800 {
 	
 	public RegC800() {	}
 	
-	public RegC800(DocumentoFiscal satEmititdo) {
+	public RegC800(DocumentoFiscal satEmititdo, SpedFiscalProperties spedFiscPropertie) {
+		IndicadorDeOperacao tipoOperacao = satEmititdo.getTipoOperacao();
+		
 		this.codMod = satEmititdo.getModelo();
 		this.codSit = getCodSituacao(satEmititdo);
 		this.numCfe = satEmititdo.getNumeroNota();
@@ -76,7 +81,10 @@ public class RegC800 {
 		this.cnpjCpf = null;
 		this.nrSat = getNumeroSerieSat(satEmititdo);
 		this.chvCfe = satEmititdo.getNfeChaveAcesso();
-		this.vlDesc = satEmititdo.getValorDesconto();
+		// Está Zerando o desconto, pois atualmente não é destacado o desconto na NFE
+		boolean informaDesconto = (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || spedFiscPropertie.isInformarDescontoSaida();
+		this.vlDesc =  informaDesconto ? satEmititdo.getValorDesconto() : BigDecimal.ZERO;
+//		this.vlDesc = satEmititdo.getValorDesconto();
 		this.vlMerc = satEmititdo.getValorTotalDocumento();
 		this.vlOutDa = satEmititdo.getValorOutrasDespesasAcessorias();
 		this.vlIcms = satEmititdo.getIcmsValor();

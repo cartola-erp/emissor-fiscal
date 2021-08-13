@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC800;
@@ -30,6 +31,9 @@ class RegC800Service implements MontaGrupoDeRegistroList<RegC800, MovimentoMensa
 
 	@Autowired
 	private RegC850Service  regC850Service;
+	
+	@Autowired
+	private SpedFiscalProperties spedFiscPropertie;
 	
 	@Override
 	public List<RegC800> montarGrupoDeRegistro(MovimentoMensalIcmsIpi movimentosIcmsIpi) {
@@ -51,7 +55,7 @@ class RegC800Service implements MontaGrupoDeRegistroList<RegC800, MovimentoMensa
 		if (isSatCancelado(satEmititdo)) {
 			return preencherSatCancelado(satEmititdo, lojaSped);
 		}
-		RegC800 regC800 = new RegC800(satEmititdo);
+		RegC800 regC800 = new RegC800(satEmititdo, this.spedFiscPropertie);
 		/// VERIFICAR como preencher o REG C815
 		regC800.setRegC850(regC850Service.montarGrupoRegC850(satEmititdo, movimentosIcmsIpi));
 		return regC800;

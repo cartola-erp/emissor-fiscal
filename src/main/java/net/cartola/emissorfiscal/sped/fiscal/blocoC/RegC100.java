@@ -1,5 +1,10 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
+import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,15 +14,13 @@ import coffeepot.bean.wr.annotation.Record;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
 import net.cartola.emissorfiscal.util.SpedFiscalUtil;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
-import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 
 /**
  * 02/09/2020
@@ -135,7 +138,7 @@ public class RegC100 {
 	 * @param lojaSped
 	 * @return 
 	 */
-	public RegC100(DocumentoFiscal docFisc, Loja lojaSped) {
+	public RegC100(DocumentoFiscal docFisc, Loja lojaSped, SpedFiscalProperties spedFiscPropertie) {
 		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
 
 		this.indOper = tipoOperacao ;
@@ -153,7 +156,10 @@ public class RegC100 {
 		this.vlDoc = getVlrOrBaseCalc(docFisc.getValorTotalDocumento(), tipoOperacao);
 
 		this.indPgto = docFisc.getIndicadorPagamento();
-		this.vlDesc = docFisc.getValorDesconto();
+		// Está Zerando o desconto, pois atualmente não é destacado o desconto na NFE
+		boolean informaDesconto = (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || spedFiscPropertie.isInformarDescontoSaida();
+		this.vlDesc =  informaDesconto ? docFisc.getValorDesconto() : BigDecimal.ZERO;
+//		this.vlDesc = BigDecimal.ZERO;
 		this.vlAbatNt = null;		// REMESSAS p/ ZFM
 		this.vlMerc = docFisc.getValorTotalProduto();
 		this.indFrt = docFisc.getIndicadorFrete();

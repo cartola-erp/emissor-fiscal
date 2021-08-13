@@ -54,7 +54,7 @@ class RegC190Service {
 											regC190.setVlIcmsSt(calcularTotalValorIcmsSt(listItens));
 											regC190.setVlRedBc(calcularTotalValorRedBc(listItens));		//TODO
 											regC190.setVlIpi(calcularTotalValorIpi(listItens));
-											regC190.setCodObs("");			// TODO
+											regC190.setCodObs(Integer.toString(cfop));			// TODO
 											listRegC190.add(regC190);
 										}))));
 		

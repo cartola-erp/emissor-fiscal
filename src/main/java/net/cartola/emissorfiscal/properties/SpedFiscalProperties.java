@@ -16,6 +16,8 @@ public class SpedFiscalProperties {
 //	@ConfigurationProperties(value = "venda-interestadual-nao-contribuinte")
 	private Long codVendaInterestadualNaoContribuinte;
 	
+	private boolean informarDescontoEntrada;
+	private boolean informarDescontoSaida;
 	
 	
 }

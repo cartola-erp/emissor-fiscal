@@ -116,6 +116,7 @@ class RegE110Service {
 		/** CAMPO 15 **/
 		regE110.setDebEsp(calcularDebEsp(movimentosIcmsIpi, listRegE111));
 		
+		regE110.setRegE111(listRegE111);
 		regE110.setRegE116(regE116Service.montarGrupoDeRegistro(movimentosIcmsIpi, regE110));
 		return regE110;
 	}

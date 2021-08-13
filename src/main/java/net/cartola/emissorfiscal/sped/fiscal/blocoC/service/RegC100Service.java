@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
@@ -22,6 +21,7 @@ import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
@@ -66,8 +66,10 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	@Autowired
 	private RegC195Service regC195Service;
 	
-	@Value("${sped-fiscal.cod-venda-interestadual-nao-contribuinte}")
-	private Long codVendaInterestadualNaoContribuinte;
+//	@Value("${sped-fiscal.cod-venda-interestadual-nao-contribuinte}")
+//	private Long codVendaInterestadualNaoContribuinte;
+	@Autowired
+	private SpedFiscalProperties spedFiscPropertie;
 	
 	private MovimentoMensalIcmsIpi movimentosIcmsIpi;
 	
@@ -116,7 +118,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		// TODO Auto-generated method stub
 		RegC100 regC100 = new RegC100();
 		/* INFO COMPL. OPERACAO INTERESTADUAL (FCP)  */
-		if (docFisc.getOperacao().getId().equals(this.codVendaInterestadualNaoContribuinte)) {
+		if (docFisc.getOperacao().getId().equals(spedFiscPropertie.getCodVendaInterestadualNaoContribuinte())) {
 			regC100.setRegC101(regC101Service.montarRegC101(movimentosIcmsIpi, docFisc));
 		}
 		
@@ -160,7 +162,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			/**
 			 * Se não for nenhum dos casos acima en tão é o preenchimento normal (DocumentoFiscal, emitido por terceiros, ou seja, são as ENTRADAS)
 			 **/
-			regC100 = new RegC100(docFisc, lojaSped);
+			regC100 = new RegC100(docFisc, lojaSped,  this.spedFiscPropertie);
 			regC100.setRegC170(regC170Service.montarGrupoRegC170(docFisc));
 			regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, movimentosIcmsIpi));
 //			regC100.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
@@ -300,7 +302,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		 * C100 e C190
 		 * 
 		 */
-		RegC100 regC100 = new RegC100(docFisc, lojaSped);
+		RegC100 regC100 = new RegC100(docFisc, lojaSped,  this.spedFiscPropertie);
 		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, this.movimentosIcmsIpi));
 
 		return regC100;
