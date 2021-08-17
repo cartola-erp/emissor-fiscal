@@ -16,12 +16,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.ToString;
 import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 
 
 @ToString(exclude = {"documentoFiscal"})
@@ -47,7 +47,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private int produtoCodigoErp;
 	private String ean;		// --> Codigo Barras
 	private String descricaoEmpresa;
-	private String unidade;
+	private ProdutoUnidade unidade;
 	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
@@ -169,10 +169,6 @@ public class DocumentoFiscalItem implements Serializable {
 		this.descricaoEmpresa = descricaoEmpresa;
 	}
 
-	public String getUnidade() {
-		return unidade;
-	}
-
 	@Column(name = "cod_anp", nullable = false)
 	public int getCodigoAnp() {
 		return codigoAnp;
@@ -182,7 +178,14 @@ public class DocumentoFiscalItem implements Serializable {
 		this.codigoAnp = codigoAnp;
 	}
 	
-	public void setUnidade(String unidade) {
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "prod_unid_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_item_prod_unid_id"))
+//	@JoinColumn(name = "prod_unid_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fnk_docu_fisc_item_prod_unid_id"))
+	public ProdutoUnidade getUnidade() {
+		return unidade;
+	}
+	
+	public void setUnidade(ProdutoUnidade unidade) {
 		this.unidade = unidade;
 	}
 	
