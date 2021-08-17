@@ -17,7 +17,7 @@ import coffeepot.bean.wr.annotation.Record;
 })
 public class Reg0990EncerramentoDoBloco {
 	
-	private final String reg = "0900";
+	private final String reg = "0990";
 	private Long qtdLin0;
 	
 	public Reg0990EncerramentoDoBloco(Long qtdLinhasBlocoZero) {

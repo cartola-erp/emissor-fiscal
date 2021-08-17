@@ -96,7 +96,7 @@ public class RegC170 {
 	private BigDecimal vlIcmsSt;
 	
 	private ApuracaoIpi indApur;
-	private int cstIpi;
+	private Integer cstIpi;
 	private String codEnq;
 	private BigDecimal vlBcIpi;
 	private BigDecimal aliqIpi;
@@ -154,7 +154,9 @@ public class RegC170 {
 		this.aliqSt = getAliqAsBigDecimal(item.getIcmsStAliquota(), tipoOperacao);
 		this.vlIcmsSt = getVlrOrBaseCalc(item.getIcmsStValor(), tipoOperacao);
 		this.indApur = null;
-		this.cstIpi = tipoOperacao.equals(IndicadorDeOperacao.ENTRADA) ? 49 : 99;	// IPI
+		// Null pois segundo o sistema kolossus (validador de efd), como não somos contribuintes de IPI, devemos deixar "VAZIO"
+		this.cstIpi = null;	// IPI
+//		this.cstIpi = tipoOperacao.equals(IndicadorDeOperacao.ENTRADA) ? 49 : 99;	// IPI
 		this.codEnq = null;
 		this.vlBcIpi = getVlrOrBaseCalc(item.getIpiBase(), tipoOperacao);
 		this.aliqIpi = getAliqAsBigDecimal(item.getIpiAliquota(), tipoOperacao);
@@ -323,11 +325,11 @@ public class RegC170 {
 		this.indApur = indApur;
 	}
 
-	public int getCstIpi() {
+	public Integer getCstIpi() {
 		return cstIpi;
 	}
 
-	public void setCstIpi(int cstIpi) {
+	public void setCstIpi(Integer cstIpi) {
 		this.cstIpi = cstIpi;
 	}
 
