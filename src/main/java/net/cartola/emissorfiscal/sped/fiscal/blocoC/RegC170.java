@@ -140,7 +140,7 @@ public class RegC170 {
 		this.codItem = SpedFiscalUtil.getCodItem(item);
 		this.descrCompl = item.getDescricaoEmpresa();
 		this.qtd = item.getQuantidade().doubleValue();
-		this.unid = item.getUnidade();
+		this.unid = item.getUnidade().getSigla();
 		this.vlItem = item.getValorUnitario();
 		this.vlDesc = item.getDesconto();
 		this.indMov =  indMov; 											// MOVIMENTOU ou NÃO o ITEM

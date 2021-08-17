@@ -259,9 +259,18 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		return listProdAlteradoSped;
 	}
 	
+	/**
+	 * Será retornado uma List<ProdutoUnidade>, que é referente a todas que foram usada em algum item no atual periodo;
+	 * (Seja na entrada e/ou saída)
+	 * 
+	 * @param listItens
+	 * @return
+	 */
 	private List<ProdutoUnidade> getListProdutoUnidade(Set<DocumentoFiscalItem> listItens) {
 		LOG.log(Level.INFO, "Buscando todas as UNIDADES dos ITENS que estão em uma NFE e/ou SAT" );
-		Set<String> unidadesSet = listItens.stream().map(DocumentoFiscalItem::getUnidade).collect(toSet());
+		Set<ProdutoUnidade> setProdutoUnidade = listItens.stream().map(DocumentoFiscalItem::getUnidade).collect(toSet());
+		Set<String> unidadesSet = setProdutoUnidade.stream().map(ProdutoUnidade::getSigla).collect(toSet());
+				
 		List<ProdutoUnidade> listProdUnid = prodUnidService.findByListSiglas(unidadesSet);
 		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, ProdutoUnidade  ", listProdUnid.size());
 		return listProdUnid;

@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.produto;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,11 @@ public class ProdutoUnidadeService {
 	}
 	
 	public List<ProdutoUnidade> findByListSiglas(Collection<String> listSiglas) {
-		return prodUnidRepository.findProdutoUnidadeBySiglaIn(listSiglas);
+		 List<ProdutoUnidade> listProdutoUnidade = prodUnidRepository.findProdutoUnidadeBySiglaIn(listSiglas);
+		 if (listProdutoUnidade != null) {
+			 return listProdutoUnidade;
+		 }
+		return new ArrayList<>();
 	}
 	
 //	public void deleteById(Long id) {

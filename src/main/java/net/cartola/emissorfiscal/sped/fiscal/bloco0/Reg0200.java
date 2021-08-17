@@ -6,6 +6,7 @@ import java.util.List;
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import coffeepot.bean.wr.typeHandler.DefaultStringHandler;
+import coffeepot.bean.wr.types.Align;
 import lombok.ToString;
 import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
 
@@ -21,7 +22,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
     @Field(name = "descrItem"),
     @Field(name = "codBarra"),
     @Field(name = "codAntItem"),
-    @Field(name = "unidInv"),
+    @Field(name = "unidInv", align = Align.RIGHT, padding = '0', minLength = 6, maxLength = 6),
     @Field(name = "tipoItem"),
     @Field(name = "codNcm", params = {DefaultStringHandler.PARAM_FILTER_NUMBER_ONLY}),
     @Field(name = "exIpi"),

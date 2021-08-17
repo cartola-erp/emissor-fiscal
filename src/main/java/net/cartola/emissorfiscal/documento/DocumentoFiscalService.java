@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.documento;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.DESTINATARIO;
@@ -17,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +31,10 @@ import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.operacao.OperacaoService;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.pessoa.PessoaService;
+import net.cartola.emissorfiscal.produto.ProdutoUnidade;
+import net.cartola.emissorfiscal.produto.ProdutoUnidadeService;
+import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.loja.LojaService;
 import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
@@ -58,10 +62,16 @@ public class DocumentoFiscalService {
 	private OperacaoService operacaoService;
 	
 	@Autowired
+	private LojaService lojaService;
+	
+	@Autowired
 	private PessoaService pessoaService;
 	
 	@Autowired 
 	private NcmService ncmService;
+	
+	@Autowired
+	private ProdutoUnidadeService prodUnidService;
 	
 	@Autowired
 	private TributacaoEstadualService icmsService;
@@ -273,7 +283,7 @@ public class DocumentoFiscalService {
 		}
 		
 		if (!mapErros.containsValue(true)) {
-			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario);
+			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario, mapErros);
 		}
 		return ValidationHelper.processaErros(mapErros);
 	}
@@ -303,7 +313,7 @@ public class DocumentoFiscalService {
 //		mapErros.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
 		
 		if (!mapErros.containsValue(true)) {
-			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario);
+			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario, mapErros);
 		}
 		
 		return ValidationHelper.processaErros(mapErros);
@@ -348,42 +358,92 @@ public class DocumentoFiscalService {
 	 * Seta os NCMS para os Itens
 	 * E adiciona Msg no Map, caso o NCM, não exista
 	 * @param documentoFiscal
-	 * @param map
+	 * @param mapErros
 	 * @return Set<Ncms>
 	 */
-	private Set<Ncm> setEVerificaNcmParaDocumentoFiscalItem(DocumentoFiscal documentoFiscal, Map<String, Boolean> map) {
+	private Set<Ncm> setEVerificaNcmParaDocumentoFiscalItem(DocumentoFiscal documentoFiscal, Map<String, Boolean> mapErros) {
 		Set<Integer> setNumeroNcms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).map(Ncm::getNumero).collect(toSet());
-		Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExcecao = ncmService.findNcmByNumeroIn(setNumeroNcms).stream().collect(Collectors.groupingBy(Ncm::getNumero,
-				Collectors.toMap(Ncm::getExcecao, (Ncm ncm) -> ncm)));
+		Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExcecao = ncmService.findNcmByNumeroIn(setNumeroNcms)
+				.stream().collect(groupingBy(Ncm::getNumero,
+											toMap(Ncm::getExcecao, (Ncm ncm) -> ncm)));
 		
-		documentoFiscal.getItens().forEach(docItem -> {
+		Set<ProdutoUnidade> setProdutoUnidade = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getUnidade).collect(toSet());
+		Set<String> listSigla = setProdutoUnidade.stream().map(ProdutoUnidade::getSigla).collect(toSet());
+		Map<String, ProdutoUnidade> mapProdutoUnidadePorSigla = prodUnidService.findByListSiglas(listSigla)
+				.stream().collect(toMap(ProdutoUnidade::getSigla, (ProdutoUnidade prodUnid) -> prodUnid));
+		
+		for (DocumentoFiscalItem docItem : documentoFiscal.getItens()) {
 			docItem.setDocumentoFiscal(documentoFiscal);
-			int numeroNcm = docItem.getNcm().getNumero();
-			int exTipi = (docItem.getNcm().getExcecao() > 5) ? 0 : docItem.getNcm().getExcecao();
-			boolean isNcmPresent = false;
-
-			Ncm ncm = null;
-			if (mapNcmPorNumeroEExcecao.containsKey(numeroNcm)) {
-				ncm = mapNcmPorNumeroEExcecao.get(numeroNcm).get(exTipi);
-				isNcmPresent = ncm != null;
-			}
-			 
-			if(isNcmPresent) {
-				docItem.setNcm(ncm);
-			}
-			map.put("O NCM: " +docItem.getNcm().getNumero()+ " | EX: " +docItem.getNcm().getExcecao()+ " NÃO existe", !isNcmPresent);
-		});
+			setNcm(documentoFiscal, mapErros, mapNcmPorNumeroEExcecao, docItem);
+			setProdutoUnidade(mapErros, mapProdutoUnidadePorSigla, docItem);
+		}
 		
 		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(toSet());
 		return ncms;
 	}
+
+
+	/**
+	 * Irá setar o ncm para o item do documento fiscal, SE o ncm existir
+	 * 
+	 * @param documentoFiscal
+	 * @param mapErros
+	 * @param mapNcmPorNumeroEExcecao
+	 * @param docItem
+	 */
+	public void setNcm(DocumentoFiscal documentoFiscal, Map<String, Boolean> mapErros, Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExcecao, DocumentoFiscalItem docItem) {
+		int numeroNcm = docItem.getNcm().getNumero();
+		int exTipi = (docItem.getNcm().getExcecao() > 5) ? 0 : docItem.getNcm().getExcecao();
+		boolean isNcmPresent = false;
+
+		Ncm ncm = null;
+		if (mapNcmPorNumeroEExcecao.containsKey(numeroNcm)) {
+			ncm = mapNcmPorNumeroEExcecao.get(numeroNcm).get(exTipi);
+			isNcmPresent = ncm != null;
+		}
+		 
+		if(isNcmPresent) {
+			docItem.setNcm(ncm);
+		}
+		mapErros.put("O NCM: " +docItem.getNcm().getNumero()+ " | EX: " +docItem.getNcm().getExcecao()+ " NÃO existe", !isNcmPresent);
+	}
 	
-	private void setValoresNecessariosParaODocumentoFiscal(DocumentoFiscal documentoFiscal, Optional<Operacao> opOperacao, Optional<Pessoa> opEmitente, Optional<Pessoa> opDestinatario) {
+	/**
+	 * @param mapErros
+	 * @param mapProdutoUnidadePorSigla
+	 * @param docItem
+	 */
+	public void setProdutoUnidade(Map<String, Boolean> mapErros, Map<String, ProdutoUnidade> mapProdutoUnidadePorSigla, DocumentoFiscalItem docItem) {
+		ProdutoUnidade unidadeItem = docItem.getUnidade();
+		if (unidadeItem != null &&  mapProdutoUnidadePorSigla.containsKey(unidadeItem.getSigla()) ) {
+			ProdutoUnidade produtoUnidade = mapProdutoUnidadePorSigla.get(unidadeItem.getSigla());
+			docItem.setUnidade(produtoUnidade);
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Unidade não encontrada para o item: ").append(docItem.getItem()).append(" X/s: " ).append(docItem.getCodigoX()).append(" ").append(docItem.getCodigoSequencia());
+			mapErros.put(sb.toString() , true);
+		}
+	}
+
+	
+	private void setValoresNecessariosParaODocumentoFiscal(DocumentoFiscal documentoFiscal, Optional<Operacao> opOperacao, Optional<Pessoa> opEmitente, Optional<Pessoa> opDestinatario, Map<String, Boolean> mapErros) {
+		Optional<Loja> opLoja = lojaService.findByCnpj(documentoFiscal.getLoja().getCnpj());
+		
 		if (opOperacao.isPresent() && opEmitente.isPresent() && opDestinatario.isPresent()) {
 			documentoFiscal.setOperacao(opOperacao.get());
 			documentoFiscal.setEmitente(opEmitente.get());
 			documentoFiscal.setDestinatario(opDestinatario.get());
 		}
+		
+		if (opLoja.isPresent()) {
+			documentoFiscal.setLoja(opLoja.get());
+		} else {
+			Loja loja = documentoFiscal.getLoja();
+			StringBuilder erro = new StringBuilder();
+			erro.append("Loja CNPJ: ").append(loja.getCnpj()).append(" | não cadastrado no EMISSOR-FISCAL! ").append(" | loja: ").append(loja.getCodigoLoja());
+			mapErros.put(erro.toString(), true);
+		}
+		
 		documentoFiscal.getReferencias().forEach(referencia -> {
 			referencia.setDocumentoFiscal(documentoFiscal);
 		});

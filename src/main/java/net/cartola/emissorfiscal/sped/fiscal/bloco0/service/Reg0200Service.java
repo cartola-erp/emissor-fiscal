@@ -55,7 +55,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 			reg0200.setDescrItem(item.getDescricaoEmpresa());
 			reg0200.setCodBarra(item.getEan());
 //			reg0200.setCodAntItem(codAntItem);
-			reg0200.setUnidInv(item.getUnidade());
+			reg0200.setUnidInv(String.valueOf(item.getUnidade().getId()));
 			reg0200.setTipoItem(getTipoItem(item));
 			reg0200.setCodNcm(ncmString);
 			reg0200.setExIpi(Integer.toString(ncm.getExcecao()));
