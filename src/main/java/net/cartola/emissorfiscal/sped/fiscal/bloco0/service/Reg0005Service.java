@@ -28,7 +28,7 @@ class Reg0005Service implements MontaGrupoRegistroSimples<Reg0005, MovimentoMens
 		
 		Reg0005 reg0005 = new Reg0005();
 		reg0005.setFantasia(loja.getNomeFantasia());
-		reg0005.setCep(Long.getLong(loja.getCep().replace("-", "")));
+		reg0005.setCep(loja.getCep().replace("-", ""));
 		reg0005.setEnd(loja.getEndereco());
 		reg0005.setNum(loja.getEnderecoNumero());
 		reg0005.setCompl(loja.getEnderecoComplemento());

@@ -54,7 +54,9 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 			reg0150.setCodPais(1058);		// 1058 --> Cod Brasil | Tabela 3.2.1 - EFD ICMS IPI
 			reg0150.setCnpj(pessoa.getCnpj());
 			reg0150.setCpf(pessoa.getCpf());
-			reg0150.setIe(pessoa.getIe().toString());
+			
+			String ie = (pessoa.getIe() == null || pessoa.getIe() == 0L) ? "" : pessoa.getIe().toString();
+			reg0150.setIe(ie);
 			reg0150.setCodMun(pessEnd.getIbgeCodigo());
 			reg0150.setSuframa(NumberUtil.getNullSafeForUI(pessoa.getCodSuframa()));
 			reg0150.setEnd(pessEnd.getLogradouroEndereco());

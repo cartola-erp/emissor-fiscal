@@ -91,7 +91,7 @@ public class Bloco9Service {
 	private int preencherQuantidadeBloco9(Map<String, Long> mapRegPorQuantidade) {
 //		if (mapRegPorQuantidade != null && !mapRegPorQuantidade.isEmpty()) {
 			mapRegPorQuantidade.put("9001", 1l);
-			long qtdBloco9 = mapRegPorQuantidade.size() + 4l;
+			long qtdBloco9 = mapRegPorQuantidade.size() + 3l;
 			mapRegPorQuantidade.put("9900", qtdBloco9);
 			mapRegPorQuantidade.put("9990", 1l);
 			mapRegPorQuantidade.put("9999", 1l);

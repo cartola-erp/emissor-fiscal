@@ -27,7 +27,7 @@ public class Reg0005 {
 
 	private final String reg = "0005";
 	private String fantasia;
-	private Long cep;
+	private String cep;
 	private String end;
 	private int num;
 	private String compl;
@@ -48,11 +48,11 @@ public class Reg0005 {
 		this.fantasia = fantasia;
 	}
 
-	public Long getCep() {
+	public String getCep() {
 		return cep;
 	}
 
-	public void setCep(Long cep) {
+	public void setCep(String cep) {
 		this.cep = cep;
 	}
 

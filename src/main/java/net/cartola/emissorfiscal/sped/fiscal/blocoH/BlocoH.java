@@ -17,13 +17,13 @@ import coffeepot.bean.wr.annotation.Field;
  */
 @Record(fields = {
 	    @Field(name = "regH001"),
-	    @Field(name = "regH005"),
+//	    @Field(name = "regH005"),
 	    @Field(name = "regH990")
 })
 public class BlocoH {
 	
     private RegH001AberturaDoBlocoH regH001;
-    private List<RegH005> regH005;
+//    private List<RegH005> regH005;
     private RegH990EncerramentoDoBlocoH regH990;
 
     public RegH001AberturaDoBlocoH getRegH001() {
@@ -34,13 +34,13 @@ public class BlocoH {
 		this.regH001 = regH001;
 	}
 
-	public List<RegH005> getRegH005() {
-		return regH005;
-	}
-
-	public void setRegH005(List<RegH005> regH005) {
-		this.regH005 = regH005;
-	}
+//	public List<RegH005> getRegH005() {
+//		return regH005;
+//	}
+//
+//	public void setRegH005(List<RegH005> regH005) {
+//		this.regH005 = regH005;
+//	}
 
 	public RegH990EncerramentoDoBlocoH getRegH990() {
 		return regH990;
