@@ -17,7 +17,7 @@ import lombok.ToString;
 	@Field(name = "reg", maxLength = 4), 
 	@Field(name = "dtAlt"),
 	@Field(name = "nrCamp"),
-	@Field(name = "contAnt")
+	@Field(name = "contAnt", maxLength = 100)
 })		
 @ToString
 public class Reg0175 {

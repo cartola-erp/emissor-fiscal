@@ -99,4 +99,22 @@ public final class NumberUtilRegC100 {
 		}
 		return false;
 	}
+	
+	/**
+	 * Irá arrendondar o BigDecimal Value; <\br>
+	 * Usando o: "<b> setScale(2, BigDecimal.ROUND_UP); <b>
+	 * 
+	 * @param value
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static BigDecimal getBigDecimalDuasCasas(BigDecimal value) {
+		if (value != null) {
+			return value.setScale(2, BigDecimal.ROUND_UP);
+		} else {
+			return value;
+		}
+		
+	}
+	
 }

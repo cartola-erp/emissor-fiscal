@@ -383,7 +383,7 @@ class RegE111Service {
 		setDocFiscIdDevolucaoFazerEstorno.stream().forEach(docFiscId -> {
 			DocumentoFiscal docFisc = mapDocFiscPorId.get(docFiscId);
 			if (docFisc != null) {
-				notaDescricao.append(docFisc.getId());
+				notaDescricao.append(docFisc.getNumeroNota());
 				notaDescricao.append(" DE ");
 				notaDescricao.append(docFisc.getEmissao());
 				notaDescricao.append(",");

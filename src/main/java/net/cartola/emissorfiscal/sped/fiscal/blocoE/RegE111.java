@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoE;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuasCasas;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -54,7 +56,11 @@ public class RegE111 {
 	}
 
 	public void setVlAjApur(BigDecimal vlAjApur) {
-		this.vlAjApur = vlAjApur;
+		if (vlAjApur != null) {
+			this.vlAjApur = getBigDecimalDuasCasas(vlAjApur);
+		} else {
+			this.vlAjApur = vlAjApur;
+		}
 	}
 
 	public List<RegE112> getRegE112() {

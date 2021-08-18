@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoE;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuasCasas;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -54,7 +56,11 @@ public class RegE116 {
 	}
 
 	public void setVlOr(BigDecimal vlOr) {
-		this.vlOr = vlOr;
+		if (vlOr != null) {
+			this.vlOr = getBigDecimalDuasCasas(vlOr);
+		} else {
+			this.vlOr = vlOr;
+		}
 	}
 
 	public LocalDate getDtVcto() {

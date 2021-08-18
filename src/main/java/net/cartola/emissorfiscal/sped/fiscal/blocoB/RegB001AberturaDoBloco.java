@@ -16,7 +16,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDeMovimento;
 })
 public class RegB001AberturaDoBloco {
 	
-	private final String reg = "B000";
+	private final String reg = "B001";
 	private IndicadorDeMovimento indDad;
 	
 	public String getReg() {
