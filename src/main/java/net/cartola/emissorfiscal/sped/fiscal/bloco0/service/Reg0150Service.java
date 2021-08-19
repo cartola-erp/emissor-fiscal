@@ -1,7 +1,16 @@
 package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
+import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.BAIRRO;
+import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.COD_MUN;
+import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.COD_PAIS;
+import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.COMPL;
+import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.END;
+import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.NOME;
+import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.NUM;
+import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.SUFRAMA;
 import static org.springframework.util.StringUtils.hasText;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +73,7 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 			reg0150.setCompl(pessEnd.getComplementoEndereco());
 			reg0150.setBairro(pessEnd.getBairro());
 			
-			reg0150.setReg0175(montaReg0175(pessoa));
+			reg0150.setReg0175(montaReg0175(movimentosIcmsIpi, pessoa));
 			
 			listReg0150.add(reg0150);
 		});
@@ -74,26 +83,67 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 	
 	/**
 	 * REG 0175 = Alteração da Tabela de Cadastro de Participante
+	 * @param movimentosIcmsIpi 
 	 * @param pessoa
 	 * @return
 	 */
-	private List<Reg0175> montaReg0175(Pessoa pessoa) {
+	private List<Reg0175> montaReg0175(MovimentoMensalIcmsIpi movimentosIcmsIpi, Pessoa pessoa) {
 
 		List<Reg0175> listReg0175 = null;
+//		if (mapPessoaAlteradoPorCnpjNovo.containsKey(pessoa.getCnpj())) {
+//			LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 para o CNPJ: {0} " ,pessoa.getCnpj());
+//			PessoaAlteradoSped pessAlteradoSped = mapPessoaAlteradoPorCnpjNovo.get(pessoa.getCnpj());
+//			List<Reg0175CamposAlterados> listCampAlterado = findFieldsUpdates(pessAlteradoSped);
+//			listReg0175 = preencheReg0175(listCampAlterado, pessAlteradoSped);
+//			LOG.log(Level.INFO, "Grupo de Registro 0175 (alteracao de cadastro da PJ), terminado: {0} " ,listReg0175);
+//		} else if (mapPessoaAlteradoPorCpfNovo.containsKey(pessoa.getCpf())) {
+//			LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 para o CPF: {0} " ,pessoa.getCpf());
+//			PessoaAlteradoSped pessAlteradoSped = mapPessoaAlteradoPorCpfNovo.get(pessoa.getCpf());
+//			List<Reg0175CamposAlterados> listCampAlterado = findFieldsUpdates(pessAlteradoSped);
+//			listReg0175 = preencheReg0175(listCampAlterado, pessAlteradoSped);
+//			LOG.log(Level.INFO, "Grupo de Registro 0175 (alteracao de cadastro da PF), terminado: {0} " ,listReg0175);
+//		}
+//		return listReg0175;
+		
+		/**
+		 * ESTAVA dessa FORMA ACIMA 
+		 */
+		
+		
+		// PS: aparentemente a LÓGICA abaixo está errada
+		
+		PessoaAlteradoSped pessAlteradoSped = null;
+		List<Reg0175CamposAlterados> listCampAlterado = null;
 		if (mapPessoaAlteradoPorCnpjNovo.containsKey(pessoa.getCnpj())) {
-			LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 para o CNPJ: {0} " ,pessoa.getCnpj());
-			PessoaAlteradoSped pessAlteradoSped = mapPessoaAlteradoPorCnpjNovo.get(pessoa.getCnpj());
-			List<Reg0175CamposAlterados> listCampAlterado = findFieldsUpdates(pessAlteradoSped);
-			listReg0175 = preencheReg0175(listCampAlterado, pessAlteradoSped);
-			LOG.log(Level.INFO, "Grupo de Registro 0175 (alteracao de cadastro da PJ), terminado: {0} " ,listReg0175);
+			pessAlteradoSped = mapPessoaAlteradoPorCnpjNovo.get(pessoa.getCnpj());
+			listCampAlterado = findFieldsUpdates(pessAlteradoSped);
 		} else if (mapPessoaAlteradoPorCpfNovo.containsKey(pessoa.getCpf())) {
-			LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 para o CPF: {0} " ,pessoa.getCpf());
-			PessoaAlteradoSped pessAlteradoSped = mapPessoaAlteradoPorCpfNovo.get(pessoa.getCpf());
-			List<Reg0175CamposAlterados> listCampAlterado = findFieldsUpdates(pessAlteradoSped);
-			listReg0175 = preencheReg0175(listCampAlterado, pessAlteradoSped);
-			LOG.log(Level.INFO, "Grupo de Registro 0175 (alteracao de cadastro da PF), terminado: {0} " ,listReg0175);
+			pessAlteradoSped = mapPessoaAlteradoPorCpfNovo.get(pessoa.getCpf());
+			listCampAlterado = findFieldsUpdates(pessAlteradoSped);
 		}
+		
+		if (isPessoaAlteradaNoSpedAtual(movimentosIcmsIpi, pessAlteradoSped)) {
+			LOG.log(Level.INFO, "Montando o Grupo de Registro 0175 para o CNPJ/CPF: {0} " ,pessoa.getCpf());
+			listReg0175 = preencheReg0175(listCampAlterado, pessAlteradoSped);
+			LOG.log(Level.INFO, "Grupo de Registro 0175 (alteracao de cadastro da PF/PJ), terminado: {0} " ,listReg0175);
+		}
+
 		return listReg0175;
+	}
+	
+	private boolean isPessoaAlteradaNoSpedAtual(MovimentoMensalIcmsIpi movimentosIcmsIpi, PessoaAlteradoSped pessAlteradoSped) {
+		if (pessAlteradoSped == null) {
+			return false;
+		}
+		LocalDate dataInicioSped = movimentosIcmsIpi.getDataInicio();
+		LocalDate dataFimSped = movimentosIcmsIpi.getDataFim();
+		LocalDate dtAlteracaoCadastro = pessAlteradoSped.getDtAlteracaoCadastro();
+		
+		if ( (dataInicioSped.isBefore(dtAlteracaoCadastro) || dataInicioSped.isEqual(dtAlteracaoCadastro)) && 
+				(dataFimSped.isAfter(dtAlteracaoCadastro) || dataFimSped.isEqual(dtAlteracaoCadastro)) ) {
+				return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -110,11 +160,11 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 
 			switch (campoAlterado) {
 			case NOME:
-				reg0175.setNrCamp(Reg0175CamposAlterados.NOME);
+				reg0175.setNrCamp(NOME);
 				reg0175.setContAnt(pessAlteradoSped.getNomeAnt());
 				break;
 			case COD_PAIS:
-				reg0175.setNrCamp(Reg0175CamposAlterados.COD_PAIS);
+				reg0175.setNrCamp(COD_PAIS);
 				reg0175.setContAnt(Integer.toString(pessAlteradoSped.getCodPaisAnt()));
 				break;
 			case CNPJ:
@@ -126,27 +176,27 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 				reg0175.setContAnt(pessAlteradoSped.getCpfAnt());
 				break;
 			case COD_MUN:
-				reg0175.setNrCamp(Reg0175CamposAlterados.COD_MUN);
+				reg0175.setNrCamp(COD_MUN);
 				reg0175.setContAnt(Integer.toString(pessAlteradoSped.getCodMunAnt()));
 				break;
 			case SUFRAMA:
-				reg0175.setNrCamp(Reg0175CamposAlterados.SUFRAMA);
+				reg0175.setNrCamp(SUFRAMA);
 				reg0175.setContAnt(pessAlteradoSped.getSuframaAnt());
 				break;
 			case END:
-				reg0175.setNrCamp(Reg0175CamposAlterados.END);
+				reg0175.setNrCamp(END);
 				reg0175.setContAnt(pessAlteradoSped.getEnderecoAnt());
 				break;
 			case NUM:
-				reg0175.setNrCamp(Reg0175CamposAlterados.NUM);
+				reg0175.setNrCamp(NUM);
 				reg0175.setContAnt(Integer.toString(pessAlteradoSped.getNumeroAnt()));
 				break;
 			case COMPL:
-				reg0175.setNrCamp(Reg0175CamposAlterados.COMPL);
+				reg0175.setNrCamp(COMPL);
 				reg0175.setContAnt(pessAlteradoSped.getComplementoAnt());
 				break;
 			case BAIRRO:
-				reg0175.setNrCamp(Reg0175CamposAlterados.BAIRRO);
+				reg0175.setNrCamp(BAIRRO);
 				reg0175.setContAnt(pessAlteradoSped.getBairroAnt());
 				break;
 			}
@@ -164,29 +214,29 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 		List<Reg0175CamposAlterados> listCamposAlterados = new ArrayList<>();
 
 		if (!pessAlterado.getNomeAnt().equalsIgnoreCase(pessAlterado.getNomeNovo())) {
-			listCamposAlterados.add(Reg0175CamposAlterados.NOME);
+			listCamposAlterados.add(NOME);
 		}
-		if(pessAlterado.getCodPaisAnt() != pessAlterado.getCodMunNovo()) {
-			listCamposAlterados.add(Reg0175CamposAlterados.COD_PAIS);
+		if(pessAlterado.getCodPaisAnt() != pessAlterado.getCodPaisNovo()) {
+			listCamposAlterados.add(COD_PAIS);
 		}
 		if (pessAlterado.getCodMunAnt() != pessAlterado.getCodMunNovo()) {
-			listCamposAlterados.add(Reg0175CamposAlterados.COD_MUN);
+			listCamposAlterados.add(COD_MUN);
 		}
 		if (pessAlterado.getSuframaAnt() != null && pessAlterado.getSuframaNovo() != null &&  !isDiferente(pessAlterado.getSuframaAnt(), pessAlterado.getSuframaNovo())) {
-			listCamposAlterados.add(Reg0175CamposAlterados.SUFRAMA);
+			listCamposAlterados.add(SUFRAMA);
 		}
 		if (!pessAlterado.getEnderecoAnt().equalsIgnoreCase(pessAlterado.getEnderecoNovo())) {
-			listCamposAlterados.add(Reg0175CamposAlterados.END);
+			listCamposAlterados.add(END);
 		}
 		if (pessAlterado.getNumeroAnt() != pessAlterado.getNumeroNovo()) {
-			listCamposAlterados.add(Reg0175CamposAlterados.NUM);
+			listCamposAlterados.add(NUM);
 		}
 		
 		if (pessAlterado.getComplementoAnt() != null && pessAlterado.getComplementoNovo() != null && !isDiferente(pessAlterado.getComplementoAnt(), pessAlterado.getComplementoNovo())) {
-			listCamposAlterados.add(Reg0175CamposAlterados.COMPL);
+			listCamposAlterados.add(COMPL);
 		}
 		if (!pessAlterado.getBairroAnt().equalsIgnoreCase(pessAlterado.getBairroNovo())) {
-			listCamposAlterados.add(Reg0175CamposAlterados.BAIRRO);
+			listCamposAlterados.add(BAIRRO);
 		}
 		return listCamposAlterados;
 	}
