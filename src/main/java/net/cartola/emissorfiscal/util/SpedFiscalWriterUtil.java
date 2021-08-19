@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import coffeepot.bean.wr.writer.DelimitedWriter;
 import net.cartola.emissorfiscal.sped.fiscal.SpedFiscal;
 import net.cartola.emissorfiscal.sped.fiscal.SpedFiscalArquivo;
+import net.cartola.emissorfiscal.sped.fiscal.enums.VersaoDoLayout;
 import net.cartola.emissorfiscal.sped.fiscal.typeHandler.CustomEnumHandler;
 import net.cartola.emissorfiscal.sped.fiscal.typeHandler.LocalDateHandler;
 import net.cartola.emissorfiscal.sped.fiscal.typeHandler.LocalDateTimeHandler;
@@ -93,7 +94,15 @@ public class SpedFiscalWriterUtil {
 		return  path.toAbsolutePath() + "//" + nomeArquivo;
 	}
 	
+	public static DelimitedWriter criarDelimitedWriterSped(File fileSpedFiscal, VersaoDoLayout versaoDoLayout) {
+		DelimitedWriter dw = criarDelimitedWriterSped(fileSpedFiscal);
+		dw.setVersion(Integer.valueOf(versaoDoLayout.getCodigo()));
+		return dw;
+	}
+	
+	
 	/**
+	 * O delimitador criado será referente a última versão do Layout... (que estiver no enum). {@link VersaoDoLayout}
 	 * 
 	 * @param fileSpedFiscal (É o diretório onde será salvo, o arquivo que será gerado. PS: assim como o nome do arquivo etc) 
 	 * @return Escritor do SPED FISCAL (Usado para escrever as classes com as anotations. Exs: {@linkplain SpedFiscal}, e todos seus blocos e registros
@@ -109,6 +118,7 @@ public class SpedFiscalWriterUtil {
 			dw.setEscape('\\');
 			dw.setRecordInitializator("|");
 			dw.setRecordTerminator("|\r\n");
+			dw.setVersion(Integer.valueOf(VersaoDoLayout.getUltimaVersao().getCodigo()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -119,6 +129,8 @@ public class SpedFiscalWriterUtil {
 		dw.getObjectMapperFactory().getHandlerFactory().registerTypeHandlerClassFor(Enum.class,CustomEnumHandler.class);
 		return dw;
 	}
+	
+	
 	
 	public static byte[] lerBytesDoArquivoGerado(String dirArquivoSpedIcmsIpi) {
 		// TODO Auto-generated method stub
