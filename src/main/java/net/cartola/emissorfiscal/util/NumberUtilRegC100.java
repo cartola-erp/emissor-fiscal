@@ -100,6 +100,13 @@ public final class NumberUtilRegC100 {
 		return false;
 	}
 	
+	public static boolean isBigDecimalZero(BigDecimal value) {
+		if (value != null && (value.compareTo(BigDecimal.ZERO)) == 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Irá arrendondar o BigDecimal Value; <\br>
 	 * Usando o: "<b> setScale(2, BigDecimal.ROUND_UP); <b>

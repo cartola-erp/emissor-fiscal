@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuasCasas;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.isBigDecimalZero;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isIcmsCstIsentaOuNaoTributada;
 
 import java.math.BigDecimal;
@@ -55,8 +56,13 @@ class RegC197Service {
 		// 	SP90090278 
 		RegC197 regC197VlIcmsSt = gerarRegC197IcmsStPagoPeloFornecedor(cfop, mapRegistroAnaliticoPorCst, docFisc);
 		
-		listRegC197.add(regC197VlIcmsIsentasNtOutras);
-		listRegC197.add(regC197VlIcmsSt);
+		if(regC197VlIcmsIsentasNtOutras.getVlOutros() != null &&  !isBigDecimalZero(regC197VlIcmsIsentasNtOutras.getVlOutros())) {
+			listRegC197.add(regC197VlIcmsIsentasNtOutras);
+		}
+		
+		if (regC197VlIcmsSt.getVlIcms() != null && !isBigDecimalZero(regC197VlIcmsSt.getVlIcms())) {
+			listRegC197.add(regC197VlIcmsSt);
+		}
 		
 //		|C195|1403||
 //		|C197|SP90090104|1403||||0,00|2756,13|
