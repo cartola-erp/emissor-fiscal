@@ -228,7 +228,7 @@ class RegE110Service {
 		BigDecimal vlTotDed = BigDecimal.ZERO;
 
 		if (!isSldApuradoMaiorQueZero) {
-			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms).add(vlSldApurado);	
+			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms).add(vlSldApurado.abs());	
 		} else {
 			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms);
 		}
@@ -269,7 +269,7 @@ class RegE110Service {
 		BigDecimal vlSldCredorTransportar = BigDecimal.ZERO;
 		vlSldCredorTransportar = fnCalcVlSldApuracao.apply(regE110).subtract(getBigDecimalNullSafe(regE110.getVlTotDed()));
 		
-		return isValorMaiorQueZero(vlSldCredorTransportar) ? BigDecimal.ZERO : vlSldCredorTransportar;
+		return isValorMaiorQueZero(vlSldCredorTransportar) ? BigDecimal.ZERO : vlSldCredorTransportar.abs();
 	}
 	
 	// CAMPO 15

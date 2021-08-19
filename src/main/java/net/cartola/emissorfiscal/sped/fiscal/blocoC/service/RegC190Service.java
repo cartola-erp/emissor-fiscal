@@ -91,9 +91,12 @@ class RegC190Service {
 	}
 
 	private BigDecimal calcularTotalValorRedBc(List<DocumentoFiscalItem> listItens) {
-		// TODO
-//		return listItens.stream().map(DocumentoFiscalItem::getValor);
-		return null;
+		/**
+		 * TODO tenho que colocar uma regra aqui referente a ser para comercializacao ou não, pois se for consumo
+		 * sempre será zero, e adiciona o icms isento na base do icms proprio
+		 */
+		
+		return listItens.stream().map(DocumentoFiscalItem::getIcmsReducaoBaseValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 	private BigDecimal calcularTotalValorIpi(List<DocumentoFiscalItem> listItens) {

@@ -1,8 +1,10 @@
 package net.cartola.emissorfiscal.util;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -100,7 +102,8 @@ public class SpedFiscalWriterUtil {
 		Writer w = null;
 		DelimitedWriter dw = null;
 		try {
-			w = new FileWriter(fileSpedFiscal);
+			w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSpedFiscal), "ISO-8859-1"));
+//			w = new FileWriter(fileSpedFiscal);
 			dw = new DelimitedWriter(w);
 			dw.setDelimiter('|');
 			dw.setEscape('\\');

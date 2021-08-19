@@ -62,6 +62,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private int cfop;
 	private Integer icmsCest = 0;
 	private BigDecimal icmsBase = BigDecimal.ZERO;
+	private BigDecimal icmsReducaoBaseValor = BigDecimal.ZERO;
 	private BigDecimal icmsReducaoBaseAliquota = BigDecimal.ZERO;
 	private BigDecimal icmsReducaoBaseStAliquota = BigDecimal.ZERO;
 	private BigDecimal icmsAliquota = BigDecimal.ZERO;
@@ -299,6 +300,15 @@ public class DocumentoFiscalItem implements Serializable {
 		this.icmsBase = icmsBase;
 	}
 	
+    @Column(name = "icms_redu_base_vlr")
+	public BigDecimal getIcmsReducaoBaseValor() {
+		return icmsReducaoBaseValor;
+	}
+
+	public void setIcmsReducaoBaseValor(BigDecimal icmsReducaoBaseValor) {
+		this.icmsReducaoBaseValor = icmsReducaoBaseValor;
+	}
+
     @Column(name = "icms_redu_base_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIcmsReducaoBaseAliquota() {
 		return icmsReducaoBaseAliquota;
