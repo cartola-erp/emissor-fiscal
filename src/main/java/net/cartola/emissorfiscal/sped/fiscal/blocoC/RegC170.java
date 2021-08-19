@@ -24,7 +24,7 @@ import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 @Record(fields = { 
 	@Field(name = "reg", maxLength = 4),
     @Field(name = "numItem"),
-    @Field(name = "codItem"),
+    @Field(name = "codItem", align = Align.RIGHT, padding = '0', minLength = 8, maxLength = 8),
     @Field(name = "descrCompl"),
     @Field(name = "qtd"),
     @Field(name = "unid"),

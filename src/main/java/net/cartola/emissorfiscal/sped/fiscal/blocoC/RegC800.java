@@ -1,8 +1,8 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
-import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getNumeroSerieSat;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isInformaDesconto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -82,7 +82,7 @@ public class RegC800 {
 		this.nrSat = getNumeroSerieSat(satEmititdo);
 		this.chvCfe = satEmititdo.getNfeChaveAcesso();
 		// Está Zerando o desconto, pois atualmente não é destacado o desconto na NFE
-		boolean informaDesconto = (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || spedFiscPropertie.isInformarDescontoSaida();
+		boolean informaDesconto = isInformaDesconto(tipoOperacao, spedFiscPropertie);
 		this.vlDesc =  informaDesconto ? satEmititdo.getValorDesconto() : BigDecimal.ZERO;
 //		this.vlDesc = satEmititdo.getValorDesconto();
 		this.vlMerc = satEmititdo.getValorTotalDocumento();

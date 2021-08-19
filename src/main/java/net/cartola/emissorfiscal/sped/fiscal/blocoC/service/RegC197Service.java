@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuasCasas;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isIcmsCstIsentaOuNaoTributada;
 
@@ -85,7 +86,7 @@ class RegC197Service {
 		regC197.setAliqIcms(null);
 //		regC197.setVlIcms(vlIcmsIsentaNaoTributadaOutrasPorCfop);
 		regC197.setVlIcms(null);
-		regC197.setVlOutros(vlIcmsIsentaNaoTributadaOutrasPorCfop);
+		regC197.setVlOutros(getBigDecimalDuasCasas(vlIcmsIsentaNaoTributadaOutrasPorCfop));
 
 		return regC197;
 	}
@@ -160,7 +161,7 @@ class RegC197Service {
 		regC197.setCodItem(null);
 		regC197.setVlBcIcms(null);
 		regC197.setAliqIcms(null);
-		regC197.setVlIcms(vlIcmsOuIcmsSt);
+		regC197.setVlIcms(getBigDecimalDuasCasas(vlIcmsOuIcmsSt));
 //		regC197.setVlIcms(null);
 //		regC197.setVlOutros(vlIcmsIsentaNaoTributadaOutrasPorCfop);
 

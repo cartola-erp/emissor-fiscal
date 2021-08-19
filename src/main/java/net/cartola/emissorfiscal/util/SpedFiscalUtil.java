@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.util;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
+import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -20,6 +21,7 @@ import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
+import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.RegistroAnalitico;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
@@ -35,6 +37,7 @@ public final class SpedFiscalUtil {
 	
 	private static final Logger LOG = Logger.getLogger(SpedFiscalUtil.class.getName());
 
+	
 
 	private SpedFiscalUtil() {}
 	
@@ -71,9 +74,9 @@ public final class SpedFiscalUtil {
 //		LOG.log(Level.INFO, "Obtendo o CODIGO DO PARTICIPANTE para o DocumentoFiscal {0} " ,docFisc);
 		if (docFisc.getModelo() != ModeloDocumentoFiscal._65) {
 			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA) {
-				return SpedFiscalUtil.getCodPart(docFisc.getDestinatario());
+				return getCodPart(docFisc.getEmitente());
 			}
-			return SpedFiscalUtil.getCodPart(docFisc.getEmitente());
+			return getCodPart(docFisc.getDestinatario());
 		}
 		return "";
 	}
@@ -163,6 +166,19 @@ public final class SpedFiscalUtil {
 	 */
 	public static boolean isEmitenteEqualsDestinatario(DocumentoFiscal docFisc) {
 		return docFisc.getEmitente().getCnpj().equals(docFisc.getDestinatario().getCnpj());
+	}
+	
+	
+	/**
+	 * Irá devolver se é para informar o desconto (conforme a operação do DocumentoFiscal) <\br>
+	 * E o Valor da propriedade presente em {@linkplain} {@link SpedFiscalProperties} ;
+	 * 
+	 * @param spedFiscPropertie
+	 * @param tipoOperacao
+	 * @return
+	 */
+	public static boolean isInformaDesconto(IndicadorDeOperacao tipoOperacao, SpedFiscalProperties spedFiscPropertie) {
+		return (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || spedFiscPropertie.isInformarDescontoSaida();
 	}
 	
 	/**

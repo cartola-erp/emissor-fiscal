@@ -162,10 +162,15 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 	
 	private Double getAliqIcms(DocumentoFiscalItem item) {
 		BigDecimal icmsAndFcpAliq = item.getIcmsAliquota().add(item.getIcmsFcpAliquota()).multiply(new BigDecimal(100D));
+//		BigDecimal icmsAndFcpAliq = item.getIcmsAliquota().add(item.getIcmsFcpAliquota());
 		return icmsAndFcpAliq.doubleValue();
 	}
 
 	private static String formataCest(int cest) {
+		if (cest == 0) {
+			// TODO o ideal é verificar se existe o cest para o NCM
+			return "0199900";
+		}
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setMinimumIntegerDigits(7);
 		nf.setMaximumFractionDigits(7);

@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuasCasas;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.multiplicaAliqPorCem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getMapaItensParaRegistroAnalitico;
@@ -9,17 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
+import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC190;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 @Service
 class RegC190Service {
 
+	@Autowired
+	private SpedFiscalProperties spedFiscPropertie;
+	
 	/**
 	 * Irá fazer o Registro analitico do REC 190, para o DocumentoFiscal recebido.
 	 * PS: Por enquanto monta o registro para qualquer DocumentoFiscal, recebido;
@@ -47,7 +54,7 @@ class RegC190Service {
 											regC190.setCstIcms(getCstIcmsComOrigem(origem, cstIcms));
 											regC190.setCfop(cfop);
 											regC190.setAliqIcms(multiplicaAliqPorCem(aliqIcms));
-											regC190.setVlOpr(calcularTotalVlrOperacao(listItens));
+											regC190.setVlOpr(calcularTotalVlrOperacao(listItens, docFisc));
 											regC190.setVlBcIcms(calcularTotalVlrBcIcms(listItens));
 											regC190.setVlIcms(calcularTotalValorIcms(listItens));
 											regC190.setVlBcIcmsSt(calcularTotalVlrBcIcmsSt(listItens));
@@ -67,11 +74,24 @@ class RegC190Service {
 	 * não temos FCP ST, por isso não é somado
 	 * 
 	 * @param listItens
+	 * @param docFisc 
 	 * @return
 	 */
-	private BigDecimal calcularTotalVlrOperacao(List<DocumentoFiscalItem> listItens) {
-		return listItens.stream().map(item -> item.getIcmsBase().add(item.getIcmsFcpValor().add(item.getIcmsStValor()))).reduce(BigDecimal.ZERO, BigDecimal::add);
-//		return listItens.stream().map(item -> getVlrOperacao(item)).reduce(BigDecimal.ZERO, BigDecimal::add);
+	private BigDecimal calcularTotalVlrOperacao(List<DocumentoFiscalItem> listItens, DocumentoFiscal docFisc) {
+		boolean isInformaDesconto = SpedFiscalUtil.isInformaDesconto(docFisc.getTipoOperacao(), this.spedFiscPropertie);
+
+		BigDecimal totalOprSemOsDesconto = listItens.stream().map(item -> item.getQuantidade().multiply(item.getValorUnitario()).
+				 							add(item.getValorFrete()).add(item.getIpiValor()).
+				 							add(item.getValorSeguro()).add(item.getValorOutrasDespesasAcessorias()).
+				 							add(item.getIcmsFcpValor().add(item.getIcmsStValor()))).
+		 reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		 if (isInformaDesconto) {
+			 BigDecimal totalDesconto = listItens.stream().map(DocumentoFiscalItem::getDesconto).reduce(BigDecimal.ZERO, BigDecimal::add);
+			 return getBigDecimalDuasCasas(totalOprSemOsDesconto.subtract(totalDesconto));
+		 }
+//		 return listItens.stream().map(item -> getVlrOperacao(item)).reduce(BigDecimal.ZERO, BigDecimal::add);
+		 return getBigDecimalDuasCasas(totalOprSemOsDesconto);
 	}
 	
 	private BigDecimal calcularTotalVlrBcIcms(List<DocumentoFiscalItem> listItens) {
