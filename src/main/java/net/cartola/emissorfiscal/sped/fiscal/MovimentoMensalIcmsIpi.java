@@ -125,6 +125,13 @@ public class MovimentoMensalIcmsIpi {
 	}
 	
 	
+	public List<DocumentoFiscal> getListDocFiscInterestadualComDifal() {
+		if (this.listDocFiscInterestadualComDifal == null ) {
+			this.listDocFiscInterestadualComDifal = new ArrayList<>();
+			return this.listDocFiscInterestadualComDifal;
+		}
+		return this.listDocFiscInterestadualComDifal;
+	}
 	
 	public void setListProdutoAlteradoSped(List<ProdutoAlteradoSped> listProdutoAlterado) { 
 		if ((this.listProdutoAlteradoSped == null || this.listProdutoAlteradoSped.isEmpty()) && listProdutoAlterado == null) {

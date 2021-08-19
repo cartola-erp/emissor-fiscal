@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
-import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 
 @Repository
@@ -26,27 +26,16 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 	
 	Optional<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNota(String cnpj, IndicadorDeOperacao tipoOperacao, Long serie, Long numero);
 
-	/**
-	 * Busca todos os DocumentoFiscais, de um determinado Periodo, para um Destinatario, para um TipoOperacao
-	 * 
-	 * @param dataInicio
-	 * @param dataFim
-	 * @param destinatario
-	 * @param indOper
-	 * @return
-	 */
-	List<DocumentoFiscal> findByCadastroBetweenAndDestinatarioAndTipoOperacaoAndTipoServicoIn(LocalDateTime dataInicio, LocalDateTime dataFim, Pessoa destinatario, 
-			IndicadorDeOperacao indOper, Collection<TipoServico> tipoServico);
 
 	/**
 	 * Retorna todos os DocumentoFiscais, em um determinado Periodo, para um Emitente, especifico 
 	 * 
 	 * @param dataHoraInicio
 	 * @param dataHoraFim
-	 * @param emitente
+	 * @param loja
 	 * @return
 	 */
-	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteAndTipoServicoIn(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente, Collection<TipoServico> listTipoServico);
+	List<DocumentoFiscal> findByCadastroBetweenAndLojaAndTipoServicoIn(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Loja loja, Collection<TipoServico> listTipoServico);
 
 	
 	List<DocumentoFiscal> findByNfeChaveAcessoIn(Collection<String> setChaveAcessoReferencia);
@@ -55,12 +44,12 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 	 * Buscando todos os DocumentoFiscais de um PERIODO para um determinado MODELO para uma Pessoa de ENTRADA ou SAÍDA
 	 * @param dataHoraInicio
 	 * @param dataHoraFim
-	 * @param emitente
+	 * @param loja
 	 * @param modelo
 	 * @return
 	 */
-	List<DocumentoFiscal> findByCadastroBetweenAndEmitenteAndModeloAndTipoOperacao(LocalDateTime dataHoraInicio,
-			LocalDateTime dataHoraFim, Pessoa emitente, ModeloDocumentoFiscal modelo, IndicadorDeOperacao tipoOperacao);
+	List<DocumentoFiscal> findByCadastroBetweenAndLojaAndModeloAndTipoOperacao(LocalDateTime dataHoraInicio,
+			LocalDateTime dataHoraFim, Loja loja, ModeloDocumentoFiscal modelo, IndicadorDeOperacao tipoOperacao);
 	
 	
 	// OBS: Será retornado todos os doc fiscais, do periodo independente da loja que deram entrada

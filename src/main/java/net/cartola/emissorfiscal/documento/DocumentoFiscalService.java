@@ -123,28 +123,14 @@ public class DocumentoFiscalService {
 	}
 	
 	/**
-	 * O "lojaEmitDest", é usado na query, para trazer todos os DocFiscais, em que uma Determinada Loja esteja envolvida.
-	 * Ou seja, em que ela seja a Emitente (geralmente operações de SAIDAS), ou a destinataria (operações de ENTRADAS)
-	 * 
-	 * @param dataHoraInicio
-	 * @param dataFim
-	 * @param destinatario
-	 * @param entrada 
-	 * @return List<DocumentoFiscal> De uma loja num determinado Período
-	 */
-	public List<DocumentoFiscal> findByPeriodoCadastroAndLojaAndTipoOperacaoAndTipoServico(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa destinatario, IndicadorDeOperacao tipoOperacao, Collection<TipoServico> listTipoServico) {
-		return documentoFiscalRepository.findByCadastroBetweenAndDestinatarioAndTipoOperacaoAndTipoServicoIn(dataHoraInicio, dataHoraFim, destinatario, tipoOperacao, listTipoServico);
-	}
-	
-	/**
 	 * Busca todos os DocumentoFicais de um Período que uma Pessoa emitiu (Loja)
 	 * @param dataHoraInicio
 	 * @param dataHoraFim
-	 * @param emitente
+	 * @param loja
 	 * @return
 	 */
-	public List<DocumentoFiscal> findByPeriodoCadastroAndEmitenteAndTipoServico(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente, Collection<TipoServico> listTipoServico) {
-		return documentoFiscalRepository.findByCadastroBetweenAndEmitenteAndTipoServicoIn(dataHoraInicio, dataHoraFim, emitente, listTipoServico);
+	public List<DocumentoFiscal> findByPeriodoCadastroAndLojaAndTipoServico(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Loja loja, Collection<TipoServico> listTipoServico) {
+		return documentoFiscalRepository.findByCadastroBetweenAndLojaAndTipoServicoIn(dataHoraInicio, dataHoraFim, loja, listTipoServico);
 	}
 	
 	/**
@@ -152,13 +138,13 @@ public class DocumentoFiscalService {
 	 *
 	 * @param dataHoraInicio
 	 * @param dataHoraFim
-	 * @param emitente
+	 * @param loja
 	 * @param modelo
 	 * @param tipoOperacao
 	 * @return
 	 */
-	public List<DocumentoFiscal> findByPeriodoCadastroAndEmitenteAndModeloAndTipoOperacao(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Pessoa emitente, ModeloDocumentoFiscal modelo, IndicadorDeOperacao tipoOperacao) {
-		return documentoFiscalRepository.findByCadastroBetweenAndEmitenteAndModeloAndTipoOperacao(dataHoraInicio, dataHoraFim, emitente, modelo, tipoOperacao);
+	public List<DocumentoFiscal> findByPeriodoCadastroAndLojaAndModeloAndTipoOperacao(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Loja loja, ModeloDocumentoFiscal modelo, IndicadorDeOperacao tipoOperacao) {
+		return documentoFiscalRepository.findByCadastroBetweenAndLojaAndModeloAndTipoOperacao(dataHoraInicio, dataHoraFim, loja, modelo, tipoOperacao);
 	}
 	
 	/**
