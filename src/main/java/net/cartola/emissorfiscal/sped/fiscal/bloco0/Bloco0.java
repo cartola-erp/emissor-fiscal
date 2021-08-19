@@ -19,23 +19,17 @@ import coffeepot.bean.wr.annotation.Record;
 	@Field(name = "reg0000"),
 	@Field(name = "reg0001"),
 	@Field(name = "reg0005"),
-	@Field(name = "reg0015"),
+//	@Field(name = "reg0015"),
 	@Field(name = "reg0100"),
 	@Field(name = "reg0150"),
-//	@Field(name = "reg0175"),
 	@Field(name = "reg0190"),
 	@Field(name = "reg0200"),
-//	@Field(name = "reg0205"),
-//	@Field(name = "reg0206"),
-//	@Field(name = "reg0210"),
-//	@Field(name = "reg0220"),
 	@Field(name = "reg0300"),
-//	@Field(name = "reg0305"),
 	@Field(name = "reg0400"),
 	@Field(name = "reg0450"),
 	@Field(name = "reg0460"),
-	@Field(name = "reg0500"),
-    @Field(name = "reg0600"),
+//	@Field(name = "reg0500"),
+//    @Field(name = "reg0600"),
 	@Field(name = "reg0990")
 })    
 public class Bloco0 implements Serializable {
@@ -46,23 +40,17 @@ public class Bloco0 implements Serializable {
 	private Reg0001AberturaDoBloco reg0001;
 //	private Reg0002 reg0002;
 	private Reg0005 reg0005;
-	private List<Reg0015> reg0015;
+//	private List<Reg0015> reg0015;
 	private Reg0100 reg0100;
 	private List<Reg0150> reg0150;
-//	private List<Reg0175> reg0175;		// Filho do Reg0150
 	private List<Reg0190> reg0190;		
 	private List<Reg0200> reg0200;
-//	private List<Reg0205> reg0205;		// Filho do Reg0200
-//	private Reg0206 reg0206;			// Filho do Reg0200
-//	private List<Reg0210> reg0210;		// Filho do Reg0200
-//	private List<Reg0220> reg0220;		// Filho do Reg0200
 	private List<Reg0300> reg0300;
-//	private Reg0305 reg0305;			// Filho do Reg0300
 	private List<Reg0400> reg0400;
 	private List<Reg0450> reg0450;
 	private List<Reg0460> reg0460;
-	private List<Reg0500> reg0500;
-	private List<Reg0600> reg0600;
+//	private List<Reg0500> reg0500;
+//	private List<Reg0600> reg0600;
 	private Reg0990EncerramentoDoBloco reg0990;
 	
 	public Reg0000AberturaArquivoDigital getReg0000() {
@@ -89,13 +77,13 @@ public class Bloco0 implements Serializable {
 		this.reg0005 = reg0005;
 	}
 
-	public List<Reg0015> getReg0015() {
-		return reg0015;
-	}
-
-	public void setReg0015(List<Reg0015> reg0015) {
-		this.reg0015 = reg0015;
-	}
+//	public List<Reg0015> getReg0015() {
+//		return reg0015;
+//	}
+//
+//	public void setReg0015(List<Reg0015> reg0015) {
+//		this.reg0015 = reg0015;
+//	}
 
 	public Reg0100 getReg0100() {
 		return reg0100;
@@ -161,21 +149,21 @@ public class Bloco0 implements Serializable {
 		this.reg0460 = reg0460;
 	}
 
-	public List<Reg0500> getReg0500() {
-		return reg0500;
-	}
-
-	public void setReg0500(List<Reg0500> reg0500) {
-		this.reg0500 = reg0500;
-	}
-
-	public List<Reg0600> getReg0600() {
-		return reg0600;
-	}
-
-	public void setReg0600(List<Reg0600> reg0600) {
-		this.reg0600 = reg0600;
-	}
+//	public List<Reg0500> getReg0500() {
+//		return reg0500;
+//	}
+//
+//	public void setReg0500(List<Reg0500> reg0500) {
+//		this.reg0500 = reg0500;
+//	}
+//
+//	public List<Reg0600> getReg0600() {
+//		return reg0600;
+//	}
+//
+//	public void setReg0600(List<Reg0600> reg0600) {
+//		this.reg0600 = reg0600;
+//	}
 
 	public Reg0990EncerramentoDoBloco getReg0990() {
 		return reg0990;

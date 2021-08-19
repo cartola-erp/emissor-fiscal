@@ -18,8 +18,8 @@ import coffeepot.bean.wr.annotation.Record;
 @Record(fields = {
         @Field(name = "regC001"),
         @Field(name = "regC100"),
-        @Field(name = "regC350"),
-        @Field(name = "regC400"),
+//        @Field(name = "regC350"),
+//        @Field(name = "regC400"),
         @Field(name = "regC500"),
         @Field(name = "regC800"),
         @Field(name = "regC990")
@@ -28,8 +28,8 @@ public class BlocoC {
 	
 	private RegC001AberturaDoBlocoC regC001;
 	private List<RegC100> regC100;
-    private List<RegC350> regC350;
-    private List<RegC400> regC400;
+//    private List<RegC350> regC350;
+//    private List<RegC400> regC400;
     private List<RegC500> regC500;
     private List<RegC800> regC800;
 	private RegC990EncerramentoDoBlocoC regC990;
@@ -57,21 +57,21 @@ public class BlocoC {
 		this.regC100 = regC100;
 	}
 
-	public List<RegC350> getRegC350() {
-		return regC350;
-	}
-
-	public void setRegC350(List<RegC350> regC350) {
-		this.regC350 = regC350;
-	}
-
-	public List<RegC400> getRegC400() {
-		return regC400;
-	}
-
-	public void setRegC400(List<RegC400> regC400) {
-		this.regC400 = regC400;
-	}
+//	public List<RegC350> getRegC350() {
+//		return regC350;
+//	}
+//
+//	public void setRegC350(List<RegC350> regC350) {
+//		this.regC350 = regC350;
+//	}
+//
+//	public List<RegC400> getRegC400() {
+//		return regC400;
+//	}
+//
+//	public void setRegC400(List<RegC400> regC400) {
+//		this.regC400 = regC400;
+//	}
 
 	public List<RegC500> getRegC500() {
 		return regC500;

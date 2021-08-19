@@ -53,8 +53,8 @@ public class BlocoCService implements MontaBloco<BlocoC, MovimentoMensalIcmsIpi>
 		
 		blocoC.setRegC001(regC001Service.montarGrupoDeRegistroSimples(movimentoMensalIcmsIpi));
 		blocoC.setRegC100(regC100Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
-		blocoC.setRegC350(regC350Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
-		blocoC.setRegC400(regC400Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+//		blocoC.setRegC350(regC350Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+//		blocoC.setRegC400(regC400Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		blocoC.setRegC500(regC500Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		blocoC.setRegC800(regC800Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		
