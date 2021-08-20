@@ -8,6 +8,8 @@ import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterado
 import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.NOME;
 import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.NUM;
 import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.SUFRAMA;
+import static org.flywaydb.core.internal.util.StringUtils.collapseWhitespace;
+import static org.flywaydb.core.internal.util.StringUtils.trimLineBreak;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.time.LocalDate;
@@ -70,7 +72,13 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 			reg0150.setSuframa(NumberUtil.getNullSafeForUI(pessoa.getCodSuframa()));
 			reg0150.setEnd(pessEnd.getLogradouroEndereco());
 			reg0150.setNum(pessEnd.getEnderecoNumero());
-			reg0150.setCompl(pessEnd.getComplementoEndereco());
+			
+			String complEnd = pessEnd.getComplementoEndereco();
+			
+			if (complEnd != null) {
+				complEnd = collapseWhitespace(trimLineBreak(complEnd));	
+			}
+			reg0150.setCompl(complEnd);
 			reg0150.setBairro(pessEnd.getBairro());
 			
 			reg0150.setReg0175(montaReg0175(movimentosIcmsIpi, pessoa));
