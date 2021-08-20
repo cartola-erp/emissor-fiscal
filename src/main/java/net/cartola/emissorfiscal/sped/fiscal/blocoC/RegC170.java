@@ -1,6 +1,8 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getAliqAsBigDecimal;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuasCasas;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
 
@@ -24,7 +26,7 @@ import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 @Record(fields = { 
 	@Field(name = "reg", maxLength = 4),
     @Field(name = "numItem"),
-    @Field(name = "codItem", align = Align.RIGHT, padding = '0', minLength = 8, maxLength = 8),
+    @Field(name = "codItem", align = Align.RIGHT, padding = '0', minLength = 7, maxLength = 7),
     @Field(name = "descrCompl"),
     @Field(name = "qtd"),
     @Field(name = "unid"),
@@ -140,8 +142,11 @@ public class RegC170 {
 		this.codItem = SpedFiscalUtil.getCodItem(item);
 		this.descrCompl = item.getDescricaoEmpresa();
 		this.qtd = item.getQuantidade().doubleValue();
-		this.unid = item.getUnidade().getSigla();
-		this.vlItem = item.getValorUnitario();
+		this.unid = String.valueOf(item.getUnidade().getId());
+//		this.unid = item.getUnidade().getSigla();
+		BigDecimal vlItem = getBigDecimalNullSafe(item.getValorUnitario()).multiply(getBigDecimalNullSafe(item.getQuantidade()));
+		this.vlItem = getBigDecimalDuasCasas(vlItem);
+//		this.vlItem = item.getValorUnitario();
 		this.vlDesc = item.getDesconto();
 		this.indMov =  indMov; 											// MOVIMENTOU ou NÃO o ITEM
 		this.cstIcms = getCstIcmsComOrigem(item.getOrigem(), item.getIcmsCst());

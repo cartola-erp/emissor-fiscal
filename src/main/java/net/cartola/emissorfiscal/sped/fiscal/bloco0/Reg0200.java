@@ -18,7 +18,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDoItem;
  */
 @Record(fields = { 
 	@Field(name = "reg", maxLength = 4), 
-    @Field(name = "codItem", align = Align.RIGHT, padding = '0', minLength = 8, maxLength = 8),
+    @Field(name = "codItem", align = Align.RIGHT, padding = '0', minLength = 7, maxLength = 7),
     @Field(name = "descrItem"),
     @Field(name = "codBarra"),
     @Field(name = "codAntItem"),
