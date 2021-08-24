@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
 import static java.util.Arrays.asList;
+import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toSet;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
 import static net.cartola.emissorfiscal.documento.TipoServico.AGUA;
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -194,8 +196,10 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	
 	
 	private List<DocumentoFiscal> getListSatsEmitidos(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Loja loja) {
-//		List<DocumentoFiscal> listSatsEmitidos = new ArrayList<>();
-		return docFiscService.findByPeriodoCadastroAndLojaAndModeloAndTipoOperacao(dataHoraInicio, dataHoraFim, loja, _59, SAIDA);
+		List<DocumentoFiscal> listSatEmitido = docFiscService.findByPeriodoCadastroAndLojaAndModeloAndTipoOperacao(dataHoraInicio, dataHoraFim, loja, _59, SAIDA).
+				stream().sorted(comparingLong(DocumentoFiscal::getNumeroNota)).collect(Collectors.toList());
+
+		return listSatEmitido;
 	}
 	
 	private List<Pessoa> getListCadastrosPessoas(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listDocFiscalServico) {

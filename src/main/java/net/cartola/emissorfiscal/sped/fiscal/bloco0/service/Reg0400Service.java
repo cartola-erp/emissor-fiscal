@@ -6,8 +6,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,10 @@ class Reg0400Service implements MontaGrupoDeRegistroList<Reg0400, MovimentoMensa
 		Set<Operacao> listOperacoes = new HashSet<>();
 		listOperacoes.addAll(movimentosIcmsIpi.getListOperacoes());
 
-		listOperacoes.stream().forEachOrdered(operacao -> {
+		TreeSet<Operacao> listOperacoesOrdernadas = listOperacoes.stream().collect(Collectors.toCollection(TreeSet::new));
+		
+//		listOperacoes.stream().forEachOrdered(operacao -> {
+		listOperacoesOrdernadas.stream().forEachOrdered(operacao -> {
 			Reg0400 reg0400 = new Reg0400();
 			reg0400.setCodNat(String.valueOf(operacao.getId()));
 			reg0400.setDescrNat(operacao.getDescricao());

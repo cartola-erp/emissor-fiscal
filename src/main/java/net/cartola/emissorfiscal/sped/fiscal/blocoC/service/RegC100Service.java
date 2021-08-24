@@ -372,7 +372,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 
 		List<DocumentoFiscal> listDocFiscEntrada = listDocumentoFiscal.stream()
 				.filter(docFisc -> docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA && getModelosDocFiscRegC100().contains(docFisc.getModelo())
-						&& !docFisc.getEmitente().getCnpj().equalsIgnoreCase(lojaSped.getCnpj()))
+						&& !docFisc.getLoja().getCnpj().equalsIgnoreCase(lojaSped.getCnpj()))
 				.collect(toList());
 
 		return listDocFiscEntrada;
@@ -399,7 +399,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		List<DocumentoFiscal> listDocFiscSaida = listDocumentoFiscal.stream()
 				.filter(docFisc -> docFisc.getTipoOperacao() == IndicadorDeOperacao.SAIDA && modelosDocFiscSaida.contains(docFisc.getModelo())
 						|| (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA && getModelosDocFiscRegC100().contains(docFisc.getModelo())
-								&& docFisc.getEmitente().getCnpj().equalsIgnoreCase(lojaSpedFiscal.getCnpj())))
+								&& docFisc.getLoja().getCnpj().equalsIgnoreCase(lojaSpedFiscal.getCnpj())))
 				.collect(toList());
 
 		return listDocFiscSaida;

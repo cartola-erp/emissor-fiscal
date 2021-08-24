@@ -21,7 +21,7 @@ import org.hibernate.validator.constraints.Length;
  */
 @Entity
 @Table(name = "oper", uniqueConstraints = { @UniqueConstraint(name = "unk_oper_dscr", columnNames = {"dscr"}) })
-public class Operacao implements Serializable {
+public class Operacao implements Serializable, Comparable<Operacao> {
 
 	private static final long serialVersionUID = 12701892348311L;
 	private Long id;
@@ -69,6 +69,12 @@ public class Operacao implements Serializable {
 	@Override
 	public String toString() {
 		return "Operacao[id=" + id + ", descricao=" + descricao + "]";
+	}
+
+	@Override
+	public int compareTo(Operacao obj) {
+		Long i = (this.id - obj.id);
+		return i.intValue();
 	}
 
 }
