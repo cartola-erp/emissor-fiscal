@@ -208,7 +208,9 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 				reg0175.setContAnt(pessAlteradoSped.getBairroAnt());
 				break;
 			}
-			listReg0175.add(reg0175);
+			if(hasText(reg0175.getContAnt())) {
+				listReg0175.add(reg0175);
+			}
 		}
 		return listReg0175;
 	}

@@ -319,9 +319,15 @@ public class DocumentoFiscalService {
 		case OUTROS:
 			modelo = ModeloDocumentoFiscal.NFSE;
 			break;
-		case CTE: 
-			modelo = ModeloDocumentoFiscal._57;
-			break;
+		/**	
+		 * PS: Comentei esse trecho, pois atualente defino o "tipo de servico", com base no CENTRO CUSTO (lá no ERP);
+		 * E aconteceram de informar o de "07.02 - FRETES", para um modelo de DocumentoFiscal, que era NFSE;
+		 * 
+		 * PS1: Pode acontecer o msm com os outros tipos de serviço nesse método, mas a probabilidade é minima
+		 */
+//		case CTE: 
+////			modelo = ModeloDocumentoFiscal._57;
+//			break;
 		case ENERGIA: 
 			modelo = ModeloDocumentoFiscal._6;
 			break;

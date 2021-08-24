@@ -1,10 +1,12 @@
 package net.cartola.emissorfiscal.documento;
 
+import static net.cartola.emissorfiscal.util.ValidationHelper.collectionIsEmptyOrNull;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +40,9 @@ public class DocumentoFiscalItemService {
 	}
 
 	public List<DocumentoFiscalItem> findItensByVariosDocumentoFiscal(Set<Long> listDocFiscIds) {
+		if (collectionIsEmptyOrNull(listDocFiscIds)) {
+			return new ArrayList<>();
+		}
 		return documentoFiscalItemRepository.findByDocumentoFiscalIdIn(listDocFiscIds);
 	}
 	
