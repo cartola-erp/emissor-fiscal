@@ -24,7 +24,7 @@ import coffeepot.bean.wr.annotation.Record;
 	@Field(name = "reg0150"),
 	@Field(name = "reg0190"),
 	@Field(name = "reg0200"),
-	@Field(name = "reg0300"),
+//	@Field(name = "reg0300"),
 	@Field(name = "reg0400"),
 	@Field(name = "reg0450"),
 	@Field(name = "reg0460"),
@@ -45,7 +45,7 @@ public class Bloco0 implements Serializable {
 	private List<Reg0150> reg0150;
 	private List<Reg0190> reg0190;		
 	private List<Reg0200> reg0200;
-	private List<Reg0300> reg0300;
+//	private List<Reg0300> reg0300;
 	private List<Reg0400> reg0400;
 	private List<Reg0450> reg0450;
 	private List<Reg0460> reg0460;
@@ -117,13 +117,13 @@ public class Bloco0 implements Serializable {
 		this.reg0200 = reg0200;
 	}
 
-	public List<Reg0300> getReg0300() {
-		return reg0300;
-	}
-
-	public void setReg0300(List<Reg0300> reg0300) {
-		this.reg0300 = reg0300;
-	}
+//	public List<Reg0300> getReg0300() {
+//		return reg0300;
+//	}
+//
+//	public void setReg0300(List<Reg0300> reg0300) {
+//		this.reg0300 = reg0300;
+//	}
 
 	public List<Reg0400> getReg0400() {
 		return reg0400;

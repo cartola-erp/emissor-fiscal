@@ -82,7 +82,7 @@ public class SpedFiscalService implements MontaSpedFiscal<SpedFiscal, MovimentoM
 		spedFiscal.setBlocoD(blocoDService.criarBloco(movimentacoesMensalIcmsIpi));
 		spedFiscal.setBlocoE(blocoEService.criarBloco(movimentacoesMensalIcmsIpi));
 		
-//		bloco0Service.mountReg0460(spedFiscal.getBloco0()); // Acho que terei que fazer algo do TIPO, depois de gerar o Bloco E
+		bloco0Service.mountReg0460(spedFiscal.getBloco0(), movimentacoesMensalIcmsIpi); // Acho que terei que fazer algo do TIPO, depois de gerar o Bloco E
 		
 		spedFiscal.setBlocoG(blocoGService.criarBloco(movimentacoesMensalIcmsIpi));
 		spedFiscal.setBlocoH(blocoHService.criarBloco(movimentacoesMensalIcmsIpi));

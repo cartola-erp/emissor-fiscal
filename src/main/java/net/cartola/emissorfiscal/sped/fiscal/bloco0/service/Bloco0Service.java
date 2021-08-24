@@ -72,8 +72,8 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentoMensalIcmsIpi>
 		bloco0.setReg0200(reg0200Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		bloco0.setReg0400(reg0400Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		bloco0.setReg0450(reg0450Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
-		bloco0.setReg0460(reg0460Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
-		bloco0.setReg0990(montarEncerramentoDoBloco0(bloco0));
+//		bloco0.setReg0460(reg0460Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+//		bloco0.setReg0990(montarEncerramentoDoBloco0(bloco0));
 		
 		LOG.log(Level.INFO, "Montagem do BLOCO 0, TEMINADA! {0} " ,bloco0);
 		return bloco0;
@@ -88,5 +88,18 @@ public class Bloco0Service implements MontaBloco<Bloco0, MovimentoMensalIcmsIpi>
 		
 		LOG.log(Level.INFO, "Encerramento do BLOCO B (Reg0990), terminada: {0} " ,reg0990);
 		return reg0990;
+	}
+
+
+	/**
+	 * Irá montar o REG 0460 (que depende de informações dos BLOCO C e D);
+	 * E o Encerramento do Bloco 0
+	 * 
+	 * @param bloco0
+	 * @param movimentacoesMensalIcmsIpi
+	 */
+	public void mountReg0460(Bloco0 bloco0, MovimentoMensalIcmsIpi movimentacoesMensalIcmsIpi) {
+		bloco0.setReg0460(reg0460Service.montarGrupoDeRegistro(movimentacoesMensalIcmsIpi));
+		bloco0.setReg0990(montarEncerramentoDoBloco0(bloco0));
 	}
 }

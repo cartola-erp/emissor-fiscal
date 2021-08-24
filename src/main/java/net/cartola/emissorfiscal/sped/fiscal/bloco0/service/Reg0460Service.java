@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -37,11 +38,13 @@ class Reg0460Service implements MontaGrupoDeRegistroList<Reg0460, MovimentoMensa
 
 		Set<ObservacoesLancamentoFiscal> setObservacoesLancamentoFiscal = movimentosIcmsIpi.getSetObservacoesLancamentoFiscal();
 
+		Set<String> setCfopsObservacoes = setObservacoesLancamentoFiscal.stream().map(ObservacoesLancamentoFiscal::getCodObs).collect(Collectors.toSet());
+		
 		
 //		|0460|1102|ObservaCAo para CFOP 1102Conforme Portaria CAT 662018|
-		
-		for (ObservacoesLancamentoFiscal observacaoLancamentoFiscal : setObservacoesLancamentoFiscal) {
-			String codObs = observacaoLancamentoFiscal.getCodObs();
+		 
+		for (String codObs : setCfopsObservacoes ) {
+//			String codObs = observacaoLancamentoFiscal.getCodObs();
 			if (codObs.length() == 4) {
 				// Observacao para CFOP 1102 Conforme Portaria CAT 662018
 				String descricao = "Observacao para CFOP " +codObs+ " Conforme Portaria CAT 662018";
