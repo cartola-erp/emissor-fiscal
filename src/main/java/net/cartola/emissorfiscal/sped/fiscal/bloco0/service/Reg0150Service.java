@@ -66,10 +66,9 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 			reg0150.setCnpj(pessoa.getCnpj());
 			reg0150.setCpf(pessoa.getCpf());
 			
-			String ie = (pessoa.getIe() == null || pessoa.getIe() == 0L) ? "" : pessoa.getIe().toString();
-			reg0150.setIe(ie);
+			reg0150.setIe(pessoa.getIe());
 			reg0150.setCodMun(pessEnd.getIbgeCodigo());
-			reg0150.setSuframa(NumberUtil.getNullSafeForUI(pessoa.getCodSuframa()));
+			reg0150.setSuframa(pessoa.getCodSuframa());
 			reg0150.setEnd(pessEnd.getLogradouroEndereco());
 			reg0150.setNum(pessEnd.getEnderecoNumero());
 			

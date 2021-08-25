@@ -31,8 +31,8 @@ public class Pessoa {
     private String cpf;
 	private RegimeTributario regimeTributario;
 	private PessoaTipo pessoaTipo = PessoaTipo.FISICA;
-	private Long ie;
-	private Long codSuframa;
+	private String ie;
+	private String codSuframa;
 	private String nome;
 	private int codigoErp;
 	private int lojaErp;
@@ -84,19 +84,21 @@ public class Pessoa {
 		this.pessoaTipo = pessoaTipo;
 	}
 
-	public Long getIe() {
+	@Column(length = 14)
+	public String getIe() {
 		return ie;
 	}
 
-	public void setIe(Long ie) {
+	public void setIe(String ie) {
 		this.ie = ie;
 	}
 
-	public Long getCodSuframa() {
+	@Column(length = 9)
+	public String getCodSuframa() {
 		return codSuframa;
 	}
 
-	public void setCodSuframa(Long codSuframa) {
+	public void setCodSuframa(String codSuframa) {
 		this.codSuframa = codSuframa;
 	}
 	
