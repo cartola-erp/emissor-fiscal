@@ -1,0 +1,18 @@
+Os scripts aqui são as MESMAS TRIBUTACOES (icms), dos scripts "principais", 
+que estão na pasta anterior 
+	- V0001__Init.sql
+	- V0004__insertTribEstaSaidaDentroEstado.sql
+ 	- V0005__insertTribEstaSaidaDentroEstadoProdutoImportado.sql
+
+
+- O que muda é que nos principais somente é para SP x SP;
+- Porém tem situações que o cliente é de outro ESTADO, porém está comprando pessoalmente no balcão;
+
+- Tinha duas opções, colocar HARDCODED, para quando for as OPERACOES (1, 45, 46, 63, 73, 83), considerar sempre 
+a UF de destino como SP;
+
+- MAS achei melhor, não deixar no código isso, e sim deixar essa "Parametrização" no DB;
+
+PS: Como não é uma OPERAÇÃO interestadual de fato, a tributacao é a mesma de SP!
+pois o cliente estará comprando pessoalmente, mas o cadastro dele pode ser de outra uf, por isso, basicamente copiei as
+tributacoes de "SP x SP", para quando a uf de destino for uma diferente de SP ("SP x qualquer UF")

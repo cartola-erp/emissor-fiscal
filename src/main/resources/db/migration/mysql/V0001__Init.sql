@@ -84,7 +84,7 @@ DROP TABLE IF EXISTS `docu_fisc`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `docu_fisc` (
- `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `docu` int(11) DEFAULT NULL,
   `numero_nota` bigint(20) DEFAULT NULL,
   `tipo_oper` enum('ENTRADA','SAIDA') DEFAULT NULL,
@@ -129,12 +129,15 @@ CREATE TABLE `docu_fisc` (
   `dest_id` bigint(20) NOT NULL,
   `emit_id` bigint(20) NOT NULL,
   `oper_id` bigint(20) NOT NULL,
+  `loja_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fnk_docu_fisc_destinatario_id` (`dest_id`),
   KEY `fnk_docu_fisc_emitente_id` (`emit_id`),
   KEY `fnk_docu_fisc_oper_id` (`oper_id`),
+  KEY `fnk_docu_fisc_loja_id` (`loja_id`),
   CONSTRAINT `fnk_docu_fisc_destinatario_id` FOREIGN KEY (`dest_id`) REFERENCES `pess` (`id`),
   CONSTRAINT `fnk_docu_fisc_emitente_id` FOREIGN KEY (`emit_id`) REFERENCES `pess` (`id`),
+  CONSTRAINT `fnk_docu_fisc_loja_id` FOREIGN KEY (`loja_id`) REFERENCES `loja` (`id`),
   CONSTRAINT `fnk_docu_fisc_oper_id` FOREIGN KEY (`oper_id`) REFERENCES `oper` (`oper_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -180,6 +183,7 @@ CREATE TABLE `docu_fisc_item` (
   `icms_fcp_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_fcp_vlr` decimal(19,2) DEFAULT NULL,
   `icms_iva` decimal(7,6) NOT NULL DEFAULT '0.000000',
+  `icms_redu_base_vlr` decimal(19,2) DEFAULT NULL,
   `icms_redu_base_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_redu_base_st_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `icms_st_aliq_ultim_comp` decimal(7,6) NOT NULL DEFAULT '0.000000',
@@ -211,9 +215,12 @@ CREATE TABLE `docu_fisc_item` (
   `valor_unitario` decimal(19,2) NOT NULL,
   `docu_fisc_id` bigint(20) DEFAULT NULL,
   `ncm_id` bigint(20) NOT NULL,
+  `prod_unid_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fnk_documento_fiscal` (`docu_fisc_id`),
   KEY `fnk_ncms` (`ncm_id`),
+  KEY `fnk_docu_fisc_item_prod_unid_id` (`prod_unid_id`),
+  CONSTRAINT `fnk_docu_fisc_item_prod_unid_id` FOREIGN KEY (`prod_unid_id`) REFERENCES `prod_unid` (`id`),
   CONSTRAINT `fnk_documento_fiscal` FOREIGN KEY (`docu_fisc_id`) REFERENCES `docu_fisc` (`id`),
   CONSTRAINT `fnk_ncms` FOREIGN KEY (`ncm_id`) REFERENCES `ncms` (`ncm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -458,11 +465,11 @@ DROP TABLE IF EXISTS `pess`;
 CREATE TABLE `pess` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cnpj` varchar(255) DEFAULT NULL,
-  `cod_suframa` bigint(20) DEFAULT NULL,
+  `cod_suframa` varchar(9) DEFAULT NULL,
   `cod_erp` int(11) DEFAULT NULL,
   `cpf` varchar(255) DEFAULT NULL,
   `end_cod_erp` int(11) DEFAULT NULL,
-  `ie` bigint(20) DEFAULT NULL,
+  `ie` varchar(14) DEFAULT NULL,
   `loja_erp` int(11) DEFAULT NULL,
   `nome` varchar(255) DEFAULT NULL,
   `pess_tipo` enum('FISICA','JURIDICA') DEFAULT 'FISICA',
@@ -687,8 +694,10 @@ CREATE TABLE `trib_esta` (
   `cod_anp` int(11) NOT NULL,
   `is_prod_impor` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`trib_esta_id`),
-  UNIQUE KEY `unk_trib_esta_oper_ncm_fina_regi_trib_uf_prod_impor` (`oper_id`,`ncm_id`,`finalidade`,`regime_tributario`,`esta_orig_id`,`esta_dest_id`,`is_prod_impor`),  KEY `fnk_trib_esta_dest_id` (`esta_dest_id`),
+  UNIQUE KEY `unk_trib_esta_oper_ncm_fina_regi_trib_uf_prod_impor` (`oper_id`,`ncm_id`,`finalidade`,`regime_tributario`,`esta_orig_id`,`esta_dest_id`,`is_prod_impor`),  
+  KEY `fnk_trib_esta_dest_id` (`esta_dest_id`),
   KEY `fnk_trib_esta_orig_id` (`esta_orig_id`),
+  KEY `fnk_trib_esta_oper_id` (`oper_id`),
   KEY `fnk_trib_esta_ncm_id` (`ncm_id`),
   CONSTRAINT `fnk_trib_esta_dest_id` FOREIGN KEY (`esta_dest_id`) REFERENCES `esta` (`esta_id`),
   CONSTRAINT `fnk_trib_esta_ncm_id` FOREIGN KEY (`ncm_id`) REFERENCES `ncms` (`ncm_id`),

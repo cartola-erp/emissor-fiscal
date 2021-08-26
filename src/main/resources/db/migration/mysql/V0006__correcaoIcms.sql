@@ -8,7 +8,7 @@
 -- Deixando o campo "mens", vazio, pois será usado como info complementar;
 -- update trib_esta set mens = "";
 
--- O script abaixo é para atualizar o ICMS na VENDA e TRANSFERENCIA, para os NCMS (73181500, 73181600, 76161000, 73182400, 84814000, 84818099)
+-- O script abaixo é para atualizar o ICMS na VENDA e TRANSFERENCIA, para os NCMS (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900, 73269090)
 -- Da CST 60 --> p/ 00 (que é tributado) 
 
 
@@ -24,7 +24,7 @@ update trib_esta SET cod_anp = 740101006 where ncm_id in (select ncm_id from ncm
 -- =========================================================================================================================================================
 -- 1 - VENDA
 SELECT * FROM  trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900 )
+	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900, 73269090 )
 ) and oper_id = 1 ;
 
 UPDATE trib_esta t 
@@ -34,13 +34,13 @@ UPDATE trib_esta t
 		t.icms_st_aliq = 0.000000, 		t.mens =  '',
 		t.cfop = 5102 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900 )
+	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900, 73269090 )
 ) and t.oper_id = 1 AND  t.icms_cst = 60;
 
 
 -- 4 - TRANSFERENCIA
 SELECT * FROM  trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900 )
+	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900, 73269090 )
 ) and oper_id = 4 ;
 
 UPDATE trib_esta t 
@@ -50,14 +50,14 @@ UPDATE trib_esta t
 		t.icms_st_aliq = 0.000000, 		t.mens =  '',
 		t.cfop = 5152 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900 )
+	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900, 73269090 )
 ) and t.oper_id = 4 AND  t.icms_cst = 60;
 
 -- ############### Aqui é para quando a CFOP não será mudado (ou seja, PERMANECE a que já estava. São p/ OPERACOES que a CFOP p/ as CSTs 00 e 60 são as mesmas) ######
 -- 46 - REMESSA VINCULADA A VENDA DE ENTREGA FUTURA
 -- 83 - DISTRIBUICAO GRATUITA DE ITEM DE ESTOQUE
 SELECT * FROM  trib_esta WHERE ncm_id IN ( 
-	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900 )
+	SELECT ncm_id FROM ncms WHERE nume IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900, 73269090 )
 ) and oper_id  IN (46, 83) ;
 
 UPDATE trib_esta t 
@@ -66,7 +66,7 @@ UPDATE trib_esta t
 		t.icms_cst = 0, 				t.icms_iva = 1.000000,
 		t.icms_st_aliq = 0.000000, 		t.mens =  '' 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900 )
+	SELECT ncm_id FROM ncms WHERE nume IN(73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 73182200, 39269090, 76169900, 74152900, 73269090 )
 ) and t.oper_id IN (46, 83) AND  t.icms_cst = 60;
 
 -- =========================================================================================================================================================
