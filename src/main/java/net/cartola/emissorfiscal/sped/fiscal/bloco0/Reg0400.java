@@ -12,7 +12,7 @@ import coffeepot.bean.wr.annotation.Record;
 @Record(fields = {
 	@Field(name = "reg"),
 	@Field(name = "codNat"),
-	@Field(name = "descrNat")
+	@Field(name = "descrNat", maxLength = 50)
 })
 public class Reg0400 {
 	

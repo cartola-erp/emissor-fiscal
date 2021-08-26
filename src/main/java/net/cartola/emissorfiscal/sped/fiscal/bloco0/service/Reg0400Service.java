@@ -1,8 +1,9 @@
 
 package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
+import static net.cartola.emissorfiscal.util.StringUtil.somenteLetrasEspaco;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +41,7 @@ class Reg0400Service implements MontaGrupoDeRegistroList<Reg0400, MovimentoMensa
 		listOperacoesOrdernadas.stream().forEachOrdered(operacao -> {
 			Reg0400 reg0400 = new Reg0400();
 			reg0400.setCodNat(String.valueOf(operacao.getId()));
-			reg0400.setDescrNat(operacao.getDescricao());
+			reg0400.setDescrNat(somenteLetrasEspaco(operacao.getDescricao()));
 			listReg0400.add(reg0400);
 		});
 		

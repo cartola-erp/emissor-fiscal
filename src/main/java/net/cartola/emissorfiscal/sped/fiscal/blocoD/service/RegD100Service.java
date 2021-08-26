@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.ChaveAcesso;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
@@ -70,6 +71,8 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 	private RegD100 gerarRegistroD100(DocumentoFiscal servicoTransporte, Loja lojaSped) {
 		// TODO Auto-generated method stub
 		RegD100 regD100 = new RegD100();
+		ChaveAcesso chaveAcesso = new ChaveAcesso(servicoTransporte.getNfeChaveAcesso());
+		servicoTransporte.setSerie(Long.parseLong(chaveAcesso.getSerie()));
 		
 		TipoPreenchimentoRegD100 tipoPreenchimentoRegD100 = verificarTipoPreenchimento(servicoTransporte, lojaSped);
 		
@@ -120,7 +123,7 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 	 * @return
 	 */
 	private TipoPreenchimentoRegD100 verificarTipoPreenchimento(DocumentoFiscal servicoTransporte, Loja lojaSped) {
-		LOG.log(Level.INFO, "Verificando o tipo de preenchimento do Registro C100");
+//		LOG.log(Level.INFO, "Verificando o tipo de preenchimento do Registro D100");
 		List<NFeStatus> docuFiscalNaoAutorizadas = Arrays.asList(NFeStatus.CANCELADA, NFeStatus.DENEGADA, NFeStatus.INUTILIZADA);
 
 		if (docuFiscalNaoAutorizadas.contains(servicoTransporte.getStatus())) {
