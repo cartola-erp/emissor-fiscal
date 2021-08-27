@@ -2,11 +2,11 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
 import static java.util.stream.Collectors.toSet;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isNfeReferenteASat;
+import static net.cartola.emissorfiscal.util.StringUtil.somenteNumerosELetras;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +35,21 @@ class RegC110Service {
 	private DocumentoFiscalService docFiscService;
 	
 	public List<RegC110> montarGrupoRegC110(DocumentoFiscal docFisc, Loja lojaSped, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
-		LOG.log(Level.INFO, "Montando o REGISTRO C110" );
+//		LOG.log(Level.INFO, "Montando o REGISTRO C110" );
+		RegC110 regC110 = new RegC110();
 		List<RegC110> listRegC110 = new ArrayList<>();
+		
 		Set<String> setChaveAcessoReferencia = docFisc.getReferencias().stream().map(DocumentoFiscalReferencia::getChave).collect(toSet());
-		List<DocumentoFiscal> listDocFiscReferenciados = docFiscService.findByNfeChaveAcessoIn(setChaveAcessoReferencia);
+		List<DocumentoFiscal> listDocFiscReferenciados = new ArrayList<>();
+		
+		if (!setChaveAcessoReferencia.isEmpty()) {
+			listDocFiscReferenciados = docFiscService.findByNfeChaveAcessoIn(setChaveAcessoReferencia);
+		}
+		
 		CodificacaoReg0450InfoComplementarFisco codificaocaReg0450InfoComplFisco = movimentosIcmsIpi.getListCodInfoComplementarFisco().get(0);
 		
-		RegC110 regC110 = new RegC110();
 		regC110.setCodInf(codificaocaReg0450InfoComplFisco.getCodInfo());
-		regC110.setTxtCompl(docFisc.getInfoAdicionalFisco());
+		regC110.setTxtCompl(somenteNumerosELetras(docFisc.getInfoAdicionalFisco(), true, null));
 		
 		// ==========================================  PREENCHENDO os REGISTORS filhos ===================================================
 //		REGISTRO C112: DOCUMENTO DE ARRECADAÇÃO REFERENCIADO
@@ -63,7 +69,7 @@ class RegC110Service {
 		}
 
 		listRegC110.add(regC110);
-		LOG.log(Level.INFO, "Saindo da montagem do REGISTRO C110" );
+//		LOG.log(Level.INFO, "Saindo da montagem do REGISTRO C110" );
 		return listRegC110;
 	}
 

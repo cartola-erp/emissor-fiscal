@@ -91,7 +91,8 @@ class RegC197Service {
 		regC197.setVlBcIcms(null);
 		regC197.setAliqIcms(null);
 //		regC197.setVlIcms(vlIcmsIsentaNaoTributadaOutrasPorCfop);
-		regC197.setVlIcms(null);
+//		regC197.setVlIcms(null);
+		regC197.setVlIcms(BigDecimal.ZERO);
 		regC197.setVlOutros(getBigDecimalDuasCasas(vlIcmsIsentaNaoTributadaOutrasPorCfop));
 
 		return regC197;
@@ -170,7 +171,8 @@ class RegC197Service {
 		regC197.setVlIcms(getBigDecimalDuasCasas(vlIcmsOuIcmsSt));
 //		regC197.setVlIcms(null);
 //		regC197.setVlOutros(vlIcmsIsentaNaoTributadaOutrasPorCfop);
-
+		regC197.setVlOutros(null);
+				
 		return regC197;
 	}
 	

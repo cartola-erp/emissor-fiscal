@@ -6,6 +6,7 @@ import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEmitenteEqualsDestinatario;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isNfeReferenteASat;
+import static org.springframework.util.StringUtils.hasText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,10 +118,6 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	private RegC100 gerarRegistroC100(DocumentoFiscal docFisc, Loja lojaSped, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		// TODO Auto-generated method stub
 		RegC100 regC100 = new RegC100();
-		/* INFO COMPL. OPERACAO INTERESTADUAL (FCP)  */
-		if (docFisc.getOperacao().getId().equals(spedFiscPropertie.getCodVendaInterestadualNaoContribuinte())) {
-			regC100.setRegC101(regC101Service.montarRegC101(movimentosIcmsIpi, docFisc));
-		}
 		
 		/** PS: Por enquanto só tem a validação do PRIMEIRO preenchimento **/
 		TipoPreenchimentoRegC100 tipoPreenchimentoRegC100 = verificarTipoPreenchimento(docFisc, lojaSped);
@@ -167,6 +164,17 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, movimentosIcmsIpi));
 //			regC100.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
 			break;
+		}
+		
+		
+		/* INFO COMPL. OPERACAO INTERESTADUAL (FCP)  */
+		if (docFisc.getOperacao().getId().equals(spedFiscPropertie.getCodVendaInterestadualNaoContribuinte())) {
+			regC100.setRegC101(regC101Service.montarRegC101(movimentosIcmsIpi, docFisc));
+		}
+		
+		
+		if (hasText(docFisc.getInfoAdicionalFisco())) {
+			regC100.setRegC110(regC110Service.montarGrupoRegC110(docFisc, lojaSped, movimentosIcmsIpi));
 		}
 		
 		/**
