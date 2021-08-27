@@ -35,10 +35,11 @@ class RegC116Service {
 	 * @return
 	 */
 	public List<RegC116> montarGrupoRegC116(DocumentoFiscal docFisc, Loja lojaSped, List<DocumentoFiscal> listDocFiscReferenciados) {
-		LOG.log(Level.INFO, "Montando o REGISTRO C116" );
+//		LOG.log(Level.INFO, "Montando o REGISTRO C116" );
 		List<RegC116> listRegC116 = new ArrayList<>();
 		
 		for (DocumentoFiscal docFiscReferenciado : listDocFiscReferenciados) {
+			LOG.log(Level.INFO, "Montando o REGISTRO C116" );
 			boolean isEmissaoPropria = getIndicadorEmitente(docFiscReferenciado, lojaSped).equals(IndicadorDoEmitente.EMISSAO_PROPRIA);
 			if (docFiscReferenciado.getModelo().equals(ModeloDocumentoFiscal._59) && isEmissaoPropria) {
 				RegC116 regC116 = new RegC116();
@@ -50,8 +51,9 @@ class RegC116Service {
 				regC116.setDtDoc(docFiscReferenciado.getEmissao());
 				listRegC116.add(regC116);
 			}
+			LOG.log(Level.INFO, "Saindo da montagem do REGISTRO C116" );
 		}
-		LOG.log(Level.INFO, "Saindo da montagem do REGISTRO C116" );
+//		LOG.log(Level.INFO, "Saindo da montagem do REGISTRO C116" );
 		return listRegC116;
 	}
 

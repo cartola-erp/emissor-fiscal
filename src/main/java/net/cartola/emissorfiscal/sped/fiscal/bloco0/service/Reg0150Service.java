@@ -30,7 +30,6 @@ import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0150;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados;
-import net.cartola.emissorfiscal.util.NumberUtil;
 import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**

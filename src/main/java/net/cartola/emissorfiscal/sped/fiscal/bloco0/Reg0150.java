@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.bloco0;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
@@ -95,7 +97,11 @@ public class Reg0150 {
 	}
 
 	public void setIe(String ie) {
-		this.ie = ie;
+		if (ie != null && !hasText(ie) && ie.equals("0")) {
+			this.ie = null;
+		} else {
+			this.ie = ie;
+		}
 	}
 
 	public int getCodMun() {

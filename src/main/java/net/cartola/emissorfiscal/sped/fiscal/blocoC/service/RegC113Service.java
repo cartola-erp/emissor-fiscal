@@ -40,7 +40,7 @@ class RegC113Service {
 	 * @return
 	 */
 	public List<RegC113> montarGrupoRegC113(DocumentoFiscal docFisc, Loja lojaSped, List<DocumentoFiscal> listDocFiscReferenciados) {
-		LOG.log(Level.INFO, "Montando o REGISTRO C113" );
+//		LOG.log(Level.INFO, "Montando o REGISTRO C113" );
 		List<RegC113> listRegC113 = new ArrayList<>();
 		List<ModeloDocumentoFiscal> listCupons = Arrays.asList(ModeloDocumentoFiscal._2, ModeloDocumentoFiscal._2D, ModeloDocumentoFiscal._2E);
 		
@@ -67,7 +67,7 @@ class RegC113Service {
 			}
 		});
 		
-		LOG.log(Level.INFO, "Saindo do REGISTRO C113" );
+//		LOG.log(Level.INFO, "Saindo do REGISTRO C113" );
 		return listRegC113;
 	}
 
