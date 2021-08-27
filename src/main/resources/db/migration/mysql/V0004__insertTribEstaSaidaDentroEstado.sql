@@ -20,6 +20,24 @@
 -- ================================================================================================================================================================
 
 
+	--  26 – TRANSFERÊNCIA DE BEM DO ATIVO IMOBILIZADO (CST 41 - CFOP - 5552, para qualquer ncm)
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id ) 
+		(select cest, 5552, fcp_aliq, finalidade, 0.000000, 0.000000, 0.000000, 41, 0.000000, 0.000000, 
+				'Não incidencia do ICMS nos termos do artigo 7 inciso XIV do Decreto nr 45490/2000 (RICMS)', 
+				regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, 26 FROM trib_esta where oper_id = 1 and is_prod_impor = false);
+	
+	-- 26 – TRANSFERÊNCIA DE BEM DO ATIVO IMOBILIZADO Cadastrando para os outros ncms (que PROVAVELMENTE não SÃO de AUTOPEÇAS)
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id )
+		(select 199900, 5552, 0, "CONSUMO", 0.000000, 0.000000, 0.000000, 41, 0.000000, 0.000000, 
+				'Não incidencia do ICMS nos termos do artigo 7 inciso XIV do Decreto nr 45490/2000 (RICMS)', "NORMAL",
+				0, 26, 26, ncm_id, 26 FROM ncms where ncm_id not in (select ncm_id from trib_esta where oper_id = 26 and is_prod_impor = false));
+-- ---------------------------------------------- Para Quando o produto for importado (dentro do estado é a mesma tributacao -------------------------------	
+	
+	
+
 	-- 34 | AQUISICAO DE MERCADORIAS DENTRO DO ESTADO PARA CONSUMO | (É uma entrada que temos que emitir quando o fornecedor for por ex.: MEI ) 
 	-- ICMS → CST = 90 | CFOP = 1407 (Para qualquer ncm nessa operação) 
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------

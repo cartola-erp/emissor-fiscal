@@ -146,6 +146,12 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 -- ========================================================================================================================================================
 -- ============================================================== CST 08 - Tributacao Zerada ==============================================================	
 -- ========================================================================================================================================================
+-- --------------------------------------------------------- 	26 – TRANSFERÊNCIA DE BEM DO ATIVO IMOBILIZADO 	---------------------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',26, ncm_id FROM vw_ncm_id_mono;	
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 -- --------------------------------------------------------- 	45 - VENDA DE PRODUTO PARA ENTREGA FUTURA 	---------------------------------------------------------
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',45, ncm_id FROM vw_ncm_id_mono;	
