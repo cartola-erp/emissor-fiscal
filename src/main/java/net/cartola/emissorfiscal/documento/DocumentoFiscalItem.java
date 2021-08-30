@@ -50,6 +50,7 @@ public class DocumentoFiscalItem implements Serializable {
 	private ProdutoUnidade unidade;
 	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
 	private Finalidade finalidade = Finalidade.CONSUMO;
+	private Finalidade finalidadeEmpresa = Finalidade.COMERCIALIZACAO;	// Essa é a finalidade no cadastro do produto (no ERP), ou seja, sob o enfoque da AG
 	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
 	private BigDecimal quantidade = BigDecimal.ZERO;
 	private BigDecimal valorUnitario = BigDecimal.ZERO;
@@ -192,13 +193,23 @@ public class DocumentoFiscalItem implements Serializable {
 	
 	@NotNull(message = FINALIDADE_OBRIGATORIA)
 	@Enumerated(EnumType.STRING)
-	@Column(name="finalidade", columnDefinition="enum('CONSUMO', 'REVENDA') default 'CONSUMO' ")
+	@Column(name="finalidade", columnDefinition="enum('COMERCIALIZACAO', 'BRINDE', 'DOACAO', 'PATRIMONIO', 'CONSUMO') default 'CONSUMO' ")
 	public Finalidade getFinalidade() {
 		return finalidade;
 	}
 
 	public void setFinalidade(Finalidade finalidade) {
 		this.finalidade = finalidade;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "finalidade_empresa", columnDefinition="enum('COMERCIALIZACAO', 'BRINDE', 'DOACAO', 'PATRIMONIO', 'CONSUMO') default 'COMERCIALIZACAO' ")
+	public Finalidade getFinalidadeEmpresa() {
+		return finalidadeEmpresa;
+	}
+
+	public void setFinalidadeEmpresa(Finalidade finalidadeEmpresa) {
+		this.finalidadeEmpresa = finalidadeEmpresa;
 	}
 	
 	@NotNull(message = PRODUTO_ORIGEM_OBRIGATORIA)

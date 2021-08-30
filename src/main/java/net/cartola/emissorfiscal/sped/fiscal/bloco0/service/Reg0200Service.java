@@ -148,7 +148,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 	}
 
 	private TipoDoItem getTipoItem(DocumentoFiscalItem item) {
-		switch (item.getFinalidade()) {
+		switch (item.getFinalidadeEmpresa()) {
 		case COMERCIALIZACAO:
 			return TipoDoItem.MERCADORIA_PARA_REVENDA;
 		case PATRIMONIO: 

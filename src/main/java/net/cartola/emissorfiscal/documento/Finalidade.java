@@ -5,7 +5,7 @@ public enum Finalidade {
 	COMERCIALIZACAO("Revenda"),
 	BRINDE("Brinde"), 
 	DOACAO("Doação"), 
-	PATRIMONIO("Patrimônio"), 
+	PATRIMONIO("Patrimônio"), // Patrimonio/Ativo é quando o VL UNITARIO do item é maior que R$ 1400,00
 	CONSUMO("Consumo");  
 	
 	private String descricao;
