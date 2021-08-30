@@ -7,6 +7,8 @@ import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +22,7 @@ import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.RegistroAnalitico;
@@ -179,6 +182,24 @@ public final class SpedFiscalUtil {
 	 */
 	public static boolean isInformaDesconto(IndicadorDeOperacao tipoOperacao, SpedFiscalProperties spedFiscPropertie) {
 		return (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || spedFiscPropertie.isInformarDescontoSaida();
+	}
+	
+	
+	/**
+	 * Irá verificar se o DocumentoFiscal, é ou não, uma entrada de consumo
+	 * 
+	 * @param docFisc
+	 * @return
+	 */
+	public static boolean isEntradaConsumo(DocumentoFiscal docFisc) {
+		final Set<String> codOperacaoConsumo = new HashSet<>();
+	    codOperacaoConsumo.addAll(Arrays.asList("34", "35", "65"));
+	    
+	    Operacao oper = docFisc.getOperacao();
+	    String operId = oper != null ? oper.getId().toString() : "";
+	    
+//	    return codOperacaoConsumo.contains(operId) && docFisc.getTipoOperacao().equals(IndicadorDeOperacao.ENTRADA);
+	    return codOperacaoConsumo.contains(operId);
 	}
 	
 	/**

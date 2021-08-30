@@ -4,6 +4,7 @@ import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuas
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.multiplicaAliqPorCem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getMapaItensParaRegistroAnalitico;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,12 +37,13 @@ class RegC190Service {
 	 */
 	public List<RegC190> montarGrupoRegC190(DocumentoFiscal docFisc, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		List<RegC190> listRegC190 = new ArrayList<>();
+		boolean isEntradaConsumo = isEntradaConsumo(docFisc);
 		
 		/**Um mapa dentro do outro, até retornar uma lista no ultimo. Sendo as seguintes Chaves:
 		 * ProdutoOrigem, CstIcms, Cfop, Aliquota do Icms --> Retornam uma List<DocumentoFiscalItem>
 		 */
 		Map<ProdutoOrigem, Map<Integer, Map<Integer, Map<BigDecimal, List<DocumentoFiscalItem>>>>> mapPorOrigemCstCfopAliqIcms = getMapaItensParaRegistroAnalitico(docFisc);
-	
+
 		/**
 		 * preenchemento o registro C190 para o documento fiscal recebido
 		 */
@@ -51,15 +53,17 @@ class RegC190Service {
 								-> mapPorCfopAliqIcms.forEach((aliqIcms, listItens) -> {
 											RegC190 regC190 = new RegC190();
 //											regC190.setCstIcms(Integer.toString(origem.ordinal())  + Integer.toString(cstIcms));
+											aliqIcms = isEntradaConsumo ? BigDecimal.ZERO : multiplicaAliqPorCem(aliqIcms);
+											
 											regC190.setCstIcms(getCstIcmsComOrigem(origem, cstIcms));
 											regC190.setCfop(cfop);
-											regC190.setAliqIcms(multiplicaAliqPorCem(aliqIcms));
+											regC190.setAliqIcms(aliqIcms);
 											regC190.setVlOpr(calcularTotalVlrOperacao(listItens, docFisc));
-											regC190.setVlBcIcms(calcularTotalVlrBcIcms(listItens));
-											regC190.setVlIcms(calcularTotalValorIcms(listItens));
+											regC190.setVlBcIcms(calcularTotalVlrBcIcms(listItens, isEntradaConsumo));
+											regC190.setVlIcms(calcularTotalValorIcms(listItens, isEntradaConsumo));
 											regC190.setVlBcIcmsSt(calcularTotalVlrBcIcmsSt(listItens));
 											regC190.setVlIcmsSt(calcularTotalValorIcmsSt(listItens));
-											regC190.setVlRedBc(calcularTotalValorRedBc(listItens));		//TODO
+											regC190.setVlRedBc(calcularTotalValorRedBc(listItens, isEntradaConsumo));		//TODO
 											regC190.setVlIpi(calcularTotalValorIpi(listItens));
 											regC190.setCodObs(Integer.toString(cfop));			// TODO
 											listRegC190.add(regC190);
@@ -69,6 +73,7 @@ class RegC190Service {
 		return listRegC190;
 	}
 
+	
 	/**
 	 * Como a base do icms já é (ao menos é para aontecer isso) salva corretamente no banco, só estou acrescentando o valor do FCP;
 	 * não temos FCP ST, por isso não é somado
@@ -94,11 +99,21 @@ class RegC190Service {
 		 return getBigDecimalDuasCasas(totalOprSemOsDesconto);
 	}
 	
-	private BigDecimal calcularTotalVlrBcIcms(List<DocumentoFiscalItem> listItens) {
-		return listItens.stream().map(DocumentoFiscalItem::getIcmsBase).reduce(BigDecimal.ZERO, BigDecimal::add);
+	private BigDecimal calcularTotalVlrBcIcms(List<DocumentoFiscalItem> listItens, boolean isEntradaConsumo) {
+		BigDecimal vlBcIcms = listItens.stream().map(DocumentoFiscalItem::getIcmsBase).reduce(BigDecimal.ZERO, BigDecimal::add);
+		if (isEntradaConsumo) {
+			return vlBcIcms;
+		} else {
+			return listItens.stream().map(DocumentoFiscalItem::getIcmsReducaoBaseValor)
+					.reduce(BigDecimal.ZERO, BigDecimal::add)
+					.add(vlBcIcms);
+		}
 	}
 	
-	private BigDecimal calcularTotalValorIcms(List<DocumentoFiscalItem> listItens) {
+	private BigDecimal calcularTotalValorIcms(List<DocumentoFiscalItem> listItens, boolean isEntradaConsumo) {
+		if (isEntradaConsumo) {
+			return BigDecimal.ZERO;
+		}
 		return listItens.stream().map(DocumentoFiscalItem::getIcmsValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
@@ -110,12 +125,14 @@ class RegC190Service {
 		return listItens.stream().map(DocumentoFiscalItem::getIcmsStValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
-	private BigDecimal calcularTotalValorRedBc(List<DocumentoFiscalItem> listItens) {
+	private BigDecimal calcularTotalValorRedBc(List<DocumentoFiscalItem> listItens, boolean isEntradaConsumo) {
 		/**
 		 * TODO tenho que colocar uma regra aqui referente a ser para comercializacao ou não, pois se for consumo
 		 * sempre será zero, e adiciona o icms isento na base do icms proprio
 		 */
-		
+		if (isEntradaConsumo) {
+			return BigDecimal.ZERO;
+		}
 		return listItens.stream().map(DocumentoFiscalItem::getIcmsReducaoBaseValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 

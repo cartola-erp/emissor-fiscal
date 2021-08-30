@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
@@ -56,7 +55,7 @@ class RegC113Service {
 					listRegC113.add(regC113);
 				}
 			});
-			LOG.log(Level.INFO, "Saindo do REGISTRO C113" );
+//			LOG.log(Level.INFO, "Saindo do REGISTRO C113" );
 			return listRegC113;
 		}
 		

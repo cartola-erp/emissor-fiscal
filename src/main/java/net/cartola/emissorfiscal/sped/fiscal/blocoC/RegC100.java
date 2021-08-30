@@ -1,9 +1,10 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
-import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
+import static java.math.BigDecimal.ZERO;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumo;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isInformaDesconto;
 
 import java.math.BigDecimal;
@@ -141,7 +142,8 @@ public class RegC100 {
 	 */
 	public RegC100(DocumentoFiscal docFisc, Loja lojaSped, SpedFiscalProperties spedFiscPropertie) {
 		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-
+		boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+		
 		this.indOper = tipoOperacao ;
 		this.indEmit = getIndicadorEmitente(docFisc, lojaSped);
 		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
@@ -161,7 +163,7 @@ public class RegC100 {
 //		boolean informaDesconto = (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || spedFiscPropertie.isInformarDescontoSaida();
 		boolean informaDesconto = isInformaDesconto(tipoOperacao, spedFiscPropertie);
 
-		this.vlDesc =  informaDesconto ? docFisc.getValorDesconto() : BigDecimal.ZERO;
+		this.vlDesc =  informaDesconto ? docFisc.getValorDesconto() : ZERO;
 //		this.vlDesc = BigDecimal.ZERO;
 		this.vlAbatNt = null;		// REMESSAS p/ ZFM
 		this.vlMerc = docFisc.getValorTotalProduto();
@@ -169,8 +171,8 @@ public class RegC100 {
 		this.vlFrt = docFisc.getValorFrete();
 		this.vlSeg = docFisc.getValorSeguro();
 		this.vlOutDa = docFisc.getValorOutrasDespesasAcessorias();
-		this.vlBcIcms = getVlrOrBaseCalc(docFisc.getIcmsBase(), tipoOperacao);
-		this.vlIcms = getVlrOrBaseCalc(docFisc.getIcmsValor(), tipoOperacao);
+		this.vlBcIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(docFisc.getIcmsBase(), tipoOperacao);
+		this.vlIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(docFisc.getIcmsValor(), tipoOperacao);
 		this.vlBcIcmsSt = getVlrOrBaseCalc(docFisc.getIcmsStBase(), tipoOperacao);
 		this.vlIcmsSt = getVlrOrBaseCalc(docFisc.getIcmsStValor(), tipoOperacao);
 //		this.vlIpi(docFisc.getIpiValor());			Não Estamos Enquadrado como contribuinte de IPI. Portanto não informamos NADA de IPI

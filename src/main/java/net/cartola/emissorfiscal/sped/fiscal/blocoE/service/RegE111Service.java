@@ -27,6 +27,7 @@ import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE11
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoE.RegE111;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoGuiaEstadualService;
+import net.cartola.emissorfiscal.util.NumberUtilRegC100;
 
 /**
  * @date 6 de jul. de 2021
@@ -89,10 +90,18 @@ class RegE111Service {
 		
 		
 		listRegE111.addAll(listRegE111DebitoECreditoDifalConsumoAtivo);
-		listRegE111.add(regE111EstornoDebitoDevolucaoParaFornecedor);
 		
-		listRegE111.add(regE111CreditosIcmsNotasDeSc);
-		listRegE111.add(regE111DebitosIcmsNotasDeSc);
+		if (isAdicionaRegE111NaLista(regE111EstornoDebitoDevolucaoParaFornecedor)) {
+			listRegE111.add(regE111EstornoDebitoDevolucaoParaFornecedor);
+		}
+		
+		if (isAdicionaRegE111NaLista(regE111CreditosIcmsNotasDeSc)) {
+			listRegE111.add(regE111CreditosIcmsNotasDeSc);
+		}
+		
+		if (isAdicionaRegE111NaLista(regE111DebitosIcmsNotasDeSc)) {
+			listRegE111.add(regE111DebitosIcmsNotasDeSc);
+		}
 		
 		/**
 		 * Acredito que isso abaixo conseguirei, descobrir depois que terminar de montar o REG E110 (então terei que salvar tais informações no DB);
@@ -107,6 +116,13 @@ class RegE111Service {
 		return listRegE111;
 	}
 
+	private boolean isAdicionaRegE111NaLista(RegE111 regE111) {
+		BigDecimal vlAjApur = regE111.getVlAjApur();
+		if (vlAjApur != null && !NumberUtilRegC100.isBigDecimalZero(vlAjApur)) {
+			return true;
+		}
+		return false;
+	}
 
 	
 

@@ -1,10 +1,12 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
+import static java.math.BigDecimal.ZERO;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getAliqAsBigDecimal;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuasCasas;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumo;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -137,7 +139,8 @@ public class RegC170 {
 		List<Long> codOperacoesSemMovimentoEstoque = Arrays.asList(15L, 27L, 74L, 82L);
 		Boolean indMov = !codOperacoesSemMovimentoEstoque.contains(docFisc.getOperacao().getId());
 		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-
+		boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+		
 		this.numItem = item.getItem();
 		this.codItem = SpedFiscalUtil.getCodItem(item);
 		this.descrCompl = item.getDescricaoEmpresa();
@@ -152,9 +155,9 @@ public class RegC170 {
 		this.cstIcms = getCstIcmsComOrigem(item.getOrigem(), item.getIcmsCst());
 		this.cfop = item.getCfop();
 		this.codNat = docFisc.getOperacao().getId();
-		this.vlBcIcms = getVlrOrBaseCalc(item.getIcmsBase(), tipoOperacao);			// ICMS
-		this.aliqIcms = getAliqAsBigDecimal(item.getIcmsAliquota(), tipoOperacao);
-		this.vlIcms = getVlrOrBaseCalc(item.getIcmsValor(), tipoOperacao);
+		this.vlBcIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(item.getIcmsBase(), tipoOperacao);			// ICMS
+		this.aliqIcms = isEntradaConsumo ? ZERO : getAliqAsBigDecimal(item.getIcmsAliquota(), tipoOperacao);
+		this.vlIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(item.getIcmsValor(), tipoOperacao);
 		this.vlBcIcmsSt = getVlrOrBaseCalc(item.getIcmsStBase(), tipoOperacao);
 		this.aliqSt = getAliqAsBigDecimal(item.getIcmsStAliquota(), tipoOperacao);
 		this.vlIcmsSt = getVlrOrBaseCalc(item.getIcmsStValor(), tipoOperacao);
@@ -169,17 +172,17 @@ public class RegC170 {
 		this.cstPis = item.getPisCst();												// PIS
 		this.vlBcPis = getVlrOrBaseCalc(item.getPisBase(), tipoOperacao);
 		this.aliqPis = getAliqAsBigDecimal(item.getPisAliquota(), tipoOperacao);
-		this.quantBcPis = BigDecimal.ZERO;
-		this.aliqPisReal = BigDecimal.ZERO;
+		this.quantBcPis = ZERO;
+		this.aliqPisReal = ZERO;
 		this.vlPis = getVlrOrBaseCalc(item.getPisValor(), tipoOperacao);
 		this.cstCofins = item.getCofinsCst();										// COFINS
 		this.vlBcCofins = getVlrOrBaseCalc(item.getCofinsBase(), tipoOperacao);
 		this.aliqCofins = getAliqAsBigDecimal(item.getCofinsAliquota(), tipoOperacao);
-		this.quantBcCofins = BigDecimal.ZERO;
-		this.aliqCofinsReal = BigDecimal.ZERO;
+		this.quantBcCofins = ZERO;
+		this.aliqCofinsReal = ZERO;
 		this.vlCofins = getVlrOrBaseCalc(item.getCofinsValor(), tipoOperacao);
 		this.codCta = 0d;
-		this.vlAbatNt = BigDecimal.ZERO;
+		this.vlAbatNt = ZERO;
 	}
 
 	public String getReg() {
