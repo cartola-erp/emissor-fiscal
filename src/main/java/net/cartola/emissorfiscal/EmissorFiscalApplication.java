@@ -1,7 +1,12 @@
 package net.cartola.emissorfiscal;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,6 +27,11 @@ public class EmissorFiscalApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EmissorFiscalApplication.class, args);
+	}
+	
+	@PostConstruct
+	public void init() {
+		TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.ofOffset("GMT", ZoneOffset.of("-3"))));
 	}
 	
 	@Bean
