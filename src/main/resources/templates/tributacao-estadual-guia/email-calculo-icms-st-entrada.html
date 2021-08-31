@@ -85,7 +85,7 @@
                     <th>Descrição</th>
                     <th>Nº Item</th>
                     <th>Ncm</th>     <!-- CASO se um NCM que nunca tenha sido validado pela gabi pintar de cor diferente -->
-                    <th>VLR Prod.</th>
+                    <th>ICMS Base Próprio (com Frete)</th>
                     <th>Qtd.</th>
                     <!-- <th>VLR Total.</th> -->
                     <th>Frete</th>
@@ -105,7 +105,7 @@
                     <td th:text="${calcGare.docFiscItem.descricaoEmpresa}" > </td>           <!-- Desc. -->
                     <td th:text="${calcGare.docFiscItem.item}" > </td>                       <!-- Nº Item -->
                     <td th:text="${calcGare.docFiscItem.ncm.numero}"></td>                   <!-- NCM -->
-                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.valorUnitario, 0, 'POINT', 4, 'COMMA')}"> </td>               <!-- VLR Prod -->
+                    <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.icmsBase, 0, 'POINT', 4, 'COMMA')}"> </td>               <!-- VLR Prod -->
                     <td th:text="${calcGare.docFiscItem.quantidade}"> </td>                  <!-- Quantidade -->
                     <!-- <td th:text="${, 0, 'POINT', 4 'COMMA')}"> </td>  Vlr total produto -->
                     <td th:text="${#numbers.formatDecimal(calcGare.docFiscItem.valorFrete, 0, 'POINT', 4, 'COMMA')}" > </td>                 <!-- Frete -->

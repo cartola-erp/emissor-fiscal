@@ -133,7 +133,9 @@ public class CalculoGuiaEstadualService {
 		BigDecimal aliqIvaMva = BigDecimal.ONE.add(tribEstaGuia.getIcmsIva());
 		// Como as entradas em si não é calculada aqui, e sim no ERP, a base é a msm que recebeu de lá previamente
 		BigDecimal baseCalcIcms =  docItem.getIcmsBase(); //docItem.getQuantidade().multiply(docItem.getValorUnitario());
-		BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getValorFrete()).add(docItem.getIpiValor());
+		BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getIpiValor());
+		// Estava da forma abaixo, porém o ICMS base do erp já vem com o frete, por isso acima no BC ICMS ST, adicionei apenas o IPI (ele nao vai na BC ICMS proprio)
+//		BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getValorFrete()).add(docItem.getIpiValor());
 		
 		BigDecimal baseCalcIcmsSt = baseCalcIcmsComFretIpi.subtract(docItem.getDesconto()).multiply(aliqIvaMva);
 		BigDecimal valorIcmsSt = baseCalcIcmsSt.multiply(tribEstaGuia.getIcmsAliqInternaDestino());
