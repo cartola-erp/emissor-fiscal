@@ -211,7 +211,6 @@ CREATE TABLE `docu_fisc_item` (
   `pis_valor` decimal(19,2) DEFAULT NULL,
   `prod_cod_erp` int(11) DEFAULT NULL,
   `quantidade` decimal(19,2) NOT NULL,
-  `unidade` varchar(255) DEFAULT NULL,
   `vlr_tot_imposto` decimal(19,2) DEFAULT NULL,
   `valor_unitario` decimal(19,2) NOT NULL,
   `docu_fisc_id` bigint(20) DEFAULT NULL,
