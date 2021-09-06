@@ -80,11 +80,6 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',26, ncm_id FROM vw_ncm_id_tribu;	
 
-
--- --------------------------------------------------------- 12 -  VENDA DE IMOBILIZADO			 ---------------------------------------------------------
-INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
-				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',12, ncm_id FROM vw_ncm_id_tribu;	
-
 -- --------------------------------------------------------- 13 - TRANSFERENCIA DE SALDO DEVEDOR ART.98 DO RICMS	---------------------------------------------------------
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',13, ncm_id FROM vw_ncm_id_tribu;	
@@ -179,5 +174,16 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 		VALUES (0.000000, 0.000000, 98, 'CONSUMO', 0.000000,0.000000, 98, '', 0.000000, 0.000000, 98,'NORMAL',73, 9902);	
 -- ========================================================================================================================================================
 
+
+
+-- ========================================================================================================================================================
+-- ============================================================== CST 99 - Tributacao Zerada ==============================================================	
+-- ========================================================================================================================================================
+-- ------------------------------------------------------------ 12 - VENDA DE IMOBILIZADO  ----------------------------------------------------------------
+
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 99, 'CONSUMO', 0.000000,0.000000, 99, '', 0.000000, 0.000000, 99,'NORMAL',12, ncm_id FROM vw_ncm_id_tribu;	
+
+-- ========================================================================================================================================================
 
 DROP VIEW vw_ncm_id_tribu;
