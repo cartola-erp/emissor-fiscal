@@ -8,11 +8,15 @@ import java.util.logging.Logger;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.cartola.emissorfiscal.ibpt.DeOlhoNoImpostoService;
@@ -61,6 +65,24 @@ public class DocumentoFiscalApiController {
 		} 
 		return saveOrEditDocumentoFiscal(newDocFiscal);
 	}
+	
+	/**
+	 * TODO 
+	 * 
+	 * COLOQUEI o retorno como HTTP 500, para forçarem  a atualizarem o SISTEMA ERP;
+	 * Pois tirei alguns campos de DocumentoFiscalItem (na atualização do dia 06/09) - E pretendo tirar mais (tirar a FK com NCM, e colocar direto no item)
+	 * 
+	 * TODO MAS o ideal é retornar HTTP 400 - BAD REQUEST, com a MSG de ERRO
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR) 
+	public String handleException(final HttpMessageNotReadableException ex) {
+		LOG.log(Level.WARNING, "ERRO HttpMessageNotReadableException: {0} " ,ex.getMessage());
+		return ex.getMessage();
+	}
+	
 
 	@PutMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> update(@Valid @RequestBody DocumentoFiscal newDocFiscal) {
