@@ -3,8 +3,10 @@ package net.cartola.emissorfiscal.tributacao.estadual;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.validation.ObjectError;
 
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
+import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.RegimeTributario;
@@ -24,6 +27,30 @@ public class TributacaoEstadualService {
 	
 	@Autowired
 	private TributacaoEstadualRepository repository;
+
+	/**
+	 * Com base nos parâmetros de consulta de GnreAliquotaDto (regime tributário emitente, uf origem e destino), será buscado e preenchido a lista de aliquotas da GNRE
+	 * 
+	 * PS: Atualmente isso somente é usado para o ecommerce, fazer a consulta para calcular quantos de acréscimo cada item terá na venda interestadual
+	 * 
+	 * @param gnreAliquotaDto
+	 * @return
+	 */
+	public Optional<GnreAliquotaDto> findGnreAliquota(GnreAliquotaDto gnreAliquotaDto) {
+		Set<GnreAliquota> setGnreAliquota = new HashSet<>();
+		EstadoSigla siglaOrigem = EstadoSigla.valueOf(gnreAliquotaDto.getUfOrigem());
+		EstadoSigla siglaDestino = EstadoSigla.valueOf(gnreAliquotaDto.getUfDestino());
+
+		Set<TributacaoEstadual> setTributacoesEstaduais = repository.findByRegimeTributarioAndOrigemSiglaAndDestinoSigla(gnreAliquotaDto.getRegimeTributarioEmitente(), siglaOrigem, siglaDestino);
+
+		setTributacoesEstaduais.forEach(tribEsta -> {
+			GnreAliquota gnreAliquota = new GnreAliquota(tribEsta);
+			setGnreAliquota.add(gnreAliquota);
+		});
+		gnreAliquotaDto.setListGnreAliquota(setGnreAliquota);
+		return Optional.ofNullable(gnreAliquotaDto);
+	}
+
 	
 	public List<TributacaoEstadual> findAll() {
 		return repository.findAll();
@@ -104,6 +131,5 @@ public class TributacaoEstadualService {
 		}
 		return msg;
 	}
-
 
 }
