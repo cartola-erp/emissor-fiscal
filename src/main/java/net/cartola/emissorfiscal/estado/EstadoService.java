@@ -23,9 +23,15 @@ public class EstadoService {
 		return Optional.ofNullable(estadoRepository.saveAndFlush(estado));
 	}
 
-	public Optional<Estado> findBySigla(EstadoSigla siglaEstado) {
+	public Optional<Estado> findBySigla(EstadoSigla siglaEstado) {	
 		return estadoRepository.findEstadoBySigla(siglaEstado);
 	}
+	
+//	public Map<EstadoSigla, Estado> findBySiglaIn(List<EstadoSigla> listSigla) {
+//		Set<Estado> setEstado = estadoRepository.findBySiglaIn(listSigla);
+//		Map<EstadoSigla, Estado> mapEstadoPorSigla = setEstado.stream().collect(Collectors.toMap(Estado::getSigla, (Estado estado) -> estado));
+//		return mapEstadoPorSigla;
+//	}
 
 	public Optional<Estado> findOne(Long id) {
 		return estadoRepository.findById(id);
