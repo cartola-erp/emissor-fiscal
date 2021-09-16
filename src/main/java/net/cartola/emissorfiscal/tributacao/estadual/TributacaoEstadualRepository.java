@@ -39,8 +39,8 @@ public interface TributacaoEstadualRepository extends JpaRepository<TributacaoEs
 	 * @param estaDestId
 	 * @return Set<TributacaoEstadual>, poderá ser vazio, ou conter 2 tributações interestaduais. (1 para produtos NACIONAIS e outra para os IMPORTADOS)
 	 */
-	@Query(value = "SELECT t FROM TributacaoEstadual t INNER JOIN t.estadoOrigem o INNER JOIN t.estadoDestino d "
-				+ " WHERE t.regimeTributario = :regimeTributario  AND o.sigla = :ufOrigem AND d.sigla = :ufDestino GROUP BY t.produtoImportado")
+	@Query(value = "SELECT t FROM TributacaoEstadual t INNER JOIN t.operacao o INNER JOIN t.estadoOrigem origem INNER JOIN t.estadoDestino d "
+				+ " WHERE o.id = 3 AND t.regimeTributario = :regimeTributario  AND origem.sigla = :ufOrigem AND d.sigla = :ufDestino GROUP BY t.produtoImportado")
 	Set<TributacaoEstadual> findByRegimeTributarioAndOrigemSiglaAndDestinoSigla(RegimeTributario regimeTributario, EstadoSigla ufOrigem, EstadoSigla ufDestino);
 	
 	
