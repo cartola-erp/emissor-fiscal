@@ -38,7 +38,8 @@ import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
 @ToString
 @Entity
 @Table(name = "docu_fisc")
-public class DocumentoFiscal implements Serializable {
+public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements Serializable {
+//public class DocumentoFiscal extends Documento implements Serializable {
 
 	private static final long serialVersionUID = 250495916716488531L;
 
@@ -49,7 +50,6 @@ public class DocumentoFiscal implements Serializable {
 	private Long id;
     private int documento;		// Campo referente a COMPRA ou NFE (do ERP, dependendo do tipo do DocumentoFiscal, que for)
 	private Long numeroNota;
-    private Operacao operacao;
 	private IndicadorDeOperacao tipoOperacao;
 	private FinalidadeEmissao finalidadeEmissao = FinalidadeEmissao.NORMAL;
 	private TipoServico tipoServico = TipoServico.NENHUM;
@@ -59,10 +59,6 @@ public class DocumentoFiscal implements Serializable {
 	private String nfeChaveAcesso;
 
 	private Long serie;
-	private Loja loja;
-	private Pessoa emitente;
-	private Pessoa destinatario;
-	private List<DocumentoFiscalItem> itens;
 	private Set<DocumentoFiscalReferencia> referencias;
 	private BigDecimal valorDesconto;
 	private FreteConta indicadorFrete;
@@ -98,10 +94,10 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal valorImpostoMunicipal = BigDecimal.ZERO;
 	
 	private LocalDate emissao;
-	private LocalDateTime cadastro;
-	private String criadoPor;
-	private LocalDateTime alterado;
-	private String alteradoPor;
+//	private LocalDateTime cadastro;
+//	private String criadoPor;
+//	private LocalDateTime alterado;
+//	private String alteradoPor;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -245,7 +241,8 @@ public class DocumentoFiscal implements Serializable {
 	public void setDestinatario(Pessoa destinatario) {
 		this.destinatario = destinatario;
 	}
-
+	
+	@Override
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "documentoFiscal")
 	public List<DocumentoFiscalItem> getItens() {
 		return itens;
@@ -254,7 +251,7 @@ public class DocumentoFiscal implements Serializable {
 	public void setItens(List<DocumentoFiscalItem> itens) {
 		this.itens = itens;
 	}
-
+	
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "documentoFiscal")
 	public Set<DocumentoFiscalReferencia> getReferencias() {
 		return referencias;
@@ -771,5 +768,4 @@ public class DocumentoFiscal implements Serializable {
 		return true;
 	}
 
-	
 }

@@ -15,6 +15,8 @@ import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.Range;
 
+import net.cartola.emissorfiscal.util.NumberUtil;
+
 /**
  * Ncm
  */
@@ -35,6 +37,18 @@ public class Ncm implements Serializable {
 	private int excecao;
 	private boolean isAtivo;				// FALSE = NCM não é mais válido
 	private transient String descricao;
+
+	public Ncm() {	}
+	
+	public Ncm(Long id, String ncm, int excecao) {
+		this(ncm, excecao);
+		this.id = id;
+	}
+	
+	private Ncm(String ncm, int excecao) {
+		this.numero = NumberUtil.getIntegerNullSafe(ncm);
+		this.excecao = excecao;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -105,9 +119,9 @@ public class Ncm implements Serializable {
 
 	@Override
 	public String toString() {
-		if(id.equals(0L)) {
-			return "";
-		}
+//		if(id.equals(0L)) {
+//			return "";
+//		}
 		return   numero + (excecao>0?" Ex: "+ excecao:"")+" "+descricao;
 	}
 

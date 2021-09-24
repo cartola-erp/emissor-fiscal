@@ -15,16 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Email;
-
 import net.cartola.emissorfiscal.documento.CompraDto;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.engine.EmailEngine;
-import net.cartola.emissorfiscal.engine.EmailModel;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.loja.LojaService;
 import net.cartola.emissorfiscal.ncm.Ncm;
@@ -85,13 +80,13 @@ public class CalculoGuiaEstadualServiceTest {
 		
 		docFiscItemUm.setValorUnitario(DOC_FISC_ITEM_UM_VALOR);
 		docFiscItemUm.setQuantidade(DOC_FISC_ITEM_QUANT);
-		docFiscItemUm.setNcm(ncmUm);
+		docFiscItemUm.setClasseFiscal(ncmUm);
 		docFiscItemUm.setOrigem(ProdutoOrigem.NACIONAL);
 		
 		DocumentoFiscalItem docFiscItemDois = new DocumentoFiscalItem();
 		docFiscItemDois.setValorUnitario(DOC_FISC_ITEM_VALOR);
 		docFiscItemDois.setQuantidade(DOC_FISC_ITEM_QUANT);
-		docFiscItemDois.setNcm(ncmUm);
+		docFiscItemDois.setClasseFiscal(ncmUm);
 		docFiscItemDois.setOrigem(ProdutoOrigem.NACIONAL_CONTEUDO_IMPORTADO_MAIOR_40);
 		
 		Ncm ncmTres = new Ncm();
@@ -101,13 +96,13 @@ public class CalculoGuiaEstadualServiceTest {
 		DocumentoFiscalItem docFiscItemTres = new DocumentoFiscalItem();
 		docFiscItemTres.setValorUnitario(DOC_FISC_ITEM_VALOR);
 		docFiscItemTres.setQuantidade(DOC_FISC_ITEM_QUANT);
-		docFiscItemTres.setNcm(ncmTres);
+		docFiscItemTres.setClasseFiscal(ncmTres);
 		docFiscItemTres.setOrigem(ProdutoOrigem.NACIONAL);
 		
 		DocumentoFiscalItem docFiscItemQuatro = new DocumentoFiscalItem();
 		docFiscItemQuatro.setValorUnitario(DOC_FISC_ITEM_VALOR);
 		docFiscItemQuatro.setQuantidade(DOC_FISC_ITEM_QUANT);
-		docFiscItemQuatro.setNcm(ncmTres);
+		docFiscItemQuatro.setClasseFiscal(ncmTres);
 		docFiscItemQuatro.setOrigem(ProdutoOrigem.NACIONAL_CONTEUDO_IMPORTADO_MAIOR_40);
 		
 		listItens.add(docFiscItemUm);

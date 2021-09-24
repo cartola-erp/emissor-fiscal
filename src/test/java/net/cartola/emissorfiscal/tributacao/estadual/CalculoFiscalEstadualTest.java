@@ -513,7 +513,7 @@ public class CalculoFiscalEstadualTest {
 		docFiscalItem.setOrigem(ProdutoOrigem.NACIONAL);
 		docFiscalItem.setQuantidade(DOC_FISC_ITEM_QUANTIDADE);
 		docFiscalItem.setValorUnitario(DOC_FISC_ITEM_VALOR_UNITARIO);
-		docFiscalItem.setNcm(ncm);
+		docFiscalItem.setClasseFiscal(ncm);
 		
 		docFiscalItem.setIcmsStBaseUltimaCompra(icmsStBaseUltimaCompra);
 		docFiscalItem.setIcmsStValorUltimaCompra(icmsStValorUltimaCompra);

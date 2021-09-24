@@ -64,7 +64,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
 		LOG.log(Level.INFO, "Fazendo o calculo das TRIBUTACÕES ESTADUAIS, para o Documento {0} ", documentoFiscal.getDocumento());
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
-		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+		Set<Ncm> ncms = documentoFiscal.getNcms(); 
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getEndereco().getUf()).get();
 		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();

@@ -131,7 +131,9 @@ public class DocumentoFiscalAPIControllerTest {
 		DocumentoFiscalItem item = new DocumentoFiscalItem(); 
 		item.setQuantidade(DOCUMENTO_FISCAL_ITEM_QUANTIDADE);
 		item.setValorUnitario(DOCUMENTO_FISCAL_ITEM_VALOR_UNITARIO);
-		item.setNcm(ncm);
+		item.setClasseFiscal(Integer.toString(ncm.getNumero()));
+		item.setExcecao(ncm.getExcecao());
+
 		listItens.add(item);
 		
 		// DOCUMENTO FISCAL

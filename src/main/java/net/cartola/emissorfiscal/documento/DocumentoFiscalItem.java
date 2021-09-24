@@ -20,7 +20,6 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.ToString;
-import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 
 
@@ -28,7 +27,7 @@ import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 @Entity
 @Table(name = "docu_fisc_item")
 @JsonIgnoreProperties(value = { "documentoFiscal" })
-public class DocumentoFiscalItem implements Serializable {
+public class DocumentoFiscalItem extends Item implements Serializable {
 
 	private static final long serialVersionUID = -3885752189101767947L;
 
@@ -40,41 +39,29 @@ public class DocumentoFiscalItem implements Serializable {
 	private static final String VALOR_INVALIDO = "Atenção! O valor inserida é inválido!!";
 
 	private Long id;
-	private int item;
+//	private int item;
 	/** Serão somente usada em ENTRADAS/COMPRAS, as info abaixo? Não sei, mas acredito que sim !!!**/
-	private Long codigoX;
-	private String codigoSequencia;
-	private int produtoCodigoErp;
+//	private Long codigoX;
+//	private String codigoSequencia;
+//	private int produtoCodigoErp;
 	private String ean;		// --> Codigo Barras
 	private String descricaoEmpresa;
-	private ProdutoUnidade unidade;
 	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private Finalidade finalidadeEmpresa = Finalidade.COMERCIALIZACAO;	// Essa é a finalidade no cadastro do produto (no ERP), ou seja, sob o enfoque da AG
 	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
-	private BigDecimal quantidade = BigDecimal.ZERO;
-	private BigDecimal valorUnitario = BigDecimal.ZERO;
-    private BigDecimal desconto = BigDecimal.ZERO;
-	private BigDecimal valorFrete = BigDecimal.ZERO;
-	private BigDecimal valorSeguro = BigDecimal.ZERO;
 	private BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
 	
-	private Ncm ncm;
+//	private Ncm ncm;
 	private int cfop;
 	private Integer icmsCest = 0;
 	private BigDecimal icmsBase = BigDecimal.ZERO;
 	private BigDecimal icmsReducaoBaseValor = BigDecimal.ZERO;
-	private BigDecimal icmsReducaoBaseAliquota = BigDecimal.ZERO;
-	private BigDecimal icmsReducaoBaseStAliquota = BigDecimal.ZERO;
-	private BigDecimal icmsAliquota = BigDecimal.ZERO;
 	private BigDecimal icmsAliquotaDestino = BigDecimal.ZERO;
 	private BigDecimal icmsValor = BigDecimal.ZERO;
     private BigDecimal icmsFcpAliquota = BigDecimal.ZERO;
     private BigDecimal icmsFcpValor = BigDecimal.ZERO;
-//    private BigDecimal icmsFcpStAliquota = BigDecimal.ZERO;
-//    private BigDecimal icmsFcpStValor = BigDecimal.ZERO;
 	private BigDecimal icmsStBase = BigDecimal.ZERO;
-	private BigDecimal icmsStAliquota = BigDecimal.ZERO;
 	private BigDecimal icmsStValor = BigDecimal.ZERO;
     private BigDecimal icmsIva = BigDecimal.ZERO;
     private BigDecimal icmsStBaseRetido = BigDecimal.ZERO;
@@ -83,7 +70,7 @@ public class DocumentoFiscalItem implements Serializable {
 //    private BigDecimal icmsAliqFcpStRetido = BigDecimal.ZERO;
 //    private BigDecimal icmsValorFcpStRetido = BigDecimal.ZERO;
 	private int icmsCst;
-	private BigDecimal icmsBaseUfDestino = BigDecimal.ZERO; 		// Aparentemente é (valorUnitario * quantidade) - desconto (ou seja, não entra o frete nessa base)
+	private BigDecimal icmsBaseUfDestino = BigDecimal.ZERO; 		// Aparentemente é (valorUnitario * ) - desconto (ou seja, não entra o frete nessa base)
     private BigDecimal icmsValorUfDestino = BigDecimal.ZERO;		// É o VALOR do DIFAL
     // Base do ICMS ST (ULTIMA COMPRA), que foi usado quando a AG comprou o produto, p/ usar no ICMS 60
 	private BigDecimal icmsStBaseUltimaCompra = BigDecimal.ZERO; 
@@ -99,7 +86,6 @@ public class DocumentoFiscalItem implements Serializable {
 	private BigDecimal cofinsValor = BigDecimal.ZERO;
 	private int cofinsCst;
 	private BigDecimal ipiBase = BigDecimal.ZERO;
-	private BigDecimal ipiAliquota = BigDecimal.ZERO;
 	private BigDecimal ipiValor = BigDecimal.ZERO;
 	private int ipiCst;
 	
@@ -187,6 +173,7 @@ public class DocumentoFiscalItem implements Serializable {
 		return unidade;
 	}
 	
+	@Override
 	public void setUnidade(ProdutoUnidade unidade) {
 		this.unidade = unidade;
 	}
@@ -276,16 +263,32 @@ public class DocumentoFiscalItem implements Serializable {
 		this.valorOutrasDespesasAcessorias = valorOutrasDespesasAcessorias;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_ncms"))
-	public Ncm getNcm() {
-		return ncm;
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_ncms"))
+//	public Ncm getNcm() {
+//		return ncm;
+//	}
+//
+//	public void setNcm(Ncm ncm) {
+//		this.ncm = ncm;
+//	}
+	
+	public String getClasseFiscal() {
+		return classeFiscal;
 	}
 
-	public void setNcm(Ncm ncm) {
-		this.ncm = ncm;
+	public void setClasseFiscal(String classeFiscal) {
+		this.classeFiscal = classeFiscal;
 	}
 
+	public int getExcecao() {
+		return excecao;
+	}
+
+	public void setExcecao(int excecao) {
+		this.excecao = excecao;
+	}
+	
 	public int getCfop() {
 		return cfop;
 	}

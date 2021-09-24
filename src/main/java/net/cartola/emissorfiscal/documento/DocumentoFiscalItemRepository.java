@@ -7,14 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import net.cartola.emissorfiscal.ncm.Ncm;
-
 @Repository
 public interface DocumentoFiscalItemRepository extends JpaRepository<DocumentoFiscalItem, Long> {
-
-	List<DocumentoFiscalItem> findByNcm(Ncm ncm);
-
-	List<DocumentoFiscalItem> findByNcmIn(Collection<Ncm> ncms);
 
 	/**
 	 * @Query(value = " SELECT * FROM docu_fisc_item WHERE docu_fisc_id IN (:listDocFiscIds); ", nativeQuery = true)

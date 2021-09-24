@@ -102,7 +102,6 @@ public class SimulacaoController {
 //		DocumentoFiscal docFiscal = new DocumentoFiscal();
 		List<DocumentoFiscalItem> listItem = new ArrayList<>();
 		DocumentoFiscalItem item = new DocumentoFiscalItem();
-		item.setNcm(new Ncm());
 		listItem.add(item);
 		documentoFiscal.setItens(listItem);
 		

@@ -29,4 +29,5 @@ public interface NcmRepository extends JpaRepository<Ncm, Long> {
 	Optional<Ncm> findNumeroAndExcecao(int numero, int excecao);
 
 	List<Ncm> findNcmByNumeroIn(Collection<Integer> listNumerosNcms);
+
 }

@@ -361,7 +361,7 @@ public class TestHelper {
 			docFiscalItem.setValorUnitario(new BigDecimal(dados[aux++]));
 			docFiscalItem.setCfop(Integer.parseInt(dados[aux++]));
 			int ncmCodigo = Integer.parseInt(dados[aux++]);
-			docFiscalItem.setNcm(ncms.stream().filter(ncm -> ncm.getNumero() == ncmCodigo).findAny().get());
+			docFiscalItem.setClasseFiscal(ncms.stream().filter(ncm -> ncm.getNumero() == ncmCodigo).findAny().get());
 			documentoFiscalItens.add(docFiscalItem);
 		}
 
