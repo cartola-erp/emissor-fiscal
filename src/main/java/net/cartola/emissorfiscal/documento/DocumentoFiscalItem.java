@@ -104,6 +104,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 		this.id = id;
 	}
 	
+	@Override
 	public int getItem() {
 		return item;
 	}
@@ -112,6 +113,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 		this.item = item;
 	}
 
+	@Override
 	@Column(name = "codigo_x")
 	public Long getCodigoX() {
 		return codigoX;
@@ -121,6 +123,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 		this.codigoX = codigoX;
 	}
 
+	@Override
 	@Column(name = "codigo_seq")
 	public String getCodigoSequencia() {
 		return codigoSequencia;
@@ -166,6 +169,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 		this.codigoAnp = codigoAnp;
 	}
 	
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "prod_unid_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_item_prod_unid_id"))
 //	@JoinColumn(name = "prod_unid_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fnk_docu_fisc_item_prod_unid_id"))
@@ -273,18 +277,22 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 //		this.ncm = ncm;
 //	}
 	
+	@Override
 	public String getClasseFiscal() {
 		return classeFiscal;
 	}
 
+	@Override
 	public void setClasseFiscal(String classeFiscal) {
 		this.classeFiscal = classeFiscal;
 	}
-
+	
+	@Override
 	public int getExcecao() {
 		return excecao;
 	}
 
+	@Override
 	public void setExcecao(int excecao) {
 		this.excecao = excecao;
 	}

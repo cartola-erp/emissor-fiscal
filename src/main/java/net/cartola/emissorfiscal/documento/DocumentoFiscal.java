@@ -126,12 +126,14 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		return numeroNota;
 	}
 	
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "oper_id", referencedColumnName = "oper_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_oper_id"))
 	public Operacao getOperacao() {
 		return operacao;
 	}
 
+	@Override
 	public void setOperacao(Operacao operacao) {
 		this.operacao = operacao;
 	}
@@ -212,32 +214,38 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		return serie;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "loja_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_loja_id"))
 	public Loja getLoja() {
 		return loja;
 	}
 
+	@Override
 	public void setLoja(Loja loja) {
 		this.loja = loja;
 	}
 	
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "emit_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_emitente_id"))
 	public Pessoa getEmitente() {
 		return emitente;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "dest_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_destinatario_id"))
 	public Pessoa getDestinatario() {
 		return destinatario;
 	}
 
+	@Override
 	public void setEmitente(Pessoa emitente) {
 		this.emitente = emitente;
 	}
 
+	@Override
 	public void setDestinatario(Pessoa destinatario) {
 		this.destinatario = destinatario;
 	}
