@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
@@ -63,6 +67,14 @@ public class TributacaoFederalService {
 	
 	public Page<TributacaoFederal> findTributacaoFederalByVariosNcms(Collection<Ncm> ncms, PageRequest pr) {
 		return tributacaoFederalRepository.findByNcmIn(ncms, pr);
+	}
+	
+	public Set<TributacaoFederal> findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(DocumentoFiscal docuFisc) {
+		Set<Finalidade> finalidades = docuFisc.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(toSet());
+		RegimeTributario regimeTributarioEmitente = docuFisc.getEmitente().getRegimeTributario();
+		
+		return this.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(docuFisc.getOperacao(), 
+				regimeTributarioEmitente, finalidades, docuFisc.getNcms());
 	}
 	
 	public Set<TributacaoFederal> findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(Operacao operacao,RegimeTributario regimeTributario,

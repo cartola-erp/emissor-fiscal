@@ -1,8 +1,6 @@
 package net.cartola.emissorfiscal.documento;
 
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.DESTINATARIO;
 import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.DESTINATARIO_PROPRIO;
 import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.TERCEIROS;
@@ -22,21 +20,15 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.devolucao.Devolucao;
+import net.cartola.emissorfiscal.devolucao.DevolucaoService;
 import net.cartola.emissorfiscal.estado.Estado;
-import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ibpt.DeOlhoNoImpostoService;
-import net.cartola.emissorfiscal.ncm.Ncm;
-import net.cartola.emissorfiscal.ncm.NcmService;
-import net.cartola.emissorfiscal.operacao.Operacao;
-import net.cartola.emissorfiscal.operacao.OperacaoService;
-import net.cartola.emissorfiscal.pessoa.Pessoa;
-import net.cartola.emissorfiscal.pessoa.PessoaService;
-import net.cartola.emissorfiscal.produto.ProdutoUnidade;
-import net.cartola.emissorfiscal.produto.ProdutoUnidadeService;
 import net.cartola.emissorfiscal.loja.Loja;
-import net.cartola.emissorfiscal.loja.LojaService;
+import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta;
-import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDePagamento;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoFiscalEstadual;
 import net.cartola.emissorfiscal.tributacao.estadual.CalculoGuiaEstadualService;
@@ -48,7 +40,7 @@ import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
 import net.cartola.emissorfiscal.util.ValidationHelper;
 
 @Service
-public class DocumentoFiscalService {
+public class DocumentoFiscalService extends DocumentoService {
 
 	private static final Logger LOG = Logger.getLogger(DocumentoFiscalService.class.getName());
 	
@@ -59,25 +51,28 @@ public class DocumentoFiscalService {
 	private DocumentoFiscalItemService docuFiscItemService;
 	
 	@Autowired
-	private OperacaoService operacaoService;
+	private DevolucaoService devolucaoService;
 	
-	@Autowired
-	private LojaService lojaService;
-	
-	@Autowired
-	private PessoaService pessoaService;
-	
-	@Autowired 
-	private NcmService ncmService;
-	
-	@Autowired
-	private ProdutoUnidadeService prodUnidService;
+//	@Autowired
+//	private OperacaoService operacaoService;
+//	
+//	@Autowired
+//	private LojaService lojaService;
+//	
+//	@Autowired
+//	private PessoaService pessoaService;
+//	
+//	@Autowired 
+//	private NcmService ncmService;
+//	
+//	@Autowired
+//	private ProdutoUnidadeService prodUnidService;
 	
 	@Autowired
 	private TributacaoEstadualService icmsService;
 	
-	@Autowired
-	private EstadoService estadoService;
+//	@Autowired
+//	private EstadoService estadoService;
 	
 	@Autowired
 	private TributacaoFederalService tributacaoFederalService;
@@ -159,6 +154,24 @@ public class DocumentoFiscalService {
 		return documentoFiscalRepository.findAllDocsInterestadualQuePagamosIcmsNaEntradaPorPeriodo(dataHoraInicio, dataHoraFim);
 	}
 	
+	/**
+	 * TODO fazer salvar um OBJ de DEVOLUCAO
+	 * 
+	 * @param devolucao
+	 * @return
+	 */
+	public Optional<DocumentoFiscal> save(Devolucao devolucao) {
+		/**
+		 * TODO irei salvar a devolucao e retornar um documento fiscal??? 
+		 * E depois salvar o documento fiscal calculado corretamente ??
+		 * Ou irei somente salvar a devolução, retornar ela, e passar para a service do DocumentoFiscal
+		 * 
+		 */
+		Optional<DocumentoFiscal> opDocumentoFiscal = devolucaoService.save(devolucao);
+		
+		return null;
+	}
+	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
 		calcFiscalEstadual.calculaImposto(documentoFiscal);
 		calcFiscalFederal.calculaImposto(documentoFiscal);
@@ -229,48 +242,35 @@ public class DocumentoFiscalService {
 	/**
 	 * Valida se as informações necessárias para um documento Fiscal existem, caso sim, as mesmas são setadas no 
 	 * documentoFiscal
-	 * @param documentoFiscal
+	 * @param docuFisc
 	 * @param validaTribuEsta	- <b> true </b> - Irá verificar/calcular os TRIBUTOS ESTADUAIS
 	 * @param validaTribuFede	- <b> true </b> - Irá verificar/calcular os TRIBUTOS FEDERAIS
 	 * @return
 	 */
-	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
-		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o Documento = {0} ", documentoFiscal.getDocumento());
+	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal docuFisc, boolean validaTribuEsta, boolean validaTribuFede) {
+		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o Documento = {0} ", docuFisc.getDocumento());
 		Map<String, Boolean> mapErros = new HashMap<>(); // FALSE == NÃO TEM ERRO | TRUE == TEM ERRO
-		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
-		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());
-		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
-		Optional<Estado> opUfOrigem = estadoService.findBySigla(opEmitente.get().getEndereco().getUf());
-		Optional<Estado> opUfDestino = estadoService.findBySigla(opDestinatario.get().getEndereco().getUf());
-		Set<Ncm> ncmsDocFiscal = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
-		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(toSet());
+		Optional<Estado> opUfDestino = estadoService.findBySigla(docuFisc.getDestinatario().getEndereco().getUf());
 
+		super.setValoresNecessariosParaOsItens(docuFisc, mapErros);
+		super.setValoresNecessariosParaODocumento(docuFisc, mapErros);
+		
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<>();
 		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
 
-		//	if (opOperacao.isPresent() && !ncms.isEmpty() && opEmitente.get().getRegimeTributario() != null && !mapErros.containsValue(true) ) {
-		if ( isPermitidoBuscarTributacoes(opOperacao, ncmsDocFiscal, opEmitente.get(), opUfOrigem, opUfDestino, mapErros) && !mapErros.containsValue(true) ) {
-			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(opOperacao.get(), opUfOrigem.get(), opUfDestino.get(),
-					opEmitente.get().getRegimeTributario(), finalidades, ncmsDocFiscal);
-			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(opOperacao.get(),opEmitente.get().getRegimeTributario(), finalidades, ncmsDocFiscal);
+		if (!mapErros.containsValue(true)) {
+			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(docuFisc);
+			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(docuFisc);
 		}
 		
-		String operacaoDescricao = documentoFiscal.getOperacao().getDescricao();
-		mapErros.put("A operação: " +operacaoDescricao+ " NÃO existe", !opOperacao.isPresent());
-		mapErros.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
-		mapErros.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
-		
 		if (validaTribuEsta) {
-			validaTributosEstaduais(ncmsDocFiscal, tributacoesEstaduais, operacaoDescricao, opUfDestino, mapErros);
+			validaTributosEstaduais(docuFisc, tributacoesEstaduais, opUfDestino, mapErros);
 		}
 		
 		if (validaTribuFede) {
-			validaTributosFederais(ncmsDocFiscal, tributacoesFederais, mapErros);
+			validaTributosFederais(docuFisc.getNcms(), tributacoesFederais, mapErros);
 		}
 		
-		if (!mapErros.containsValue(true)) {
-			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario, mapErros);
-		}
 		return ValidationHelper.processaErros(mapErros);
 	}
 	
@@ -278,28 +278,24 @@ public class DocumentoFiscalService {
 	/**
 	 * Método para setar os valores necessários, referente a um DocumentoFiscal, de entrada vindo do ERP.
 	 * E quem sabe no futuro, para validar, também caso calcule a entrada por aqui rs.
-	 * @param documentoFiscal
+	 * @param docuFisc
 	 * @return
 	 */
-	public List<String> setaValoresNecessariosCompra(DocumentoFiscal documentoFiscal) {
-		LOG.log(Level.INFO, "Setando os Valores necessarios para (compra) o DocumentoFiscal {0} " ,documentoFiscal);
+	public List<String> setaValoresNecessariosCompra(DocumentoFiscal docuFisc) {
+		LOG.log(Level.INFO, "Setando os Valores necessarios para (compra) o DocumentoFiscal {0} " ,docuFisc);
 		Map<String, Boolean> mapErros = new HashMap<>(); // FALSE == TEM ERRO | TRUE == Não tem
-		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
-		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(documentoFiscal.getEmitente());
-		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(documentoFiscal.getDestinatario());
+		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(docuFisc.getOperacao().getDescricao());
+		Optional<Pessoa> opEmitente = pessoaService.verificaSePessoaExiste(docuFisc.getEmitente());
+		Optional<Pessoa> opDestinatario = pessoaService.verificaSePessoaExiste(docuFisc.getDestinatario());
 		
-		Set<Ncm> ncms = setEVerificaNcmParaDocumentoFiscalItem(documentoFiscal, mapErros);
-		defineModeloDocumentoParaServico(documentoFiscal);
+		super.setValoresNecessariosParaOsItens(docuFisc, mapErros);
+		defineModeloDocumentoParaServico(docuFisc);
 		
-		if (documentoFiscal.getIndicadorPagamento() == null) {
-			documentoFiscal.setIndicadorPagamento(IndicadorDePagamento.OUTROS);
-		}
-		
-//		mapErros.put("O CNPJ: " +documentoFiscal.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
-//		mapErros.put("O CNPJ: " +documentoFiscal.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
+//		mapErros.put("O CNPJ: " +docuFisc.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
+//		mapErros.put("O CNPJ: " +docuFisc.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
 		
 		if (!mapErros.containsValue(true)) {
-			setValoresNecessariosParaODocumentoFiscal(documentoFiscal, opOperacao, opEmitente, opDestinatario, mapErros);
+			super.setValoresNecessariosParaODocumentoFiscalEntrada(docuFisc, opOperacao, opEmitente, opDestinatario, mapErros);
 		}
 		
 		return ValidationHelper.processaErros(mapErros);
@@ -346,142 +342,6 @@ public class DocumentoFiscalService {
 		docuFisc.setModelo(modelo);
 	}
 
-	/**
-	 * Seta os NCMS para os Itens
-	 * E adiciona Msg no Map, caso o NCM, não exista
-	 * @param documentoFiscal
-	 * @param mapErros
-	 * @return Set<Ncms>
-	 */
-	private Set<Ncm> setEVerificaNcmParaDocumentoFiscalItem(DocumentoFiscal documentoFiscal, Map<String, Boolean> mapErros) {
-		Set<Integer> setNumeroNcms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).map(Ncm::getNumero).collect(toSet());
-		Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExcecao = ncmService.findNcmByNumeroIn(setNumeroNcms)
-				.stream().collect(groupingBy(Ncm::getNumero,
-											toMap(Ncm::getExcecao, (Ncm ncm) -> ncm)));
-		
-		Set<ProdutoUnidade> setProdutoUnidade = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getUnidade).collect(toSet());
-		Set<String> listSigla = setProdutoUnidade.stream().map(ProdutoUnidade::getSigla).collect(toSet());
-		Map<String, ProdutoUnidade> mapProdutoUnidadePorSigla = prodUnidService.findByListSiglas(listSigla)
-				.stream().collect(toMap(ProdutoUnidade::getSigla, (ProdutoUnidade prodUnid) -> prodUnid));
-		
-		for (DocumentoFiscalItem docItem : documentoFiscal.getItens()) {
-			docItem.setDocumentoFiscal(documentoFiscal);
-			setNcm(documentoFiscal, mapErros, mapNcmPorNumeroEExcecao, docItem);
-			setProdutoUnidade(mapErros, mapProdutoUnidadePorSigla, docItem);
-		}
-		
-		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(toSet());
-		return ncms;
-	}
-
-
-	/**
-	 * Irá setar o ncm para o item do documento fiscal, SE o ncm existir
-	 * 
-	 * @param documentoFiscal
-	 * @param mapErros
-	 * @param mapNcmPorNumeroEExcecao
-	 * @param docItem
-	 */
-	public void setNcm(DocumentoFiscal documentoFiscal, Map<String, Boolean> mapErros, Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExcecao, DocumentoFiscalItem docItem) {
-		int numeroNcm = docItem.getNcm().getNumero();
-		int exTipi = (docItem.getNcm().getExcecao() > 5) ? 0 : docItem.getNcm().getExcecao();
-		boolean isNcmPresent = false;
-
-		Ncm ncm = null;
-		if (mapNcmPorNumeroEExcecao.containsKey(numeroNcm)) {
-			ncm = mapNcmPorNumeroEExcecao.get(numeroNcm).get(exTipi);
-			isNcmPresent = ncm != null;
-		}
-		 
-		if(isNcmPresent) {
-			docItem.setNcm(ncm);
-		}
-		mapErros.put("O NCM: " +docItem.getNcm().getNumero()+ " | EX: " +docItem.getNcm().getExcecao()+ " NÃO existe", !isNcmPresent);
-	}
-	
-	/**
-	 * @param mapErros
-	 * @param mapProdutoUnidadePorSigla
-	 * @param docItem
-	 */
-	public void setProdutoUnidade(Map<String, Boolean> mapErros, Map<String, ProdutoUnidade> mapProdutoUnidadePorSigla, DocumentoFiscalItem docItem) {
-		ProdutoUnidade unidadeItem = docItem.getUnidade();
-		if (unidadeItem != null &&  mapProdutoUnidadePorSigla.containsKey(unidadeItem.getSigla()) ) {
-			ProdutoUnidade produtoUnidade = mapProdutoUnidadePorSigla.get(unidadeItem.getSigla());
-			docItem.setUnidade(produtoUnidade);
-		} else {
-			StringBuilder sb = new StringBuilder();
-			sb.append("Unidade não encontrada para o item: ").append(docItem.getItem()).append(" X/s: " ).append(docItem.getCodigoX()).append(" ").append(docItem.getCodigoSequencia());
-			mapErros.put(sb.toString() , true);
-		}
-	}
-
-	
-	private void setValoresNecessariosParaODocumentoFiscal(DocumentoFiscal documentoFiscal, Optional<Operacao> opOperacao, Optional<Pessoa> opEmitente, Optional<Pessoa> opDestinatario, Map<String, Boolean> mapErros) {
-		Optional<Loja> opLoja = lojaService.findByCnpj(documentoFiscal.getLoja().getCnpj());
-		
-		if (opOperacao.isPresent() && opEmitente.isPresent() && opDestinatario.isPresent()) {
-			documentoFiscal.setOperacao(opOperacao.get());
-			documentoFiscal.setEmitente(opEmitente.get());
-			documentoFiscal.setDestinatario(opDestinatario.get());
-		}
-		
-		if (opLoja.isPresent()) {
-			documentoFiscal.setLoja(opLoja.get());
-		} else {
-			Loja loja = documentoFiscal.getLoja();
-			StringBuilder erro = new StringBuilder();
-			erro.append("Loja CNPJ: ").append(loja.getCnpj()).append(" | não cadastrado no EMISSOR-FISCAL! ").append(" | loja: ").append(loja.getCodigoLoja());
-			mapErros.put(erro.toString(), true);
-		}
-		
-		documentoFiscal.getReferencias().forEach(referencia -> {
-			referencia.setDocumentoFiscal(documentoFiscal);
-		});
-	}
-	
-	
-	/**
-	 * Irá validar se pode buscar as tributacões (PIS/COFINS e ICMS)
-	 * 
-	 * @param opOperacao		- Operação do DocumentoFiscal (Ex.: Venda, Transferência, Venda InterEstadual etc...)
-	 * @param ncmsDocFiscal		- Todos os Ncms válidos, encontrados nos itens do DocumentoFiscal
-	 * @param emitente			- Loja que emitiu o DocumentoFiscal
-	 * @param opUfOrigem 		- Estado de Origem
-	 * @param opUfDestino 		- Estado de Destino
-	 * @param mapErros			- Mapa com todas as mensagens de erros/validações. (Será adicionadas novas nesse method, caso tenha)
-	 * @return <b>true</b> -> Irá buscar as tributacoes | <b> false </b> -> Se alguma informação que precisa não estiver presente, Não irá buscar a tributacao
-	 */
-	private boolean isPermitidoBuscarTributacoes(Optional<Operacao> opOperacao, Set<Ncm> ncmsDocFiscal, Pessoa emitente, Optional<Estado> opUfOrigem, Optional<Estado> opUfDestino, Map<String, Boolean> mapErros) {
-		LOG.log(Level.INFO, "Validando se pode buscar as tributacoes (PIS/COFINS e ICMS), para o DocumentoFiscal ");
-		boolean isPermitidoBuscarTributacoes = true;
-
-		if (!opOperacao.isPresent()) {
-			mapErros.put("A operação da NFE (DocumentoFiscal), NÃO está cadastrada no emissor-fiscal " ,true);
-			isPermitidoBuscarTributacoes = false;
-		}
-		if (ncmsDocFiscal.isEmpty()) {
-			mapErros.put("Nenhum NCM válido encontrado no DocumentoFiscal", true);
-			isPermitidoBuscarTributacoes = false;
-		}
-		if (!opUfOrigem.isPresent()) {
-			mapErros.put("Estado de ORIGEM do EMITENTE não encontrado" ,true);
-			isPermitidoBuscarTributacoes = false;
-
-		}
-		if (!opUfDestino.isPresent()) {
-			mapErros.put("Estado de DESTINO do destinatário não encontrado" ,true);
-			isPermitidoBuscarTributacoes = false;
-		}
-		if (emitente.getRegimeTributario() == null) {
-			mapErros.put("O Regime Tributário, do EMITENTE está NULO" ,true);
-			isPermitidoBuscarTributacoes = false;
-		}
-//		isPermitidoBuscarTributacoes(opOperacao.isPresent(), !ncms.isEmpty(), opEmitente.get().getRegimeTributario() != null, mapErros);
-//		return (opOperacao.isPresent() && !ncms.isEmpty() && emitente.getRegimeTributario() != null && !mapErros.containsValue(true));
-		return isPermitidoBuscarTributacoes;
-	}
 	
 	// ================================================ VALIDA TRIBUTOS FEDERAIS ================================================
 	private void validaTributosFederais(Set<Ncm> ncms, Set<TributacaoFederal> tributacoesFederais, Map<String, Boolean> mapErros) {
@@ -509,18 +369,22 @@ public class DocumentoFiscalService {
 	}
 	
 	// ================================================  VALIDA TRIBUTOS ESTADUAIS ================================================
-	private void validaTributosEstaduais(Set<Ncm> ncms, List<TributacaoEstadual> tributacoesEstaduais, String operacaoDescricao, Optional<Estado> opUfDestino, Map<String, Boolean> mapErros) {
+	private void validaTributosEstaduais(DocumentoFiscal docuFisc, List<TributacaoEstadual> tributacoesEstaduais, Optional<Estado> opUfDestino, Map<String, Boolean> mapErros) {
+		Set<Ncm> ncms = docuFisc.getNcms();
+		String operacaoDescricao = docuFisc.getOperacao().getDescricao();
+		
 		Map<Ncm, Boolean> mapaTribuEstaPorNcm = getMapaTribuEstaAchadaPorNcm(ncms, tributacoesEstaduais);
-			mapaTribuEstaPorNcm.forEach((kNcm, achouTributacao) -> {
-				if(!achouTributacao) {
-					StringBuilder msg = new StringBuilder();
-					String ufDestinoName[] = {""};
-					opUfDestino.ifPresent(ufDestino -> ufDestinoName[0] = ufDestino.getSigla().toString());
-					msg.append("Não existe ICMS cadastrado para: | ").append(operacaoDescricao).append(" | e o NCM: ").append(kNcm.getNumero()).append(" | EX: ")
-						.append(kNcm.getExcecao()).append(" | com UF Destino: ").append(ufDestinoName[0]);
-					mapErros.put(msg.toString(), true);
-				}
-			});
+		
+		mapaTribuEstaPorNcm.forEach((kNcm, achouTributacao) -> {
+			if(!achouTributacao) {
+				StringBuilder msg = new StringBuilder();
+				String ufDestinoName[] = {""};
+				opUfDestino.ifPresent(ufDestino -> ufDestinoName[0] = ufDestino.getSigla().toString());
+				msg.append("Não existe ICMS cadastrado para: | ").append(operacaoDescricao).append(" | e o NCM: ").append(kNcm.getNumero()).append(" | EX: ")
+					.append(kNcm.getExcecao()).append(" | com UF Destino: ").append(ufDestinoName[0]);
+				mapErros.put(msg.toString(), true);
+			}
+		});
 	}
 	
 	/**

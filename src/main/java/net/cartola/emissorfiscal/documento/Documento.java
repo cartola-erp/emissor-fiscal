@@ -30,9 +30,22 @@ public abstract class Documento<T extends Item> {
     protected LocalDateTime alterado;
     protected String alteradoPor;
 
-
+    // Para não ficar indo no DB, será montado um objeto do tipo Ncm
     private Set<Ncm> ncms;
 
+
+    public abstract Operacao getOperacao();
+    public abstract void setOperacao(Operacao operacao);
+    
+    public abstract Loja getLoja();
+    public abstract void setLoja(Loja loja);
+    
+    public abstract Pessoa getEmitente();
+    public abstract void setEmitente(Pessoa emitente);
+    
+    public abstract Pessoa getDestinatario();
+    public abstract void setDestinatario(Pessoa destinatario);
+    
     public abstract List<T> getItens();
     
     /**
@@ -44,7 +57,7 @@ public abstract class Documento<T extends Item> {
 		if (this.ncms == null || this.ncms.isEmpty()) {
 			this.ncms = new HashSet<>();
 			for (Item item : itens) {
-				this.ncms.add(new Ncm(item.getNcmId(), item.getClasseFiscal(), item.getExcecao()));
+				this.ncms.add(item.getNcm());
 			}
 		}
 		return this.ncms;

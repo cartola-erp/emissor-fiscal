@@ -63,11 +63,11 @@ public abstract class Item {
 	}
 	
 	public final Ncm getNcm() {
-		if (ncm != null) {
-			Ncm ncm = new Ncm(ncmId, classeFiscal, excecao);
+		if (this.ncm == null) {
+			Ncm ncm = new Ncm(this.ncmId, this.classeFiscal, this.excecao);
 			this.ncm = ncm;
 		}
-		return ncm;
+		return this.ncm;
 	}
 	
 	
