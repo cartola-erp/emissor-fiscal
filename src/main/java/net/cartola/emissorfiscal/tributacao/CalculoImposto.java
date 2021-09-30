@@ -22,11 +22,17 @@ public class CalculoImposto implements Serializable {
 
 	private Map<MensagemTipo, List<String>> mensagens;
 
+	public CalculoImposto() { 	}
+	
+	public CalculoImposto(Imposto imposto) {
+		this.imposto = imposto;
+	}
+	
 	public Imposto getImposto() {
 		return imposto;
 	}
 
-	public void setImposto(Imposto imposto) {
+	protected void setImposto(Imposto imposto) {
 		this.imposto = imposto;
 	}
 

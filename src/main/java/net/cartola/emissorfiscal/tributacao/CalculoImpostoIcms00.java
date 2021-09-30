@@ -6,6 +6,11 @@ public class CalculoImpostoIcms00 extends CalculoImposto {
 	
 	private CalculoImpostoDifal calcImpostoDifal = new CalculoImpostoDifal();
 
+	
+	public CalculoImpostoIcms00() {
+		super.setImposto(Imposto.ICMS_00);
+	}
+	
 	public CalculoImpostoDifal getCalcImpostoDifal() {
 		return calcImpostoDifal;
 	}

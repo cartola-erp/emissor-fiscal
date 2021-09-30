@@ -17,11 +17,10 @@ public class CalculoIpi {
 	
 	public CalculoImposto calculaIpi(DocumentoFiscalItem di, TributacaoFederal tributacao) {
 		LOG.log(Level.INFO, "Calculando o IPI para o ITEM: {0} ", di);
-		CalculoImposto ipi = new CalculoImposto();
+		CalculoImposto ipi = new CalculoImposto(Imposto.IPI);
 		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
 		BigDecimal valorIpiBase = tributacao.getIpiBase().multiply(valorTotal);
 		BigDecimal valorIpi = valorIpiBase.multiply(tributacao.getIpiAliquota());
-		ipi.setImposto(Imposto.IPI);
 		ipi.setAliquota(tributacao.getIpiAliquota());
 		ipi.setBaseDeCalculo(valorIpiBase);
 //		pis.setOrdem(di.getId().intValue()); // -> mudar

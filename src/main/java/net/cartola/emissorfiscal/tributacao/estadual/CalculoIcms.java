@@ -80,6 +80,7 @@ public class CalculoIcms {
 		return opCalcImposto;
 	}
 	
+
 	/**
 	 * Irá realizar calculo para a classe mãe: CalculoImposto, (Que são valores que tem em todos os GRUPOS de ICMS)
 	 * E setar os valores necessários no DocumentoFiscalItem
@@ -248,7 +249,6 @@ public class CalculoIcms {
 		CalculoImpostoIcms00 icms00 = new CalculoImpostoIcms00();
 		Pessoa destinatario = docFiscal.getDestinatario();
 
-		icms00.setImposto(Imposto.ICMS_00);
 		calculaImpostoBase(di, tributacao, icms00, docFiscal);
 		
 		di.setIcmsCst(tributacao.getIcmsCst());				
@@ -261,7 +261,6 @@ public class CalculoIcms {
 		LOG.log(Level.INFO, "Calculando o ICMS 10 para o ITEM: {0} ", di);
 		CalculoImpostoIcms10 icms10 = new CalculoImpostoIcms10();
 		
-		icms10.setImposto(Imposto.ICMS_10);
 		calculaImpostoBase(di, tributacao, icms10, docFiscal);
 //		calculaIcmsFcp(di, tributacao, icms10);
 		
@@ -277,7 +276,6 @@ public class CalculoIcms {
 	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 20 para o ITEM: {0} ", di);
 		CalculoImpostoIcms20 icms20 = new CalculoImpostoIcms20();
-		icms20.setImposto(Imposto.ICMS_20);
 
 		calculaImpostoBase(di, tributacao, icms20, docFiscal);
 		icms20.setAliqReducaoBase(tributacao.getIcmsBase());
@@ -288,7 +286,6 @@ public class CalculoIcms {
 		LOG.log(Level.INFO, "Calculando o ICMS 30 para o ITEM: {0} ", di);
 		CalculoImpostoIcms30 icms30 = new CalculoImpostoIcms30();
 
-		icms30.setImposto(Imposto.ICMS_30);
 		calculaImpostoBase(di, tributacao, icms30, docFiscal);
 		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
 		icms30.setCalcIcmsSt(icmsSt);
@@ -306,9 +303,7 @@ public class CalculoIcms {
 	 */
 	private CalculoImposto calculaIcms40(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
 		LOG.log(Level.INFO, "Calculando o ICMS 40 para o ITEM: {0} ", di);
-		CalculoImposto calcImposto = new CalculoImposto();
-		
-		calcImposto.setImposto(Imposto.ICMS_40);
+		CalculoImposto calcImposto = new CalculoImposto(Imposto.ICMS_40);
 		
 		calcImposto.setValorUnitario(BigDecimal.ZERO);
 		calcImposto.setQuantidade(BigDecimal.ZERO);
@@ -345,9 +340,7 @@ public class CalculoIcms {
 		CalculoImpostoIcms60 icms60 = new CalculoImpostoIcms60();
 		BigDecimal valorBaseIcmsStRet = BigDecimal.ZERO;
 		BigDecimal vlrIcmsStRetido = BigDecimal.ZERO;
-		
-		icms60.setImposto(Imposto.ICMS_60);
-		
+
 		/**
 		 * Considerando a ALIQ. 18% (de SP), na CST 60, quando for calcular o ICMS RET.
 		 * Mas o ideal é já salvar essa ALIQ na TRIBUTACAO. E pegar de lá.
@@ -386,7 +379,6 @@ public class CalculoIcms {
 		LOG.log(Level.INFO, "Calculando o ICMS 70 para o ITEM ");
 		CalculoImpostoIcms70 icms70 = new CalculoImpostoIcms70();
 		
-		icms70.setImposto(Imposto.ICMS_70);
 		calculaImpostoBase(di, tributacao, icms70, docFiscal);
 		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
 		icms70.setCalcIcmsSt(icmsSt);
@@ -399,7 +391,6 @@ public class CalculoIcms {
 		LOG.log(Level.INFO, "Calculando o ICMS 90 para o ITEM ");
 		CalculoImpostoIcms90 icms90 = new CalculoImpostoIcms90();
 
-		icms90.setImposto(Imposto.ICMS_90);
 		calculaImpostoBase(di, tributacao, icms90, docFiscal);
 		CalculoImpostoIcmsSt icmsSt = calculaIcmsSt(di, tributacao);
 		icms90.setCalcIcmsSt(icmsSt);
@@ -408,5 +399,6 @@ public class CalculoIcms {
 
 		return icms90;
 	}
+
 
 }

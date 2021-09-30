@@ -13,6 +13,10 @@ public class CalculoImpostoIcms90 extends CalculoImpostoFcp {
 //	 * A autogeral só utiliza o FCP normal
 //	private CalculoImpostoFcpSt calcFcpSt = new CalculoImpostoFcpSt();
 	
+	public CalculoImpostoIcms90() {
+		super.setImposto(Imposto.ICMS_90);
+	}
+	
 	public BigDecimal getAliqReducaoBase() {
 		return aliqReducaoBase;
 	}
