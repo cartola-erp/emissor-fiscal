@@ -9,11 +9,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
+import net.cartola.emissorfiscal.devolucao.DevolucaoItemService;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.loja.Loja;
@@ -58,6 +60,9 @@ public abstract class DocumentoService {
 //	protected DocumentoFiscalItemService itemService;
 //	private ItemService itemService;
 	
+	@Autowired
+	private DevolucaoItemService devolucaoItemService;
+	
 	/**
 	 * Irá buscar e setar os objetos necessários para os ITENS (Ncm, ProdutoUnidade e o Documento(DocumentoFiscal ou Devolucao) ) <\br>
 	 * E adiciona Msg de erro no Map, caso não exista Ncm ou  o ProdutoUnidade 
@@ -87,8 +92,10 @@ public abstract class DocumentoService {
 			}
 		} else if (documento instanceof Devolucao ) {
 			Devolucao devolucao = Devolucao.class.cast(documento);
+			Map<String, Loja> mapLojaPorCnpj = lojaService.findAll().stream().collect(Collectors.toMap(Loja::getCnpj, (Loja loja) -> loja));
 			for(DevolucaoItem devolucaoItem :  devolucao.getItens()) {
 				devolucaoItem.setDevolucao(devolucao);
+				devolucaoItemService.setLojaOrigem(devolucaoItem, mapLojaPorCnpj, mapErros);
 				setNcm(devolucaoItem, mapNcmPorNumeroEExcecao, mapErros);
 				setProdutoUnidade(devolucaoItem, mapProdutoUnidadePorSigla, mapErros);
 			}

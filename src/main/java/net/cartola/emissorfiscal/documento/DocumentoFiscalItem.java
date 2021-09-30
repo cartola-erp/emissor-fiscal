@@ -39,20 +39,14 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	private static final String VALOR_INVALIDO = "Atenção! O valor inserida é inválido!!";
 
 	private Long id;
-//	private int item;
-	/** Serão somente usada em ENTRADAS/COMPRAS, as info abaixo? Não sei, mas acredito que sim !!!**/
-//	private Long codigoX;
-//	private String codigoSequencia;
-//	private int produtoCodigoErp;
 	private String ean;		// --> Codigo Barras
 	private String descricaoEmpresa;
 	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private Finalidade finalidadeEmpresa = Finalidade.COMERCIALIZACAO;	// Essa é a finalidade no cadastro do produto (no ERP), ou seja, sob o enfoque da AG
-	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
+//	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
 	private BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
 	
-//	private Ncm ncm;
 	private int cfop;
 	private Integer icmsCest = 0;
 	private BigDecimal icmsBase = BigDecimal.ZERO;
@@ -266,16 +260,6 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	public void setValorOutrasDespesasAcessorias(BigDecimal valorOutrasDespesasAcessorias) {
 		this.valorOutrasDespesasAcessorias = valorOutrasDespesasAcessorias;
 	}
-
-//	@ManyToOne(fetch = FetchType.EAGER)
-//	@JoinColumn(name = "ncm_id", referencedColumnName = "ncm_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_ncms"))
-//	public Ncm getNcm() {
-//		return ncm;
-//	}
-//
-//	public void setNcm(Ncm ncm) {
-//		this.ncm = ncm;
-//	}
 	
 	@Override
 	public String getClasseFiscal() {

@@ -24,6 +24,8 @@ public abstract class Item {
 	protected BigDecimal desconto = BigDecimal.ZERO;
     protected BigDecimal valorFrete = BigDecimal.ZERO;
     protected BigDecimal valorSeguro = BigDecimal.ZERO;
+    protected ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
+
 //    protected BigDecimal icmsBase = BigDecimal.ZERO;
     protected BigDecimal icmsReducaoBaseAliquota = BigDecimal.ZERO;
     protected BigDecimal icmsReducaoBaseStAliquota = BigDecimal.ZERO;
@@ -57,6 +59,9 @@ public abstract class Item {
 	
 	protected abstract void setExcecao(int excecao);
 	
+//	protected abstract ProdutoOrigem getOrigem();
+
+//	protected abstract void setOrigem(ProdutoOrigem origem);
 	
 	protected final Long getNcmId() {
 		return this.ncmId;
