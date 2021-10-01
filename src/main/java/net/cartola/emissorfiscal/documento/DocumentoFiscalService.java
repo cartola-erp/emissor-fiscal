@@ -167,9 +167,17 @@ public class DocumentoFiscalService extends DocumentoService {
 		 * Ou irei somente salvar a devolução, retornar ela, e passar para a service do DocumentoFiscal
 		 * 
 		 */
-		Optional<DocumentoFiscal> opDocumentoFiscal = devolucaoService.save(devolucao);
+		Optional<DocumentoFiscal> opDocFiscSaved = Optional.empty();
+		Optional<Devolucao> opDevolucao = devolucaoService.save(devolucao);
 		
-		return null;
+		if (opDevolucao.isPresent()) {
+			DocumentoFiscal documentoFiscal = new DocumentoFiscal(opDevolucao.get());
+			DocumentoFiscal docFiscCalculado = calcFiscalEstadual.calculaImposto(documentoFiscal, devolucao);
+			calcFiscalFederal.calculaImposto(docFiscCalculado);
+			opDocFiscSaved = Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
+		}
+		return opDocFiscSaved;
+//		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {

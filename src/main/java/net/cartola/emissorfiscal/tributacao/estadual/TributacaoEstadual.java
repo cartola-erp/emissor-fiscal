@@ -109,7 +109,7 @@ public class TributacaoEstadual implements Serializable {
 
 	@NotNull(message = FINALIDADE_OBRIGATORIA)
 	@Enumerated(EnumType.STRING)
-	@Column(name="finalidade", columnDefinition="enum('CONSUMO', 'REVENDA') default 'CONSUMO' ")
+	@Column(name="finalidade", columnDefinition="enum('COMERCIALIZACAO','BRINDE','DOACAO','PATRIMONIO','CONSUMO') default 'CONSUMO' ")
     public Finalidade getFinalidade() {
 		return finalidade;
 	}
@@ -119,7 +119,7 @@ public class TributacaoEstadual implements Serializable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="regime_tributario", columnDefinition="enum('SIMPLES', 'PRESUMIDO', 'REAL') ")
+	@Column(name="regime_tributario", columnDefinition="enum('SIMPLES','SIMPLES_EXCESSO','NORMAL') ")
 	public RegimeTributario getRegimeTributario() {
 		return regimeTributario;
 	}

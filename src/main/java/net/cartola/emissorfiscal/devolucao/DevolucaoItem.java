@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.ToString;
 import net.cartola.emissorfiscal.documento.Item;
+import net.cartola.emissorfiscal.documento.ProdutoOrigem;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
@@ -54,7 +55,6 @@ public class DevolucaoItem extends Item implements Serializable {
 	private int cfopFornecedor;
 //	private int cfopEntradaEmpresa;
 //	private Integer icmsCest = 0;
-    private BigDecimal icmsIva = BigDecimal.ZERO;
 	
 	// ====================================================================================
     private VendaTipo origemTipo = VendaTipo.NFE;
@@ -204,16 +204,26 @@ public class DevolucaoItem extends Item implements Serializable {
 	public void setValorSeguro(BigDecimal valorSeguro) {
 		this.valorSeguro = valorSeguro;
 	}
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name="origem", columnDefinition="enum('NACIONAL', 'ESTRANGEIRA_IMPORTACAO_DIRETA', 'ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO', 'NACIONAL_CONTEUDO_IMPORTADO_MAIOR_40', 'NACIONAL_CONFORMIDADE_PROCESSOS', 'NACIONAL_CONTEUDO_IMPORTADO_MENOR_40', 'ESTRANGEIRA_IMPORTACAO_DIRETA_CAMEX', 'ESTRANGEIRA_ADQUIRIDO_MERCADO_INTERNO_CAMEX', 'NACIONAL_CONTEUDO_IMPORTADO_MAIOR_70') default 'NACIONAL' ")
+	public ProdutoOrigem getOrigem() {
+		return origem;
+	}
 
-//	@Column(name = "vlr_outr_desp_acess")
-//	public BigDecimal getValorOutrasDespesasAcessoriasUnitario() {
-//		return valorOutrasDespesasAcessoriasUnitario;
-//	}
-//
-//	public void setValorOutrasDespesasAcessoriasUnitario(BigDecimal valorOutrasDespesasAcessoriasUnitario) {
-//		this.valorOutrasDespesasAcessoriasUnitario = valorOutrasDespesasAcessoriasUnitario;
-//	}
+	public void setOrigem(ProdutoOrigem origem) {
+		this.origem = origem;
+	}
 
+	@Column(name = "vlr_outr_desp_acess_unit")
+	public BigDecimal getValorOutrasDespesasAcessorias() {
+		return super.valorOutrasDespesasAcessorias;
+	}
+
+	public void setValorOutrasDespesasAcessorias(BigDecimal valorOutrasDespesasAcessorias) {
+		super.valorOutrasDespesasAcessorias = valorOutrasDespesasAcessorias;
+	}
+	
 	@Override
 	public String getClasseFiscal() {
 		return classeFiscal;
@@ -234,7 +244,7 @@ public class DevolucaoItem extends Item implements Serializable {
 		this.excecao = excecao;
 	}
 	
-	@Column(name = "cfop_forn")
+	@Column(name = "cfop_forn", scale = 4, nullable = false)
 	public int getCfopFornecedor() {
 		return cfopFornecedor;
 	}
@@ -290,11 +300,11 @@ public class DevolucaoItem extends Item implements Serializable {
 
 	@Column(name = "icms_iva", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIcmsIva() {
-		return icmsIva;
+		return super.icmsIva;
 	}
 
 	public void setIcmsIva(BigDecimal icmsIva) {
-		this.icmsIva = icmsIva;
+		super.icmsIva = icmsIva;
 	}
 
 	@Column(name = "ipi_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")

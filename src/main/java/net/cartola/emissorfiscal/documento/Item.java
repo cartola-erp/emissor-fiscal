@@ -25,19 +25,21 @@ public abstract class Item {
     protected BigDecimal valorFrete = BigDecimal.ZERO;
     protected BigDecimal valorSeguro = BigDecimal.ZERO;
     protected ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
+	protected BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
 
 //    protected BigDecimal icmsBase = BigDecimal.ZERO;
     protected BigDecimal icmsReducaoBaseAliquota = BigDecimal.ZERO;
     protected BigDecimal icmsReducaoBaseStAliquota = BigDecimal.ZERO;
 	protected BigDecimal icmsAliquota = BigDecimal.ZERO;
 	protected BigDecimal icmsStAliquota = BigDecimal.ZERO;
+	protected BigDecimal icmsIva = BigDecimal.ZERO;
+
 	protected BigDecimal ipiAliquota = BigDecimal.ZERO;
 	protected ProdutoUnidade unidade;
 
 	private Long ncmId;					// APENAS nessa classe para criar o objeto do tipo NCM e não ficar indo no DB
 	private Ncm ncm;
 
-	
 	
 	protected abstract int getItem();
 	protected abstract Long getCodigoX();

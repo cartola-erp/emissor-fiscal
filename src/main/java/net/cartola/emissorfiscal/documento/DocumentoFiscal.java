@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.ToString;
+import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
@@ -39,7 +40,6 @@ import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
 @Entity
 @Table(name = "docu_fisc")
 public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements Serializable {
-//public class DocumentoFiscal extends Documento implements Serializable {
 
 	private static final long serialVersionUID = 250495916716488531L;
 
@@ -99,6 +99,26 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 //	private LocalDateTime alterado;
 //	private String alteradoPor;
 	
+	public DocumentoFiscal() {}
+
+	/**
+	 * Será copiado: A operação, loja, emitente e destinatario da devolução;
+	 * PS: Não será criado os itens
+	 * 
+	 * @param devolucao
+	 */
+	public DocumentoFiscal(Devolucao devolucao) {
+		super.operacao = devolucao.getOperacao();
+		super.loja = devolucao.getLoja();
+		super.emitente = devolucao.getEmitente();
+		super.destinatario = devolucao.getDestinatario();
+//		super.itens = new ArrayList<>();
+		
+//		devolucao.getItens().forEach(devoItem -> {
+//			super.itens.add(new DocumentoFiscalItem(devoItem));
+//		});
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {

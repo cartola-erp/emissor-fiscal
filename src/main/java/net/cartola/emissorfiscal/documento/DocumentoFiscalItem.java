@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.ToString;
+import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
 
 
@@ -45,7 +46,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private Finalidade finalidadeEmpresa = Finalidade.COMERCIALIZACAO;	// Essa é a finalidade no cadastro do produto (no ERP), ou seja, sob o enfoque da AG
 //	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
-	private BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
+//	private BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
 	
 	private int cfop;
 	private Integer icmsCest = 0;
@@ -57,7 +58,6 @@ public class DocumentoFiscalItem extends Item implements Serializable {
     private BigDecimal icmsFcpValor = BigDecimal.ZERO;
 	private BigDecimal icmsStBase = BigDecimal.ZERO;
 	private BigDecimal icmsStValor = BigDecimal.ZERO;
-    private BigDecimal icmsIva = BigDecimal.ZERO;
     private BigDecimal icmsStBaseRetido = BigDecimal.ZERO;
     private BigDecimal icmsStValorRetido = BigDecimal.ZERO;
 //    private BigDecimal icmsBaseFcpStRetido = BigDecimal.ZERO;
@@ -88,6 +88,24 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	
 	private DocumentoFiscal documentoFiscal;
 
+	public DocumentoFiscalItem() {	}
+
+	public DocumentoFiscalItem(DevolucaoItem devoItem) {
+		super.item = devoItem.getItem();
+		super.codigoX = devoItem.getCodigoX();
+		super.codigoSequencia = devoItem.getCodigoSequencia();
+		super.produtoCodigoErp = devoItem.getProdutoCodigoErp();
+		super.classeFiscal = devoItem.getClasseFiscal();
+		super.setClasseFiscal(devoItem.getNcm());
+//		super.excecao = devoItem.getExcecao();
+		super.quantidade = devoItem.getQuantidade();
+		super.valorUnitario = devoItem.getValorUnitario();
+		this.descricaoEmpresa = devoItem.getDescricao();
+		super.icmsIva = devoItem.getIcmsIva();
+		super.origem = devoItem.getOrigem();
+		super.unidade = devoItem.getUnidade();
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -100,31 +118,31 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	
 	@Override
 	public int getItem() {
-		return item;
+		return super.item;
 	}
 
 	public void setItem(int item) {
-		this.item = item;
+		super.item = item;
 	}
 
 	@Override
 	@Column(name = "codigo_x")
 	public Long getCodigoX() {
-		return codigoX;
+		return super.codigoX;
 	}
 
 	public void setCodigoX(Long codigoX) {
-		this.codigoX = codigoX;
+		super.codigoX = codigoX;
 	}
 
 	@Override
 	@Column(name = "codigo_seq")
 	public String getCodigoSequencia() {
-		return codigoSequencia;
+		return super.codigoSequencia;
 	}
 
 	public void setCodigoSequencia(String codigoSequencia) {
-		this.codigoSequencia = codigoSequencia;
+		super.codigoSequencia = codigoSequencia;
 	}
 	
 	@Column(name = "prod_cod_erp")
@@ -133,7 +151,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	}
 
 	public void setProdutoCodigoErp(int produtoCodigoErp) {
-		this.produtoCodigoErp = produtoCodigoErp;
+		super.produtoCodigoErp = produtoCodigoErp;
 	}
 
 	@Column(name = "ean")
@@ -168,12 +186,12 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	@JoinColumn(name = "prod_unid_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_item_prod_unid_id"))
 //	@JoinColumn(name = "prod_unid_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fnk_docu_fisc_item_prod_unid_id"))
 	public ProdutoUnidade getUnidade() {
-		return unidade;
+		return super.unidade;
 	}
 	
 	@Override
 	public void setUnidade(ProdutoUnidade unidade) {
-		this.unidade = unidade;
+		super.unidade = unidade;
 	}
 	
 	@NotNull(message = FINALIDADE_OBRIGATORIA)
@@ -211,7 +229,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 //	@NotNull(message = QUANTIDADE_OBRIGATORIA)
 //	@Positive(message = QUANTIDADE_INVALIDA)
 	public BigDecimal getQuantidade() {
-		return quantidade;
+		return super.quantidade;
 	}
 
 	public void setQuantidade(BigDecimal quantidade) {
@@ -254,31 +272,31 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 
 	@Column(name = "vlr_outr_desp_acess")
 	public BigDecimal getValorOutrasDespesasAcessorias() {
-		return valorOutrasDespesasAcessorias;
+		return super.valorOutrasDespesasAcessorias;
 	}
 
 	public void setValorOutrasDespesasAcessorias(BigDecimal valorOutrasDespesasAcessorias) {
-		this.valorOutrasDespesasAcessorias = valorOutrasDespesasAcessorias;
+		super.valorOutrasDespesasAcessorias = valorOutrasDespesasAcessorias;
 	}
 	
 	@Override
 	public String getClasseFiscal() {
-		return classeFiscal;
+		return super.classeFiscal;
 	}
 
 	@Override
 	public void setClasseFiscal(String classeFiscal) {
-		this.classeFiscal = classeFiscal;
+		super.classeFiscal = classeFiscal;
 	}
 	
 	@Override
 	public int getExcecao() {
-		return excecao;
+		return super.excecao;
 	}
 
 	@Override
 	public void setExcecao(int excecao) {
-		this.excecao = excecao;
+		super.excecao = excecao;
 	}
 	
 	public int getCfop() {
@@ -427,7 +445,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
     }
 
     public void setIcmsIva(BigDecimal icmsIva) {
-        this.icmsIva = icmsIva;
+        super.icmsIva = icmsIva;
     }
 	
     @Column(name = "icms_st_base_ret")
