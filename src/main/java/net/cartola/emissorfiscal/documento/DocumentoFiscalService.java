@@ -193,7 +193,7 @@ public class DocumentoFiscalService extends DocumentoService {
 	 * @param isNewCompra
 	 * @return
 	 */
-	public Optional<CompraDto> saveCompra(DocumentoFiscal documentoFiscal, boolean isNewCompra) {		
+	public Optional<CompraDto> saveCompra(DocumentoFiscal documentoFiscal, boolean isNewCompra) {
 		CompraDto compraDto = new CompraDto();
 		if (isNewCompra) {
 			compraDto = calcGuiaEstaService.calculaGuiaGareIcmsStEntrada(documentoFiscal);

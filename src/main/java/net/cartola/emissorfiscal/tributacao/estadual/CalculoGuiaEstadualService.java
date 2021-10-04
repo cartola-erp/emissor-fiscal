@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.tributacao.estadual;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
+import static net.cartola.emissorfiscal.util.DocumentoFiscalUtil.isFornSimplesNacional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -127,18 +128,20 @@ public class CalculoGuiaEstadualService {
 				.append(docFiscal.getEmitente().getCnpj())
 				.append(" Conforme Portaria CAT 16 de 2008 e o art. 426-A § 4°do RICMS/2000");
 		
+		final BigDecimal icmsAliquota =  isFornSimplesNacional(docFiscal) ? docItem.getIcmsAliquota() : tribEstaGuia.getIcmsAliquota();
+		
 		/** Fazendo calculo de ICMS ST, para o item */
-		BigDecimal aliqIvaMva = BigDecimal.ONE.add(tribEstaGuia.getIcmsIva());
+		final BigDecimal aliqIvaMva = BigDecimal.ONE.add(tribEstaGuia.getIcmsIva());
 		// Como as entradas em si não é calculada aqui, e sim no ERP, a base é a msm que recebeu de lá previamente
-		BigDecimal baseCalcIcms =  docItem.getIcmsBase(); //docItem.getQuantidade().multiply(docItem.getValorUnitario());
-		BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getIpiValor());
+		final BigDecimal baseCalcIcms = docItem.getIcmsBase();
+		final BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getIpiValor());
 		// Estava da forma abaixo, porém o ICMS base do erp já vem com o frete, por isso acima no BC ICMS ST, adicionei apenas o IPI (ele nao vai na BC ICMS proprio)
 //		BigDecimal baseCalcIcmsComFretIpi = baseCalcIcms.add(docItem.getValorFrete()).add(docItem.getIpiValor());
 		
-		BigDecimal baseCalcIcmsSt = baseCalcIcmsComFretIpi.subtract(docItem.getDesconto()).multiply(aliqIvaMva);
-		BigDecimal valorIcmsSt = baseCalcIcmsSt.multiply(tribEstaGuia.getIcmsAliqInternaDestino());
-		BigDecimal creditoIcmsProprio = baseCalcIcms.multiply(tribEstaGuia.getIcmsAliquota());
-		BigDecimal valorIcmsStAReter = valorIcmsSt.subtract(creditoIcmsProprio);
+		final BigDecimal baseCalcIcmsSt = baseCalcIcmsComFretIpi.subtract(docItem.getDesconto()).multiply(aliqIvaMva);
+		final BigDecimal valorIcmsSt = baseCalcIcmsSt.multiply(tribEstaGuia.getIcmsAliqInternaDestino());
+		final BigDecimal creditoIcmsProprio = baseCalcIcms.multiply(icmsAliquota);
+		final BigDecimal valorIcmsStAReter = valorIcmsSt.subtract(creditoIcmsProprio);
 
 		/** JUROS, MULTA e TOTAL (ainda tenho que calcular) **/
 		BigDecimal juros = BigDecimal.ZERO;
@@ -171,7 +174,24 @@ public class CalculoGuiaEstadualService {
 		return calcGareCompra;
 	}
 	
-	
+
+
+	/**
+	 * Se a CST for do SN (3 dígitos, irá calcular a BC ICMS). <\br>
+	 * Caso não seja será retornado para a base de calculo do ICMS que veio do ERP
+	 * 
+	 * @param docFiscal
+	 * @param docItem 
+	 * @return
+	 */
+	private BigDecimal getIcmsBase(DocumentoFiscal docFiscal, DocumentoFiscalItem docItem) {
+		if (isFornSimplesNacional(docFiscal)) {
+			return docItem.getValorUnitario().multiply(docItem.getQuantidade()).add(docItem.getValorFrete());
+		}
+		return docItem.getIcmsBase();
+	}
+
+
 	/**
 	 * Irá calcular qual o total de uma lista de Calculos de Gare (Juros, Multa, valor total etc...)
 	 * 

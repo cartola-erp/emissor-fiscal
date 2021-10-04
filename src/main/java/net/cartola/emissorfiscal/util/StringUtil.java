@@ -187,4 +187,8 @@ public class StringUtil {
         return string;
     }
 	
+    public static String notNull(String str) {
+        return (str == null ? "" : str);
+    }
+	
 }
