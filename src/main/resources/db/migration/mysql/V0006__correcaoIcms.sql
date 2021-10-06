@@ -142,7 +142,7 @@ UPDATE trib_esta t
 		t.icms_st_aliq = 0.000000, 		t.mens =  '',
 		t.cfop = 5656 
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM ncms WHERE nume IN(27101931, 27101932, 27101992, 27129000, 34031900, 38112190, 27101991, 84133030 )
+	SELECT ncm_id FROM ncms WHERE nume IN(27101931, 27101932, 27101992, 27129000, 34031900, 38112190, 27101991 )
 ) and t.oper_id = 1;
 
 
@@ -156,7 +156,7 @@ UPDATE trib_esta t
 		t.icms_st_aliq = 0.000000,		t.mens =  '',
 		t.cfop = 5659	
 WHERE t.ncm_id IN ( 
-	SELECT ncm_id FROM ncms WHERE nume IN(27101931, 27101932, 27101992, 27129000, 34031900, 38112190, 27101991, 84133030 )
+	SELECT ncm_id FROM ncms WHERE nume IN(27101931, 27101932, 27101992, 27129000, 34031900, 38112190, 27101991 )
 ) and t.oper_id = 4;
 
 -- 
@@ -167,7 +167,6 @@ UPDATE trib_esta SET cod_anp = 650101001 WHERE ncm_id IN (SELECT ncm_id FROM ncm
 UPDATE trib_esta SET cod_anp = 620503001 WHERE ncm_id IN (SELECT ncm_id FROM ncms WHERE nume IN(34031900));
 UPDATE trib_esta SET cod_anp = 740101006 WHERE ncm_id IN (SELECT ncm_id FROM ncms WHERE nume IN(38112190));
 UPDATE trib_esta SET cod_anp = 650101001 WHERE ncm_id IN (SELECT ncm_id FROM ncms WHERE nume IN(27101991));
-UPDATE trib_esta SET cod_anp = 650101001 WHERE ncm_id IN (SELECT ncm_id FROM ncms WHERE nume IN(84133030));
 
 -- =========================================================================================================================================================
 
