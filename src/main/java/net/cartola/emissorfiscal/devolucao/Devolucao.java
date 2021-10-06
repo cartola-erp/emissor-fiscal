@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.devolucao;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,14 +19,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.ToString;
 import net.cartola.emissorfiscal.documento.Documento;
-import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
@@ -48,13 +47,15 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
     private FreteConta freteConta = FreteConta.SEM_FRETE;    
     private VendaTipo origemTipo = VendaTipo.NFE; 
     
+    private Set<DevolucaoOrigem> devolucaoOrigem;
+    
     /**
      * Provavelmente aqui no emissorfiscal em tempo de execucao terei que montar uma mapa dessas origens;
      * E para cada item que eu estiver calculando tenho que obter a origem desse mapa; 
      * POIS, será esses os valores que terei que usar para fazer o calculo das devolucoes
      */
-    @Transient
-	private List<DocumentoFiscal> origens;	// origens vendas e compras
+//    @Transient
+//	private List<DocumentoFiscal> origens;	// origens vendas e compras
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -167,17 +168,26 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
 		this.origemTipo = origemTipo;
 	}
 
-    @Transient
-	public List<DocumentoFiscal> getOrigens() {
-		return origens;
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "devolucao")
+	public Set<DevolucaoOrigem> getDevolucaoOrigem() {
+		return devolucaoOrigem;
 	}
 
-	public void setOrigens(List<DocumentoFiscal> origens) {
-		this.origens = origens;
+	public void setDevolucaoOrigem(Set<DevolucaoOrigem> devolucaoOrigem) {
+		this.devolucaoOrigem = devolucaoOrigem;
 	}
+	
+//    @Transient
+//	public List<DocumentoFiscal> getOrigens() {
+//		return origens;
+//	}
+//
+//	public void setOrigens(List<DocumentoFiscal> origens) {
+//		this.origens = origens;
+//	}
 
 	@Override
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "devolucao")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "devolucao")
 	public List<DevolucaoItem> getItens() {
 		return itens;
 	}
@@ -185,7 +195,6 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
 	public void setItens(List<DevolucaoItem> itens) {
 		this.itens = itens;
 	}
-	
-	
+
 	
 }

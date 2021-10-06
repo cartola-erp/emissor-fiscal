@@ -70,7 +70,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 	
     public void setId(Long id) {
-		this.id = id;
+    	this.id = id;
 	}
 
     @Override
@@ -80,7 +80,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setItem(int item) {
-		this.item = item;
+		super.item = item;
 	}
     
 //	public int getOrigemItem() {
@@ -88,7 +88,7 @@ public class DevolucaoItem extends Item implements Serializable {
 //	}
 //
 //	public void setOrigemItem(int origemItem) {
-//		this.origemItem = origemItem;
+//		super.origemItem = origemItem;
 //	}
 
 	@Override
@@ -98,7 +98,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setCodigoX(Long codigoX) {
-		this.codigoX = codigoX;
+		super.codigoX = codigoX;
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setCodigoSequencia(String codigoSequencia) {
-		this.codigoSequencia = codigoSequencia;
+		super.codigoSequencia = codigoSequencia;
 	}
 
 	@Column(name = "prod_cod_erp")
@@ -117,7 +117,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setProdutoCodigoErp(int produtoCodigoErp) {
-		this.produtoCodigoErp = produtoCodigoErp;
+		super.produtoCodigoErp = produtoCodigoErp;
 	}
 
 //	@ManyToOne(fetch = FetchType.LAZY)
@@ -127,7 +127,7 @@ public class DevolucaoItem extends Item implements Serializable {
 //	}
 //
 //	public void setDocumentoFiscalOrigem(DocumentoFiscal documentoFiscalOrigem) {
-//		this.documentoFiscalOrigem = documentoFiscalOrigem;
+//		super.documentoFiscalOrigem = documentoFiscalOrigem;
 //	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -158,7 +158,7 @@ public class DevolucaoItem extends Item implements Serializable {
 
 	@Override
 	public void setUnidade(ProdutoUnidade unidade) {
-		this.unidade = unidade;
+		super.unidade = unidade;
 	}
 	
 	public BigDecimal getQuantidade() {
@@ -166,7 +166,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setQuantidade(BigDecimal quantidade) {
-		this.quantidade = quantidade;
+		super.quantidade = quantidade;
 	}
 	
 	@Column(name = "vlr_unit")
@@ -175,7 +175,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setValorUnitario(BigDecimal valorUnitario) {
-		this.valorUnitario = valorUnitario;
+		super.valorUnitario = valorUnitario;
 	}
 	
 	@Column(name = "desc_unit")
@@ -184,7 +184,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setDesconto(BigDecimal desconto) {
-		this.desconto = desconto;
+		super.desconto = desconto;
 	}
 	
 	@Column(name = "vlr_fret_unit")
@@ -193,7 +193,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setValorFrete(BigDecimal valorFrete) {
-		this.valorFrete = valorFrete;
+		super.valorFrete = valorFrete;
 	}
 
 	@Column(name = "vlr_segu_unit")
@@ -202,7 +202,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setValorSeguro(BigDecimal valorSeguro) {
-		this.valorSeguro = valorSeguro;
+		super.valorSeguro = valorSeguro;
 	}
 	
 	@Enumerated(EnumType.STRING)
@@ -212,7 +212,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setOrigem(ProdutoOrigem origem) {
-		this.origem = origem;
+		super.origem = origem;
 	}
 
 	@Column(name = "vlr_outr_desp_acess_unit")
@@ -231,7 +231,7 @@ public class DevolucaoItem extends Item implements Serializable {
 
 	@Override
 	public void setClasseFiscal(String classeFiscal) {
-		this.classeFiscal = classeFiscal;
+		super.classeFiscal = classeFiscal;
 	}
 
 	@Override
@@ -241,7 +241,7 @@ public class DevolucaoItem extends Item implements Serializable {
 
 	@Override
 	public void setExcecao(int excecao) {
-		this.excecao = excecao;
+		super.excecao = excecao;
 	}
 	
 	@Column(name = "cfop_forn", scale = 4, nullable = false)
@@ -259,7 +259,7 @@ public class DevolucaoItem extends Item implements Serializable {
 //	}
 //
 //	public void setCfopEntradaEmpresa(int cfopEntradaEmpresa) {
-//		this.cfopEntradaEmpresa = cfopEntradaEmpresa;
+//		super.cfopEntradaEmpresa = cfopEntradaEmpresa;
 //	}
 
     @Column(name = "icms_redu_base_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
@@ -268,7 +268,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setIcmsReducaoBaseAliquota(BigDecimal icmsReducaoBaseAliquota) {
-		this.icmsReducaoBaseAliquota = icmsReducaoBaseAliquota;
+		super.icmsReducaoBaseAliquota = icmsReducaoBaseAliquota;
 	}
 
     @Column(name = "icms_redu_base_st_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
@@ -277,7 +277,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setIcmsReducaoBaseStAliquota(BigDecimal icmsReducaoBaseStAliquota) {
-		this.icmsReducaoBaseStAliquota = icmsReducaoBaseStAliquota;
+		super.icmsReducaoBaseStAliquota = icmsReducaoBaseStAliquota;
 	}
 
 	@Column(name = "icms_aliquota", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
@@ -286,7 +286,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setIcmsAliquota(BigDecimal icmsAliquota) {
-		this.icmsAliquota = icmsAliquota;
+		super.icmsAliquota = icmsAliquota;
 	}
 
     @Column(name = "icms_st_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
@@ -295,7 +295,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setIcmsStAliquota(BigDecimal icmsStAliquota) {
-		this.icmsStAliquota = icmsStAliquota;
+		super.icmsStAliquota = icmsStAliquota;
 	}
 
 	@Column(name = "icms_iva", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
@@ -313,7 +313,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	public void setIpiAliquota(BigDecimal ipiAliquota) {
-		this.ipiAliquota = ipiAliquota;
+		super.ipiAliquota = ipiAliquota;
 	}
 	
 	@Enumerated(EnumType.STRING)
@@ -347,7 +347,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "devo_id", unique = false, foreignKey = @ForeignKey(name = "fnk_devolucao"))
+	@JoinColumn(name = "devo_id", unique = false, foreignKey = @ForeignKey(name = "fnk_devo_item_devo_id"))
 	public Devolucao getDevolucao() {
 		return devolucao;
 	}

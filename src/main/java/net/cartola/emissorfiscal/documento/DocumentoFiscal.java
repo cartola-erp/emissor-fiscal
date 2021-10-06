@@ -93,6 +93,8 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 	private BigDecimal valorImpostoEstadual = BigDecimal.ZERO;
 	private BigDecimal valorImpostoMunicipal = BigDecimal.ZERO;
 	
+	private Devolucao devolucao;
+	
 	private LocalDate emissao;
 //	private LocalDateTime cadastro;
 //	private String criadoPor;
@@ -112,6 +114,10 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		super.loja = devolucao.getLoja();
 		super.emitente = devolucao.getEmitente();
 		super.destinatario = devolucao.getDestinatario();
+		this.indicadorPagamento = IndicadorDePagamento.OUTROS;
+		super.cadastro = devolucao.getCadastro();
+		super.alterado = devolucao.getAlterado();
+		this.devolucao = devolucao;
 //		super.itens = new ArrayList<>();
 		
 //		devolucao.getItens().forEach(devoItem -> {
@@ -558,6 +564,16 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 
 	public void setEmissao(LocalDate emissao) {
 		this.emissao = emissao;
+	}
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "devo_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fnk_docu_fisc_devo_id") )
+	public Devolucao getDevolucao() {
+		return devolucao;
+	}
+
+	public void setDevolucao(Devolucao devolucao) {
+		this.devolucao = devolucao;
 	}
 	
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
