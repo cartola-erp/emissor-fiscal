@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getNumeroCfe;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getNumeroSerieSat;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isInformaDesconto;
 
@@ -48,7 +49,7 @@ public class RegC800 {
 	private final String reg = "C800";
 	private ModeloDocumentoFiscal codMod;
 	private SituacaoDoDocumento codSit;
-	private Long numCfe;
+	private String numCfe;
 	private LocalDate dtDoc;
 	private BigDecimal vlCfe;
 	private BigDecimal vlPis;
@@ -73,7 +74,7 @@ public class RegC800 {
 		
 		this.codMod = satEmititdo.getModelo();
 		this.codSit = getCodSituacao(satEmititdo);
-		this.numCfe = satEmititdo.getNumeroNota();
+		this.numCfe = getNumeroCfe(satEmititdo);
 		this.dtDoc = satEmititdo.getEmissao();
 		this.vlCfe = satEmititdo.getValorTotalDocumento();
 		this.vlPis = satEmititdo.getPisValor();
@@ -112,11 +113,11 @@ public class RegC800 {
 		this.codSit = codSit;
 	}
 
-	public Long getNumCfe() {
+	public String getNumCfe() {
 		return numCfe;
 	}
 
-	public void setNumCfe(Long numCfe) {
+	public void setNumCfe(String numCfe) {
 		this.numCfe = numCfe;
 	}
 

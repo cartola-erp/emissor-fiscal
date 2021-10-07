@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getNumeroCfe;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getNumeroSerieSat;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ class RegC800Service implements MontaGrupoDeRegistroList<RegC800, MovimentoMensa
 		RegC800 regC800 = new RegC800();
 		regC800.setCodMod(satEmititdo.getModelo());
 		regC800.setCodSit(getCodSituacao(satEmititdo));
-		regC800.setNumCfe(satEmititdo.getNumeroNota());
+		regC800.setNumCfe(getNumeroCfe(satEmititdo));
 		regC800.setNrSat(getNumeroSerieSat(satEmititdo));
 		regC800.setChvCfe(satEmititdo.getNfeChaveAcesso());
 		return regC800;

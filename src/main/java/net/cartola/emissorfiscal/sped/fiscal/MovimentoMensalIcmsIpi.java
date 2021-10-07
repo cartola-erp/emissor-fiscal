@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,6 +67,7 @@ public class MovimentoMensalIcmsIpi {
 	private List<DocumentoFiscal> listDocumentoFiscalServico;
 	private Set<DocumentoFiscal> listDocFiscSantaCatarina;
 	private List<DocumentoFiscal> listSatsEmitidos; 		// DocumentoFiscal - Modelo _59
+	private List<DocumentoFiscal> listDocumentosEmDigitacao;		// Apenas para eu saber se tinha documentos fiscais, não atualizados ainda no emissor-fiscal, e conseguir avisar o CONTADOR 
 	private List<Pessoa> listCadastros;
 	private List<PessoaAlteradoSped> listCadastrosAlteradosSped;
 	
@@ -287,7 +289,13 @@ public class MovimentoMensalIcmsIpi {
 	
 	
 	
-	
+//	public void addDocumentoFiscalEmDigitacao(DocumentoFiscal documentoFiscal) {
+	public void addDocumentoFiscalEmDigitacao(List<DocumentoFiscal> listDocFiscEmDigitacao) {
+		if (this.listDocumentosEmDigitacao == null ) {
+			this.listDocumentosEmDigitacao = new LinkedList<>();
+		}
+		this.listDocumentosEmDigitacao.addAll(listDocFiscEmDigitacao);
+	}
 	
 	
 //	public LocalDate getDataInicio() {

@@ -1,8 +1,12 @@
 package net.cartola.emissorfiscal.ncm;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,13 @@ public class NcmService {
 		return Optional.ofNullable(ncmRepository.saveAndFlush(ncm));
 	}
 
+	public Map<Integer, Map<Integer, Ncm>> getMapNcmByNumeroIn(Collection<Integer> listNumerosNcms) {
+		List<Ncm> listNcmPersistida = this.findNcmByNumeroIn(listNumerosNcms);
+		Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExccao = listNcmPersistida
+				.stream().collect(groupingBy(Ncm::getNumero, toMap(Ncm::getExcecao, (Ncm ncm) -> ncm )));
+		return mapNcmPorNumeroEExccao;
+	}
+	
 	public List<Ncm> findNcmByNumeroIn(Collection<Integer> listNumerosNcms) {
 		return ncmRepository.findNcmByNumeroIn(listNumerosNcms);
 	}

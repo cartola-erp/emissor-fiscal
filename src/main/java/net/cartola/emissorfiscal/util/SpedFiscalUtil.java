@@ -226,7 +226,12 @@ public final class SpedFiscalUtil {
 //		boolean isNfeReferenteASat = (setCfops.contains(5929) || setCfops.contains(6929));
 		return (setCfops.contains(5929) || setCfops.contains(6929));
 	}
-
+	
+	public static boolean isDocumentoFiscalEmDigitacao(DocumentoFiscal documentoFiscal) {
+		Predicate<DocumentoFiscal> isDigitacao = p -> p.getStatus().equals(NFeStatus.DIGITACAO);
+		return isDigitacao.test(documentoFiscal);
+	}
+		
 	/**
 	 * TODOs os SATS AUTORIZADOS, tem que ter um XML, se não tiver é porque não foi autorizado <\br> 
 	 * Ou ao menos, não atualizou o status aqui no emissor-fiscal
@@ -240,6 +245,18 @@ public final class SpedFiscalUtil {
 //		return null;
 	}
 
+	/**
+	 * Irá obter, o Número do Cupom Fiscal Elerônico <\br>, no XML do SAT
+	 * tag <nCFe>
+	 * @param satEmititdo
+	 * @return
+	 */
+	public static String getNumeroCfe(DocumentoFiscal satEmititdo) {
+		List<String> nCFe = XmlUtil.getTagConteudo(satEmititdo.getXml(), "nCFe", false);
+		return nCFe == null ? "" : nCFe.get(0);
+	}
+
+	
 	/**
 	 * Irá retornar um mapa para o Registro analítico dos ITENS, do DocumentoFiscal.
 	 * 
@@ -272,5 +289,5 @@ public final class SpedFiscalUtil {
 		return mapRegistroAnaliticoPorCfopECst;
 	}
 
-	
+
 }
