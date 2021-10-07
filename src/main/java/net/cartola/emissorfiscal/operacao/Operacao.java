@@ -26,7 +26,8 @@ public class Operacao implements Serializable, Comparable<Operacao> {
 	private static final long serialVersionUID = 12701892348311L;
 	private Long id;
 	private String descricao;
-
+//	private boolean isDevolucao = false;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "oper_id")
@@ -49,6 +50,15 @@ public class Operacao implements Serializable, Comparable<Operacao> {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
+	
+//	@Column(name = "devolucao")
+//	public boolean isDevolucao() {
+//		return isDevolucao;
+//	}
+//
+//	public void setDevolucao(boolean isDevolucao) {
+//		this.isDevolucao = isDevolucao;
+//	}
 
 	@Override
 	public int hashCode() {

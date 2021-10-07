@@ -43,6 +43,11 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
 	private static final long serialVersionUID = -3260584299611764410L;
 
 	private Long id;
+	/**
+	 * Número da NFE de devolução gerado no ERP, é necessário ter esse "identificador", pois é o ERP que gera a numeração da nota e envia a msm para a SEFAZ.
+	 * Ou seja, no momento é calculado aqui a nota, depois que o erp enviar para a sefaz será preciso atualizar a chave de acesso no DocumentoFiscal
+	 */
+	private int nfeNumeroErp;				
     private DevolucaoTipo devolucaoTipo = DevolucaoTipo.DE_CLIENTE;    
     private FreteConta freteConta = FreteConta.SEM_FRETE;    
     private VendaTipo origemTipo = VendaTipo.NFE; 
@@ -67,6 +72,8 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
 		this.id = id;
 	}
 
+	
+	
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
 	public LocalDateTime getCadastro() {
@@ -194,6 +201,14 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
 
 	public void setItens(List<DevolucaoItem> itens) {
 		this.itens = itens;
+	}
+
+	public int getNfeNumeroErp() {
+		return nfeNumeroErp;
+	}
+
+	public void setNfeNumeroErp(int nfeNumeroErp) {
+		this.nfeNumeroErp = nfeNumeroErp;
 	}
 
 	

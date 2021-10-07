@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.ibpt.DeOlhoNoImpostoService;
 import net.cartola.emissorfiscal.response.Response;
 import net.cartola.emissorfiscal.util.ValidationHelper;
@@ -40,6 +41,13 @@ public class DocumentoFiscalApiController {
 	@Autowired
 	private DeOlhoNoImpostoService olhoNoImpostoService;
 	
+	
+	/**
+	 * TODO Verifiar se isso será mantido aqui
+	 * NO momento esse método NÃO é usado (e provavelmente não será)
+	 * @param docFiscal
+	 * @return
+	 */
 	@PostMapping(value = "/buscar")
 	public ResponseEntity<Response<DocumentoFiscal>> findDocumentoFiscalByCnpjTipoDocumentoSerieNumero(@RequestBody DocumentoFiscal docFiscal) {
 		Response<DocumentoFiscal> response = new Response<>();
@@ -94,6 +102,24 @@ public class DocumentoFiscalApiController {
 		}
 		docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
 		return saveOrEditDocumentoFiscal(newDocFiscal);
+	}
+	
+	@PostMapping("/salvar-devolucao")
+	public ResponseEntity<Response<DocumentoFiscal>> salvarDevolucao(@RequestBody Devolucao devolucao) {
+		// TODO montar a lógica dos caralho a 4
+		Response<DocumentoFiscal> response = new Response<>();
+		//salvar devolucao 
+		// calcular como deverá ser devolvido os impostos;
+		// salvar o DocumentoFiscal
+		// retornar ele para o ERP
+		System.out.println("ANTES DE SALVAR A DEVOLUCAO: " +devolucao);
+
+		Optional<DocumentoFiscal> opDocumentoFiscal = docFiscalService.save(devolucao);
+		
+		response.setData(opDocumentoFiscal.get());
+		
+		System.out.println(devolucao);
+		return ResponseEntity.ok(response);
 	}
 	
 	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {

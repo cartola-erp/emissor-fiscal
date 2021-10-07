@@ -97,16 +97,34 @@ public class DocumentoFiscalService extends DocumentoService {
 		return documentoFiscalRepository.findByNfeChaveAcessoIn(setChaveAcessoReferencia);
 	}
 	
-	public List<DocumentoFiscal> findDocumentoFiscalByOperacao(Operacao operacao) {
+	private List<DocumentoFiscal> findDocumentoFiscalByOperacao(Operacao operacao) {
 		return documentoFiscalRepository.findByOperacao(operacao);
 	}
 	
-	public List<DocumentoFiscal> findDocumentoFiscalByVariasOperacoes(Collection<Operacao> operacoes) {
+	private List<DocumentoFiscal> findDocumentoFiscalByVariasOperacoes(Collection<Operacao> operacoes) {
 		return documentoFiscalRepository.findByOperacaoIn(operacoes);
 	}
 	
-	public Optional<DocumentoFiscal> findOne(Long id) {
+	private Optional<DocumentoFiscal> findOne(Long id) {
 		return documentoFiscalRepository.findById(id);
+	}
+	
+	public Optional<DocumentoFiscal> findDocumentoFiscal(DocumentoFiscal docFiscal) {
+//		if (docFiscal.getOperacao().isDevolucao()) {
+//			/****
+//			 * TODO aqui tenho que buscar a DEVOLUÇÕA, mas como irei FAZER isso ?????
+//			 * - Chave de acesso  da tabela devo_origem ?
+//			 * - 
+//			 */
+//			
+//			
+//			
+//			
+//			return null;
+//		}
+		
+		return this.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
+//		return null;
 	}
 	
 	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(String cnpjEmitente, IndicadorDeOperacao tipoOperacao, Long serie, Long numero) {
