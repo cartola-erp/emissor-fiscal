@@ -20,6 +20,22 @@
 -- ================================================================================================================================================================
 
 
+
+	--  12 – VENDA DE IMOBILIZADO (CST 40 - CFOP - 5551, para qualquer ncm)
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id ) 
+		(select cest, 5551, fcp_aliq, finalidade, 0.000000, 0.000000, 0.000000, 40, 0.000000, 0.000000, 
+				'', regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, 12 FROM trib_esta where oper_id = 1 and  esta_orig_id = 26 and esta_dest_id = 26 and is_prod_impor = false);
+	
+	-- 12 – VENDA DE IMOBILIZADO	 Cadastrando para os outros ncms (que PROVAVELMENTE não SÃO de AUTOPEÇAS)
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
+							mens, regime_tributario, cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id )  
+		(select 199900, 5551, 0, "CONSUMO", 0.000000, 0.000000, 0.000000, 40, 0.000000, 0.000000, 
+				'', "NORMAL", 0, 26, 26, ncm_id, 12 FROM ncms where ncm_id not in (select ncm_id from trib_esta where oper_id = 12 and  esta_orig_id = 26 and esta_dest_id = 26 and is_prod_impor = false));
+-- ---------------------------------------------- Para Quando o produto for importado (dentro do estado é a mesma tributacao -------------------------------	
+
+
 	--  26 – TRANSFERÊNCIA DE BEM DO ATIVO IMOBILIZADO (CST 41 - CFOP - 5552, para qualquer ncm)
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 

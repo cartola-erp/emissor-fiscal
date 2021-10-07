@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import net.cartola.emissorfiscal.ncm.Ncm;
-
 @Service
 public class DocumentoFiscalItemService {
 
@@ -29,14 +27,6 @@ public class DocumentoFiscalItemService {
 
 	public Optional<DocumentoFiscalItem> save(DocumentoFiscalItem documentoFiscalItem) {
 		return Optional.ofNullable(documentoFiscalItemRepository.saveAndFlush(documentoFiscalItem));
-	}
-
-	public List<DocumentoFiscalItem> findDocuFiscItemByNcm(Ncm ncm) {
-		return documentoFiscalItemRepository.findByNcm(ncm);
-	}
-
-	public List<DocumentoFiscalItem> findDocuFiscItemByVariosNcms(Collection<Ncm> ncms) {
-		return documentoFiscalItemRepository.findByNcmIn(ncms);
 	}
 
 	public List<DocumentoFiscalItem> findItensByVariosDocumentoFiscal(Set<Long> listDocFiscIds) {

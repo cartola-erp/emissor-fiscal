@@ -71,7 +71,7 @@ public class SimulacaoService {
 		listResult.add("QTD ITEM: " + item.getQuantidade() );
 		listResult.add("VALOR DO ITEM: " + item.getValorUnitario() );
 		listResult.add("FINALIDADE: " +item.getFinalidade() );
-		listResult.add("NCM: " +item.getNcm().getNumero() + " | EXCEÇÃO: " +item.getNcm().getExcecao());
+		listResult.add("NCM: " +item.getClasseFiscal() + " | EXCEÇÃO: " +item.getExcecao());
 		listResult.add("REGIME TRIBUTÁRIO EMITENTE: " +documentoFiscal.getEmitente().getRegimeTributario());
 		listResult.add(" ===================================== VALORES DOCUMENTO FISCAL ===================================== ");
 		listResult.add("ICMS BASE (NFE): " +documentoFiscal.getIcmsBase().toPlainString());
@@ -153,7 +153,7 @@ public class SimulacaoService {
 	private List<String> validaTributacaoFederalAndEstadual(DocumentoFiscal documentoFiscal) {
 		Map<String, Boolean> map = new HashMap<>();
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(documentoFiscal.getOperacao().getDescricao());
-		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
+		Set<Ncm> ncms = documentoFiscal.getNcms();
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getEndereco().getUf()).get();
 		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();
@@ -199,7 +199,7 @@ public class SimulacaoService {
 		documentoFiscal.setEmitente(emitente);
 		documentoFiscal.setDestinatario(destinatario);
 		documentoFiscal.setOperacao(operacao);
-		documentoFiscal.getItens().get(0).setNcm(ncm);
+		documentoFiscal.getItens().get(0).setClasseFiscal(ncm);
 		
 		return documentoFiscal;
 	}

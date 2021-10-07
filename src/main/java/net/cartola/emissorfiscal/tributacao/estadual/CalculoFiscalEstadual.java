@@ -2,6 +2,8 @@ package net.cartola.emissorfiscal.tributacao.estadual;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,20 +14,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
-import net.cartola.emissorfiscal.documento.Finalidade;
-import net.cartola.emissorfiscal.estado.Estado;
-import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.ncm.Ncm;
-import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
+import net.cartola.emissorfiscal.tributacao.CalculoFiscalDevolucao;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
@@ -38,15 +37,15 @@ import net.cartola.emissorfiscal.tributacao.Imposto;
 
 
 @Service
-public class CalculoFiscalEstadual implements CalculoFiscal {
-
+public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
+	
 	private static final Logger LOG = Logger.getLogger(CalculoFiscalEstadual.class.getName());
 	
 	@Autowired
 	private TributacaoEstadualService icmsService;
-
+	
 	@Autowired
-	private EstadoService estadoService;
+	private TributacaoEstadualDevolucaoService tribEstaDevolucaoService;
 	
 	@Autowired
 	private DocumentoFiscalService docuFiscService;
@@ -57,6 +56,9 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	@Autowired
 	private CalculoIcms calculoIcms;
 	
+	@Autowired
+	private CalculoIcmsDevolucao calculoIcmsDevolucao;
+	
 	/**
 	 * O calculo de imposto retornado aqui é do TOTAL DA NFE (aparentemente)
 	 */
@@ -64,20 +66,15 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
 		LOG.log(Level.INFO, "Fazendo o calculo das TRIBUTACÕES ESTADUAIS, para o Documento {0} ", documentoFiscal.getDocumento());
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
-		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm).collect(Collectors.toSet());
-		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
-		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getEndereco().getUf()).get();
-		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();
-		
-		List<TributacaoEstadual> listTributacoes = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(documentoFiscal.getOperacao(), estadoOrigem, estadoDestino, documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);
-				
+		List<TributacaoEstadual> listTributacoes = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(documentoFiscal);
+
 		Map<Ncm, Map<Boolean, TributacaoEstadual>> mapaTributacoesPorNcmEOrigem = listTributacoes.stream().collect(groupingBy(TributacaoEstadual::getNcm,
-				Collectors.toMap(TributacaoEstadual::isProdutoImportado, (TributacaoEstadual tribEsta) -> tribEsta )));
+				toMap(TributacaoEstadual::isProdutoImportado, (TributacaoEstadual tribEsta) -> tribEsta )));
 		
 		documentoFiscal.getItens().forEach(docItem -> {
 			boolean isProdutoImportado = docFiscItemService.verificaSeEhImportado(docItem);
 			TributacaoEstadual tributacao = mapaTributacoesPorNcmEOrigem.get(docItem.getNcm()).get(isProdutoImportado);
-			calculoIcms.calculaIcms(docItem, tributacao, documentoFiscal).ifPresent(calcIcms -> listCalculoImpostos.add(calcIcms));;
+			calculoIcms.calculaIcms(docItem, tributacao, documentoFiscal).ifPresent(listCalculoImpostos::add);;
 //			listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
 		});
 
@@ -93,7 +90,42 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		documentoFiscal.setValorTotalDocumento(calcularValorTotalDocumento(documentoFiscal));
 	}
 
+	/**
+	 * Será calculado o imposto da Devolução para o DocumentoFiscal; PS: Os itens
+	 * desse DocumentoFiscal, será criado e calculado nesse método
+	 *
+	 */
+	@Override
+	public DocumentoFiscal calculaImposto(DocumentoFiscal docFisc, Devolucao devolucao) {
+		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
+		final Set<TributacaoEstadualDevolucao> setTribEsta = tribEstaDevolucaoService.findByOperacao(devolucao.getOperacao());
+		final Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda = setTribEsta
+				.stream()
+				.collect(toMap(TributacaoEstadualDevolucao::getCfopVenda, (TributacaoEstadualDevolucao tribEstaDevo) -> tribEstaDevo));
+		List<DocumentoFiscalItem> listDocFiscItens = new ArrayList<>();
+		
+		devolucao.getItens().forEach(devoItem -> {
+			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(devoItem.getCfopFornecedor());
+			DocumentoFiscalItem docFiscItem = new DocumentoFiscalItem(devoItem);
+			docFiscItem.setDocumentoFiscal(docFisc);
+			calculoIcmsDevolucao.calculaIcmsDevolucao(docFiscItem, tribEstaDevo, devoItem).ifPresent(listCalculoImpostos::add);
+			listDocFiscItens.add(docFiscItem);
+		});
+		docFisc.setItens(listDocFiscItens);
+
+		setaIcmsBaseEValor(docFisc, listCalculoImpostos);
+		docFisc.setValorOutrasDespesasAcessorias(calcularTotalOutrasDespesasAcessorias(docFisc));
+		docFisc.setIpiValor(calcularTotalIpiDevolvido(docFisc));
+		docFisc.setValorTotalProduto(calcularValorTotalProdutos(docFisc));
+		/**
+		 * No calculo abaixo, atualmente NÃO ESTOU subtraindo o desconto, pois não é informado no XML....
+		 */
+		docFisc.setValorTotalDocumento(calcularValorTotalDocumento(docFisc));
+		return docFisc;
+	}
 	
+	
+
 	/**
 	 * Atualmente o que tem aqui é o calcular do total, que temos de crédito nas entradas. Referente ao "DocumentoFiscal" (compra)
 	 * Pois dos itens já foram feitos, calculados previamente no ERP, porém não é calculado o TOTAL que temos de crédito referente ao DocumentoFiscal.
@@ -241,6 +273,14 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		return docFiscal.getItens().stream().map(item -> item.getValorUnitario().multiply(item.getQuantidade())).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 	
+	private BigDecimal calcularTotalOutrasDespesasAcessorias(DocumentoFiscal docFiscal) {
+		return docFiscal.getItens().stream().map(item -> getBigDecimalNullSafe(item.getValorOutrasDespesasAcessorias())).reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
+	
+	private BigDecimal calcularTotalIpiDevolvido(DocumentoFiscal docFisc) {
+		return docFisc.getItens().stream().map(item -> getBigDecimalNullSafe(item.getIpiValor())).reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
+	
 	/**
 	 * NA realidade tenho que considerar o DESCONTO 
 	 * Referente ao campo vNF do XML: vNF = (vProd + vST + vFrete + vSeg + vOutro + VII + vServ) - vDesc 
@@ -254,9 +294,10 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		if (docuFiscService.isAdicionaFreteNoTotal(docFiscal)) {
 			valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorFrete());
 		}
-		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorSeguro());
-		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getValorOutrasDespesasAcessorias());
-		valorTotalDocumento = valorTotalDocumento.add(docFiscal.getIpiValor());
+		valorTotalDocumento = valorTotalDocumento.add(getBigDecimalNullSafe(docFiscal.getValorSeguro()))
+				.add(getBigDecimalNullSafe(docFiscal.getValorOutrasDespesasAcessorias()))
+				.add(getBigDecimalNullSafe(docFiscal.getIpiValor()));
+		
 		/**
 		 * Essa parte está comentado pois, HOJE em dia não "destacamos" o vDESC(valor desconto) no xml, porém mesmo assim esse campos estava vindo preenchido do
 		 * ERP, e como não é informado no ERP estava dando diferença
@@ -265,6 +306,5 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 
 		return valorTotalDocumento;
 	}
-	
 
 }

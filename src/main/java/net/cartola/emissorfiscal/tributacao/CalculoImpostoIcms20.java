@@ -8,6 +8,11 @@ public class CalculoImpostoIcms20  extends CalculoImpostoFcp {
 
 	private BigDecimal aliqReducaoBase;
 
+	
+	public CalculoImpostoIcms20() {
+		super.setImposto(Imposto.ICMS_20);
+	}
+	
 	public BigDecimal getAliqReducaoBase() {
 		return aliqReducaoBase;
 	}

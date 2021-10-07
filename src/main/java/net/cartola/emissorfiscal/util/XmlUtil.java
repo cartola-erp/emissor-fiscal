@@ -17,7 +17,8 @@ public class XmlUtil {
 
     public static List<String> getTagConteudo(String xml, String nomeTag, boolean incluirTag) {
         if (xml == null || nomeTag == null) {
-            return null;
+//            return null;
+        	return new ArrayList<String>();
         }
         List<String> tags = new ArrayList<String>();
         String regex = "(<\\s*[/]{0,1}\\s*#NOME_TAG#(\\s+[^<]*|\\s*)>|<\\s*#NOME_TAG#(\\s+[^<]*|\\s*)/{0,1}\\s*>)".replace("#NOME_TAG#", nomeTag);

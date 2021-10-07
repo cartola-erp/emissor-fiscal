@@ -84,7 +84,7 @@ public class DocumentoEmissaoControllerTest {
 		// ITEM
 		item.setQuantidade(DOCUMENTO_FISCAL_ITEM_QUANTIDADE);
 		item.setValorUnitario(DOCUMENTO_FISCAL_ITEM_VALOR_UNITARIO);
-		item.setNcm(ncm);
+		item.setClasseFiscal(ncm);
 //		item.setCfop(DOCUMENTO_FISCAL_ITEM_CFOP);
 		listItens.add(item);
 		

@@ -49,8 +49,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 		List<Reg0200> listReg0200 = new ArrayList<>(listItens.size());
 		listItens.stream().forEach(item -> {
 			Reg0200 reg0200 = new Reg0200();
-			Ncm ncm = item.getNcm();
-			String ncmString = Integer.toString(ncm.getNumero());
+			String ncmString = item.getClasseFiscal();
 			reg0200.setCodItem(getCodItem(item));
 			reg0200.setDescrItem(item.getDescricaoEmpresa());
 			reg0200.setCodBarra(item.getEan());
@@ -58,7 +57,7 @@ class Reg0200Service implements MontaGrupoDeRegistroList<Reg0200, MovimentoMensa
 			reg0200.setUnidInv(String.valueOf(item.getUnidade().getId()));
 			reg0200.setTipoItem(getTipoItem(item));
 			reg0200.setCodNcm(ncmString);
-			reg0200.setExIpi(Integer.toString(ncm.getExcecao()));
+			reg0200.setExIpi(Integer.toString(item.getExcecao()));
 			reg0200.setCodGen(ncmString.substring(0, 2));
 //			reg0200.setCodLst(codLst);
 			reg0200.setAliqIcms(getAliqIcms(item));

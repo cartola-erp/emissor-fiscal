@@ -14,6 +14,10 @@ public class CalculoImpostoIcms30 extends CalculoImposto {
 //	private CalculoImpostoFcpSt calcFcpSt = new CalculoImpostoFcpSt();
 
 
+	public CalculoImpostoIcms30() {
+		super.setImposto(Imposto.ICMS_30);
+	}
+	
 	public BigDecimal getIva() {
 		return iva;
 	}

@@ -41,8 +41,8 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 	public void calculaImposto(DocumentoFiscal documentoFiscal) {
 		LOG.log(Level.INFO, "Fazendo o calculo das TRIBUTAÇÕES FEDERAIS, para o Documento = {0} ", documentoFiscal.getDocumento());
 		List<CalculoImposto> listaImpostos = new LinkedList<>();
-		Set<Ncm> ncms = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getNcm)
-				.collect(Collectors.toSet());
+		Set<Ncm> ncms = documentoFiscal.getNcms();
+		
 		Set<Finalidade> finalidades = documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(Collectors.toSet());
 
 		Set<TributacaoFederal> tributacoesFederais = tributacaoFederalService

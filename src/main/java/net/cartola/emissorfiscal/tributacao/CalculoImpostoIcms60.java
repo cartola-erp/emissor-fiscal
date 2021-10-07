@@ -18,6 +18,12 @@ public class CalculoImpostoIcms60 extends CalculoImposto {
 	private BigDecimal aliqIcmsEfetiva;
 	private BigDecimal vlrIcmsEfetivo;
 	
+	
+	public CalculoImpostoIcms60() {
+		super.setImposto(Imposto.ICMS_60);
+	}
+	
+	
 	public BigDecimal getVlrBaseCalcIcmsStRetido() {
 		return vlrBaseCalcIcmsStRetido;
 	}

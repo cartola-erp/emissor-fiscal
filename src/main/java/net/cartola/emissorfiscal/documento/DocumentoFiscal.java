@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.ToString;
+import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
@@ -38,7 +39,7 @@ import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
 @ToString
 @Entity
 @Table(name = "docu_fisc")
-public class DocumentoFiscal implements Serializable {
+public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements Serializable {
 
 	private static final long serialVersionUID = 250495916716488531L;
 
@@ -49,7 +50,6 @@ public class DocumentoFiscal implements Serializable {
 	private Long id;
     private int documento;		// Campo referente a COMPRA ou NFE (do ERP, dependendo do tipo do DocumentoFiscal, que for)
 	private Long numeroNota;
-    private Operacao operacao;
 	private IndicadorDeOperacao tipoOperacao;
 	private FinalidadeEmissao finalidadeEmissao = FinalidadeEmissao.NORMAL;
 	private TipoServico tipoServico = TipoServico.NENHUM;
@@ -59,10 +59,6 @@ public class DocumentoFiscal implements Serializable {
 	private String nfeChaveAcesso;
 
 	private Long serie;
-	private Loja loja;
-	private Pessoa emitente;
-	private Pessoa destinatario;
-	private List<DocumentoFiscalItem> itens;
 	private Set<DocumentoFiscalReferencia> referencias;
 	private BigDecimal valorDesconto;
 	private FreteConta indicadorFrete;
@@ -97,12 +93,38 @@ public class DocumentoFiscal implements Serializable {
 	private BigDecimal valorImpostoEstadual = BigDecimal.ZERO;
 	private BigDecimal valorImpostoMunicipal = BigDecimal.ZERO;
 	
-	private LocalDate emissao;
-	private LocalDateTime cadastro;
-	private String criadoPor;
-	private LocalDateTime alterado;
-	private String alteradoPor;
+	private Devolucao devolucao;
 	
+	private LocalDate emissao;
+//	private LocalDateTime cadastro;
+//	private String criadoPor;
+//	private LocalDateTime alterado;
+//	private String alteradoPor;
+	
+	public DocumentoFiscal() {}
+
+	/**
+	 * Será copiado: A operação, loja, emitente e destinatario da devolução;
+	 * PS: Não será criado os itens
+	 * 
+	 * @param devolucao
+	 */
+	public DocumentoFiscal(Devolucao devolucao) {
+		super.operacao = devolucao.getOperacao();
+		super.loja = devolucao.getLoja();
+		super.emitente = devolucao.getEmitente();
+		super.destinatario = devolucao.getDestinatario();
+		this.indicadorPagamento = IndicadorDePagamento.OUTROS;
+		super.cadastro = devolucao.getCadastro();
+		super.alterado = devolucao.getAlterado();
+		this.devolucao = devolucao;
+//		super.itens = new ArrayList<>();
+		
+//		devolucao.getItens().forEach(devoItem -> {
+//			super.itens.add(new DocumentoFiscalItem(devoItem));
+//		});
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -130,12 +152,14 @@ public class DocumentoFiscal implements Serializable {
 		return numeroNota;
 	}
 	
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "oper_id", referencedColumnName = "oper_id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_oper_id"))
 	public Operacao getOperacao() {
 		return operacao;
 	}
 
+	@Override
 	public void setOperacao(Operacao operacao) {
 		this.operacao = operacao;
 	}
@@ -216,36 +240,43 @@ public class DocumentoFiscal implements Serializable {
 		return serie;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "loja_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_loja_id"))
 	public Loja getLoja() {
 		return loja;
 	}
 
+	@Override
 	public void setLoja(Loja loja) {
 		this.loja = loja;
 	}
 	
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "emit_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_emitente_id"))
 	public Pessoa getEmitente() {
 		return emitente;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "dest_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_destinatario_id"))
 	public Pessoa getDestinatario() {
 		return destinatario;
 	}
 
+	@Override
 	public void setEmitente(Pessoa emitente) {
 		this.emitente = emitente;
 	}
 
+	@Override
 	public void setDestinatario(Pessoa destinatario) {
 		this.destinatario = destinatario;
 	}
-
+	
+	@Override
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "documentoFiscal")
 	public List<DocumentoFiscalItem> getItens() {
 		return itens;
@@ -254,7 +285,7 @@ public class DocumentoFiscal implements Serializable {
 	public void setItens(List<DocumentoFiscalItem> itens) {
 		this.itens = itens;
 	}
-
+	
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "documentoFiscal")
 	public Set<DocumentoFiscalReferencia> getReferencias() {
 		return referencias;
@@ -535,6 +566,16 @@ public class DocumentoFiscal implements Serializable {
 		this.emissao = emissao;
 	}
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "devo_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fnk_docu_fisc_devo_id") )
+	public Devolucao getDevolucao() {
+		return devolucao;
+	}
+
+	public void setDevolucao(Devolucao devolucao) {
+		this.devolucao = devolucao;
+	}
+	
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
 	public LocalDateTime getCadastro() {
@@ -771,5 +812,4 @@ public class DocumentoFiscal implements Serializable {
 		return true;
 	}
 
-	
 }

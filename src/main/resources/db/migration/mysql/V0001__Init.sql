@@ -164,6 +164,8 @@ CREATE TABLE `docu_fisc_item` (
   `cod_anp` int(11) NOT NULL DEFAULT '0',
   `codigo_seq` varchar(255) DEFAULT NULL,
   `codigo_x` bigint(20) DEFAULT NULL,
+  `classe_fiscal` varchar(8) NOT NULL,
+  `excecao` int(11) NOT NULL,
   `cofins_aliq` decimal(7,6) NOT NULL DEFAULT '0.000000',
   `cofins_base` decimal(19,2) DEFAULT NULL,
   `cofins_cst` int(11) NOT NULL,
@@ -214,15 +216,12 @@ CREATE TABLE `docu_fisc_item` (
   `vlr_tot_imposto` decimal(19,2) DEFAULT NULL,
   `valor_unitario` decimal(19,2) NOT NULL,
   `docu_fisc_id` bigint(20) DEFAULT NULL,
-  `ncm_id` bigint(20) NOT NULL,
   `prod_unid_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fnk_documento_fiscal` (`docu_fisc_id`),
-  KEY `fnk_ncms` (`ncm_id`),
   KEY `fnk_docu_fisc_item_prod_unid_id` (`prod_unid_id`),
   CONSTRAINT `fnk_docu_fisc_item_prod_unid_id` FOREIGN KEY (`prod_unid_id`) REFERENCES `prod_unid` (`id`),
   CONSTRAINT `fnk_documento_fiscal` FOREIGN KEY (`docu_fisc_id`) REFERENCES `docu_fisc` (`id`),
-  CONSTRAINT `fnk_ncms` FOREIGN KEY (`ncm_id`) REFERENCES `ncms` (`ncm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

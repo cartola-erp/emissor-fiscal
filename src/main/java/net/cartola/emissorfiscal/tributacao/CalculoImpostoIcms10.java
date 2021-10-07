@@ -19,6 +19,9 @@ public class CalculoImpostoIcms10 extends CalculoImpostoFcp {
 //	 * A autogeral só utiliza o FCP normal
 //	private CalculoImpostoFcpSt calcFcpSt = new CalculoImpostoFcpSt();
 
+	public CalculoImpostoIcms10() {
+		super.setImposto(Imposto.ICMS_10);
+	}
 
 	public BigDecimal getIva() {
 		return iva;

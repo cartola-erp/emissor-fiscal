@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,8 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
 import net.cartola.emissorfiscal.estado.Estado;
+import net.cartola.emissorfiscal.estado.EstadoService;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
@@ -27,6 +32,9 @@ public class TributacaoEstadualService {
 	
 	@Autowired
 	private TributacaoEstadualRepository repository;
+	
+	@Autowired
+	protected EstadoService estadoService;
 
 	/**
 	 * Com base nos parâmetros de consulta de GnreAliquotaDto (regime tributário emitente, uf origem e destino), será buscado e preenchido a lista de aliquotas da GNRE
@@ -92,11 +100,22 @@ public class TributacaoEstadualService {
 		return repository.findByNcmIn(ncms, pr);
 	}
 	
+	public List<TributacaoEstadual> findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(DocumentoFiscal docuFisc) {
+		Optional<Estado> opUfOrigem = estadoService.findBySigla(docuFisc.getEmitente().getEndereco().getUf());
+		Optional<Estado> opUfDestino = estadoService.findBySigla(docuFisc.getDestinatario().getEndereco().getUf());
+		RegimeTributario regimeTributarioEmitente = docuFisc.getEmitente().getRegimeTributario();
+		Set<Finalidade> finalidades = docuFisc.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(toSet());
+
+		return this.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(docuFisc.getOperacao(), opUfOrigem.get(), opUfDestino.get(),
+				regimeTributarioEmitente, finalidades, docuFisc.getNcms());
+	}
+	
 	public List<TributacaoEstadual> findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(Operacao operacao, Estado estadoOrigem, Estado estadoDestino, RegimeTributario regimeTributario,
 			Collection<Finalidade> finalidade, Collection<Ncm> ncms) {
 		return repository.findByOperacaoAndEstadoOrigemAndEstadoDestinoAndRegimeTributarioAndFinalidadeInAndNcmIn(operacao, estadoOrigem, estadoDestino, regimeTributario, finalidade, ncms);
 	}
 
+	
 	public void deleteById(long id) {
 		repository.deleteById(id);
 	}
