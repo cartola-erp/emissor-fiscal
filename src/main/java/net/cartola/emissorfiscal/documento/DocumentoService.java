@@ -63,6 +63,28 @@ public abstract class DocumentoService {
 	private DevolucaoItemService devolucaoItemService;
 	
 	/**
+	 * Irá trazer os NCMS que estão SALVOS na Tabela NCMS, casos os ncms dos itens estejam sem id
+	 * 
+	 * @param documento
+	 * @return
+	 */
+	public Set<Ncm> getNcms(Documento<? extends Item> documento) {
+//		Set<Ncm> ncms = documentoFiscal.getItens().stream();
+//		boolean temNcmSemId = documentoFiscal.getNcms().stream().anyMatch(ncm -> ncm.getId() == null || ncm.getId() == 0);
+//		if (temNcmSemId) {
+		Set<Integer> setNumerosNcms = documento.getItens().stream().map(i -> Integer.parseInt(i.getClasseFiscal())).collect(toSet());
+		Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExcecao = ncmService.getMapNcmByNumeroIn(setNumerosNcms);
+			for (Item item : documento.getItens()) {
+				Ncm ncmPersistido = mapNcmPorNumeroEExcecao.get(Integer.parseInt(item.getClasseFiscal())).get(item.getExcecao());
+				item.setClasseFiscal(ncmPersistido);
+			}
+//			return documentoFiscal.getNcms();
+//		}
+		return documento.getNcms();
+	}
+	
+	
+	/**
 	 * Irá buscar e setar os objetos necessários para os ITENS (Ncm, ProdutoUnidade e o Documento(DocumentoFiscal ou Devolucao) ) <\br>
 	 * E adiciona Msg de erro no Map, caso não exista Ncm ou  o ProdutoUnidade 
 	 * 

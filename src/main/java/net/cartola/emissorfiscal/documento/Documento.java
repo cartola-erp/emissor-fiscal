@@ -54,9 +54,11 @@ public abstract class Documento<T extends Item> {
      * @return Lista de Ncms "criadas" com base nos itens da lista
      */
 	public final Set<Ncm> getNcms() {
-		if (this.ncms == null || this.ncms.isEmpty()) {
+		if (this.ncms == null) {
 			this.ncms = new HashSet<>();
-			for (Item item : itens) {
+		}
+		if (this.ncms.isEmpty() || (getItens() !=null && getItens().size() > this.ncms.size())) {
+			for (Item item : getItens()) {
 				this.ncms.add(item.getNcm());
 			}
 		}

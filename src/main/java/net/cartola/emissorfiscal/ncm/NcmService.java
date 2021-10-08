@@ -38,6 +38,11 @@ public class NcmService {
 		return Optional.ofNullable(ncmRepository.saveAndFlush(ncm));
 	}
 
+	/**
+	 * Irá retornar um mapa de NCMS (Por Numero/Classe e Exececao), que estão persistidos no Banco de dados
+	 * @param listNumerosNcms
+	 * @return
+	 */
 	public Map<Integer, Map<Integer, Ncm>> getMapNcmByNumeroIn(Collection<Integer> listNumerosNcms) {
 		List<Ncm> listNcmPersistida = this.findNcmByNumeroIn(listNumerosNcms);
 		Map<Integer, Map<Integer, Ncm>> mapNcmPorNumeroEExccao = listNcmPersistida

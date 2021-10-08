@@ -70,7 +70,7 @@ public abstract class Item {
 	}
 	
 	public final Ncm getNcm() {
-		if (this.ncm == null) {
+		if (this.ncm == null || this.ncm.getNumero() == 0) {
 			Ncm ncm = new Ncm(this.ncmId, this.classeFiscal, this.excecao);
 			this.ncm = ncm;
 		}

@@ -26,6 +26,7 @@ import net.cartola.emissorfiscal.documento.CompraDto;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.engine.EmailEngine;
 import net.cartola.emissorfiscal.engine.EmailModel;
 import net.cartola.emissorfiscal.estado.Estado;
@@ -69,6 +70,9 @@ public class CalculoGuiaEstadualService {
 	private EmailEngine emailEngine;
 	
 	@Autowired
+	private DocumentoFiscalService docFiscService;
+	
+	@Autowired
 	private DocumentoFiscalItemService docFiscItemService;
 	
 //	private SpringTemplateEngine templateEngine;
@@ -81,7 +85,7 @@ public class CalculoGuiaEstadualService {
 		Optional<Loja> opLoja = lojaService.findByCnpj(documentoFiscal.getDestinatario().getCnpj());
 		Estado estadoOrigem = estadoService.findBySigla(documentoFiscal.getEmitente().getEndereco().getUf()).get();
 		Estado estadoDestino = estadoService.findBySigla(documentoFiscal.getDestinatario().getEndereco().getUf()).get();
-		Set<Ncm> ncms = documentoFiscal.getNcms();
+		Set<Ncm> ncms = docFiscService.getNcms(documentoFiscal);
 				
 		List<TributacaoEstadualGuia> listTribEstaGuiaGare = tribEstaGuiaService.findTribEstaGuiaByTipoGuiaUfOrigemUfDestinoOperENcms(TipoGuia.GARE_ICMS, estadoOrigem, estadoDestino, documentoFiscal.getOperacao(), ncms);
 		

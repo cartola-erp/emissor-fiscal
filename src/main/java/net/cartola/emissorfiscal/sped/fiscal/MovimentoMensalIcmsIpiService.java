@@ -38,6 +38,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.TipoServico;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.model.sped.fiscal.difal.SpedFiscalRegE310;
@@ -242,8 +243,10 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	private Set<DocumentoFiscalItem> getSetDeItens(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listSatsEmitidos) {
 		LOG.log(Level.INFO, "Buscando todos os ITENS que estão em uma NFE e/ou SAT" );
 		Set<DocumentoFiscalItem> setItens = new HashSet<>();
-		List<DocumentoFiscal> listDocFiscalSemCte = listDocFiscal.stream().filter(docFisc -> !docFisc.getTipoServico().equals(TipoServico.CTE)).collect(toList());
-		
+		Predicate<DocumentoFiscal> isBuscaItem = d -> !d.getTipoServico().equals(TipoServico.CTE) && !d.getTipoOperacao().equals(IndicadorDeOperacao.SAIDA);
+//		List<DocumentoFiscal> listDocFiscalSemCte = listDocFiscal.stream().filter(docFisc -> !docFisc.getTipoServico().equals(TipoServico.CTE)).collect(toList());
+	    List<DocumentoFiscal> listDocFiscalSemCte = listDocFiscal.stream().filter(docFisc -> isBuscaItem.test(docFisc)).collect(toList());
+
 		List<DocumentoFiscalItem> listDocFiscItens = docFiscalItemService.findItensByVariosDocumentoFiscal(getListIdsForDocFiscal(listDocFiscalSemCte));
 		List<DocumentoFiscalItem> listItensDosSats = docFiscalItemService.findItensByVariosDocumentoFiscal(getListIdsForDocFiscal(listSatsEmitidos));
 		setItens.addAll(listDocFiscItens);
