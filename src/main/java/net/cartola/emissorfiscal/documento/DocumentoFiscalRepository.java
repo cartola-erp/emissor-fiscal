@@ -51,6 +51,7 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 	List<DocumentoFiscal> findByCadastroBetweenAndLojaAndModeloAndTipoOperacao(LocalDateTime dataHoraInicio,
 			LocalDateTime dataHoraFim, Loja loja, ModeloDocumentoFiscal modelo, IndicadorDeOperacao tipoOperacao);
 	
+	DocumentoFiscal findByDevolucaoId(Long id);
 	
 	// OBS: Será retornado todos os doc fiscais, do periodo independente da loja que deram entrada
 	// OBS2: Não necessariamente os DocumentoFiscais que foram retornados aqui, seram pagos/ (ou foram pagos o ICMS na entrada)
@@ -63,6 +64,8 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 			+ "                		INNER JOIN trib_esta_guia t ON (t.esta_orig_id  = uf.esta_id AND d.oper_id = t.oper_id) "
 			+ "	   	 WHERE d.cadastro BETWEEN :dtInicio AND :dtFim ;", nativeQuery = true)
 	Set<DocumentoFiscal> findAllDocsInterestadualQuePagamosIcmsNaEntradaPorPeriodo(LocalDateTime dtInicio, LocalDateTime dtFim);
+
+
 
 	
 	

@@ -131,6 +131,10 @@ public class DocumentoFiscalService extends DocumentoService {
 		return documentoFiscalRepository.findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNota(cnpjEmitente,  tipoOperacao,  serie,  numero);
 	}
 
+	public Optional<DocumentoFiscal> findDocumentoFiscalByDevolucao(Devolucao devolucao) {
+		return Optional.ofNullable(documentoFiscalRepository.findByDevolucaoId(devolucao.getId()));
+	}
+	
 	public void deleteById(Long id) {
 		documentoFiscalRepository.deleteById(id);
 	}
@@ -185,10 +189,17 @@ public class DocumentoFiscalService extends DocumentoService {
 		Optional<Devolucao> opDevolucao = devolucaoService.save(devolucao);
 		
 		if (opDevolucao.isPresent()) {
-			DocumentoFiscal documentoFiscal = new DocumentoFiscal(opDevolucao.get());
-			DocumentoFiscal docFiscCalculado = calcFiscalEstadual.calculaImposto(documentoFiscal, devolucao);
+			Devolucao devolucaoSaved = opDevolucao.get();
+			DocumentoFiscal newDocumentoFiscal = new DocumentoFiscal(devolucaoSaved);
+
+			DocumentoFiscal docFiscCalculado = calcFiscalEstadual.calculaImposto(newDocumentoFiscal, devolucao);
 			calcFiscalFederal.calculaImposto(docFiscCalculado);
-			opDocFiscSaved = Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
+			
+			Optional<DocumentoFiscal> opOldDocFiscalDevolucao = this.findDocumentoFiscalByDevolucao(devolucaoSaved);
+			if(opOldDocFiscalDevolucao.isPresent()) {
+				this.prepareDocumentoFiscalToUpdate(opOldDocFiscalDevolucao, newDocumentoFiscal);
+			}
+			opDocFiscSaved = Optional.ofNullable(documentoFiscalRepository.saveAndFlush(newDocumentoFiscal));
 		}
 		return opDocFiscSaved;
 	}
@@ -251,7 +262,10 @@ public class DocumentoFiscalService extends DocumentoService {
 		newDocFiscal.setId(oldDocFiscal.getId());
 		boolean isItensEquals = newDocFiscal.getItens().containsAll(opOldDocFiscal.get().getItens());
 		if (isItensEquals) {
-			oldDocFiscal.getItens().stream().forEach(oldItem -> mapNewItemPorNumItem.get(oldItem.getItem()).setId(oldItem.getId()));
+			oldDocFiscal.getItens().stream().forEach(oldItem -> {
+				DocumentoFiscalItem newItem = mapNewItemPorNumItem.get(oldItem.getItem());
+				newItem.setId(oldItem.getId());
+			});
 		} else {
 			docuFiscItemService.deleteByListItens(oldDocFiscal.getItens());
 		}

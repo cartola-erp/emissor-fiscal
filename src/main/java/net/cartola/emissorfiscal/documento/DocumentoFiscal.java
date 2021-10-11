@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -38,7 +39,7 @@ import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
 
 @ToString
 @Entity
-@Table(name = "docu_fisc")
+@Table(name = "docu_fisc", uniqueConstraints = @UniqueConstraint(name = "unk_docu_fisc_devo_id", columnNames = "devo_id" ) )
 public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements Serializable {
 
 	private static final long serialVersionUID = 250495916716488531L;

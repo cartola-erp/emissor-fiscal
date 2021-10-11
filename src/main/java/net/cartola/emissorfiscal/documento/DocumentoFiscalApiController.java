@@ -66,10 +66,10 @@ public class DocumentoFiscalApiController {
 	@PostMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal newDocFiscal) {
 		LOG.log(Level.INFO, "Salvando o DocumentoFiscal {0} " ,newDocFiscal);
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(newDocFiscal.getEmitente().getCnpj(), newDocFiscal.getTipoOperacao(), newDocFiscal.getSerie(), newDocFiscal.getNumeroNota());
+		Optional<DocumentoFiscal> opOldDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(newDocFiscal.getEmitente().getCnpj(), newDocFiscal.getTipoOperacao(), newDocFiscal.getSerie(), newDocFiscal.getNumeroNota());
 //
-		if(opDocFiscal.isPresent()) {
-			docFiscalService.prepareDocumentoFiscalToUpdate(opDocFiscal, newDocFiscal);
+		if(opOldDocFiscal.isPresent()) {
+			docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
 		} 
 		return saveOrEditDocumentoFiscal(newDocFiscal);
 	}
