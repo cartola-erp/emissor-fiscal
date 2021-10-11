@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,17 +38,13 @@ import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
  */
 @ToString
 @Entity
-@Table(name = "devo")
+@Table(name = "devo", uniqueConstraints = @UniqueConstraint(name = "unk_devo_doc_devo_loja_id", 
+										columnNames = { "docu" , "devo_loja_id" }))
 public class Devolucao extends Documento<DevolucaoItem> implements Serializable {
 	
 	private static final long serialVersionUID = -3260584299611764410L;
 
 	private Long id;
-	/**
-	 * Número da NFE de devolução gerado no ERP, é necessário ter esse "identificador", pois é o ERP que gera a numeração da nota e envia a msm para a SEFAZ.
-	 * Ou seja, no momento é calculado aqui a nota, depois que o erp enviar para a sefaz será preciso atualizar a chave de acesso no DocumentoFiscal
-	 */
-	private int nfeNumeroErp;				
     private DevolucaoTipo devolucaoTipo = DevolucaoTipo.DE_CLIENTE;    
     private FreteConta freteConta = FreteConta.SEM_FRETE;    
     private VendaTipo origemTipo = VendaTipo.NFE; 
@@ -72,7 +69,18 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
 		this.id = id;
 	}
 
-	
+	/**
+	 * Número da NFE de devolução gerado no ERP, é necessário ter esse "identificador", pois é o ERP que gera a numeração da nota e envia a msm para a SEFAZ.
+	 * Ou seja, no momento é calculado aqui a nota, depois que o erp enviar para a sefaz será preciso atualizar a chave de acesso no DocumentoFiscal
+	 */
+	@Column(name = "docu")
+	public int getDocumento() {
+		return super.documento;
+	}
+
+	public void setDocumento(int documento) {
+		super.documento = documento;
+	}
 	
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
@@ -201,14 +209,6 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
 
 	public void setItens(List<DevolucaoItem> itens) {
 		this.itens = itens;
-	}
-
-	public int getNfeNumeroErp() {
-		return nfeNumeroErp;
-	}
-
-	public void setNfeNumeroErp(int nfeNumeroErp) {
-		this.nfeNumeroErp = nfeNumeroErp;
 	}
 
 	

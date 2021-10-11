@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.devolucao;
 
 import static java.time.LocalDateTime.now;
+import static net.cartola.emissorfiscal.util.PredicateUtil.distinctByKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,35 +24,46 @@ import net.cartola.emissorfiscal.loja.Loja;
 public class DevolucaoService extends DocumentoService {
 
 	private static final Logger LOG = Logger.getLogger(DevolucaoService.class.getName());
-	
+
 	@Autowired
 	private DevolucaoRepository devolucaoRepository;
 
-//	@Autowired
-//	private DevolucaoItemService devolucaoItemService;
-	
+	@Autowired
+	private DevolucaoItemService devolucaoItemService;
 
-	
+	@Autowired
+	private DevolucaoOrigemService devolucaoOrigemService;
+
 	public Optional<Devolucao> save(Devolucao devolucao) {
-		LOG.log(Level.INFO, "Salvando a Devolucao {0} " ,devolucao);
+		LOG.log(Level.INFO, "Salvando a Devolucao {0} ", devolucao);
 		Map<String, Boolean> mapErros = new HashMap<>();
 		super.setValoresNecessariosParaOsItens(devolucao, mapErros);
 		this.setValoresNecessariosParaODocumento(devolucao, mapErros);
 		devolucao.setCadastro(now());
 		devolucao.setAlterado(now());
 
-		Devolucao devolucaoSaved = devolucaoRepository.saveAndFlush(devolucao);
-				
-		return Optional.ofNullable(devolucaoSaved);
+		Optional<Devolucao> opDevolucao = devolucaoRepository.findByDocumentoAndLoja(devolucao.getDocumento(), devolucao.getLoja());
+		if (opDevolucao.isPresent()) {
+			Devolucao oldDevolucao = opDevolucao.get();
+			devolucaoItemService.deleteByListItens(oldDevolucao.getItens());
+			devolucaoOrigemService.deleteByListDevolucaoOrigem(oldDevolucao.getDevolucaoOrigem());
+
+			devolucao.setId(oldDevolucao.getId());
+		}
+		devolucao.getDevolucaoOrigem().removeIf(distinctByKey(devoOrig -> devoOrig.getOrigemChaveAcesso()));
+
+		Optional<Devolucao> opDevolucaoSaved = Optional.ofNullable(devolucaoRepository.saveAndFlush(devolucao));
+		LOG.log(Level.INFO, "A Devolucao {0} foi salva? {1} ",  new Object[]{devolucao.getDocumento(), opDevolucaoSaved.isPresent()});
+		return opDevolucaoSaved;
 	}
 
-	
 //	@Override
 //	protected void setValoresNecessariosParaODocumento(Documento<? extends Item> docuFisc, Map<String, Boolean> mapErros) {
 	private void setValoresNecessariosParaODocumento(Devolucao devolucao, Map<String, Boolean> mapErros) {
 		super.setValoresNecessariosParaODocumento(devolucao, mapErros);
-		Map<String, Loja> mapLojaPorCnpj = lojaService.findAll().stream().collect(Collectors.toMap(Loja::getCnpj, (Loja loja) -> loja));
-		
+		Map<String, Loja> mapLojaPorCnpj = lojaService.findAll().stream()
+				.collect(Collectors.toMap(Loja::getCnpj, (Loja loja) -> loja));
+
 		for (DevolucaoOrigem origem : devolucao.getDevolucaoOrigem()) {
 			String cnpjLojaOrigem = origem.getOrigemLoja().getCnpj();
 			if (isLojaExistente(mapLojaPorCnpj, cnpjLojaOrigem, mapErros)) {
@@ -61,9 +73,9 @@ public class DevolucaoService extends DocumentoService {
 		}
 	}
 
-
-	private boolean isLojaExistente(Map<String, Loja> mapLojaPorCnpj, String cnpjLojaOrigem, Map<String, Boolean> mapErros) {
-		if(mapLojaPorCnpj != null && mapLojaPorCnpj.containsKey(cnpjLojaOrigem)) {
+	private boolean isLojaExistente(Map<String, Loja> mapLojaPorCnpj, String cnpjLojaOrigem,
+			Map<String, Boolean> mapErros) {
+		if (mapLojaPorCnpj != null && mapLojaPorCnpj.containsKey(cnpjLojaOrigem)) {
 			return true;
 		}
 		StringBuilder sb = new StringBuilder();
@@ -71,6 +83,5 @@ public class DevolucaoService extends DocumentoService {
 		mapErros.put(sb.toString(), true);
 		return false;
 	}
-	
-	
+
 }

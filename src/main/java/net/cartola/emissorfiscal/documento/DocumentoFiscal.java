@@ -48,8 +48,7 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 	private static final String PESSOA_TIPO_DESTINATARIO_OBRIGATORIO = "Atenção!! A informação referente a ao tipo de pessoa (Física ou Jurídica) é obrigatória!";
 
 	private Long id;
-    private int documento;		// Campo referente a COMPRA ou NFE (do ERP, dependendo do tipo do DocumentoFiscal, que for)
-	private Long numeroNota;
+	private Long numeroNota;	// Número da nota (Notas emitidas pela AG, esse número deve ser igual ao do "documento")
 	private IndicadorDeOperacao tipoOperacao;
 	private FinalidadeEmissao finalidadeEmissao = FinalidadeEmissao.NORMAL;
 	private TipoServico tipoServico = TipoServico.NENHUM;
@@ -115,6 +114,7 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		super.emitente = devolucao.getEmitente();
 		super.destinatario = devolucao.getDestinatario();
 		this.indicadorPagamento = IndicadorDePagamento.OUTROS;
+		this.documento = devolucao.getDocumento();
 		super.cadastro = devolucao.getCadastro();
 		super.alterado = devolucao.getAlterado();
 		this.devolucao = devolucao;
@@ -137,11 +137,11 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 	
 	@Column(name = "docu")
 	public int getDocumento() {
-		return documento;
+		return super.documento;
 	}
 
 	public void setDocumento(int documento) {
-		this.documento = documento;
+		super.documento = documento;
 	}
 
 	public void setNumeroNota(Long numeroNota) {

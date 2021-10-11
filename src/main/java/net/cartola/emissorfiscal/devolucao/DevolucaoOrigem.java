@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -29,7 +30,8 @@ import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
  */
 //@ToString
 @Entity
-@Table(name = "devo_orig")
+@Table(name = "devo_orig", uniqueConstraints = @UniqueConstraint(name = "unk_devo_orig_chave_acesso_devo_id", 
+								columnNames = {"orig_chave_acesso", "devo_id" }) )
 @JsonIgnoreProperties(value = {"devolucao"})
 public class DevolucaoOrigem implements Serializable {
 

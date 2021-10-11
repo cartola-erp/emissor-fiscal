@@ -19,6 +19,7 @@ import net.cartola.emissorfiscal.pessoa.Pessoa;
  */
 public abstract class Documento<T extends Item> {
 	
+    protected int documento;		// Campo referente a COMPRA ou NFE (do ERP, dependendo do tipo do DocumentoFiscal, que for... PS: É a PK)
     protected Operacao operacao;
     protected Loja loja;
     protected Pessoa emitente;

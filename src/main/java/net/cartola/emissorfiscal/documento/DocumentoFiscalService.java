@@ -174,17 +174,13 @@ public class DocumentoFiscalService extends DocumentoService {
 	
 	/**
 	 * TODO fazer salvar um OBJ de DEVOLUCAO
+	 * Será salvo, uma Devolucao, e criado um DocumentoFiscal, com  os valores calculados da devolução (se for para fornecedor por exemplo); 
+	 * Caso seja uma devolucao emitida pelo cliente, terá que basicamente ser dado entrada
 	 * 
 	 * @param devolucao
-	 * @return
-	 */
+	 * @return DocumentoFiscal, que foi salvo, (E calculado se o mesmo é uma Devoluçao:  "para fornecedor"
+ 	 */
 	public Optional<DocumentoFiscal> save(Devolucao devolucao) {
-		/**
-		 * TODO irei salvar a devolucao e retornar um documento fiscal??? 
-		 * E depois salvar o documento fiscal calculado corretamente ??
-		 * Ou irei somente salvar a devolução, retornar ela, e passar para a service do DocumentoFiscal
-		 * 
-		 */
 		Optional<DocumentoFiscal> opDocFiscSaved = Optional.empty();
 		Optional<Devolucao> opDevolucao = devolucaoService.save(devolucao);
 		
@@ -195,7 +191,6 @@ public class DocumentoFiscalService extends DocumentoService {
 			opDocFiscSaved = Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 		}
 		return opDocFiscSaved;
-//		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {

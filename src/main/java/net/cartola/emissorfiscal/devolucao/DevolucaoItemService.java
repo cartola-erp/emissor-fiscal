@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.devolucao;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,16 +20,10 @@ public class DevolucaoItemService {
 	@Autowired
 	private DevolucaoItemRepository devolucaoItemRepository;
 
-	
-	
-	
-	public Optional<DocumentoFiscal> save(Devolucao devolucao) {
-		// TODO Auto-generated method stub
-		
-		return null;
+
+	public void deleteByListItens(Collection<DevolucaoItem> listItens) {
+		devolucaoItemRepository.deleteInBatch(listItens);
 	}
-
-
 
 
 	public void setLojaOrigem(DevolucaoItem item, Map<String, Loja> mapLojaPorCnpj, Map<String, Boolean> mapErros) {

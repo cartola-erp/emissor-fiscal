@@ -11,6 +11,7 @@ import static net.cartola.emissorfiscal.documento.TipoServico.ENERGIA;
 import static net.cartola.emissorfiscal.documento.TipoServico.INTERNET;
 import static net.cartola.emissorfiscal.documento.TipoServico.TELEFONE_FIXO_MOVEL;
 import static net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal._59;
+import static net.cartola.emissorfiscal.util.PredicateUtil.distinctByKey;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodItem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isDocumentoFiscalEmDigitacao;
 import static net.cartola.emissorfiscal.util.ValidationHelper.collectionIsEmptyOrNull;
@@ -22,8 +23,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -270,18 +269,6 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 			return new HashSet<>();
 		}
 		return listDocFiscal.stream().map(DocumentoFiscal::getId).collect(toSet());
-	}
-	
-	/**
-	 * Predicate usado, para Filtrar os elementos de uma lista, por uma PROPRIEDADE ESPECIFICA
-	 * 
-	 * @param <T>
-	 * @param KeyExtractor
-	 * @return
-	 */
-	private static <T> Predicate <T> distinctByKey(Function<? super T, ?> KeyExtractor) {
-		Set<Object> seen = ConcurrentHashMap.newKeySet();
-		return t -> seen.add(KeyExtractor.apply(t));
 	}
 	
 	private List<ProdutoAlteradoSped> getListProdAlteradoSped(LocalDate dataInicio, LocalDate dataFim, Set<DocumentoFiscalItem> setItens) {
