@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -119,7 +120,14 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		super.cadastro = devolucao.getCadastro();
 		super.alterado = devolucao.getAlterado();
 		this.devolucao = devolucao;
-//		super.itens = new ArrayList<>();
+		
+		this.referencias = new HashSet<>();
+		devolucao.getDevolucaoOrigem().forEach(devoOrigem -> {
+			int item = 1;
+			this.referencias.add(new DocumentoFiscalReferencia(devoOrigem, this, item));	
+			item++;
+		});
+		
 		
 //		devolucao.getItens().forEach(devoItem -> {
 //			super.itens.add(new DocumentoFiscalItem(devoItem));

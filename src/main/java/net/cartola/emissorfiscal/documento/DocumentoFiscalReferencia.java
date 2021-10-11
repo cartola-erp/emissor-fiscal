@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import net.cartola.emissorfiscal.devolucao.DevolucaoOrigem;
 import net.cartola.emissorfiscal.util.LocalDateDeserializer;
 
 /**
@@ -32,9 +33,10 @@ import net.cartola.emissorfiscal.util.LocalDateDeserializer;
 @ToString
 @Entity
 @Table(name = "docu_fisc_ref")
-@JsonIgnoreProperties(value = { "documentoFiscal" })
+@JsonIgnoreProperties(value = { "documentoFiscal" } )
 public class DocumentoFiscalReferencia implements Serializable {
 	
+
 	private static final long serialVersionUID = 2949833005905966630L;
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,6 +71,15 @@ public class DocumentoFiscalReferencia implements Serializable {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate alterado;
 	
+	public DocumentoFiscalReferencia() { 	}
+
+	
+	public DocumentoFiscalReferencia(DevolucaoOrigem devoOrigem, DocumentoFiscal documentoFiscal, int item) {
+		this.numero = (long) devoOrigem.getOrigemDocumento();
+		this.item = item;
+		this.chave = devoOrigem.getOrigemChaveAcesso();
+		this.documentoFiscal = documentoFiscal;
+	}
 
 	
 }

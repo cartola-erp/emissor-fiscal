@@ -51,6 +51,9 @@ public class DocumentoFiscalService extends DocumentoService {
 	private DocumentoFiscalItemService docuFiscItemService;
 	
 	@Autowired
+	private DocumentoFiscalReferenciaService docuFiscReferenciaService;
+	
+	@Autowired
 	private DevolucaoService devolucaoService;
 	
 //	@Autowired
@@ -256,22 +259,16 @@ public class DocumentoFiscalService extends DocumentoService {
 	 * @return Lista de erros que impedem de atualizar o DocumentoFiscal no emissor-fiscal
 	 */
 	public void prepareDocumentoFiscalToUpdate(Optional<DocumentoFiscal> opOldDocFiscal, DocumentoFiscal newDocFiscal) {
-		Map<Integer, DocumentoFiscalItem> mapNewItemPorNumItem = newDocFiscal.getItens().stream().collect(toMap(DocumentoFiscalItem::getItem, newDocFiscItem -> newDocFiscItem));
+		LOG.log(Level.INFO, "Preparando as informações do DocumentoFiscal {0}, para serem atualizadas " , (newDocFiscal.getNfeChaveAcesso() != null) ? newDocFiscal.getNfeChaveAcesso() : newDocFiscal.getDocumento());
 		DocumentoFiscal oldDocFiscal = opOldDocFiscal.get();
-		
 		newDocFiscal.setId(oldDocFiscal.getId());
-		boolean isItensEquals = newDocFiscal.getItens().containsAll(opOldDocFiscal.get().getItens());
-		if (isItensEquals) {
-			oldDocFiscal.getItens().stream().forEach(oldItem -> {
-				DocumentoFiscalItem newItem = mapNewItemPorNumItem.get(oldItem.getItem());
-				newItem.setId(oldItem.getId());
-			});
-		} else {
-			docuFiscItemService.deleteByListItens(oldDocFiscal.getItens());
-		}
-		List<DocumentoFiscalItem> newListItens = new ArrayList<>();
-		newListItens.addAll(mapNewItemPorNumItem.values());
+
+		List<DocumentoFiscalItem> newListItens = docuFiscItemService.prepareDocumentoFiscalToUpdate(opOldDocFiscal.get().getItens(), newDocFiscal.getItens());
 		newDocFiscal.setItens(newListItens);
+		
+		Set<DocumentoFiscalReferencia> newSetReferencias = docuFiscReferenciaService.prepareDocumentoFiscalToUpdate(opOldDocFiscal.get().getReferencias(), newDocFiscal.getReferencias());
+		newDocFiscal.setReferencias(newSetReferencias);
+		LOG.log(Level.INFO, "Informações do DocumentoFiscal, preparado para ser atualizado ");
 	}
 
 	/**
