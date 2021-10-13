@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.devolucao;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -125,5 +126,31 @@ public class DevolucaoOrigem implements Serializable {
 	public void setDevolucao(Devolucao devolucao) {
 		this.devolucao = devolucao;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(origemChaveAcesso);
+	}
+
+	/**
+	 * Se a "origemChaveAcesso", dos dois objetos forem iguais, então é a msm origem; <\br>
+	 * PS: Uma devolução não pode ter a origem repetida! <bold> PORÉM <\bold>, 
+	 * uma "Origem" (leia-se NFE/ Origem Chave Acesso), pode estar em mais de uma devolução
+	 * 
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DevolucaoOrigem other = (DevolucaoOrigem) obj;
+		return Objects.equals(origemChaveAcesso, other.origemChaveAcesso);
+	}
+	
+	
+	
 	
 }

@@ -1,7 +1,6 @@
 package net.cartola.emissorfiscal.devolucao;
 
 import static java.time.LocalDateTime.now;
-import static net.cartola.emissorfiscal.util.PredicateUtil.distinctByKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +12,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoService;
 import net.cartola.emissorfiscal.loja.Loja;
 
@@ -34,6 +34,15 @@ public class DevolucaoService extends DocumentoService {
 	@Autowired
 	private DevolucaoOrigemService devolucaoOrigemService;
 
+	public Optional<Devolucao> findDevolucaoParaODocumentoFiscal(DocumentoFiscal newDocFiscal) {
+		int documento = newDocFiscal.getDocumento();
+		String lojaCnpj = newDocFiscal.getLoja().getCnpj();
+		String emitenteCnpj = newDocFiscal.getEmitente().getCnpj();
+		
+		Optional<Devolucao> opDevolucao = devolucaoRepository.findByDocumentoAndLojaCnpjAndEmitenteCnpjAndOperacao(documento, lojaCnpj, emitenteCnpj, newDocFiscal.getOperacao());
+		return opDevolucao;
+	}
+
 	public Optional<Devolucao> save(Devolucao devolucao) {
 		LOG.log(Level.INFO, "Salvando a Devolucao {0} ", devolucao);
 		Map<String, Boolean> mapErros = new HashMap<>();
@@ -50,10 +59,9 @@ public class DevolucaoService extends DocumentoService {
 
 			devolucao.setId(oldDevolucao.getId());
 		}
-		devolucao.getDevolucaoOrigem().removeIf(distinctByKey(devoOrig -> devoOrig.getOrigemChaveAcesso()));
 
 		Optional<Devolucao> opDevolucaoSaved = Optional.ofNullable(devolucaoRepository.saveAndFlush(devolucao));
-		LOG.log(Level.INFO, "A Devolucao {0} foi salva? {1} ",  new Object[]{devolucao.getDocumento(), opDevolucaoSaved.isPresent()});
+		LOG.log(Level.INFO, "A Devolucao {0} foi salva? {1} ", new Object[] { devolucao.getDocumento(), opDevolucaoSaved.isPresent() });
 		return opDevolucaoSaved;
 	}
 

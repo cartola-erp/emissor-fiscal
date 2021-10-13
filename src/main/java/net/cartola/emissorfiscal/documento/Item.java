@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.documento;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.produto.ProdutoUnidade;
@@ -26,8 +27,6 @@ public abstract class Item {
     protected BigDecimal valorSeguro = BigDecimal.ZERO;
     protected ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
 	protected BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
-
-//    protected BigDecimal icmsBase = BigDecimal.ZERO;
     protected BigDecimal icmsReducaoBaseAliquota = BigDecimal.ZERO;
     protected BigDecimal icmsReducaoBaseStAliquota = BigDecimal.ZERO;
 	protected BigDecimal icmsAliquota = BigDecimal.ZERO;
@@ -83,6 +82,29 @@ public abstract class Item {
 	protected abstract ProdutoUnidade getUnidade();
 	
 	protected abstract void setUnidade(ProdutoUnidade unidade);
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(classeFiscal, codigoSequencia, codigoX, excecao, item, quantidade);
+	}
+		
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Item other = (Item) obj;
+		return Objects.equals(classeFiscal, other.classeFiscal)
+				&& Objects.equals(codigoSequencia, other.codigoSequencia) 
+				&& Objects.equals(codigoX, other.codigoX) 
+				&& excecao == other.excecao 
+				&& item == other.item 
+				&& (quantidade.compareTo(other.quantidade) == 0);
+	}
+	
 	
 }
 

@@ -111,6 +111,7 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 	 * @param devolucao
 	 */
 	public DocumentoFiscal(Devolucao devolucao) {
+		this.finalidadeEmissao = FinalidadeEmissao.DEVOLUCAO_MERCADORIA;
 		super.operacao = devolucao.getOperacao();
 		super.loja = devolucao.getLoja();
 		super.emitente = devolucao.getEmitente();
@@ -127,7 +128,6 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 			this.referencias.add(new DocumentoFiscalReferencia(devoOrigem, this, item));	
 			item++;
 		});
-		
 		
 //		devolucao.getItens().forEach(devoItem -> {
 //			super.itens.add(new DocumentoFiscalItem(devoItem));

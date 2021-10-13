@@ -112,22 +112,23 @@ public class DocumentoFiscalService extends DocumentoService {
 		return documentoFiscalRepository.findById(id);
 	}
 	
-	public Optional<DocumentoFiscal> findDocumentoFiscal(DocumentoFiscal docFiscal) {
-//		if (docFiscal.getOperacao().isDevolucao()) {
-//			/****
-//			 * TODO aqui tenho que buscar a DEVOLUÇÕA, mas como irei FAZER isso ?????
-//			 * - Chave de acesso  da tabela devo_origem ?
-//			 * - 
-//			 */
-//			
-//			
-//			
-//			
-//			return null;
-//		}
+	public Optional<DocumentoFiscal> findDocumentoFiscal(DocumentoFiscal newDocFiscal) {
+		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(newDocFiscal.getOperacao().getDescricao());
+
+		if (opOperacao.isPresent() && opOperacao.get().isDevolucao()) {
+			Optional<Devolucao> opDevolucao = devolucaoService.findDevolucaoParaODocumentoFiscal(newDocFiscal);
+			
+			if(opDevolucao != null && opDevolucao.isPresent()) {
+				int documento = newDocFiscal.getDocumento();
+				String lojaCnpj = newDocFiscal.getLoja().getCnpj();
+				String emitenteCnpj = newDocFiscal.getEmitente().getCnpj();
+				
+				Optional<DocumentoFiscal> opDocFiscalSaved = documentoFiscalRepository.findByDocumentoAndLojaCnpjAndEmitenteCnpjAndOperacaoAndDevolucao(documento, lojaCnpj, emitenteCnpj, opOperacao.get(), opDevolucao.get());
+				return opDocFiscalSaved;
+			}
+		}
 		
-		return this.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
-//		return null;
+		return this.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(newDocFiscal.getEmitente().getCnpj(), newDocFiscal.getTipoOperacao(), newDocFiscal.getSerie(), newDocFiscal.getNumeroNota());
 	}
 	
 	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(String cnpjEmitente, IndicadorDeOperacao tipoOperacao, Long serie, Long numero) {
@@ -208,9 +209,11 @@ public class DocumentoFiscalService extends DocumentoService {
 	}
 	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
-		calcFiscalEstadual.calculaImposto(documentoFiscal);
-		calcFiscalFederal.calculaImposto(documentoFiscal);
-//		olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(documentoFiscal));
+		if (!documentoFiscal.getOperacao().isDevolucao()) {
+			calcFiscalEstadual.calculaImposto(documentoFiscal);
+			calcFiscalFederal.calculaImposto(documentoFiscal);
+//			olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(documentoFiscal));
+		}
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
@@ -290,7 +293,7 @@ public class DocumentoFiscalService extends DocumentoService {
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<>();
 		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
 
-		if (!mapErros.containsValue(true)) {
+		if (!mapErros.containsValue(true) && (validaTribuEsta || validaTribuFede)) {
 			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(docuFisc);
 			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(docuFisc);
 		}

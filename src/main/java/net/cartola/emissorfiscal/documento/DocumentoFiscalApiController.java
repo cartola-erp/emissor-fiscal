@@ -66,12 +66,12 @@ public class DocumentoFiscalApiController {
 	@PostMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal newDocFiscal) {
 		LOG.log(Level.INFO, "Salvando o DocumentoFiscal {0} " ,newDocFiscal);
-		Optional<DocumentoFiscal> opOldDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(newDocFiscal.getEmitente().getCnpj(), newDocFiscal.getTipoOperacao(), newDocFiscal.getSerie(), newDocFiscal.getNumeroNota());
-//
+		Optional<DocumentoFiscal> opOldDocFiscal = docFiscalService.findDocumentoFiscal(newDocFiscal);
+
 		if(opOldDocFiscal.isPresent()) {
 			docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
 		} 
-		return saveOrEditDocumentoFiscal(newDocFiscal);
+		return saveOrEditDocumentoFiscal(newDocFiscal, true, true);
 	}
 	
 	/**
@@ -95,13 +95,13 @@ public class DocumentoFiscalApiController {
 	@PutMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> update(@Valid @RequestBody DocumentoFiscal newDocFiscal) {
 		LOG.log(Level.INFO, "Atualizando o DocumentoFiscal {0} " ,newDocFiscal);
-		Optional<DocumentoFiscal> opOldDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(newDocFiscal.getEmitente().getCnpj(), newDocFiscal.getTipoOperacao(), newDocFiscal.getSerie(), newDocFiscal.getNumeroNota());
-
+		Optional<DocumentoFiscal> opOldDocFiscal = docFiscalService.findDocumentoFiscal(newDocFiscal);
+		
 		if (!opOldDocFiscal.isPresent()) {
 			return ResponseEntity.noContent().build();
 		}
 		docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
-		return saveOrEditDocumentoFiscal(newDocFiscal);
+		return saveOrEditDocumentoFiscal(newDocFiscal, false, false);
 	}
 	
 	@PostMapping("/salvar-devolucao")
@@ -122,10 +122,10 @@ public class DocumentoFiscalApiController {
 		return ResponseEntity.ok(response);
 	}
 	
-	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal) {
+	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
 		Response<DocumentoFiscal> response = new Response<>();
 		
-		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, true, true);
+		List<String> erros = docFiscalService.validaDadosESetaValoresNecessarios(docFiscal, validaTribuEsta, validaTribuFede);
 		if (!ValidationHelper.collectionIsEmptyOrNull(erros)) {
 			LOG.log(Level.WARNING, "ERROS na validação do DocumentoFiscal: {0} ", erros);
 			response.setErrors(erros);

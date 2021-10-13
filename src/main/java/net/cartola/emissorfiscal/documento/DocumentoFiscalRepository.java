@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
@@ -26,7 +27,20 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 	
 	Optional<DocumentoFiscal> findDocumentoFiscalByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNota(String cnpj, IndicadorDeOperacao tipoOperacao, Long serie, Long numero);
 
+	/**
+	 *  Irá Buscar o <b>DOCUMENTO FISCAL<b> pelos parâmetros abaixo: 
+	 *  
+	 * @param documento
+	 * @param lojaCnpj
+	 * @param emitenteCnpj
+	 * @param operacao
+	 * @param devolucao
+	 * @return
+	 */
+	Optional<DocumentoFiscal> findByDocumentoAndLojaCnpjAndEmitenteCnpjAndOperacaoAndDevolucao(int documento, String lojaCnpj, String emitenteCnpj, 
+			Operacao operacao, Devolucao devolucao);
 
+	
 	/**
 	 * Retorna todos os DocumentoFiscais, em um determinado Periodo, para um Emitente, especifico 
 	 * 
@@ -64,7 +78,6 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 			+ "                		INNER JOIN trib_esta_guia t ON (t.esta_orig_id  = uf.esta_id AND d.oper_id = t.oper_id) "
 			+ "	   	 WHERE d.cadastro BETWEEN :dtInicio AND :dtFim ;", nativeQuery = true)
 	Set<DocumentoFiscal> findAllDocsInterestadualQuePagamosIcmsNaEntradaPorPeriodo(LocalDateTime dtInicio, LocalDateTime dtFim);
-
 
 
 	
