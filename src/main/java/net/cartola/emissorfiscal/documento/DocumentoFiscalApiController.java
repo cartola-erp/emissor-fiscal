@@ -128,7 +128,7 @@ public class DocumentoFiscalApiController {
 			return ResponseEntity.badRequest().body(response);
 		}
 		
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.save(docFiscal);
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.save(docFiscal, validaTribuEsta, validaTribuFede);
 		if (opDocFiscal.isPresent()) {
 			response.setData(opDocFiscal.get());
 			return ResponseEntity.ok(response);

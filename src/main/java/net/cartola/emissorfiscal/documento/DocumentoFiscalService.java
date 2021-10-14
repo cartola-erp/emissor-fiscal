@@ -208,12 +208,17 @@ public class DocumentoFiscalService extends DocumentoService {
 		return opDocFiscSaved;
 	}
 	
-	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
-		if (!documentoFiscal.getOperacao().isDevolucao()) {
+	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
+		final boolean validaAlgumTributo = (validaTribuEsta || validaTribuFede);
+		if (validaAlgumTributo && !documentoFiscal.getOperacao().isDevolucao()) {
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 //			olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(documentoFiscal));
 		}
+		return this.save(documentoFiscal);
+	}
+	
+	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal) {
 		return Optional.ofNullable(documentoFiscalRepository.saveAndFlush(documentoFiscal));
 	}
 	
