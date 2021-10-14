@@ -69,7 +69,8 @@ public class DocumentoFiscalApiController {
 		Optional<DocumentoFiscal> opOldDocFiscal = docFiscalService.findDocumentoFiscal(newDocFiscal);
 
 		if(opOldDocFiscal.isPresent()) {
-			docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
+			this.docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
+			return saveOrEditDocumentoFiscal(opOldDocFiscal.get(), true, true);
 		} 
 		return saveOrEditDocumentoFiscal(newDocFiscal, true, true);
 	}
@@ -101,25 +102,20 @@ public class DocumentoFiscalApiController {
 			return ResponseEntity.noContent().build();
 		}
 		docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
-		return saveOrEditDocumentoFiscal(newDocFiscal, false, false);
+		return saveOrEditDocumentoFiscal(opOldDocFiscal.get(), false, false);
 	}
 	
 	@PostMapping("/salvar-devolucao")
 	public ResponseEntity<Response<DocumentoFiscal>> salvarDevolucao(@RequestBody Devolucao devolucao) {
-		// TODO montar a lógica dos caralho a 4
+		LOG.log(Level.INFO, "Salvando/Gerando a Devolucao {0} " ,devolucao);
 		Response<DocumentoFiscal> response = new Response<>();
-		//salvar devolucao 
-		// calcular como deverá ser devolvido os impostos;
-		// salvar o DocumentoFiscal
-		// retornar ele para o ERP
-		System.out.println("ANTES DE SALVAR A DEVOLUCAO: " +devolucao);
-
-		Optional<DocumentoFiscal> opDocumentoFiscal = docFiscalService.save(devolucao);
-		
-		response.setData(opDocumentoFiscal.get());
-		
-		System.out.println(devolucao);
-		return ResponseEntity.ok(response);
+		Optional<DocumentoFiscal> opDocFiscalDevolucao = docFiscalService.save(devolucao);
+		if (opDocFiscalDevolucao.isPresent()) {
+			response.setData(opDocFiscalDevolucao.get());
+			LOG.log(Level.INFO, "Devolucao Salva com SUCESSO ! ");
+			return ResponseEntity.ok(response);
+		} 
+		return ResponseEntity.noContent().build();
 	}
 	
 	private ResponseEntity<Response<DocumentoFiscal>> saveOrEditDocumentoFiscal(DocumentoFiscal docFiscal, boolean validaTribuEsta, boolean validaTribuFede) {

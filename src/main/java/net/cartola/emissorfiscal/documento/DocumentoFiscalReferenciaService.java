@@ -1,12 +1,20 @@
 package net.cartola.emissorfiscal.documento;
 
+import static java.util.logging.Logger.getLogger;
+import static java.util.stream.Collectors.toMap;
+import static net.cartola.emissorfiscal.util.ValidationHelper.collectionNotEmptyOrNull;
+
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 /**
  * @date 11 de jan. de 2021
@@ -15,6 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DocumentoFiscalReferenciaService {
 
+	private static final Logger LOG = getLogger(DocumentoFiscalReferencia.class.getName());
 
 	@Autowired
 	private DocumentoFiscalReferenciaRepository docFiscalReferenciaRepository;
@@ -47,9 +56,23 @@ public class DocumentoFiscalReferenciaService {
 		docFiscalReferenciaRepository.deleteInBatch(listReferencias);
 	}
 
-	public Set<DocumentoFiscalReferencia> prepareDocumentoFiscalToUpdate(Set<DocumentoFiscalReferencia> listOldReferencias, Set<DocumentoFiscalReferencia> listNewReferencias) {
-		this.deleteByListReferencias(listOldReferencias);
-		return listNewReferencias;
+	void prepareDocumentoFiscalReferenciaToUpdate(Set<DocumentoFiscalReferencia> listOldReferencias, Set<DocumentoFiscalReferencia> listNewReferencias) {
+		if (collectionNotEmptyOrNull(listOldReferencias) && collectionNotEmptyOrNull(listNewReferencias)) {
+			LOG.log(Level.INFO, "Preparando as informações das referências para serem atualizadas ");
+			
+			Map<String, DocumentoFiscalReferencia> mapOldReferenciaPorChaveAcesso = listOldReferencias.stream()
+					.collect(toMap(DocumentoFiscalReferencia::getChave, (DocumentoFiscalReferencia docFiscRef) -> docFiscRef));
+			
+			for (DocumentoFiscalReferencia newReferencia : listNewReferencias) {
+				String newRefChaveAcesso = newReferencia.getChave();
+				if (mapOldReferenciaPorChaveAcesso.containsKey(newRefChaveAcesso)) {
+					DocumentoFiscalReferencia oldReferencia = mapOldReferenciaPorChaveAcesso.get(newRefChaveAcesso);
+					oldReferencia.copyValuesToUpdate(newReferencia);
+				}
+			}
+			
+			LOG.log(Level.INFO, "Informações das referências preparada ");
+		}
 	}
 	
 }

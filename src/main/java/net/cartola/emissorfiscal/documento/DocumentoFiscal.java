@@ -40,7 +40,8 @@ import net.cartola.emissorfiscal.util.LocalDateTimeDeserializer;
 
 @ToString
 @Entity
-@Table(name = "docu_fisc", uniqueConstraints = @UniqueConstraint(name = "unk_docu_fisc_devo_id", columnNames = "devo_id" ) )
+@Table(name = "docu_fisc", uniqueConstraints = {@UniqueConstraint(name = "unk_docu_fisc_devo_id", columnNames = "devo_id" ), 
+		@UniqueConstraint(name = "unk_docu_fisc_doc_numero_nota_tipo_oper_chave_acesso", columnNames = {"docu", "numero_nota", "tipo_oper", "nfe_chave_acesso" }) })
 public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements Serializable {
 
 	private static final long serialVersionUID = 250495916716488531L;
@@ -61,11 +62,11 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 
 	private Long serie;
 	private Set<DocumentoFiscalReferencia> referencias;
-	private BigDecimal valorDesconto;
+	private BigDecimal valorDesconto = BigDecimal.ZERO;
 	private FreteConta indicadorFrete;
-	private BigDecimal valorFrete;
-	private BigDecimal valorSeguro;
-	private BigDecimal valorOutrasDespesasAcessorias;
+	private BigDecimal valorFrete = BigDecimal.ZERO;
+	private BigDecimal valorSeguro = BigDecimal.ZERO;
+	private BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
 	
 	private BigDecimal icmsBase = BigDecimal.ZERO;					// == vBC (Valor Base Calculo)
 	private BigDecimal icmsValor = BigDecimal.ZERO;
@@ -128,12 +129,30 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 			this.referencias.add(new DocumentoFiscalReferencia(devoOrigem, this, item));	
 			item++;
 		});
-		
-//		devolucao.getItens().forEach(devoItem -> {
-//			super.itens.add(new DocumentoFiscalItem(devoItem));
-//		});
 	}
-
+	
+	/**
+	 * 
+	 * @param newDocFiscal 
+	 */
+	public void copyValuesToUpdate(DocumentoFiscal newDocFiscal) {
+		this.numeroNota = newDocFiscal.getNumeroNota();
+		this.tipoOperacao = newDocFiscal.getTipoOperacao();
+		this.status = newDocFiscal.getStatus();
+		this.indicadorPagamento = newDocFiscal.getIndicadorPagamento();
+		this.nfeChaveAcesso = newDocFiscal.getNfeChaveAcesso();
+		this.serie = newDocFiscal.getSerie();
+		this.indicadorFrete = newDocFiscal.getIndicadorFrete();
+//		this.valorDesconto
+//		this.valorFrete
+		this.infoAdicionalFisco = newDocFiscal.getInfoAdicionalFisco();
+		this.infoComplementar = newDocFiscal.getInfoComplementar();
+		this.xml = newDocFiscal.getXml();
+		this.emissao = newDocFiscal.getEmissao();
+		this.alteradoPor = newDocFiscal.getAlteradoPor();
+	}
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -157,6 +176,7 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		this.numeroNota = numeroNota;
 	}
 	
+	@Column(name = "numero_nota")
 	public Long getNumeroNota() {
 		return numeroNota;
 	}
@@ -232,7 +252,7 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		this.indicadorPagamento = indicadorPagamento;
 	}
 	
-	@Column(length = 44)
+	@Column(name = "nfe_chave_acesso", length = 44)
 	public String getNfeChaveAcesso() {
 		return nfeChaveAcesso;
 	}

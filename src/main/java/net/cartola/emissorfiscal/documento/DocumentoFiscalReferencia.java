@@ -73,13 +73,19 @@ public class DocumentoFiscalReferencia implements Serializable {
 	
 	public DocumentoFiscalReferencia() { 	}
 
+	public void copyValuesToUpdate(DocumentoFiscalReferencia newReferencia) {
+		this.numero = newReferencia.getNumero();
+		this.item = newReferencia.getItem();
+		this.cadastro = newReferencia.getCadastro();
+	}
 	
 	public DocumentoFiscalReferencia(DevolucaoOrigem devoOrigem, DocumentoFiscal documentoFiscal, int item) {
-		this.numero = (long) devoOrigem.getOrigemDocumento();
+		this.numero = (long) documentoFiscal.getDocumento();
 		this.item = item;
 		this.chave = devoOrigem.getOrigemChaveAcesso();
 		this.documentoFiscal = documentoFiscal;
 	}
+
 
 	
 }

@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.documento;
 
+import static org.springframework.util.StringUtils.hasLength;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -46,9 +48,6 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private Finalidade finalidadeEmpresa = Finalidade.COMERCIALIZACAO;	// Essa é a finalidade no cadastro do produto (no ERP), ou seja, sob o enfoque da AG
-//	private ProdutoOrigem origem = ProdutoOrigem.NACIONAL;
-//	private BigDecimal valorOutrasDespesasAcessorias = BigDecimal.ZERO;
-	
 	private int cfop;
 	private Integer icmsCest = 0;
 	private BigDecimal icmsBase = BigDecimal.ZERO;
@@ -107,6 +106,20 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 		super.unidade = devoItem.getUnidade();
 	}
 
+	/**
+	 * Será copiado: <br>
+	 * - produtoCodigoErp <br>
+	 * - ean			 <br>
+	 * - icmsCest		<br>
+	 * @param newItem
+	 */
+	public void copyValuesToUpdate(DocumentoFiscalItem newItem) {
+		super.produtoCodigoErp = (newItem.getProdutoCodigoErp() != 0) ? newItem.getProdutoCodigoErp() : super.produtoCodigoErp;
+		this.ean = hasLength(newItem.getEan()) ? newItem.getEan() : this.ean;
+		this.icmsCest =  (newItem.getIcmsCest() != null && newItem.getIcmsCest() != 0) ? newItem.getIcmsCest() : this.icmsCest;
+//		super.origem;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -684,11 +697,12 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (super.equals(obj) == false) {
-			return false;
-		}
-		DocumentoFiscalItem other = (DocumentoFiscalItem) obj;
-		return Objects.equals(documentoFiscal, other.documentoFiscal);
+		return super.equals(obj);
+//		if (super.equals(obj) == false) {
+//			return false;
+//		}
+//		DocumentoFiscalItem other = (DocumentoFiscalItem) obj;
+//		return Objects.equals(documentoFiscal, other.documentoFiscal);
 	}
 
 	

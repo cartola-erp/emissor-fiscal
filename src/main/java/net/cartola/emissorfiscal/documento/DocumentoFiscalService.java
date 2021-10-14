@@ -253,24 +253,21 @@ public class DocumentoFiscalService extends DocumentoService {
 	
 	
 	/**
-	 * Método que irá preparar o newDocFiscal, para salvar no Banco de Dados.
-	 * PS: Ainda tem que chamar, o método -> {@linkplain} validaDadosESetaValoresNecessarios(...); para o Documento, que será salvo no Banco
+	 * Será copiado algumas informações do newDocFicscal, para o oldDocFiscal (Não será calculado novamente e nem irá copiar resultado de calculo dos impostos);
 	 * 
+	 * Ex.: Info a serem copiadas (Documento), Chave Acesso, Serie, status, etc.. <br>
+	 * (Item): Ean, Icms Cest...
+	 * 
+	 * PS: Ainda tem que chamar, o método -> {@linkplain} validaDadosESetaValoresNecessarios(...); para o Documento, que será salvo/atualizado no Banco
+	 *
 	 * @param opOldDocFiscal - DocumentoFiscal, que está atualmente no Banco de Dados;
 	 * @param newDocFiscal - DocumentoFiscal com as novas informações para serem atualizadas
-	 * 
-	 * @return Lista de erros que impedem de atualizar o DocumentoFiscal no emissor-fiscal
 	 */
 	public void prepareDocumentoFiscalToUpdate(Optional<DocumentoFiscal> opOldDocFiscal, DocumentoFiscal newDocFiscal) {
 		LOG.log(Level.INFO, "Preparando as informações do DocumentoFiscal {0}, para serem atualizadas " , (newDocFiscal.getNfeChaveAcesso() != null) ? newDocFiscal.getNfeChaveAcesso() : newDocFiscal.getDocumento());
-		DocumentoFiscal oldDocFiscal = opOldDocFiscal.get();
-		newDocFiscal.setId(oldDocFiscal.getId());
-
-		List<DocumentoFiscalItem> newListItens = docuFiscItemService.prepareDocumentoFiscalToUpdate(opOldDocFiscal.get().getItens(), newDocFiscal.getItens());
-		newDocFiscal.setItens(newListItens);
-		
-		Set<DocumentoFiscalReferencia> newSetReferencias = docuFiscReferenciaService.prepareDocumentoFiscalToUpdate(opOldDocFiscal.get().getReferencias(), newDocFiscal.getReferencias());
-		newDocFiscal.setReferencias(newSetReferencias);
+		opOldDocFiscal.get().copyValuesToUpdate(newDocFiscal);
+		docuFiscItemService.prepareDocumentoFiscalItemToUpdate(opOldDocFiscal.get().getItens(), newDocFiscal.getItens());
+		docuFiscReferenciaService.prepareDocumentoFiscalReferenciaToUpdate(opOldDocFiscal.get().getReferencias(), newDocFiscal.getReferencias());
 		LOG.log(Level.INFO, "Informações do DocumentoFiscal, preparado para ser atualizado ");
 	}
 
@@ -285,15 +282,17 @@ public class DocumentoFiscalService extends DocumentoService {
 	public List<String> validaDadosESetaValoresNecessarios(DocumentoFiscal docuFisc, boolean validaTribuEsta, boolean validaTribuFede) {
 		LOG.log(Level.INFO, "Validando e Setando os Valores necessarios para o Documento = {0} ", docuFisc.getDocumento());
 		Map<String, Boolean> mapErros = new HashMap<>(); // FALSE == NÃO TEM ERRO | TRUE == TEM ERRO
-		Optional<Estado> opUfDestino = estadoService.findBySigla(docuFisc.getDestinatario().getEndereco().getUf());
-
-		super.setValoresNecessariosParaOsItens(docuFisc, mapErros);
-		super.setValoresNecessariosParaODocumento(docuFisc, mapErros);
+		final Optional<Estado> opUfDestino = estadoService.findBySigla(docuFisc.getDestinatario().getEndereco().getUf());
+		final boolean validaAlgumTributo = (validaTribuEsta || validaTribuFede);
+		
+		if (validaAlgumTributo) {
+			super.setValoresNecessariosParaOsItens(docuFisc, mapErros);
+			super.setValoresNecessariosParaODocumento(docuFisc, mapErros);
+		}
 		
 		List<TributacaoEstadual> tributacoesEstaduais = new ArrayList<>();
 		Set<TributacaoFederal> tributacoesFederais = new HashSet<>();
-
-		if (!mapErros.containsValue(true) && (validaTribuEsta || validaTribuFede)) {
+		if (!mapErros.containsValue(true) && validaAlgumTributo) {
 			tributacoesEstaduais = icmsService.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(docuFisc);
 			tributacoesFederais = tributacaoFederalService.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(docuFisc);
 		}
