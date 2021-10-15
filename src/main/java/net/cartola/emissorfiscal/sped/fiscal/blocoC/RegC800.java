@@ -12,6 +12,7 @@ import java.util.List;
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
@@ -88,7 +89,8 @@ public class RegC800 {
 //		this.vlDesc = satEmititdo.getValorDesconto();
 		this.vlMerc = satEmititdo.getValorTotalDocumento();
 		this.vlOutDa = satEmititdo.getValorOutrasDespesasAcessorias();
-		this.vlIcms = satEmititdo.getIcmsValor();
+//		this.vlIcms = satEmititdo.getIcmsValor();		// Teve alguns casos que teve diferença de 0,01, o valor salvo no Documento (comparando com a soma dos itens)
+		this.vlIcms = satEmititdo.getItens().stream().map(DocumentoFiscalItem::getIcmsValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 		this.vlPisSt = BigDecimal.ZERO;
 		this.vlCofinsSt = BigDecimal.ZERO;
 	}

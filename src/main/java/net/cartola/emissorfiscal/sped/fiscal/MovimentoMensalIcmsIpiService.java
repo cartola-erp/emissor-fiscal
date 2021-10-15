@@ -5,12 +5,14 @@ import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
 import static net.cartola.emissorfiscal.documento.TipoServico.AGUA;
 import static net.cartola.emissorfiscal.documento.TipoServico.CTE;
 import static net.cartola.emissorfiscal.documento.TipoServico.ENERGIA;
 import static net.cartola.emissorfiscal.documento.TipoServico.INTERNET;
 import static net.cartola.emissorfiscal.documento.TipoServico.TELEFONE_FIXO_MOVEL;
+import static net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal.NFSE;
 import static net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal._59;
 import static net.cartola.emissorfiscal.util.PredicateUtil.distinctByKey;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodItem;
@@ -224,14 +226,20 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	private List<Pessoa> getListCadastrosPessoas(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listDocFiscalServico) {
 		LOG.log(Level.INFO, "Buscando todos os cadastros de Pessoas, com base nos DocumentoFiscais" );
 		Set<Long> pessoasId = new HashSet<>();
-		
-		pessoasId.addAll(listDocFiscal.stream().filter(docFisc -> !_59.equals(docFisc.getModelo()))
+		Predicate<DocumentoFiscal> d = doc -> !_59.equals(doc.getModelo()) &&  !NFSE.equals(doc.getModelo());
+
+		pessoasId.addAll(listDocFiscal.stream().filter(docFisc -> d.test(docFisc))
 				.map(docFiscal -> docFiscal.getEmitente().getId()).collect(toSet()));
-		pessoasId.addAll(listDocFiscal.stream().filter(docFisc -> !_59.equals(docFisc.getModelo()))
+		pessoasId.addAll(listDocFiscal.stream().filter(docFisc -> d.test(docFisc))
 				.map(docFiscal -> docFiscal.getDestinatario().getId()).collect(toSet()));
 		
-		pessoasId.addAll(listDocFiscalServico.stream().map(docFiscalServico -> docFiscalServico.getEmitente().getId()).collect(toSet()));
-		pessoasId.addAll(listDocFiscalServico.stream().map(docFiscalServico -> docFiscalServico.getDestinatario().getId()).collect(toSet()));
+		final Set<Long> idsEmitenteServico = listDocFiscalServico.stream().filter(docFiscServ -> d.test(docFiscServ))
+				.map(docFiscalServico -> docFiscalServico.getEmitente().getId()).collect(toSet());
+		final Set<Long> idsDestinatarioServico = listDocFiscalServico.stream().filter(docFiscServ -> d.test(docFiscServ))
+				.map(docFiscalServico -> docFiscalServico.getDestinatario().getId()).collect(toSet());
+		
+		pessoasId.addAll(idsEmitenteServico);
+		pessoasId.addAll(idsDestinatarioServico);
 		List<Pessoa> listCadPessoas = pessoaService.findByIdsIn(pessoasId);
 		LOG.log(Level.INFO, "Foram encontrado um total de: {0}, cadastro de pessoas (PF/PJ)  ", listCadPessoas.size());
 		return listCadPessoas;
@@ -305,15 +313,28 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		return listProdUnid;
 	}
 
+	
+	/**
+	 * Será retornado apenas as operações de entradas <br> 
+	 * Pois informamos apenas no REG C170 o código da operação (E esse registro é apenas nas entradas)
+	 * 
+	 * @param listDocFiscal
+	 * @param listSatsEmitidos
+	 * @param listDocFiscalServico
+	 * @return
+	 */
 	private Set<Operacao> getListOperacoes(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listSatsEmitidos, List<DocumentoFiscal> listDocFiscalServico) {
 		Set<Operacao> setOperacoes = new HashSet<>();
-		Set<Operacao> setOperacoesDocFiscal = listDocFiscal.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
-		Set<Operacao> setOperacoesSats = listSatsEmitidos.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
-		Set<Operacao> setOperacoesServico = listDocFiscalServico.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
-
+		final Set<Operacao> setOperacoesDocFiscal = listDocFiscal.stream()
+				.filter(docFiscal -> ENTRADA.equals(docFiscal.getTipoOperacao()))
+				.map(DocumentoFiscal::getOperacao).collect(toSet());
 		setOperacoes.addAll(setOperacoesDocFiscal);
-		setOperacoes.addAll(setOperacoesSats);
-		setOperacoes.addAll(setOperacoesServico);
+
+		//		Set<Operacao> setOperacoesSats = listSatsEmitidos.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
+//		Set<Operacao> setOperacoesServico = listDocFiscalServico.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
+
+//		setOperacoes.addAll(setOperacoesSats);
+//		setOperacoes.addAll(setOperacoesServico);
 		return setOperacoes;
 	}
 	

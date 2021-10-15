@@ -28,7 +28,8 @@ public final class NumberUtilRegC100 {
 		if (aliquotaConvertida.compareTo(BigDecimal.ZERO) != 0) {
 			return String.valueOf(aliquotaConvertida).replace('.', ',');
 		}
-		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? " " : "0";
+//		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? " " : "0";
+		return "0";
 	}
 	
 	
@@ -73,8 +74,8 @@ public final class NumberUtilRegC100 {
 //			return String.valueOf(vlrImpostoOrBaseCalc).replace('.', ',');
 			return vlrImpostoOrBaseCalc;
 		}
-		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? null : BigDecimal.ZERO;
-//		return BigDecimal.ZERO;
+//		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? null : BigDecimal.ZERO;
+		return BigDecimal.ZERO;
 	}
 	
 	/**

@@ -60,9 +60,11 @@ public final class SpedFiscalUtil {
 	 */
 	public static String getCodPart(DocumentoFiscal docFisc, Map<String, Loja> mapLojaPorCnpj) {
 		if (docFisc.getModelo() != ModeloDocumentoFiscal._65) {
-			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA) {
+			boolean isEmitenteEqualsLoja = docFisc.getEmitente().getCnpj().equals(docFisc.getLoja().getCnpj());
+//			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA) {
+			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA && !isEmitenteEqualsLoja) {
 				return getCodPart(docFisc.getEmitente(), mapLojaPorCnpj);
-			} 
+			}
 			return getCodPart(docFisc.getDestinatario(), mapLojaPorCnpj);
 		}
 		return "";
@@ -233,12 +235,11 @@ public final class SpedFiscalUtil {
 	 * @return
 	 */
 	public static boolean isEntradaConsumo(DocumentoFiscal docFisc) {
-		final Set<String> codOperacaoConsumo = new HashSet<>();
-	    codOperacaoConsumo.addAll(Arrays.asList("34", "35", "65"));
+		final Set<Long> codOperacaoConsumo = new HashSet<>();
+	    codOperacaoConsumo.addAll(Arrays.asList(34l, 35l, 65l));
 	    
 	    Operacao oper = docFisc.getOperacao();
-	    String operId = oper != null ? oper.getId().toString() : "";
-	    
+	    Long operId = oper != null ? oper.getId() : 0l;
 //	    return codOperacaoConsumo.contains(operId) && docFisc.getTipoOperacao().equals(IndicadorDeOperacao.ENTRADA);
 	    return codOperacaoConsumo.contains(operId);
 	}
