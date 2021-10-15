@@ -56,7 +56,7 @@ class RegC110Service {
 		
 		// Preenchendo o REG C113
 //		if (docFisc.getOperacao().isDevolucao()) {
-			regC110.setRegC113(regC113Service.montarGrupoRegC113(docFisc, lojaSped, listDocFiscReferenciados));
+			regC110.setRegC113(regC113Service.montarGrupoRegC113(docFisc, lojaSped, listDocFiscReferenciados, movimentosIcmsIpi));
 //		}	
 		// Preenchendo o REG C114 (na verdade NÃO estou preenchendo no momento, acho que nunca será preciso, já que aparenemente é referente a uns modelos de notas mais velho que eu)
 //		{ regC110.setRegC114(regC114Service.montarGrupoRegC114(docFisc, lojaSped, listDocFiscReferenciados)); }

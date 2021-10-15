@@ -76,6 +76,7 @@ public class MovimentoMensalIcmsIpi {
 	private List<ProdutoUnidade> listProdUnid;
 	private Collection<Operacao> listOperacoes;
 	
+	private Map<String, Loja> mapLojasPorCnpj;
 	private Loja loja;
 //	private Pessoa loja;			// CONFESSO que ainda tou na duvida se pego a loja de "CADASTROS" ou da tbl "LOJA" msm
 	private Contador contador;

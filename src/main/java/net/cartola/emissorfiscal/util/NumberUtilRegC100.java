@@ -45,7 +45,8 @@ public final class NumberUtilRegC100 {
 		if (aliquotaConvertida.compareTo(BigDecimal.ZERO) != 0) {
 			return aliquotaConvertida;
 		}
-		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? null : BigDecimal.ZERO;
+//		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? null : BigDecimal.ZERO;
+		return BigDecimal.ZERO;
 	}
 	
 	public static BigDecimal multiplicaAliqPorCem(BigDecimal aliqEmDecimal) {
@@ -73,6 +74,7 @@ public final class NumberUtilRegC100 {
 			return vlrImpostoOrBaseCalc;
 		}
 		return (tipoOperacao == IndicadorDeOperacao.ENTRADA) ? null : BigDecimal.ZERO;
+//		return BigDecimal.ZERO;
 	}
 	
 	/**

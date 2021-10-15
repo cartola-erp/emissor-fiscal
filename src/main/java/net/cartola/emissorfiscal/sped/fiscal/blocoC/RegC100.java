@@ -10,10 +10,12 @@ import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isInformaDesconto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
@@ -140,14 +142,17 @@ public class RegC100 {
 	 * @param lojaSped
 	 * @return 
 	 */
-	public RegC100(DocumentoFiscal docFisc, Loja lojaSped, SpedFiscalProperties spedFiscPropertie) {
-		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-		boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+	public RegC100(DocumentoFiscal docFisc, Loja lojaSped, SpedFiscalProperties spedFiscPropertie,  Map<String, Loja> mapLojasPorCnpj) {
+		final IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
+		final boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+		
+		final BigDecimal icmsStBase = docFisc.getItens().stream().map(DocumentoFiscalItem::getIcmsStBase).reduce(BigDecimal.ZERO, BigDecimal::add);
+		final BigDecimal icmsStValor = docFisc.getItens().stream().map(DocumentoFiscalItem::getIcmsStValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 		
 		this.indOper = tipoOperacao ;
 		this.indEmit = getIndicadorEmitente(docFisc, lojaSped);
 		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
-		this.codPart = SpedFiscalUtil.getCodPart(docFisc);
+		this.codPart = SpedFiscalUtil.getCodPart(docFisc, mapLojasPorCnpj);
 		this.codMod = docFisc.getModelo();
 		this.codSit = getCodSituacao(docFisc);
 		this.ser = docFisc.getSerie();
@@ -173,8 +178,8 @@ public class RegC100 {
 		this.vlOutDa = docFisc.getValorOutrasDespesasAcessorias();
 		this.vlBcIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(docFisc.getIcmsBase(), tipoOperacao);
 		this.vlIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(docFisc.getIcmsValor(), tipoOperacao);
-		this.vlBcIcmsSt = getVlrOrBaseCalc(docFisc.getIcmsStBase(), tipoOperacao);
-		this.vlIcmsSt = getVlrOrBaseCalc(docFisc.getIcmsStValor(), tipoOperacao);
+		this.vlBcIcmsSt = getVlrOrBaseCalc(icmsStBase, tipoOperacao);
+		this.vlIcmsSt = getVlrOrBaseCalc(icmsStValor, tipoOperacao);
 //		this.vlIpi(docFisc.getIpiValor());			Não Estamos Enquadrado como contribuinte de IPI. Portanto não informamos NADA de IPI
 		this.vlPis = getVlrOrBaseCalc(docFisc.getPisValor(), tipoOperacao);
 		this.vlCofins = getVlrOrBaseCalc(docFisc.getCofinsValor(), tipoOperacao);

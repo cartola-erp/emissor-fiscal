@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.documento.ChaveAcesso;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC113;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.util.XmlUtil;
@@ -29,6 +30,8 @@ class RegC113Service {
 
 	private static final Logger LOG = Logger.getLogger(RegC113Service.class.getName());
 
+	private MovimentoMensalIcmsIpi movimentosIcmsIpi;
+
 	/**
 	 * Informa "outros DocumentoFiscais", que tenham sido mencionados em Info. Compl. Do Atual Documento que está sendo escriturado
 	 * No REG C100, EXCETO cupons fiscais, que deveram ser informados no C114.
@@ -36,10 +39,12 @@ class RegC113Service {
 	 * @param docFisc
 	 * @param lojaSped
 	 * @param listDocFiscReferenciados
+	 * @param movimentosIcmsIpi 
 	 * @return
 	 */
-	public List<RegC113> montarGrupoRegC113(DocumentoFiscal docFisc, Loja lojaSped, List<DocumentoFiscal> listDocFiscReferenciados) {
+	public List<RegC113> montarGrupoRegC113(DocumentoFiscal docFisc, Loja lojaSped, List<DocumentoFiscal> listDocFiscReferenciados, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 //		LOG.log(Level.INFO, "Montando o REGISTRO C113" );
+		this.movimentosIcmsIpi = movimentosIcmsIpi;
 		List<RegC113> listRegC113 = new ArrayList<>();
 		List<ModeloDocumentoFiscal> listCupons = Arrays.asList(ModeloDocumentoFiscal._2, ModeloDocumentoFiscal._2D, ModeloDocumentoFiscal._2E);
 		
@@ -84,7 +89,7 @@ class RegC113Service {
 		RegC113 regC113 = new RegC113();
 		regC113.setIndOper(docFisc.getTipoOperacao());
 		regC113.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
-		regC113.setCodPart(getCodPart(docFisc));
+		regC113.setCodPart(getCodPart(docFisc, this.movimentosIcmsIpi.getMapLojasPorCnpj()));
 		regC113.setCodMod(chaveAcesso.getModeloDocumento());
 		regC113.setSer(Long.parseLong(chaveAcesso.getSerie()));
 		regC113.setSub(null);				//	
@@ -106,7 +111,7 @@ class RegC113Service {
 		RegC113 regC113 = new RegC113();
 		regC113.setIndOper(docFiscReferenciado.getTipoOperacao());
 		regC113.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
-		regC113.setCodPart(getCodPart(docFiscReferenciado));
+		regC113.setCodPart(getCodPart(docFiscReferenciado, this.movimentosIcmsIpi.getMapLojasPorCnpj()));
 		regC113.setCodMod(docFiscReferenciado.getModelo());
 		regC113.setSer(docFiscReferenciado.getSerie());
 		regC113.setSub(null);

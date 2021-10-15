@@ -92,7 +92,7 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 			
 		
 		default:
-			regD100 = new RegD100(servicoTransporte, lojaSped);
+			regD100 = new RegD100(servicoTransporte, lojaSped, this.movimentosIcmsIpi.getMapLojasPorCnpj());
 			regD100.setRegD190(regD190Service.montarGrupoRegC190(servicoTransporte, this.movimentosIcmsIpi));
 			break;
 		}
@@ -175,7 +175,7 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 		
 		regD100.setIndOper(servicoTransporte.getTipoOperacao());
 		regD100.setIndEmit(getIndicadorEmitente(servicoTransporte, lojaSped));
-		regD100.setCodPart(getCodPart(servicoTransporte));
+		regD100.setCodPart(getCodPart(servicoTransporte, movimentosIcmsIpi.getMapLojasPorCnpj()));
 		regD100.setCodMod(servicoTransporte.getModelo());
 		regD100.setCodSit(getCodSituacao(servicoTransporte));
 		regD100.setSer(servicoTransporte.getSerie());

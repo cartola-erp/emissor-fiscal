@@ -8,6 +8,7 @@ import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterado
 import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.NOME;
 import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.NUM;
 import static net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados.SUFRAMA;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodPart;
 import static org.flywaydb.core.internal.util.StringUtils.collapseWhitespace;
 import static org.flywaydb.core.internal.util.StringUtils.trimLineBreak;
 import static org.springframework.util.StringUtils.hasText;
@@ -30,7 +31,6 @@ import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0150;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175;
 import net.cartola.emissorfiscal.sped.fiscal.bloco0.Reg0175CamposAlterados;
-import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
  * 21/09/2020
@@ -59,7 +59,7 @@ class Reg0150Service implements MontaGrupoDeRegistroList<Reg0150, MovimentoMensa
 			Reg0150 reg0150 = new Reg0150();
 			PessoaEndereco pessEnd = pessoa.getEndereco();
 			
-			reg0150.setCodPart(SpedFiscalUtil.getCodPart(pessoa));
+			reg0150.setCodPart(getCodPart(pessoa, movimentosIcmsIpi.getMapLojasPorCnpj()));
 			reg0150.setNome(pessoa.getNome());
 			reg0150.setCodPais(1058);		// 1058 --> Cod Brasil | Tabela 3.2.1 - EFD ICMS IPI
 			reg0150.setCnpj(pessoa.getCnpj());

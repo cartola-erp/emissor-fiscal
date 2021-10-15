@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.sped.fiscal;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
 import static net.cartola.emissorfiscal.documento.TipoServico.AGUA;
@@ -22,6 +23,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -40,6 +42,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.TipoServico;
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.loja.LojaService;
 import net.cartola.emissorfiscal.model.sped.fiscal.difal.SpedFiscalRegE310;
 import net.cartola.emissorfiscal.model.sped.fiscal.difal.SpedFiscalRegE310Service;
 import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE110;
@@ -89,6 +92,8 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	private OperacaoService operacaoService;
 	
 //	LOJA SERVICE
+	@Autowired
+	private LojaService lojaService;
 	
 	@Autowired
 	private ContadorService contadorService;
@@ -123,6 +128,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		List<ProdutoAlteradoSped> listProdAlteradoSped = getListProdAlteradoSped(dataInicio, dataFim, setItens);
 		List<ProdutoUnidade> listProdUnid = getListProdutoUnidade(setItens);
 		Set<Operacao> operacoesSet = getListOperacoes(listDocFiscal, listSatsEmitidos, listDocFiscalServico); //listDocFiscal.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
+		Map<String, Loja> mapLojasPorCnpj = lojaService.findAll().stream().collect(toMap(Loja::getCnpj, (Loja aLoja ) -> aLoja ));
 		
 		Set<DocumentoFiscal> setDocFiscalSantaCatarina = getListDocFiscalSantaCatarina(dataHoraInicio, dataHoraFim, loja);
 		Contador contador = contadorService.findOne(contadorId).get();
@@ -142,6 +148,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		movimentoMensalIcmsIpi.setListProdutoAlteradoSped(listProdAlteradoSped);
 		movimentoMensalIcmsIpi.setListProdUnid(listProdUnid);
 		movimentoMensalIcmsIpi.setListOperacoes(operacoesSet);
+		movimentoMensalIcmsIpi.setMapLojasPorCnpj(mapLojasPorCnpj);
 		movimentoMensalIcmsIpi.setLoja(loja);
 		movimentoMensalIcmsIpi.setContador(contador);
 		movimentoMensalIcmsIpi.setListDocFiscSantaCatarina(setDocFiscalSantaCatarina);			// Documentos Fiscais de comercialização de santa catarina
@@ -247,9 +254,9 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	    List<DocumentoFiscal> listDocFiscalSemCte = listDocFiscal.stream().filter(docFisc -> isBuscaItem.test(docFisc)).collect(toList());
 
 		List<DocumentoFiscalItem> listDocFiscItens = docFiscalItemService.findItensByVariosDocumentoFiscal(getListIdsForDocFiscal(listDocFiscalSemCte));
-		List<DocumentoFiscalItem> listItensDosSats = docFiscalItemService.findItensByVariosDocumentoFiscal(getListIdsForDocFiscal(listSatsEmitidos));
+//		List<DocumentoFiscalItem> listItensDosSats = docFiscalItemService.findItensByVariosDocumentoFiscal(getListIdsForDocFiscal(listSatsEmitidos));
+//		setItens.addAll(listItensDosSats);
 		setItens.addAll(listDocFiscItens);
-		setItens.addAll(listItensDosSats);
 		
 		Set<DocumentoFiscalItem> setItensUnicos = setItens.stream().filter(distinctByKey(item -> getCodItem(item))).collect(toSet());
 		

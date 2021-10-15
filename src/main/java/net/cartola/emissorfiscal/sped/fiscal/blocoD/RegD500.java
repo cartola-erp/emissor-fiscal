@@ -7,6 +7,7 @@ import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
@@ -87,13 +88,13 @@ public class RegD500 {
 //	private List<RegD530> regD530;
 	private List<RegD590> regD590;
 	
-	public RegD500(DocumentoFiscal servico, Loja lojaSped) {
+	public RegD500(DocumentoFiscal servico, Loja lojaSped, Map<String, Loja> mapLojasPorCnpj) {
 		IndicadorDeOperacao tipoOperacao = servico.getTipoOperacao();
     	
 		this.indOper = tipoOperacao;
 		this.indEmit = getIndicadorEmitente(servico, lojaSped);
 		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
-		this.codPart = SpedFiscalUtil.getCodPart(servico);
+		this.codPart = SpedFiscalUtil.getCodPart(servico, mapLojasPorCnpj);
 		this.codMod = servico.getModelo();
 		this.codSit = getCodSituacao(servico);
 		this.ser = servico.getSerie() != null && servico.getSerie() != 0 ? servico.getSerie().toString() : "";		// TODO @see ATUAALMENET em DOC FISCAL, a série é um LONG

@@ -46,44 +46,85 @@ public final class SpedFiscalUtil {
 	
 	
 	/**
-	 * Obtem o <b> "Código do Participante" </b>
+	 * Usado no REG C100;
+	 * 
+	 * Obtem o código do participante para o <b>destinatário</b> se for operacao de <b>Entrada</b>
+	 * <b>Saída</b> codigo particapante do Emitente <br>
+	 * 
+	 * O mapLojaPorCnpj, tem que estar preenchido com todas as lojas
+	 * 
+	 * Caso o Modelo documento seja == 65 (NFC-e), retorna String <b>Vazia</b>
+	 * @param docFisc
+	 * @param mapLojaPorCnpj
+	 * @return
+	 */
+	public static String getCodPart(DocumentoFiscal docFisc, Map<String, Loja> mapLojaPorCnpj) {
+		if (docFisc.getModelo() != ModeloDocumentoFiscal._65) {
+			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA) {
+				return getCodPart(docFisc.getEmitente(), mapLojaPorCnpj);
+			} 
+			return getCodPart(docFisc.getDestinatario(), mapLojaPorCnpj);
+		}
+		return "";
+	}
+
+	
+	/**
+	 * Se a pessoa for uma loja, será devolvido o COD participante com base na tabela de LOJA <br>
+	 * 
+	 * O mapLojaPorCnpj, tem que estar preenchido com todas as lojas
+	 * 
+	 * @param mapLojaPorCnpj
+	 * @param pessoa
+	 * @return
+	 */
+	public static String getCodPart(Pessoa pessoa, Map<String, Loja> mapLojaPorCnpj) {
+		if (mapLojaPorCnpj != null && mapLojaPorCnpj.containsKey(pessoa.getCnpj())) {
+			Loja loja = mapLojaPorCnpj.get(pessoa.getCnpj());
+			return getCodPart(loja);
+		}
+		return getCodPart(pessoa);
+	}
+
+
+	/**
+	 * Obtem o <b> "Código do Participante" <b>
 	 * Usos nos REGISTROS: 0150 e C100;
 	 * 
 	 * @param pessoa
 	 * @return Código do participante para a pessoa (emitente ou destinatario) 
 	 */
-	public static String getCodPart(Pessoa pessoa) {
-		NumberFormat nf = NumberFormat.getInstance();
-		nf.setMinimumIntegerDigits(8);
-		nf.setMaximumFractionDigits(8);
-//		StringBuilder codPart = new StringBuilder(pessoa.getCodigoErp()).append(0).append(pessoa.getLojaErp());  
+	private static String getCodPart(Pessoa pessoa) {
 		String codPart = pessoa.getCodigoErp() + "0"+ pessoa.getLojaErp();  
-		String codParFormatado = StringUtil.somenteNumeros(nf.format(Integer.valueOf(codPart)));
-		return codParFormatado;
-//		return nf.format(codPart);
+		return getCodPart(codPart);
 	}
 	
 	/**
-	 * Usado no REG C100;
+	 * Obtem o <b> "Código do Participante"<b>, para a Loja/Filial <br>
 	 * 
-	 * Obtem o código do participante para o <b>destinatário</b> se for operacao de <b>Entrada</b>
-	 * <b>Saída</b> codigo particapante do Emitente
-	 * 
-	 * Caso o Modelo documento seja == 65 (NFC-e), retorna String <b>Vazia</b>
-	 * @param docFisc
+	 * @param loja
 	 * @return
 	 */
-	public static String getCodPart(DocumentoFiscal docFisc) {
-//		LOG.log(Level.INFO, "Obtendo o CODIGO DO PARTICIPANTE para o DocumentoFiscal {0} " ,docFisc);
-		if (docFisc.getModelo() != ModeloDocumentoFiscal._65) {
-			if (docFisc.getTipoOperacao() == IndicadorDeOperacao.ENTRADA) {
-				return getCodPart(docFisc.getEmitente());
-			}
-			return getCodPart(docFisc.getDestinatario());
-		}
-		return "";
+	private static String getCodPart(Loja loja) {
+		String codPart = loja.getCodigoLoja() + "0" + "1";
+		return getCodPart(codPart);
+	}
+	
+	/**
+	 * 
+	 * @param codPart
+	 * @return Código do participante formatado
+	 */
+	private static String getCodPart(String codPart) {
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMinimumIntegerDigits(8);
+		nf.setMaximumFractionDigits(8);
+
+		String codParFormatado = StringUtil.somenteNumeros(nf.format(Integer.valueOf(codPart)));
+		return codParFormatado;
 	}
 
+	
 	/**
 	 * 
 	 * @param docFisc

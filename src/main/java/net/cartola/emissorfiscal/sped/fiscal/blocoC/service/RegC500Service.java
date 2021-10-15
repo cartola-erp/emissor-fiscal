@@ -36,7 +36,7 @@ class RegC500Service implements MontaGrupoDeRegistroList<RegC500, MovimentoMensa
 
 		listDocumentoFiscalServico.stream().forEach(servico -> {
 			if (servico.getTipoServico().equals(TipoServico.ENERGIA)) {
-				RegC500 regC500 = new RegC500(servico, lojaSped);
+				RegC500 regC500 = new RegC500(servico, lojaSped, movimentosIcmsIpi.getMapLojasPorCnpj());
 				regC500.setRegC590(montarGrupoRegC590(servico, movimentosIcmsIpi)); 
 				listRegC500.add(regC500);
 			}

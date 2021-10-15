@@ -159,7 +159,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			/**
 			 * Se não for nenhum dos casos acima en tão é o preenchimento normal (DocumentoFiscal, emitido por terceiros, ou seja, são as ENTRADAS)
 			 **/
-			regC100 = new RegC100(docFisc, lojaSped,  this.spedFiscPropertie);
+			regC100 = new RegC100(docFisc, lojaSped,  this.spedFiscPropertie, movimentosIcmsIpi.getMapLojasPorCnpj());
 			regC100.setRegC170(regC170Service.montarGrupoRegC170(docFisc));
 			regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, movimentosIcmsIpi));
 //			regC100.setRegC195(regC195Service.montarGrupoRegC195(docFisc));
@@ -310,7 +310,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		 * C100 e C190
 		 * 
 		 */
-		RegC100 regC100 = new RegC100(docFisc, lojaSped,  this.spedFiscPropertie);
+		RegC100 regC100 = new RegC100(docFisc, lojaSped,  this.spedFiscPropertie, this.movimentosIcmsIpi.getMapLojasPorCnpj());
 		regC100.setRegC190(regC190Service.montarGrupoRegC190(docFisc, this.movimentosIcmsIpi));
 
 		return regC100;
@@ -321,7 +321,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		RegC100 regC100 = new RegC100();
 //		regC100.setIndOper(docFisc.getTipoOperacao());
 		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
-		regC100.setCodPart(getCodPart(docFisc));
+		regC100.setCodPart(getCodPart(docFisc, this.movimentosIcmsIpi.getMapLojasPorCnpj()));
 		regC100.setCodMod(docFisc.getModelo());
 		regC100.setCodSit(getCodSituacao(docFisc));
 
@@ -349,7 +349,7 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 		RegC100 regC100 = new RegC100();
 		regC100.setIndOper(docFisc.getTipoOperacao());
 		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
-		regC100.setCodPart(getCodPart(docFisc));
+		regC100.setCodPart(getCodPart(docFisc, this.movimentosIcmsIpi.getMapLojasPorCnpj()));
 		regC100.setCodMod(docFisc.getModelo());
 		regC100.setCodSit(getCodSituacao(docFisc)); // --> VER ESSA PARADA BRO
 

@@ -136,8 +136,13 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		BigDecimal icmsBase = docFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsBase).reduce(BigDecimal.ZERO, BigDecimal::add); 
 		BigDecimal icmsValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsValor).reduce(BigDecimal.ZERO, BigDecimal::add);
 		
+		BigDecimal icmsStBase = docFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsStBase).reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal icmsStValor = docFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsStValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+		
 		docFiscal.setIcmsBase(icmsBase);
 		docFiscal.setIcmsValor(icmsValor);
+		docFiscal.setIcmsStBase(icmsStBase);
+		docFiscal.setIcmsStValor(icmsStValor);
 	}
 
 	private void setaIcmsBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {

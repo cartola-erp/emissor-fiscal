@@ -8,6 +8,7 @@ import static net.cartola.emissorfiscal.util.XmlUtil.getTagConteudo;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
@@ -131,14 +132,14 @@ public class RegD100 {
 //		
 //	}
     
-    public RegD100(DocumentoFiscal servicoTransporte, Loja lojaSped) {
+    public RegD100(DocumentoFiscal servicoTransporte, Loja lojaSped, Map<String, Loja> mapLojasPorCnpj) {
     	// TODO Auto-generated constructor stub
 		IndicadorDeOperacao tipoOperacao = servicoTransporte.getTipoOperacao();
 
 		this.indOper = tipoOperacao ;
 		this.indEmit = getIndicadorEmitente(servicoTransporte, lojaSped);
 		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
-		this.codPart = SpedFiscalUtil.getCodPart(servicoTransporte);
+		this.codPart = SpedFiscalUtil.getCodPart(servicoTransporte, mapLojasPorCnpj);
 		this.codMod = servicoTransporte.getModelo();
 		this.codSit = getCodSituacao(servicoTransporte);
 		this.ser = servicoTransporte.getSerie();

@@ -31,7 +31,7 @@ import net.cartola.emissorfiscal.util.SpedFiscalUtil;
     @Field(name = "codItem", align = Align.RIGHT, padding = '0', minLength = 7, maxLength = 7),
     @Field(name = "descrCompl"),
     @Field(name = "qtd"),
-    @Field(name = "unid"),
+    @Field(name = "unid", align = Align.RIGHT, padding = '0', minLength = 6, maxLength = 6),
     @Field(name = "vlItem"),
     @Field(name = "vlDesc"),
     @Field(name = "indMov", params = {"true=0;false=1"}),
@@ -136,10 +136,10 @@ public class RegC170 {
 	
 	public RegC170(DocumentoFiscal docFisc, DocumentoFiscalItem item) {
 		// TODO -> O ideal é ter uma parte de pré configurações do SPED, e essa parte também esteja lá
-		List<Long> codOperacoesSemMovimentoEstoque = Arrays.asList(15L, 27L, 74L, 82L);
-		Boolean indMov = !codOperacoesSemMovimentoEstoque.contains(docFisc.getOperacao().getId());
-		IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-		boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+		final List<Long> codOperacoesSemMovimentoEstoque = Arrays.asList(15L, 27L, 74L, 82L);
+		final Boolean indMov = !codOperacoesSemMovimentoEstoque.contains(docFisc.getOperacao().getId());
+		final IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
+		final boolean isEntradaConsumo = isEntradaConsumo(docFisc);
 		
 		this.numItem = item.getItem();
 		this.codItem = SpedFiscalUtil.getCodItem(item);

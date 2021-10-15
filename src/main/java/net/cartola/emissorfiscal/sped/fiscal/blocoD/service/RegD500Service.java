@@ -40,7 +40,7 @@ class RegD500Service implements MontaGrupoDeRegistroList<RegD500, MovimentoMensa
 		listDocumentoFiscalServico.stream().forEach(servico -> {
 			TipoServico tipoServico = servico.getTipoServico();
 			if (tipoServico.equals(INTERNET) || tipoServico.equals(TELEFONE_FIXO_MOVEL)) {
-				RegD500 regD500 = new RegD500(servico, lojaSped);
+				RegD500 regD500 = new RegD500(servico, lojaSped, movimentosIcmsIpi.getMapLojasPorCnpj());
 				regD500.setRegD590(montarGrupoRegD590(servico, movimentosIcmsIpi));
 				listRegD500.add(regD500);
  			}
