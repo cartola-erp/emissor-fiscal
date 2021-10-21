@@ -1,13 +1,14 @@
 package net.cartola.emissorfiscal.devolucao;
 
 import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,12 @@ public class DevolucaoService extends DocumentoService {
 	@Autowired
 	private DevolucaoOrigemService devolucaoOrigemService;
 
+	
+	public Map<Integer, Map<Long, Map<String, DevolucaoItem>>> getMapDevolucaoPorItemCodigoXECodigoSeq(Devolucao devolucao) {
+		return devolucao.getItens().stream().collect(groupingBy(DevolucaoItem::getItem, groupingBy(DevolucaoItem::getCodigoX,
+						toMap(DevolucaoItem::getCodigoSequencia, (devoItem) -> devoItem ))));
+	}
+	
 	public Optional<Devolucao> findDevolucaoParaODocumentoFiscal(DocumentoFiscal newDocFiscal) {
 		int documento = newDocFiscal.getDocumento();
 		String lojaCnpj = newDocFiscal.getLoja().getCnpj();
@@ -69,8 +76,7 @@ public class DevolucaoService extends DocumentoService {
 //	protected void setValoresNecessariosParaODocumento(Documento<? extends Item> docuFisc, Map<String, Boolean> mapErros) {
 	private void setValoresNecessariosParaODocumento(Devolucao devolucao, Map<String, Boolean> mapErros) {
 		super.setValoresNecessariosParaODocumento(devolucao, mapErros);
-		Map<String, Loja> mapLojaPorCnpj = lojaService.findAll().stream()
-				.collect(Collectors.toMap(Loja::getCnpj, (Loja loja) -> loja));
+		Map<String, Loja> mapLojaPorCnpj = lojaService.findAll().stream().collect(toMap(Loja::getCnpj, (loja) -> loja));
 
 		for (DevolucaoOrigem origem : devolucao.getDevolucaoOrigem()) {
 			String cnpjLojaOrigem = origem.getOrigemLoja().getCnpj();

@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 import static net.cartola.emissorfiscal.documento.TipoServico.ENERGIA;
 
 import java.math.BigDecimal;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.devolucao.Devolucao;
+import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
@@ -49,7 +53,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 				.findTributacaoFederalByVariosNcmsEOperacaoEFinalidadeERegimeTributario(documentoFiscal.getOperacao(), documentoFiscal.getEmitente().getRegimeTributario(), finalidades, ncms);
 		
 		Map<Ncm, TributacaoFederal> mapaTributacoesPorNcm = ncms.stream()
-				.collect(Collectors.toMap(ncm -> ncm,
+				.collect(toMap(ncm -> ncm,
 						ncm -> tributacoesFederais.stream()
 								.filter(tributacaoFederal -> tributacaoFederal.getNcm().getId().equals(ncm.getId()))
 								.findAny().get()));
@@ -66,6 +70,26 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 		setaIpiBaseValor(documentoFiscal, listaImpostos);
 	}
 
+	@Override
+	public DocumentoFiscal calculaImposto(DocumentoFiscal documentoFiscal, Devolucao devolucao) {
+		this.calculaImposto(documentoFiscal);
+		List<CalculoImposto> listaImpostos =  new LinkedList<>();
+		
+		Map<Integer, Map<Long, Map<String, DevolucaoItem>>> mapDevolucaoPorItemCodigoXECodigoSeq = devolucao.getItens().stream()
+				.collect(groupingBy(DevolucaoItem::getItem, groupingBy(DevolucaoItem::getCodigoX,
+						toMap(DevolucaoItem::getCodigoSequencia,
+								(DevolucaoItem devoItem) -> devoItem))));
+		
+		documentoFiscal.getItens().forEach(di -> {
+			DevolucaoItem devoItem = mapDevolucaoPorItemCodigoXECodigoSeq.get(di.getItem()).get(di.getCodigoX()).get(di.getCodigoSequencia());
+			listaImpostos.add(calculoIpi.calculaIpi(di, devoItem));
+		});
+		
+		setaIpiBaseValor(documentoFiscal, listaImpostos);
+		return documentoFiscal;
+	}
+	
+	
 	/**
 	 * Atualmente o que tem aqui é o calcular do total, que temos de crédito nas entradas. Referente ao "DocumentoFiscal" (compra)
 	 * Pois dos itens já foram feitos, calculados previamente no ERP, porém não é calculado o TOTAL que temos de crédito referente ao DocumentoFiscal.

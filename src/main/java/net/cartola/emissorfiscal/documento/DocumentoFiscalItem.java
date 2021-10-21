@@ -79,7 +79,6 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	private BigDecimal cofinsAliquota = BigDecimal.ZERO;
 	private BigDecimal cofinsValor = BigDecimal.ZERO;
 	private int cofinsCst;
-	private BigDecimal ipiBase = BigDecimal.ZERO;
 	private BigDecimal ipiValor = BigDecimal.ZERO;
 	private int ipiCst;
 	
@@ -90,20 +89,22 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 
 	public DocumentoFiscalItem() {	}
 
-	public DocumentoFiscalItem(DevolucaoItem devoItem) {
+	public DocumentoFiscalItem(DevolucaoItem devoItem, DocumentoFiscal documentoFiscal) {
 		super.item = devoItem.getItem();
 		super.codigoX = devoItem.getCodigoX();
 		super.codigoSequencia = devoItem.getCodigoSequencia();
 		super.produtoCodigoErp = devoItem.getProdutoCodigoErp();
 		super.classeFiscal = devoItem.getClasseFiscal();
 		super.setClasseFiscal(devoItem.getNcm());
-//		super.excecao = devoItem.getExcecao();
 		super.quantidade = devoItem.getQuantidade();
 		super.valorUnitario = devoItem.getValorUnitario();
+		super.desconto = devoItem.getDesconto().multiply(devoItem.getQuantidade());			// Está calculando aqui os descontos das devoluções para devolver corretamente para o ERP
 		this.descricaoEmpresa = devoItem.getDescricao();
 		super.icmsIva = devoItem.getIcmsIva();
+		super.ipiAliquota = devoItem.getIpiAliquota();
 		super.origem = devoItem.getOrigem();
 		super.unidade = devoItem.getUnidade();
+		this.documentoFiscal = documentoFiscal;
 	}
 
 	/**
@@ -434,7 +435,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	}
 
 	public void setIcmsStAliquota(BigDecimal icmsStAliquota) {
-		this.icmsStAliquota = icmsStAliquota;
+		super.icmsStAliquota = icmsStAliquota;
 	}
 
 	public BigDecimal getIcmsStBase() {
@@ -640,7 +641,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	}
 
 	public void setIpiBase(BigDecimal ipiBase) {
-		this.ipiBase = ipiBase;
+		super.ipiBase = ipiBase;
 	}
 
 	@Column(name = "ipi_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
@@ -649,7 +650,7 @@ public class DocumentoFiscalItem extends Item implements Serializable {
 	}
 
 	public void setIpiAliquota(BigDecimal ipiAliquota) {
-		this.ipiAliquota = ipiAliquota;
+		super.ipiAliquota = ipiAliquota;
 	}
 
 	public BigDecimal getIpiValor() {

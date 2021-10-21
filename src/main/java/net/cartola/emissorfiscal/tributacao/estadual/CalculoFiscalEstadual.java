@@ -19,12 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.devolucao.Devolucao;
+import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
+import net.cartola.emissorfiscal.devolucao.DevolucaoService;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.ncm.Ncm;
-import net.cartola.emissorfiscal.tributacao.CalculoFiscalDevolucao;
+import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
@@ -37,7 +39,7 @@ import net.cartola.emissorfiscal.tributacao.Imposto;
 
 
 @Service
-public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
+public class CalculoFiscalEstadual implements CalculoFiscal {
 	
 	private static final Logger LOG = Logger.getLogger(CalculoFiscalEstadual.class.getName());
 	
@@ -52,6 +54,9 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 	
 	@Autowired
 	private DocumentoFiscalItemService docFiscItemService;
+	
+	@Autowired
+	private DevolucaoService devolucaoService;
 	
 	@Autowired
 	private CalculoIcms calculoIcms;
@@ -99,31 +104,30 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 	public DocumentoFiscal calculaImposto(DocumentoFiscal docFisc, Devolucao devolucao) {
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
 		final Set<TributacaoEstadualDevolucao> setTribEsta = tribEstaDevolucaoService.findByOperacao(devolucao.getOperacao());
-		final Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda = setTribEsta
-				.stream()
-				.collect(toMap(TributacaoEstadualDevolucao::getCfopVenda, (TributacaoEstadualDevolucao tribEstaDevo) -> tribEstaDevo));
-		List<DocumentoFiscalItem> listDocFiscItens = new ArrayList<>();
-		
-		devolucao.getItens().forEach(devoItem -> {
-			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(devoItem.getCfopFornecedor());
-			DocumentoFiscalItem docFiscItem = new DocumentoFiscalItem(devoItem);
-			docFiscItem.setDocumentoFiscal(docFisc);
-			calculoIcmsDevolucao.calculaIcmsDevolucao(docFiscItem, tribEstaDevo, devoItem).ifPresent(listCalculoImpostos::add);
-			listDocFiscItens.add(docFiscItem);
+		final Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda = 
+				setTribEsta.stream().collect(toMap(TributacaoEstadualDevolucao::getCfopVenda, (tribEstaDevo) -> tribEstaDevo));
+		final Map<Integer, Map<Long, Map<String, DevolucaoItem>>> mapDevolucaoPorItemCodigoXECodigoSeq = devolucaoService.getMapDevolucaoPorItemCodigoXECodigoSeq(devolucao);
+
+		docFisc.getItens().forEach(di -> {
+			DevolucaoItem devolucaoItem = mapDevolucaoPorItemCodigoXECodigoSeq.get(di.getItem()).get(di.getCodigoX()).get(di.getCodigoSequencia());
+			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(devolucaoItem.getCfopFornecedor());
+			calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem).ifPresent(listCalculoImpostos::add);
 		});
-		docFisc.setItens(listDocFiscItens);
+			
 
 		setaIcmsBaseEValor(docFisc, listCalculoImpostos);
 		docFisc.setValorOutrasDespesasAcessorias(calcularTotalOutrasDespesasAcessorias(docFisc));
-		docFisc.setIpiValor(calcularTotalIpiDevolvido(docFisc));
+//		docFisc.setIpiBase(calcularTotalIpiBase(docFisc));
+//		docFisc.setIpiValor(calcularTotalIpiDevolvido(docFisc));
 		docFisc.setValorTotalProduto(calcularValorTotalProdutos(docFisc));
 		/**
-		 * No calculo abaixo, atualmente NÃO ESTOU subtraindo o desconto, pois não é informado no XML....
+		 * ESTOU subtraindo o desconto aqui, pois não é informado no XML o DESCONTO quando vendemos etc... Atualmente apenas nas DEVOLUCOES
 		 */
-		docFisc.setValorTotalDocumento(calcularValorTotalDocumento(docFisc));
+		BigDecimal valorTotalDocumento = calcularValorTotalDocumento(docFisc).subtract(docFisc.getValorDesconto());
+		docFisc.setValorTotalDocumento(valorTotalDocumento);
+		
 		return docFisc;
 	}
-	
 	
 
 	/**
@@ -280,10 +284,6 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 	
 	private BigDecimal calcularTotalOutrasDespesasAcessorias(DocumentoFiscal docFiscal) {
 		return docFiscal.getItens().stream().map(item -> getBigDecimalNullSafe(item.getValorOutrasDespesasAcessorias())).reduce(BigDecimal.ZERO, BigDecimal::add);
-	}
-	
-	private BigDecimal calcularTotalIpiDevolvido(DocumentoFiscal docFisc) {
-		return docFisc.getItens().stream().map(item -> getBigDecimalNullSafe(item.getIpiValor())).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 	
 	/**

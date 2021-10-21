@@ -245,7 +245,7 @@ public class CalculoIcms {
 	 * @return
 	 */
 	private CalculoImpostoIcms00 calculaIcms00(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
-		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} ", di);
+		LOG.log(Level.INFO, "Calculando o ICMS 00 para o ITEM: {0} - X/s: {1} {2}", new Object[]{di.getItem(), di.getCodigoX(), di.getCodigoSequencia()} );
 		CalculoImpostoIcms00 icms00 = new CalculoImpostoIcms00();
 		Pessoa destinatario = docFiscal.getDestinatario();
 
@@ -258,7 +258,7 @@ public class CalculoIcms {
 	}
 	
 	private CalculoImpostoIcms10 calculaIcms10(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
-		LOG.log(Level.INFO, "Calculando o ICMS 10 para o ITEM: {0} ", di);
+		LOG.log(Level.INFO, "Calculando o ICMS 10 para o ITEM: {0} - X/s: {1} {2}", new Object[]{di.getItem(), di.getCodigoX(), di.getCodigoSequencia()} );
 		CalculoImpostoIcms10 icms10 = new CalculoImpostoIcms10();
 		
 		calculaImpostoBase(di, tributacao, icms10, docFiscal);
@@ -274,7 +274,7 @@ public class CalculoIcms {
 
 	
 	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
-		LOG.log(Level.INFO, "Calculando o ICMS 20 para o ITEM: {0} ", di);
+		LOG.log(Level.INFO, "Calculando o ICMS 20 para o ITEM: {0} - X/s: {1} {2}", new Object[]{di.getItem(), di.getCodigoX(), di.getCodigoSequencia()} );
 		CalculoImpostoIcms20 icms20 = new CalculoImpostoIcms20();
 
 		calculaImpostoBase(di, tributacao, icms20, docFiscal);
@@ -283,7 +283,7 @@ public class CalculoIcms {
 	}
 
 	private CalculoImpostoIcms30 calculaIcms30(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
-		LOG.log(Level.INFO, "Calculando o ICMS 30 para o ITEM: {0} ", di);
+		LOG.log(Level.INFO, "Calculando o ICMS 30 para o ITEM: {0} - X/s: {1} {2}", new Object[]{di.getItem(), di.getCodigoX(), di.getCodigoSequencia()} );
 		CalculoImpostoIcms30 icms30 = new CalculoImpostoIcms30();
 
 		calculaImpostoBase(di, tributacao, icms30, docFiscal);
@@ -302,7 +302,7 @@ public class CalculoIcms {
 	 * @return
 	 */
 	private CalculoImposto calculaIcms40(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
-		LOG.log(Level.INFO, "Calculando o ICMS 40 para o ITEM: {0} ", di);
+		LOG.log(Level.INFO, "Calculando o ICMS 40 para o ITEM: {0} - X/s: {1} {2}", new Object[]{di.getItem(), di.getCodigoX(), di.getCodigoSequencia()} );
 		CalculoImposto calcImposto = new CalculoImposto(Imposto.ICMS_40);
 		
 		calcImposto.setValorUnitario(BigDecimal.ZERO);

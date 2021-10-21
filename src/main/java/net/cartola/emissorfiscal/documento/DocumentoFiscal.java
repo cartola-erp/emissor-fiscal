@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -123,12 +124,21 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		super.alterado = devolucao.getAlterado();
 		this.devolucao = devolucao;
 		
+		this.itens = new LinkedList<>();
+		devolucao.getItens().forEach(devoItem -> {
+			DocumentoFiscalItem docFiscItem = new DocumentoFiscalItem(devoItem, this);
+			docFiscItem.setDocumentoFiscal(this);
+			this.itens.add(docFiscItem);
+		});
+		
 		this.referencias = new HashSet<>();
 		devolucao.getDevolucaoOrigem().forEach(devoOrigem -> {
 			int item = 1;
 			this.referencias.add(new DocumentoFiscalReferencia(devoOrigem, this, item));	
 			item++;
 		});
+		// Está calculando aqui os descontos das devoluções para devolver corretamente para o ERP
+		this.valorDesconto = this.itens.stream().map(DocumentoFiscalItem::getDesconto).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 	
 	/**
@@ -149,6 +159,7 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 		this.infoComplementar = newDocFiscal.getInfoComplementar();
 		this.xml = newDocFiscal.getXml();
 		this.emissao = newDocFiscal.getEmissao();
+		this.alterado = LocalDateTime.now();
 		this.alteradoPor = newDocFiscal.getAlteradoPor();
 	}
 	

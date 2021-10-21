@@ -47,6 +47,7 @@ public class DevolucaoItem extends Item implements Serializable {
 	// Com esse objeto que é o "DocumentoFiscal", origem terei que verificar se o mesmo já está salvo no DB do emissorfiscal
 	// caso NÃO irei SALVAR
     private Long documentoOrigemCodigo;  // OR origem nota
+    private int origemItem;
     // private DocumentoFiscal documentoFiscalOrigem;
 	// referente a "origemLoja"
 	private Loja lojaOrigem;
@@ -72,9 +73,9 @@ public class DevolucaoItem extends Item implements Serializable {
     public void setId(Long id) {
     	this.id = id;
 	}
-
+    
     @Override
-    @Column(name = "origem_item")
+    @Column(name = "item")
 	public int getItem() {
 		return item;
 	}
@@ -83,14 +84,15 @@ public class DevolucaoItem extends Item implements Serializable {
 		super.item = item;
 	}
     
-//	public int getOrigemItem() {
-//		return origemItem;
-//	}
-//
-//	public void setOrigemItem(int origemItem) {
-//		super.origemItem = origemItem;
-//	}
+    @Column(name = "origem_item")
+	public int getOrigemItem() {
+		return origemItem;
+	}
 
+	public void setOrigemItem(int origemItem) {
+		this.origemItem = origemItem;
+	}
+	
 	@Override
 	@Column(name = "codigo_x")
 	public Long getCodigoX() {
@@ -306,7 +308,16 @@ public class DevolucaoItem extends Item implements Serializable {
 	public void setIcmsIva(BigDecimal icmsIva) {
 		super.icmsIva = icmsIva;
 	}
+	
+	@Column(name = "ipi_base_unit")
+	public BigDecimal getIpiBase() {
+		return ipiBase;
+	}
 
+	public void setIpiBase(BigDecimal ipiBase) {
+		super.ipiBase = ipiBase;
+	}
+	
 	@Column(name = "ipi_aliq", precision = 7, scale = 6, nullable = false, columnDefinition = "Numeric(7,6) default '0.00'")
 	public BigDecimal getIpiAliquota() {
 		return ipiAliquota;
@@ -355,7 +366,6 @@ public class DevolucaoItem extends Item implements Serializable {
 	public void setDevolucao(Devolucao devolucao) {
 		this.devolucao = devolucao;
 	}
-
 
 	
 }

@@ -32,7 +32,7 @@ public abstract class Item {
 	protected BigDecimal icmsAliquota = BigDecimal.ZERO;
 	protected BigDecimal icmsStAliquota = BigDecimal.ZERO;
 	protected BigDecimal icmsIva = BigDecimal.ZERO;
-
+    protected BigDecimal ipiBase = BigDecimal.ZERO; 
 	protected BigDecimal ipiAliquota = BigDecimal.ZERO;
 	protected ProdutoUnidade unidade;
 
