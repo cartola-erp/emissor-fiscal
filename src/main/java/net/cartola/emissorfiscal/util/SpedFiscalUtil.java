@@ -247,6 +247,23 @@ public final class SpedFiscalUtil {
 	}
 	
 	/**
+	 * Irá retornar um Predicate para validar se a operação de entrada é escriturada; <br>
+	 * PS: No caso somente as entrada emitidas por nóis, (que nos arquivos de exemplo do SPED) não estão escrituradas <br>
+	 * 
+	 * <b> EX.: <b> 73 - Compra de sucata de não contribuinte ... <br>
+	 * 
+	 * PS: As operações de saídas nenhuma é escriturada
+	 * 
+	 * @param lojaAtualSped
+	 * @return
+	 */
+	public static Predicate<DocumentoFiscal> criaPredicateIsOperacaoDoDocumentoEscriturada(Loja lojaAtualSped) {
+		 Predicate<DocumentoFiscal> isOperacaoDoDocumentoEscriturada = docFiscal -> ENTRADA.equals(docFiscal.getTipoOperacao()) 
+				&& !docFiscal.getEmitente().getCnpj().equals(lojaAtualSped.getCnpj());
+		return isOperacaoDoDocumentoEscriturada;
+	}
+	
+	/**
 	 * Irá retornar o mês de referência no formato MM/YYYY
 	 * @param dataInicio
 	 * @return

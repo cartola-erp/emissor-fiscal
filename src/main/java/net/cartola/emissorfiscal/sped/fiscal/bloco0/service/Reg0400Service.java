@@ -1,6 +1,7 @@
 
 package net.cartola.emissorfiscal.sped.fiscal.bloco0.service;
 
+import static java.util.stream.Collectors.toCollection;
 import static net.cartola.emissorfiscal.util.StringUtil.somenteNumerosELetras;
 
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,7 @@ class Reg0400Service implements MontaGrupoDeRegistroList<Reg0400, MovimentoMensa
 		Set<Operacao> listOperacoes = new HashSet<>();
 		listOperacoes.addAll(movimentosIcmsIpi.getListOperacoes());
 
-		TreeSet<Operacao> listOperacoesOrdernadas = listOperacoes.stream().collect(Collectors.toCollection(TreeSet::new));
+		TreeSet<Operacao> listOperacoesOrdernadas = listOperacoes.stream().collect(toCollection(TreeSet::new));
 		
 //		listOperacoes.stream().forEachOrdered(operacao -> {
 		listOperacoesOrdernadas.stream().forEachOrdered(operacao -> {
