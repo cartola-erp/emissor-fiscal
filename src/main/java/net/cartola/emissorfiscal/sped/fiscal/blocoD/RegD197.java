@@ -17,6 +17,7 @@ import net.cartola.emissorfiscal.sped.fiscal.OutrasObrigacoesEAjustes;
 	@Field(name = "codItem"),
 	@Field(name = "vlBcIcms"),
 	@Field(name = "aliqIcms"),
+	@Field(name = "vlIcms"),
 	@Field(name = "vlOutros"),
 })
 public class RegD197 extends OutrasObrigacoesEAjustes {

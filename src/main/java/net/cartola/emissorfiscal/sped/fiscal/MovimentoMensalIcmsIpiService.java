@@ -121,15 +121,15 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 //		Optional<Pessoa> lojaEmitOrDest = pessoaService.findByCnpj(String.valueOf(loja.getCnpj()));
 
 		List<DocumentoFiscal> listDocFiscal = getListDocumentoFiscal(dataHoraInicio, dataHoraFim, loja, asList(TipoServico.NENHUM, TipoServico.CTE), movimentoMensalIcmsIpi); // (Lista com todos os DocumentoFiscais, da loja que está sendo feito o SPED)
-		List<DocumentoFiscal> listDocFiscalServico = getListDocumentoFiscalServico(dataHoraInicio, dataHoraFim, loja, movimentoMensalIcmsIpi);
+		List<DocumentoFiscal> listDocFiscalOutrosServicos = getListDocFiscalOutrosServicos(dataHoraInicio, dataHoraFim, loja, movimentoMensalIcmsIpi);
 		List<DocumentoFiscal> listSatsEmitidos = getListSatsEmitidos(dataHoraInicio, dataHoraFim, loja, movimentoMensalIcmsIpi);		// Modelo _59
-		List<Pessoa> listCadPessoas = getListCadastrosPessoas(listDocFiscal, listDocFiscalServico);
+		List<Pessoa> listCadPessoas = getListCadastrosPessoas(listDocFiscal, listDocFiscalOutrosServicos);
 		// TODO  Buscando todas as Pessoas Envolvidas, que tiveram alguma alteração necessária para o SPED ICMS IPI
 		List<PessoaAlteradoSped> listPessAlteradoSped = getListCadastroPessoaAlteradoSped(dataInicio, dataFim, listCadPessoas);
 		Set<DocumentoFiscalItem> setItens = getSetDeItens(listDocFiscal, listSatsEmitidos);
 		List<ProdutoAlteradoSped> listProdAlteradoSped = getListProdAlteradoSped(dataInicio, dataFim, setItens);
 		List<ProdutoUnidade> listProdUnid = getListProdutoUnidade(setItens);
-		Set<Operacao> operacoesSet = getListOperacoes(listDocFiscal, listSatsEmitidos, listDocFiscalServico); //listDocFiscal.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
+		Set<Operacao> operacoesSet = getListOperacoes(listDocFiscal, listSatsEmitidos, listDocFiscalOutrosServicos); //listDocFiscal.stream().map(DocumentoFiscal::getOperacao).collect(toSet());
 		Map<String, Loja> mapLojasPorCnpj = lojaService.findAll().stream().collect(toMap(Loja::getCnpj, (Loja aLoja ) -> aLoja ));
 		
 		Set<DocumentoFiscal> setDocFiscalSantaCatarina = getListDocFiscalSantaCatarina(dataHoraInicio, dataHoraFim, loja);
@@ -142,7 +142,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	
 		
 		movimentoMensalIcmsIpi.setListDocumentoFiscal(listDocFiscal);
-		movimentoMensalIcmsIpi.setListDocumentoFiscalServico(listDocFiscalServico);
+		movimentoMensalIcmsIpi.setListDocumentoFiscalServico(listDocFiscalOutrosServicos);
 		movimentoMensalIcmsIpi.setListSatsEmitidos(listSatsEmitidos);
 		movimentoMensalIcmsIpi.setListCadastros(listCadPessoas);
 		movimentoMensalIcmsIpi.setListCadastrosAlteradosSped(listPessAlteradoSped);
@@ -203,7 +203,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	 * @param movimentoMensalIcmsIpi 
 	 * @return Todos os DocumentoFiscal do Periodo, Cujo O TipoServico seja algums dos -> OUTROS, CTE, ENERGIA, AGUA, INTERNET ou TELEFONE_FIXO_MOVEL
 	 */
-	private List<DocumentoFiscal> getListDocumentoFiscalServico(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Loja loja, MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
+	private List<DocumentoFiscal> getListDocFiscalOutrosServicos(LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, Loja loja, MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		LOG.log(Level.INFO, "Buscando DocumentoFiscais, que sejam de SERVICO" );
 		List<TipoServico> listTipoServico = asList(TipoServico.OUTROS, CTE, ENERGIA, AGUA, INTERNET, TELEFONE_FIXO_MOVEL);
 		List<DocumentoFiscal> listDocFiscServico = getListDocumentoFiscal(dataHoraInicio, dataHoraFim, loja, listTipoServico, movimentoMensalIcmsIpi);
@@ -223,21 +223,23 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		return listSatEmitido;
 	}
 	
-	private List<Pessoa> getListCadastrosPessoas(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listDocFiscalServico) {
+	private List<Pessoa> getListCadastrosPessoas(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listDocFiscalOutrosServico) {
 		LOG.log(Level.INFO, "Buscando todos os cadastros de Pessoas, com base nos DocumentoFiscais" );
 		Set<Long> pessoasId = new HashSet<>();
 		Predicate<DocumentoFiscal> d = doc -> !_59.equals(doc.getModelo()) &&  !NFSE.equals(doc.getModelo());
 
-		pessoasId.addAll(listDocFiscal.stream().filter(docFisc -> d.test(docFisc))
-				.map(docFiscal -> docFiscal.getEmitente().getId()).collect(toSet()));
-		pessoasId.addAll(listDocFiscal.stream().filter(docFisc -> d.test(docFisc))
-				.map(docFiscal -> docFiscal.getDestinatario().getId()).collect(toSet()));
-		
-		final Set<Long> idsEmitenteServico = listDocFiscalServico.stream().filter(docFiscServ -> d.test(docFiscServ))
+		final Set<Long> idsEmitenteDocFiscal = listDocFiscal.stream().filter(docFisc -> d.test(docFisc))
+				.map(docFiscal -> docFiscal.getEmitente().getId()).collect(toSet());
+		final Set<Long> idsDestinatarioDocFiscal = listDocFiscal.stream().filter(docFisc -> d.test(docFisc))
+				.map(docFiscal -> docFiscal.getDestinatario().getId()).collect(toSet());
+
+		final Set<Long> idsEmitenteServico = listDocFiscalOutrosServico.stream().filter(docFiscServ -> d.test(docFiscServ))
 				.map(docFiscalServico -> docFiscalServico.getEmitente().getId()).collect(toSet());
-		final Set<Long> idsDestinatarioServico = listDocFiscalServico.stream().filter(docFiscServ -> d.test(docFiscServ))
+		final Set<Long> idsDestinatarioServico = listDocFiscalOutrosServico.stream().filter(docFiscServ -> d.test(docFiscServ))
 				.map(docFiscalServico -> docFiscalServico.getDestinatario().getId()).collect(toSet());
 		
+		pessoasId.addAll(idsEmitenteDocFiscal);
+		pessoasId.addAll(idsDestinatarioDocFiscal);
 		pessoasId.addAll(idsEmitenteServico);
 		pessoasId.addAll(idsDestinatarioServico);
 		List<Pessoa> listCadPessoas = pessoaService.findByIdsIn(pessoasId);

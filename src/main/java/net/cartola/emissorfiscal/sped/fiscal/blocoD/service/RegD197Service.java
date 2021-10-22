@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoD.service;
 
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.isBigDecimalZero;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isIcmsCstIsentaOuNaoTributada;
 
 import java.math.BigDecimal;
@@ -38,7 +39,10 @@ class RegD197Service {
 		
 		//	SP90090104 
 		RegD197 regD197VlIcmsIsentasNtOutras = gerarRegD197ValorICmsIsentasNaoTributadasOutras(cfop, mapRegistroAnaliticoPorCst);
-		listRegD197.add(regD197VlIcmsIsentasNtOutras);
+		
+		if (regD197VlIcmsIsentasNtOutras.getVlOutros() != null && !isBigDecimalZero(regD197VlIcmsIsentasNtOutras.getVlOutros())) {
+			listRegD197.add(regD197VlIcmsIsentasNtOutras);
+		}
 		
 		return listRegD197;
 	}
