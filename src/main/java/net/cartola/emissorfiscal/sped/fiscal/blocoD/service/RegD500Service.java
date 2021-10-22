@@ -68,7 +68,7 @@ class RegD500Service implements MontaGrupoDeRegistroList<RegD500, MovimentoMensa
 		regD590.setVlBcIcms(BigDecimal.ZERO);
 		regD590.setVlIcms(BigDecimal.ZERO);
 		regD590.setVlBcIcmsUf(BigDecimal.ZERO);
-		regD590.setVlBcIcmsUf(BigDecimal.ZERO);
+		regD590.setVlIcmsUf(BigDecimal.ZERO);
 		regD590.setVlRedBc(BigDecimal.ZERO);
 		regD590.setCodObs(null);
 

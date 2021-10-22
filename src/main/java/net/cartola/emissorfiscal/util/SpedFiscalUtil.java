@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.util;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
+import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -224,7 +225,8 @@ public final class SpedFiscalUtil {
 	 * @return
 	 */
 	public static boolean isInformaDesconto(IndicadorDeOperacao tipoOperacao, SpedFiscalProperties spedFiscPropertie) {
-		return (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || spedFiscPropertie.isInformarDescontoSaida();
+		return (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || 
+				(tipoOperacao.equals(SAIDA) && spedFiscPropertie.isInformarDescontoSaida());
 	}
 	
 	

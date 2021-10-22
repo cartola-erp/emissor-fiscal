@@ -102,7 +102,12 @@ class RegC190Service {
 	private BigDecimal calcularTotalVlrBcIcms(List<DocumentoFiscalItem> listItens, boolean isEntradaConsumo) {
 		BigDecimal vlBcIcms = listItens.stream().map(DocumentoFiscalItem::getIcmsBase).reduce(BigDecimal.ZERO, BigDecimal::add);
 		if (isEntradaConsumo) {
-			return vlBcIcms;
+			/**
+			 * ATUALIZAÇÃO: 22/10/2021
+			 * PELO que eu VI nos arquivos de sped de exemplo é para retornar 0, na BC ICMS, quando for entrada de CONSUMO
+			 */
+			return BigDecimal.ZERO;
+//			return vlBcIcms;
 		} else {
 			return listItens.stream().map(DocumentoFiscalItem::getIcmsReducaoBaseValor)
 					.reduce(BigDecimal.ZERO, BigDecimal::add)
