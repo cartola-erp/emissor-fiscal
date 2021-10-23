@@ -221,7 +221,7 @@ CREATE TABLE `docu_fisc_item` (
   KEY `fnk_documento_fiscal` (`docu_fisc_id`),
   KEY `fnk_docu_fisc_item_prod_unid_id` (`prod_unid_id`),
   CONSTRAINT `fnk_docu_fisc_item_prod_unid_id` FOREIGN KEY (`prod_unid_id`) REFERENCES `prod_unid` (`id`),
-  CONSTRAINT `fnk_documento_fiscal` FOREIGN KEY (`docu_fisc_id`) REFERENCES `docu_fisc` (`id`),
+  CONSTRAINT `fnk_documento_fiscal` FOREIGN KEY (`docu_fisc_id`) REFERENCES `docu_fisc` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
