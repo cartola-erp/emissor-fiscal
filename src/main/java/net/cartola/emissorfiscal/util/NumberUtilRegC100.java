@@ -103,6 +103,13 @@ public final class NumberUtilRegC100 {
 		return false;
 	}
 	
+	public static boolean isBigDecimalMaiorQueZero(BigDecimal value) {
+		if (value != null && (value.compareTo(BigDecimal.ZERO)) > 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static boolean isBigDecimalZero(BigDecimal value) {
 		if (value != null && (value.compareTo(BigDecimal.ZERO)) == 0) {
 			return true;

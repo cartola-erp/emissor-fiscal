@@ -1,10 +1,13 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.isBigDecimalMaiorQueZero;
+
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
@@ -13,6 +16,7 @@ import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms60;
+import net.cartola.emissorfiscal.tributacao.federal.CalculoIpi;
 
 /**
  * @date 29 de set. de 2021
@@ -23,6 +27,8 @@ public class CalculoIcmsDevolucao {
 
 	private static final Logger LOG = Logger.getLogger(CalculoIcmsDevolucao.class.getName());
 	
+	@Autowired
+	private CalculoIpi calculoIpi;
 	
 	/**
 	 * Esse é o método que irá calcular o ICMS para as: DEVOLUÇÕES, REMESSSAS EM GARANTIAS e OUTRAS SAÍDAS
@@ -74,15 +80,10 @@ public class CalculoIcmsDevolucao {
 			icmsIvaAliquota = BigDecimal.ZERO;
 		}
 //		final BigDecimal baseIcmsSt = calcularIpiDevolvido(devoItem).add(calcularIcmsBase(devoItem));
-		final BigDecimal baseIcmsSt = calcularIpiDevolvido(devoItem).add(calcularIcmsBase(devoItem)).multiply(icmsIvaAliquota);
+		final BigDecimal baseIcmsSt = calculoIpi.calcularIpiDevolvido(devoItem).add(calcularIcmsBase(devoItem)).multiply(icmsIvaAliquota);
 		return baseIcmsSt;
 	}
 	
-	
-	private BigDecimal calcularIpiDevolvido(DevolucaoItem devoItem) {
-		BigDecimal valorIpiDevolvido = calcularIcmsBase(devoItem).multiply(devoItem.getIpiAliquota());
-		return valorIpiDevolvido;
-	}
 	
 	private BigDecimal calcularOutrasDespesasAcessorias(DevolucaoItem devoItem) {
 		final BigDecimal valorIcms = calcularIcmsBase(devoItem).multiply(devoItem.getIcmsAliquota());
@@ -93,7 +94,10 @@ public class CalculoIcmsDevolucao {
 							.multiply(devoItem.getQuantidade());
 		
 		final BigDecimal icmsStBase = calcularBaseIcmsSt(devoItem);
-		final BigDecimal valorIcmsSt = icmsStBase.multiply(devoItem.getIcmsStAliquota()).subtract(valorIcms);
+		BigDecimal valorIcmsSt = BigDecimal.ZERO;
+		if (isBigDecimalMaiorQueZero(icmsStBase)) {
+			valorIcmsSt = icmsStBase.multiply(devoItem.getIcmsStAliquota()).subtract(valorIcms);
+		}
 		
 		final BigDecimal valorOutrasDespesasAcessorias = valorTotalFreteAndOutrasDespesDaOrigem.add(valorIcmsSt);
 		return valorOutrasDespesasAcessorias;

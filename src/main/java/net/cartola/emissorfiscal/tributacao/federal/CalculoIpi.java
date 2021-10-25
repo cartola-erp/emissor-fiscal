@@ -4,22 +4,20 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.Imposto;
-import net.cartola.emissorfiscal.tributacao.estadual.CalculoIcmsDevolucao;
 
 @Service
 public class CalculoIpi {
 	
 	private static final Logger LOG = Logger.getLogger(CalculoIpi.class.getName());
 	
-	@Autowired
-	private CalculoIcmsDevolucao calculoIcmsDevolucao;
+//	@Autowired
+//	private CalculoIcmsDevolucao calculoIcmsDevolucao;
 	
 	public CalculoImposto calculaIpi(DocumentoFiscalItem di, TributacaoFederal tributacao) {
 		LOG.log(Level.INFO, "Calculando o IPI para o ITEM: {0} - X/s: {1} {2}", new Object[]{di.getItem(), di.getCodigoX(), di.getCodigoSequencia()} );
@@ -60,8 +58,10 @@ public class CalculoIpi {
 	}
 	
 
-	private BigDecimal calcularIpiDevolvido(DevolucaoItem devoItem) {
-		BigDecimal valorIpiDevolvido = calculoIcmsDevolucao.calcularIcmsBase(devoItem).multiply(devoItem.getIpiAliquota());
+	public BigDecimal calcularIpiDevolvido(DevolucaoItem devoItem) {
+//		BigDecimal valorIpiDevolvido = calculoIcmsDevolucao.calcularIcmsBase(devoItem).multiply(devoItem.getIpiAliquota());
+		final BigDecimal ipiBase = devoItem.getIpiBase().multiply(devoItem.getQuantidade());
+		final BigDecimal valorIpiDevolvido = ipiBase.multiply(devoItem.getIpiAliquota());
 		return valorIpiDevolvido;
 	}
 	
