@@ -294,14 +294,14 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 	
 	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "emit_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_emitente_id"))
+	@JoinColumn(name = "emit_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_emit_id"))
 	public Pessoa getEmitente() {
 		return emitente;
 	}
 
 	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "dest_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_destinatario_id"))
+	@JoinColumn(name = "dest_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc_dest_id"))
 	public Pessoa getDestinatario() {
 		return destinatario;
 	}
