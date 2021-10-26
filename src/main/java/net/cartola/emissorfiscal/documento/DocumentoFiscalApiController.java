@@ -54,7 +54,7 @@ public class DocumentoFiscalApiController {
 		if(docFiscal == null || docFiscal.getEmitente() == null || docFiscal.getTipoOperacao() == null || docFiscal.getSerie() == null || docFiscal.getNumeroNota() == null) {
 			return ResponseEntity.badRequest().build();
 		} 
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieNumeroEModelo(docFiscal);
 		
 		if(!opDocFiscal.isPresent()) {
 			return ResponseEntity.notFound().build();
@@ -144,7 +144,7 @@ public class DocumentoFiscalApiController {
 		LOG.log(Level.INFO, "Salvando a Compra {0} " ,docFiscal);
 		Response<DocumentoFiscal> response = new Response<>();
 		// Nessa linha abaixo busco se o DocumentoFiscal existe;
-		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieENumero(docFiscal.getEmitente().getCnpj(), docFiscal.getTipoOperacao(), docFiscal.getSerie(), docFiscal.getNumeroNota());
+		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.findDocumentoFiscalByCnpjTipoOperacaoSerieNumeroEModelo(docFiscal);
 		boolean isNewCompra = true;
 		if(opDocFiscal.isPresent()) {
 			docFiscal.setId(opDocFiscal.get().getId());
