@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.estadual;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.isBigDecimalMaiorQueZero;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
@@ -331,8 +333,10 @@ public class CalculoIcms {
 	 * @return
 	 */
 	private boolean achouUltimaCompra(DocumentoFiscalItem di) {
-		return (!di.getIcmsStBaseUltimaCompra().equals(BigDecimal.ZERO) && !di.getIcmsStValorUltimaCompra().equals(BigDecimal.ZERO) 
-				&& !di.getItemQtdCompradaUltimaCompra().equals(BigDecimal.ZERO) && !di.getIcmsStAliqUltimaCompra().equals(BigDecimal.ZERO));
+		return isBigDecimalMaiorQueZero(di.getIcmsStBaseUltimaCompra()) && isBigDecimalMaiorQueZero(di.getIcmsStValorUltimaCompra()) &&
+		isBigDecimalMaiorQueZero(di.getItemQtdCompradaUltimaCompra()) && isBigDecimalMaiorQueZero(di.getIcmsStAliqUltimaCompra());
+//		return (!di.getIcmsStBaseUltimaCompra().equals(BigDecimal.ZERO) && !di.getIcmsStValorUltimaCompra().equals(BigDecimal.ZERO) 
+//				&& !di.getItemQtdCompradaUltimaCompra().equals(BigDecimal.ZERO) && !di.getIcmsStAliqUltimaCompra().equals(BigDecimal.ZERO));
 	}
 	
 	private CalculoImpostoIcms60 calculaIcms60(DocumentoFiscalItem di, TributacaoEstadual tributacao, DocumentoFiscal docFiscal) {
