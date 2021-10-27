@@ -202,12 +202,13 @@ public class DocumentoFiscalService extends DocumentoService {
 		if (opDevolucao.isPresent()) {
 			Devolucao devolucaoSaved = opDevolucao.get();
 			DocumentoFiscal newDocumentoFiscal = new DocumentoFiscal(devolucao);
-			/**
-			 * Necessário que o Calculo Fiscal federal seja feito antes, por causa do IPI (ele é adicionado no total do Documento, que é calculado no calcFiscalEstadual)
-			 */
-			calcFiscalFederal.calculaImposto(newDocumentoFiscal, devolucao);
+			// É essencial que o CALCULO de ICMS, seja antes do PIS/COFINS, POIS, agora nas saídas, poderemos retirar o ICMS VALOR da BC do PIS/COFINS
 			calcFiscalEstadual.calculaImposto(newDocumentoFiscal, devolucao);
-			
+			// PS: Terei que verificar/pensar, como ficará essa retirada do ICMS VALOR, nos casos que for um entrada de DEVOLUÇÃO DO CLIENTE, que foi emitida por nóis
+			// Acredito que não terá nenhum problema já que eu calculo a BC PIS/COFINS, ao invés de pegar o que veio na nota
+			calcFiscalFederal.calculaImposto(newDocumentoFiscal);			
+//			calcFiscalFederal.calculaImposto(newDocumentoFiscal, devolucao);
+
 			Optional<DocumentoFiscal> opOldDocFiscalDevolucao = this.findDocumentoFiscalByDevolucao(devolucaoSaved);
 			if(opOldDocFiscalDevolucao.isPresent()) {
 				// Se já tiver um DocumentoFiscal, para a devolução, não será salvo/atualizado o calculo novo, apenas chave de acesso, série, etc que vier no novo documento
@@ -223,6 +224,7 @@ public class DocumentoFiscalService extends DocumentoService {
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
 		final boolean validaAlgumTributo = (validaTribuEsta || validaTribuFede);
 		if (validaAlgumTributo && !documentoFiscal.getOperacao().isDevolucao()) {
+			// É essencial que o CALCULO de ICMS, seja antes do PIS/COFINS, POIS, agora nas saídas, poderemos retirar o ICMS VALOR da BC do PIS/COFINS
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 //			olhoNoImpostoService.setDeOlhoNoImposto(Optional.of(documentoFiscal));
