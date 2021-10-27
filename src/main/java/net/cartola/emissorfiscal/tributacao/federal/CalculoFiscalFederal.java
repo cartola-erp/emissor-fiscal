@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.tributacao.federal;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static net.cartola.emissorfiscal.documento.TipoServico.ENERGIA;
 
@@ -60,8 +61,8 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 
 		documentoFiscal.getItens().stream().forEach(di -> {
 			TributacaoFederal tributacao = mapaTributacoesPorNcm.get(di.getNcm());
-			listaImpostos.add(calculoPisCofins.calculaPis(di, tributacao));
-			listaImpostos.add(calculoPisCofins.calculaCofins(di, tributacao));
+			listaImpostos.add(calculoPisCofins.calculaPis(documentoFiscal, di, tributacao));
+			listaImpostos.add(calculoPisCofins.calculaCofins(documentoFiscal, di, tributacao));
 			listaImpostos.add(calculoIpi.calculaIpi(di, tributacao));
 		});
 
@@ -70,24 +71,33 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 		setaIpiBaseValor(documentoFiscal, listaImpostos);
 	}
 
-	@Override
-	public DocumentoFiscal calculaImposto(DocumentoFiscal documentoFiscal, Devolucao devolucao) {
-		this.calculaImposto(documentoFiscal);
-		List<CalculoImposto> listaImpostos =  new LinkedList<>();
-		
-		Map<Integer, Map<Long, Map<String, DevolucaoItem>>> mapDevolucaoPorItemCodigoXECodigoSeq = devolucao.getItens().stream()
-				.collect(groupingBy(DevolucaoItem::getItem, groupingBy(DevolucaoItem::getCodigoX,
-						toMap(DevolucaoItem::getCodigoSequencia,
-								(DevolucaoItem devoItem) -> devoItem))));
-		
-		documentoFiscal.getItens().forEach(di -> {
-			DevolucaoItem devoItem = mapDevolucaoPorItemCodigoXECodigoSeq.get(di.getItem()).get(di.getCodigoX()).get(di.getCodigoSequencia());
-			listaImpostos.add(calculoIpi.calculaIpi(di, devoItem));
-		});
-		
-		setaIpiBaseValor(documentoFiscal, listaImpostos);
-		return documentoFiscal;
-	}
+	/**
+	 * Como o calculo do IPI, agora, está dentro do ICMS, não é preciso isso aqui 
+	 */
+	
+	/**
+	 * Antes não estava dentro POIS:
+	 * 
+	 * Era Necessário que o Calculo Fiscal federal seja feito antes, por causa do IPI (ele é adicionado no total do Documento, que é calculado no calcFiscalEstadual)
+	 */
+//	@Override
+//	public DocumentoFiscal calculaImposto(DocumentoFiscal documentoFiscal, Devolucao devolucao) {
+//		this.calculaImposto(documentoFiscal);
+//		List<CalculoImposto> listaImpostos =  new LinkedList<>();
+//		
+//		Map<Integer, Map<Long, Map<String, DevolucaoItem>>> mapDevolucaoPorItemCodigoXECodigoSeq = devolucao.getItens().stream()
+//				.collect(groupingBy(DevolucaoItem::getItem, groupingBy(DevolucaoItem::getCodigoX,
+//						toMap(DevolucaoItem::getCodigoSequencia,
+//								(DevolucaoItem devoItem) -> devoItem))));
+//		
+//		documentoFiscal.getItens().forEach(di -> {
+//			DevolucaoItem devoItem = mapDevolucaoPorItemCodigoXECodigoSeq.get(di.getItem()).get(di.getCodigoX()).get(di.getCodigoSequencia());
+//			listaImpostos.add(calculoIpi.calculaIpi(di, devoItem));
+//		});
+//		
+//		setaIpiBaseValor(documentoFiscal, listaImpostos);
+//		return documentoFiscal;
+//	}
 	
 	
 	/**
@@ -128,7 +138,7 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 		documentoFiscal.setPisBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getPisBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setPisValor(totaliza(listaImpostos.stream()
-				.filter(pis -> pis.getImposto().equals(Imposto.PIS)).collect(Collectors.toList())));
+				.filter(pis -> pis.getImposto().equals(Imposto.PIS)).collect(toList())));
 	}
 
 	private void setaCofinsBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
@@ -136,15 +146,15 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 		documentoFiscal.setCofinsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getCofinsBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setCofinsValor(totaliza(listaImpostos.stream()
-				.filter(cofins -> cofins.getImposto().equals(Imposto.COFINS)).collect(Collectors.toList())));
+				.filter(cofins -> cofins.getImposto().equals(Imposto.COFINS)).collect(toList())));
 	}
 	
-	private void setaIpiBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
+	public void setaIpiBaseValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listaImpostos) {
 		LOG.log(Level.INFO, "Totalizando o IPI BASE e o VALOR para o DocumentoFiscal: {0} ", documentoFiscal);
 		documentoFiscal.setIpiBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIpiBase)
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 		documentoFiscal.setIpiValor(totaliza(listaImpostos.stream()
-				.filter(ipi -> ipi.getImposto().equals(Imposto.IPI)).collect(Collectors.toList())));
+				.filter(ipi -> ipi.getImposto().equals(Imposto.IPI)).collect(toList())));
 	}
 	
 	private BigDecimal totaliza(List<CalculoImposto> listaImposto) {

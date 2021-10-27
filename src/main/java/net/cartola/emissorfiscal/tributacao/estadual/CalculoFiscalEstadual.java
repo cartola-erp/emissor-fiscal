@@ -26,7 +26,6 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.ncm.Ncm;
-import net.cartola.emissorfiscal.tributacao.CalculoFiscal;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
@@ -36,10 +35,12 @@ import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms70;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms90;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcmsSt;
 import net.cartola.emissorfiscal.tributacao.Imposto;
+import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
+import net.cartola.emissorfiscal.tributacao.federal.CalculoIpi;
 
 
 @Service
-public class CalculoFiscalEstadual implements CalculoFiscal {
+public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 	
 	private static final Logger LOG = Logger.getLogger(CalculoFiscalEstadual.class.getName());
 	
@@ -63,6 +64,12 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 	
 	@Autowired
 	private CalculoIcmsDevolucao calculoIcmsDevolucao;
+	
+	@Autowired
+	private CalculoFiscalFederal calcFiscalFederal;
+	
+	@Autowired
+	private CalculoIpi calculoIpi;
 	
 	/**
 	 * O calculo de imposto retornado aqui é do TOTAL DA NFE (aparentemente)
@@ -111,6 +118,7 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 		docFisc.getItens().forEach(di -> {
 			DevolucaoItem devolucaoItem = mapDevolucaoPorItemCodigoXECodigoSeq.get(di.getItem()).get(di.getCodigoX()).get(di.getCodigoSequencia());
 			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(devolucaoItem.getCfopFornecedor());
+			listCalculoImpostos.add(calculoIpi.calculaIpi(di, devolucaoItem));
 			calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem).ifPresent(listCalculoImpostos::add);
 		});
 			
@@ -120,6 +128,8 @@ public class CalculoFiscalEstadual implements CalculoFiscal {
 //		docFisc.setIpiBase(calcularTotalIpiBase(docFisc));
 //		docFisc.setIpiValor(calcularTotalIpiDevolvido(docFisc));
 		docFisc.setValorTotalProduto(calcularValorTotalProdutos(docFisc));
+		calcFiscalFederal.setaIpiBaseValor(docFisc, listCalculoImpostos);
+		
 		/**
 		 * ESTOU subtraindo o desconto aqui, pois não é informado no XML o DESCONTO quando vendemos etc... Atualmente apenas nas DEVOLUCOES
 		 */
