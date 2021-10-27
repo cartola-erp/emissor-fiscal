@@ -51,13 +51,55 @@ INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, fin
 -- ===============================================================================================================================		
 
 -- ================================ 7 - DEVOLUCAO PARA FORNECEDOR INTERESTADUAL ===================================================								
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6101, 2102, 6202, "COMERCIALIZACAO", "NORMAL", "", 7);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6102, 2102, 6202, "COMERCIALIZACAO", "NORMAL", "", 7);
 
+-- Destacamos o ICMS na Devolução (Veio na compra mas não podemos nos creditar)
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6401, 2403, 6411, "COMERCIALIZACAO", "NORMAL", "", 7);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6402, 2403, 6411, "COMERCIALIZACAO", "NORMAL", "", 7);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6403, 2403, 6411, "COMERCIALIZACAO", "NORMAL", "", 7);
+					
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(60, 6405, 2403, 6411, "COMERCIALIZACAO", "NORMAL", "", 7);
+-- Óleo
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(60, 6652, 2652, 6661, "COMERCIALIZACAO", "NORMAL", "", 7);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(60, 6655, 2652, 6661, "COMERCIALIZACAO", "NORMAL", "", 7);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(60, 6656, 2652, 6661, "COMERCIALIZACAO", "NORMAL", "", 7);
 -- ===============================================================================================================================		
 
 
 -- ================================ 40 -  DEVOLUCAO PARA FORNECEDOR INTERESTADUAL (TRIBUTADA) ===================================================								
 
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6101, 2102, 6202, "COMERCIALIZACAO", "NORMAL", "", 40);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6102, 2102, 6202, "COMERCIALIZACAO", "NORMAL", "", 40);
 
+-- Destacamos o ICMS na Devolução (Veio na compra mas não podemos nos creditar)
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6401, 2403, 6411, "COMERCIALIZACAO", "NORMAL", "", 40);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6402, 2403, 6411, "COMERCIALIZACAO", "NORMAL", "", 40);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(10, 6403, 2403, 6411, "COMERCIALIZACAO", "NORMAL", "", 40);
+					
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(60, 6405, 2403, 6411, "COMERCIALIZACAO", "NORMAL", "", 40);					
+-- Óleo
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(60, 6652, 2652, 6661, "COMERCIALIZACAO", "NORMAL", "", 40);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(60, 6655, 2652, 6661, "COMERCIALIZACAO", "NORMAL", "", 40);
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , mens, oper_id) 
+					VALUES	(60, 6656, 2652, 6661, "COMERCIALIZACAO", "NORMAL", "", 40);
 
 -- ===============================================================================================================================		
 
