@@ -140,7 +140,8 @@ public class RegD100 {
 		this.indEmit = getIndicadorEmitente(servicoTransporte, lojaSped);
 		/*Nos casos que emitimos a NFE, o cod é do DESTINATARIO, contrario, seria o EMITENTE*/
 		this.codPart = SpedFiscalUtil.getCodPart(servicoTransporte, mapLojasPorCnpj);
-		this.codMod = servicoTransporte.getModelo();
+		ModeloDocumentoFiscal modeloDoc = servicoTransporte.getModelo() == null ? ModeloDocumentoFiscal._57 : servicoTransporte.getModelo();
+		this.codMod = modeloDoc;
 		this.codSit = getCodSituacao(servicoTransporte);
 		this.ser = servicoTransporte.getSerie();
 //		this.sub = null; 

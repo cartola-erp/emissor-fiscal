@@ -17,6 +17,7 @@ import static net.cartola.emissorfiscal.util.PredicateUtil.distinctByKey;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.criaPredicateIsOperacaoDoDocumentoEscriturada;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodItem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isDocumentoFiscalEmDigitacao;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isNfeNaoAutorizada;
 import static net.cartola.emissorfiscal.util.ValidationHelper.collectionIsEmptyOrNull;
 
 import java.time.LocalDate;
@@ -225,16 +226,17 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 	private List<Pessoa> getListCadastrosPessoas(List<DocumentoFiscal> listDocFiscal, List<DocumentoFiscal> listDocFiscalOutrosServico) {
 		LOG.log(Level.INFO, "Buscando todos os cadastros de Pessoas, com base nos DocumentoFiscais" );
 		Set<Long> pessoasId = new HashSet<>();
-		Predicate<DocumentoFiscal> d = doc -> !_59.equals(doc.getModelo()) &&  !NFSE.equals(doc.getModelo());
-
-		final Set<Long> idsEmitenteDocFiscal = listDocFiscal.stream().filter(docFisc -> d.test(docFisc))
+		Predicate<DocumentoFiscal> escrituraDocumento = doc -> !_59.equals(doc.getModelo()) && !NFSE.equals(doc.getModelo()) && !TipoServico.OUTROS.equals(doc.getTipoServico());
+		Predicate<DocumentoFiscal> isNfeAutorizada = nfe -> !isNfeNaoAutorizada(nfe);
+		
+		final Set<Long> idsEmitenteDocFiscal = listDocFiscal.stream().filter(docFisc -> escrituraDocumento.and(isNfeAutorizada).test(docFisc))
 				.map(docFiscal -> docFiscal.getEmitente().getId()).collect(toSet());
-		final Set<Long> idsDestinatarioDocFiscal = listDocFiscal.stream().filter(docFisc -> d.test(docFisc))
+		final Set<Long> idsDestinatarioDocFiscal = listDocFiscal.stream().filter(docFisc -> escrituraDocumento.and(isNfeAutorizada).test(docFisc))
 				.map(docFiscal -> docFiscal.getDestinatario().getId()).collect(toSet());
 
-		final Set<Long> idsEmitenteServico = listDocFiscalOutrosServico.stream().filter(docFiscServ -> d.test(docFiscServ))
+		final Set<Long> idsEmitenteServico = listDocFiscalOutrosServico.stream().filter(docFiscServ -> escrituraDocumento.and(isNfeAutorizada).test(docFiscServ))
 				.map(docFiscalServico -> docFiscalServico.getEmitente().getId()).collect(toSet());
-		final Set<Long> idsDestinatarioServico = listDocFiscalOutrosServico.stream().filter(docFiscServ -> d.test(docFiscServ))
+		final Set<Long> idsDestinatarioServico = listDocFiscalOutrosServico.stream().filter(docFiscServ -> escrituraDocumento.and(isNfeAutorizada).test(docFiscServ))
 				.map(docFiscalServico -> docFiscalServico.getDestinatario().getId()).collect(toSet());
 		
 		pessoasId.addAll(idsEmitenteDocFiscal);

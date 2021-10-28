@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
 import static java.util.stream.Collectors.toList;
+import static net.cartola.emissorfiscal.sped.fiscal.blocoC.service.TipoPreenchimentoRegC100.EX_1_COD_SITUACAO;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodPart;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
@@ -28,6 +29,7 @@ import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC100;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC195;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 import net.cartola.emissorfiscal.util.ValidationHelper;
 
 /**
@@ -166,26 +168,29 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 			break;
 		}
 		
-		
-		/* INFO COMPL. OPERACAO INTERESTADUAL (FCP)  */
-		if (docFisc.getOperacao().getId().equals(spedFiscPropertie.getCodVendaInterestadualNaoContribuinte())) {
-			regC100.setRegC101(regC101Service.montarRegC101(movimentosIcmsIpi, docFisc));
+		if (!tipoPreenchimentoRegC100.equals(EX_1_COD_SITUACAO)) {
+			
+			/* INFO COMPL. OPERACAO INTERESTADUAL (FCP)  */
+			if (docFisc.getOperacao().getId().equals(spedFiscPropertie.getCodVendaInterestadualNaoContribuinte())) {
+				regC100.setRegC101(regC101Service.montarRegC101(movimentosIcmsIpi, docFisc));
+			}
+			
+			
+			if (hasText(docFisc.getInfoAdicionalFisco())) {
+				regC100.setRegC110(regC110Service.montarGrupoRegC110(docFisc, lojaSped, movimentosIcmsIpi));
+			}
+			
+			/**
+			 * Atualmente, somente no caso abaixo que é gerado os REGISTROS C195 e D195. POIS somente esses casos que tinham no ARQUIVO (gerado pelo sistema de terceiros), 
+			 * que a GABI(contabilidade/fiscal) me passou
+			 */
+			if(isGeraRegC195PortariaCat66De2018(regC100)) {
+				List<RegC195> listRegC195 = regC195Service.montarGrupoRegC195PortariaCat66De2018(regC100.getRegC190(), docFisc, movimentosIcmsIpi);
+				movimentosIcmsIpi.addObservacaoLancamentoFiscal(listRegC195);
+				regC100.setRegC195(listRegC195);
+			}
 		}
 		
-		
-		if (hasText(docFisc.getInfoAdicionalFisco())) {
-			regC100.setRegC110(regC110Service.montarGrupoRegC110(docFisc, lojaSped, movimentosIcmsIpi));
-		}
-		
-		/**
-		 * Atualmente, somente no caso abaixo que é gerado os REGISTROS C195 e D195. POIS somente esses casos que tinham no ARQUIVO (gerado pelo sistema de terceiros), 
-		 * que a GABI(contabilidade/fiscal) me passou
-		 */
-		if(isGeraRegC195PortariaCat66De2018(regC100)) {
-			List<RegC195> listRegC195 = regC195Service.montarGrupoRegC195PortariaCat66De2018(regC100.getRegC190(), docFisc, movimentosIcmsIpi);
-			movimentosIcmsIpi.addObservacaoLancamentoFiscal(listRegC195);
-			regC100.setRegC195(listRegC195);
-		}
 		movimentosIcmsIpi.addDocumentoFiscalPorSituacao(docFisc);
 		return regC100;
 	}
@@ -225,10 +230,9 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 */
 	private TipoPreenchimentoRegC100 verificarTipoPreenchimento(DocumentoFiscal docFisc, Loja lojaSped) {
 //		LOG.log(Level.INFO, "Verificando o tipo de preenchimento do Registro C100");
-		List<NFeStatus> nfesNaoAutorizadas = Arrays.asList(NFeStatus.CANCELADA, NFeStatus.DENEGADA, NFeStatus.INUTILIZADA);
 
-		if (nfesNaoAutorizadas.contains(docFisc.getStatus())) {
-			return TipoPreenchimentoRegC100.EX_1_COD_SITUACAO;
+		if (SpedFiscalUtil.isNfeNaoAutorizada(docFisc)) {
+			return EX_1_COD_SITUACAO;
 		}
 
 		if (docFisc.getEmitente().getCnpj().equals(lojaSped.getCnpj())) {

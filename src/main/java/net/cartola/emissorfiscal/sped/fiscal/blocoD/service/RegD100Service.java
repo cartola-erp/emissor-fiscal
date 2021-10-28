@@ -19,6 +19,7 @@ import net.cartola.emissorfiscal.documento.ChaveAcesso;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
+import net.cartola.emissorfiscal.documento.TipoServico;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
@@ -159,7 +160,8 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 		
 		regD100.setIndOper(servicoTransporte.getTipoOperacao());
 		regD100.setIndEmit(getIndicadorEmitente(servicoTransporte, lojaSped));
-		regD100.setCodMod(servicoTransporte.getModelo());
+		ModeloDocumentoFiscal modeloDoc = servicoTransporte.getModelo() == null ? ModeloDocumentoFiscal._57 : servicoTransporte.getModelo();
+		regD100.setCodMod(modeloDoc);
 		regD100.setCodSit(getCodSituacao(servicoTransporte));
 		regD100.setSer(servicoTransporte.getSerie());
 //		regD100.setSub(sub);		// SubSerie (os arquivos que eu vi de exemplo estavem smp VAZIO
@@ -176,7 +178,8 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 		regD100.setIndOper(servicoTransporte.getTipoOperacao());
 		regD100.setIndEmit(getIndicadorEmitente(servicoTransporte, lojaSped));
 		regD100.setCodPart(getCodPart(servicoTransporte, movimentosIcmsIpi.getMapLojasPorCnpj()));
-		regD100.setCodMod(servicoTransporte.getModelo());
+		ModeloDocumentoFiscal modeloDoc = servicoTransporte.getModelo() == null ? ModeloDocumentoFiscal._57 : servicoTransporte.getModelo();
+		regD100.setCodMod(modeloDoc);
 		regD100.setCodSit(getCodSituacao(servicoTransporte));
 		regD100.setSer(servicoTransporte.getSerie());
 //		regD100.setSub(servicoTransporte.getSub);
@@ -200,11 +203,11 @@ class RegD100Service implements MontaGrupoDeRegistroList<RegD100, MovimentoMensa
 //		Loja lojaSped = movimentosIcmsIpi.getLoja();
 		
 		Set<DocumentoFiscal> setServicoTransporte = listDocumentoFiscal.stream()
-				.filter(docFisc -> getModelosDocFiscRegD100().contains(docFisc.getModelo())).collect(toSet());
+				.filter(docFisc -> getModelosDocFiscRegD100().contains(docFisc.getModelo()) 
+						|| TipoServico.CTE.equals(docFisc.getTipoServico())).collect(toSet());
 		return setServicoTransporte;
 	}
 
-	
 	/**
 	 * Modelos Dos DocumentoFiscais de Transportes, válidos para ser escriturados no REG D100.
 	 * 

@@ -4,6 +4,9 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.ENTRADA;
 import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
+import static net.cartola.emissorfiscal.documento.TipoServico.NENHUM;
+import static net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal.NFSE;
+import static net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal._57;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -259,7 +262,10 @@ public final class SpedFiscalUtil {
 	 */
 	public static Predicate<DocumentoFiscal> criaPredicateIsOperacaoDoDocumentoEscriturada(Loja lojaAtualSped) {
 		 Predicate<DocumentoFiscal> isOperacaoDoDocumentoEscriturada = docFiscal -> ENTRADA.equals(docFiscal.getTipoOperacao()) 
-				&& !docFiscal.getEmitente().getCnpj().equals(lojaAtualSped.getCnpj());
+				&& !docFiscal.getEmitente().getCnpj().equals(lojaAtualSped.getCnpj())
+				&& !_57.equals(docFiscal.getModelo())
+				&& !NFSE.equals(docFiscal.getModelo())
+				&& NENHUM.equals(docFiscal.getTipoServico());
 		return isOperacaoDoDocumentoEscriturada;
 	}
 	
@@ -306,6 +312,16 @@ public final class SpedFiscalUtil {
 //		return null;
 	}
 
+	/**
+	 * Retorna <b>true<b>, se o Status da NFE, for: CANCELADA, DENEGADA ou INUTILIZADA
+	 * 
+	 * @param docFisc
+	 * @return
+	 */
+	public static boolean isNfeNaoAutorizada(DocumentoFiscal docFisc) {
+		List<NFeStatus> nfesNaoAutorizadas = Arrays.asList(NFeStatus.CANCELADA, NFeStatus.DENEGADA, NFeStatus.INUTILIZADA);
+		return nfesNaoAutorizadas.contains(docFisc.getStatus());
+	}
 	/**
 	 * Irá obter, o Número do Cupom Fiscal Elerônico <\br>, no XML do SAT
 	 * tag <nCFe>
