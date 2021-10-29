@@ -36,8 +36,7 @@ class RegE300Service implements MontaGrupoDeRegistroList<RegE300, MovimentoMensa
 		List<RegE300> listE300 = new ArrayList<>();
 		Map<EstadoSigla, List<DocumentoFiscal>> mapDocFiscInterestadualComDifalPorUf = movimentosIcmsIpi
 				.getListDocFiscInterestadualComDifal().stream()
-				.collect(groupingBy((docFisc) -> docFisc.getEmitente().getEndereco().getUf()));
-		
+				.collect(groupingBy((docFisc) -> docFisc.getDestinatario().getEndereco().getUf()));
 		
 		for (EstadoSigla uf : mapDocFiscInterestadualComDifalPorUf.keySet()) {
 			List<DocumentoFiscal> listDocFiscNaUf = mapDocFiscInterestadualComDifalPorUf.get(uf);
