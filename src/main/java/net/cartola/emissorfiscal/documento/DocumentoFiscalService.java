@@ -132,13 +132,14 @@ public class DocumentoFiscalService extends DocumentoService {
 	}
 	
 	public Optional<DocumentoFiscal> findDocumentoFiscalByCnpjTipoOperacaoSerieNumeroEModelo(DocumentoFiscal newDocFiscal) {
+		String lojaCnpj = newDocFiscal.getLoja().getCnpj();
 		String cnpjEmitente = newDocFiscal.getEmitente().getCnpj();
 		IndicadorDeOperacao tipoOperacao = newDocFiscal.getTipoOperacao();
 		Long serie = newDocFiscal.getSerie();
 		Long numeroNota = newDocFiscal.getNumeroNota();
 		ModeloDocumentoFiscal modelo = newDocFiscal.getModelo();
 		
-		return documentoFiscalRepository.findByEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNotaAndModelo(cnpjEmitente,  tipoOperacao,  serie,  numeroNota, modelo);
+		return documentoFiscalRepository.findByLojaCnpjAndEmitenteCnpjAndTipoOperacaoAndSerieAndNumeroNotaAndModelo(lojaCnpj, cnpjEmitente,  tipoOperacao,  serie,  numeroNota, modelo);
 		
 	}
 

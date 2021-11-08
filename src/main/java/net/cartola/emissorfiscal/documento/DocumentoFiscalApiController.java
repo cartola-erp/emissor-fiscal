@@ -62,7 +62,22 @@ public class DocumentoFiscalApiController {
 		response.setData(opDocFiscal.get());
 		return ResponseEntity.ok(response);
 	}
-	 
+	
+	// TODO -> revisar, estava fazendo as remessa em GARANTIA 05.11
+	@PostMapping("/deletar")
+//	public ResponseEntity<Response<DocumentoFiscal>> deleteDocumentoFiscal(@RequestBody DocumentoFiscal docFiscalToBeDeleted) {
+	public ResponseEntity<DocumentoFiscal> deleteDocumentoFiscal(@RequestBody DocumentoFiscal docFiscalToBeDeleted) {
+		Response<DocumentoFiscal> response = new Response<>();
+
+		Optional<DocumentoFiscal> opDocFiscalInDatabase = docFiscalService.findDocumentoFiscal(docFiscalToBeDeleted);
+		if(!opDocFiscalInDatabase.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		docFiscalService.deleteById(opDocFiscalInDatabase.get().getId());
+		return ResponseEntity.ok(null);
+	}
+	
 	@PostMapping()
 	public ResponseEntity<Response<DocumentoFiscal>> save(@Valid @RequestBody DocumentoFiscal newDocFiscal) {
 		LOG.log(Level.INFO, "Salvando o DocumentoFiscal {0} " ,newDocFiscal);
