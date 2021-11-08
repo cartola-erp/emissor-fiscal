@@ -58,17 +58,17 @@ public class CalculoFiscalFederal implements CalculoFiscal {
 						ncm -> tributacoesFederais.stream()
 								.filter(tributacaoFederal -> tributacaoFederal.getNcm().getId().equals(ncm.getId()))
 								.findAny().get()));
-
+		
 		documentoFiscal.getItens().stream().forEach(di -> {
 			TributacaoFederal tributacao = mapaTributacoesPorNcm.get(di.getNcm());
 			listaImpostos.add(calculoPisCofins.calculaPis(documentoFiscal, di, tributacao));
 			listaImpostos.add(calculoPisCofins.calculaCofins(documentoFiscal, di, tributacao));
-			listaImpostos.add(calculoIpi.calculaIpi(di, tributacao));
+//			listaImpostos.add(calculoIpi.calculaIpi(di, tributacao));			// OBS: > Está comentado pois, só usamos o calculo de IPI nas Devoluções < e esse aqui está zerando o IPI, nessas situações
 		});
 
 		setaPisBaseValor(documentoFiscal, listaImpostos);
 		setaCofinsBaseValor(documentoFiscal, listaImpostos);
-		setaIpiBaseValor(documentoFiscal, listaImpostos);
+//		setaIpiBaseValor(documentoFiscal, listaImpostos);
 	}
 
 	/**
