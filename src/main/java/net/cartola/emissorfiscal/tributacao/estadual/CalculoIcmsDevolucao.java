@@ -16,6 +16,7 @@ import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms60;
+import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms90;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoIpi;
 
 /**
@@ -50,13 +51,16 @@ public class CalculoIcmsDevolucao {
 		case 60:
 			opCalcImposto = Optional.of(((CalculoImpostoIcms60) calculaIcms60(di, tribEstaDevo, devoItem)));
 			break;
+		case 90:
+			opCalcImposto = Optional.of(((CalculoImpostoIcms90) calculaIcms90(di, tribEstaDevo, devoItem)));
+			break;
 		default:
 			opCalcImposto = Optional.empty();
 			break;
 		}
 		return opCalcImposto;
 	}
-	
+
 	/**
 	 * 
 	 * @param devoItem
@@ -178,5 +182,10 @@ public class CalculoIcmsDevolucao {
 		return icms60;
 	}
 	
+	private CalculoImpostoIcms90 calculaIcms90(DocumentoFiscalItem di, TributacaoEstadualDevolucao tribEstaDevo, DevolucaoItem devoItem) {
+		LOG.log(Level.INFO, "Calculando o ICMS 90 (DEVOLUCAO) para o ITEM: {0} ", devoItem);
+
+		return null;
+	}
 	
 }

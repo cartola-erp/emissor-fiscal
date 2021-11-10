@@ -43,6 +43,7 @@ public class TributacaoEstadualDevolucao implements Serializable {
     private int cfopVenda;				// CFOP -> Que saiu na nota de VENDA (Seja ela do fornecedor ou dá própria AG)
     private int cfopEntrada;			// CFOP -> Que foi dado entrada na AG
     private int cfopNotaDevolucao;		// CFOP -> Que saiu/sairá na NF do emitida por contribuinte. PS (Nos caso que emitimos pelo cliente essa CFOP será igual a CFOP de ENTRADA)
+    private boolean usaMesmaCstFornecedor;
     
 //    icmsCest
 //	private int codigoAnp;		// --> Deverá ser preenchido pelo OBJ -> TributacaoEstadual
@@ -99,7 +100,8 @@ public class TributacaoEstadualDevolucao implements Serializable {
 //		this.produtoImportado = produtoImportado;
 //	}
 
-	@Column(name = "icms_cst", scale = 4, nullable = false)
+//	@Column(name = "icms_cst", scale = 4, nullable = false)
+	@Column(name = "icms_cst", scale = 4)
     public int getIcmsCst() {
         return icmsCst;
     }
@@ -134,6 +136,15 @@ public class TributacaoEstadualDevolucao implements Serializable {
 	public void setCfopNotaDevolucao(int cfopNotaDevolucao) {
 		this.cfopNotaDevolucao = cfopNotaDevolucao;
 	}
+
+	@Column(name = "usa_mesm_cst_forn", columnDefinition = "tinyint(1) NOT NULL DEFAULT '0' ")
+	public boolean isUsaMesmaCstFornecedor() {
+		return usaMesmaCstFornecedor;
+	}
+
+	public void setUsaMesmaCstFornecedor(boolean usaMesmaCstFornecedor) {
+		this.usaMesmaCstFornecedor = usaMesmaCstFornecedor;
+	}
 	
 	@Column(name="mens")
     public String getMensagem() {
@@ -167,6 +178,6 @@ public class TributacaoEstadualDevolucao implements Serializable {
 				+ ", cfopEntrada=" + cfopEntrada + ", cfopNotaDevolucao=" + cfopNotaDevolucao + ", mensagem=" + mensagem
 				+ "]";
 	}
-
+	
 }
 
