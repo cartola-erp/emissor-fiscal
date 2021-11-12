@@ -411,23 +411,26 @@ INSERT INTO `esta` VALUES (1,'ACRE','AC'),(2,'ALAGOAS','AL'),(3,'AMAZONAS','AM')
 UNLOCK TABLES;
 
 
-
 --
 -- Table structure for table `inve`
 --
 
-DROP TABLE IF EXISTS `inve`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `inve` (
+ CREATE TABLE `inve` (
   `inve_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `data` date DEFAULT NULL,
-  `pess_id` bigint(20) DEFAULT NULL,
+  `alterado` datetime DEFAULT NULL,
+  `cadastro` datetime DEFAULT NULL,
+  `fim` date DEFAULT NULL,
+  `inicio` date DEFAULT NULL,
+  `inve_cod_erp` int(11) DEFAULT NULL COMMENT 'Código do inventário no ERP - DB autogeral',
+  `valor` decimal(19,2) DEFAULT NULL COMMENT 'Valor',
+  `vlr_cons` decimal(19,2) DEFAULT NULL COMMENT 'Valor consumo',
+  `vlr_sald` decimal(19,2) DEFAULT NULL COMMENT 'Valor saldo',
+  `vlr_trans` decimal(19,2) DEFAULT NULL COMMENT 'Valor transferindo',
+  `loja_id` bigint(20) NOT NULL,
   PRIMARY KEY (`inve_id`),
-  KEY `FKq3vpuj7kv6bj5924y2952wbe6` (`pess_id`),
-  CONSTRAINT `FKq3vpuj7kv6bj5924y2952wbe6` FOREIGN KEY (`pess_id`) REFERENCES `pess` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `fnk_inve_loja_id` (`loja_id`),
+  CONSTRAINT `fnk_inve_loja_id` FOREIGN KEY (`loja_id`) REFERENCES `loja` (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 --
 -- Dumping data for table `inve`
@@ -442,19 +445,41 @@ UNLOCK TABLES;
 -- Table structure for table `inve_item`
 --
 
-DROP TABLE IF EXISTS `inve_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `inve_item` (
   `inve_item_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `quan` decimal(10,2) DEFAULT NULL,
-  `valo_unit` decimal(10,2) DEFAULT NULL,
+  `cod_erp` int(11) DEFAULT NULL COMMENT ' PK  de autogeral  inventarios itens ',
+  `codigo_seq` varchar(255) DEFAULT NULL,
+  `codigo_x` bigint(20) DEFAULT NULL,
+  `custo` decimal(19,2) DEFAULT NULL,
+  `dscr` varchar(255) DEFAULT NULL,
+  `dscr2` varchar(255) DEFAULT NULL,
+  `dscr3` varchar(255) DEFAULT NULL,
+  `disponivel` decimal(19,2) DEFAULT NULL,
+  `entr_comp` decimal(19,2) DEFAULT NULL COMMENT 'Entradas compras',
+  `entr_devo` decimal(19,2) DEFAULT NULL COMMENT 'Entradas devolucoes',
+  `entr_tran` decimal(19,2) DEFAULT NULL COMMENT 'Entradas transferencias',
+  `entrando` decimal(19,2) DEFAULT NULL COMMENT 'Entrando',
+  `esto_atua` decimal(19,2) DEFAULT NULL COMMENT 'Estoque Atual ',
+  `esto_contr` decimal(19,2) DEFAULT NULL COMMENT 'Estoque Controle',
+  `esto_decl` decimal(19,2) DEFAULT NULL COMMENT 'Estoque Declarado',
+  `loja_erp` int(11) NOT NULL,
+  `prec_praz` decimal(19,2) DEFAULT NULL,
+  `prod_cod_erp` int(11) DEFAULT NULL,
+  `said_devo` decimal(19,2) DEFAULT NULL COMMENT 'Saidas devolucoes',
+  `said_outr` decimal(19,2) DEFAULT NULL COMMENT 'Saidas outras',
+  `said_tran` decimal(19,2) DEFAULT NULL COMMENT 'Saidas transferencias',
+  `said_vend` decimal(19,2) DEFAULT NULL COMMENT 'Saidas vendas',
+  `said_vend_cada` decimal(19,2) DEFAULT NULL COMMENT 'Saidas vendas cadastradas',
+  `saindo` decimal(19,2) DEFAULT NULL,
+  `sald_ante` decimal(19,2) DEFAULT NULL COMMENT 'Saldo anterior',
+  `sald_post` decimal(19,2) DEFAULT NULL COMMENT 'Saldo posterior',
+  `transferindo` decimal(19,2) DEFAULT NULL,
+  `unidade` varchar(255) DEFAULT NULL,
   `inve_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`inve_item_id`),
   KEY `fk_inve_item_inve` (`inve_id`),
   CONSTRAINT `fk_inve_item_inve` FOREIGN KEY (`inve_id`) REFERENCES `inve` (`inve_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 --
 -- Dumping data for table `inve_item`

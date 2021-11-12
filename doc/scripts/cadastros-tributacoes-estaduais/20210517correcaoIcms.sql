@@ -14,9 +14,9 @@
 -- Todos os produtos que tiverem a classe fiscal abaixa e forem TRIBUTADOS como "normal" serão atualizados a TRIBUTACAO para "ST" (Substituição Tributária) (CST 60 - Base E Aliq ZERADA)
 -- 
 
-SELECT * FROM autogeral.produtos_dbf WHERE classe_fiscal IN (40091100, 90262090, 87089100) AND tributacao_codigo = 1;
+SELECT * FROM autogeral.produtos_dbf WHERE classe_fiscal IN (40091100, 90262090, 87169090, 40169300, 84099115, 40169990, 84099112, 84099190, 84136019, 87083090) AND tributacao_codigo = 1;
 
-update autogeral.produtos_dbf set tributacao_codigo = 2 WHERE classe_fiscal IN (40091100, 90262090, 87089100) AND tributacao_codigo = 1;
+update autogeral.produtos_dbf set tributacao_codigo = 2 WHERE classe_fiscal IN (40091100, 90262090, 87169090, 40169300, 84099115, 40169990, 84099112, 84099190, 84136019, 87083090) AND tributacao_codigo = 1;
 
 
 -- PS: Os ncms ACIMA no emissorfiscal, já estão como ST, e os abaixo tbm.
@@ -26,9 +26,9 @@ update autogeral.produtos_dbf set tributacao_codigo = 2 WHERE classe_fiscal IN (
 -- Todos os produtos que tiverem os NCMs e que estiverem cadastrados como ST (tributacao_codigo = 2) serão atualizados a TRIBUTACAO do ICMS para "NORMAL" (CST 00)
 -- 
 
-SELECT * FROM autogeral.produtos_dbf WHERE classe_fiscal IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 39269090, 32141010 ) AND tributacao_codigo = 2 ;
+SELECT * FROM autogeral.produtos_dbf WHERE classe_fiscal IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182200, 74152900, 85432000 ) AND tributacao_codigo = 2 ;
 
-update autogeral.produtos_dbf set tributacao_codigo = 1 WHERE classe_fiscal IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182300, 39269090, 32141010 ) AND tributacao_codigo = 2 ;
+update autogeral.produtos_dbf set tributacao_codigo = 1 WHERE classe_fiscal IN (73181500, 73181600, 76161000, 73182400, 84814000, 84818099, 73182200, 74152900, 73269090 ) AND tributacao_codigo = 2 ;
 
 -- =========================================================================================================================================================
 -- =========================================================================================================================================================

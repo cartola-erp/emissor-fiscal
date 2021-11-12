@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.sped.fiscal.blocosBGHK19.service;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.sped.fiscal.MontaBloco;
@@ -22,6 +23,9 @@ public class BlocoHService implements MontaBloco<BlocoH, MovimentoMensalIcmsIpi>
 	
 	private static final Logger LOG = Logger.getLogger(BlocoHService.class.getName());
 
+	@Autowired
+	private RegH005Service regH005Service;
+	
 	@Override
 	public BlocoH criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
 		// TODO Auto-generated method stub
@@ -32,6 +36,7 @@ public class BlocoHService implements MontaBloco<BlocoH, MovimentoMensalIcmsIpi>
 		
 		RegH001AberturaDoBlocoH regH001 = new RegH001AberturaDoBlocoH(IndicadorDeMovimento.BLOCO_SEM_DADOS_INFORMADOS);
 		blocoH.setRegH001(regH001);
+		blocoH.setRegH005(regH005Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
 		blocoH.setRegH990(montarEncerramentoDoBlocoH(blocoH));
 
 		LOG.log(Level.INFO, "Montagem do BLOCO H, TEMINADA! {0} " ,blocoH);
