@@ -11,11 +11,13 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.devolucao.DevolucaoTipo;
 import net.cartola.emissorfiscal.documento.ChaveAcesso;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC113;
+import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 import net.cartola.emissorfiscal.util.XmlUtil;
 
@@ -88,16 +90,28 @@ class RegC113Service {
 	private RegC113 preencherRegC113PelaChaveAcesso(DocumentoFiscal docFisc, Loja lojaSped, String chaveRefXml, ChaveAcesso chaveAcesso) {
 		RegC113 regC113 = new RegC113();
 		regC113.setIndOper(docFisc.getTipoOperacao());
-		regC113.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
+		regC113.setIndEmit(obterIndicadorEmitente(docFisc, lojaSped)); 
+//		regC113.setIndEmit(getIndicadorEmitente(docFisc, lojaSped)); 
 		regC113.setCodPart(getCodPart(docFisc, this.movimentosIcmsIpi.getMapLojasPorCnpj()));
 		regC113.setCodMod(chaveAcesso.getModeloDocumento());
 		regC113.setSer(Long.parseLong(chaveAcesso.getSerie()));
 		regC113.setSub(null);				//	
 		regC113.setNumDoc(Long.parseLong(chaveAcesso.getNumeroNota()));
-		regC113.setDtDoc(LocalDate.of(Integer.parseInt(chaveAcesso.getAnoEmissao()), Integer.parseInt(chaveAcesso.getMesEmissao()), 1));
+		LocalDate dtDoc = LocalDate.of(Integer.parseInt("20"+chaveAcesso.getAnoEmissao()), Integer.parseInt(chaveAcesso.getMesEmissao()), 1);
+		regC113.setDtDoc(dtDoc);
 		regC113.setChvDocE(chaveRefXml);
 		return regC113;
 	}
+	
+	private IndicadorDoEmitente obterIndicadorEmitente(DocumentoFiscal docFisc, Loja lojaSped) {
+		boolean isDevolucao = docFisc.getOperacao().isDevolucao();
+		if (isDevolucao) {
+			boolean isParaFornecedor = docFisc.getDevolucao().getDevolucaoTipo().equals(DevolucaoTipo.PARA_FORNECEDOR);
+			return isParaFornecedor ? IndicadorDoEmitente.TERCEIROS : IndicadorDoEmitente.EMISSAO_PROPRIA;
+		}
+		return getIndicadorEmitente(docFisc, lojaSped);
+	}
+	
 
 	
 	/**
@@ -110,7 +124,8 @@ class RegC113Service {
 	private RegC113 preencherRegC113PeloDocumentoFiscalReferenciado(DocumentoFiscal docFisc, Loja lojaSped, DocumentoFiscal docFiscReferenciado) {
 		RegC113 regC113 = new RegC113();
 		regC113.setIndOper(docFiscReferenciado.getTipoOperacao());
-		regC113.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
+		regC113.setIndEmit(obterIndicadorEmitente(docFisc, lojaSped)); 
+//		regC113.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
 		regC113.setCodPart(getCodPart(docFiscReferenciado, this.movimentosIcmsIpi.getMapLojasPorCnpj()));
 		regC113.setCodMod(docFiscReferenciado.getModelo());
 		regC113.setSer(docFiscReferenciado.getSerie());

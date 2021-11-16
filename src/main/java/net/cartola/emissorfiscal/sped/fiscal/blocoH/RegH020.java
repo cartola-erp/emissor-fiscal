@@ -6,6 +6,8 @@ import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
 
 /**
+ * Quando  o "MOTIVO", for FINAL do PERIODO, esse registro não deverá ser apresentado;
+ * 
  * 14/09/2020
  * @author robson.costa
  */
