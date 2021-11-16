@@ -69,6 +69,7 @@ public class DocumentoFiscalItemService {
 				DocumentoFiscalItem oldItem = listOldItens.get(idxOldItem);
 				oldItem.copyValuesToUpdate(newItem);
 			} else {
+				LOG.log(Level.WARNING, "O new item {0}, não consta na lista antiga " ,newItem);
 				listNewItensNaoConstamListaAntiga.add(newItem);
 			}
 		}

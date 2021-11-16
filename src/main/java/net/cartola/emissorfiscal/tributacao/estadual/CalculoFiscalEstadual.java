@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -163,13 +164,13 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		LOG.log(Level.INFO, "SETANDO o ICMS BASE e o VALOR para o DocFiscId : {0} ",  documentoFiscal.getId());
 //		documentoFiscal.setIcmsBase(documentoFiscal.getItens().stream().map(DocumentoFiscalItem::getIcmsBase)
 //				.reduce(BigDecimal.ZERO, BigDecimal::add));
+		Predicate<CalculoImposto> adicicionaNoTotal = imp -> !imp.getImposto().equals(Imposto.ICMS_60) && !imp.getImposto().equals(Imposto.IPI);
 		
 		// Foi colocado dessa forma pois no momento está rodando apenas VENDA e TRANSFERENCIA (Que no momento são CST 00 e 60 apenas, nas duas operacoes)
-		documentoFiscal.setIcmsBase(listCalculoImpostos.stream().filter(calcImp -> 
-			!calcImp.getImposto().equals(Imposto.ICMS_60)).map(CalculoImposto::getBaseDeCalculo).reduce(BigDecimal.ZERO, BigDecimal::add));
+		documentoFiscal.setIcmsBase(listCalculoImpostos.stream().filter(adicicionaNoTotal::test).map(CalculoImposto::getBaseDeCalculo).reduce(BigDecimal.ZERO, BigDecimal::add));
 		 
 		documentoFiscal.setIcmsValor(totaliza(listCalculoImpostos.stream()
-				.filter(calcImp -> !calcImp.getImposto().equals(Imposto.ICMS_60)).collect(toList())));
+				.filter(adicicionaNoTotal::test).collect(toList())));
 	}
 
 	private void setaIcmsStBaseEValor(DocumentoFiscal documentoFiscal, List<CalculoImposto> listCalculoImpostos) {

@@ -235,6 +235,9 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 	}
 	
 	@Enumerated(EnumType.STRING)
+	@Column(columnDefinition = "enum('_1','_1A','_2','_2D','_2E','_4','_6','_7','_8','_8B','_9','_10','_11','_13','_14','_15','_16','_18',\r\n"
+			+ "		'_21','_22','_26','_27','_28','_29','_55','_57','_59','_60','_63','_65','_66','_67','NFSE') \r\n"
+			+ "		COMMENT 'Modelo do documento fiscal do SPED'")
 	public ModeloDocumentoFiscal getModelo() {
 		return modelo;
 	}

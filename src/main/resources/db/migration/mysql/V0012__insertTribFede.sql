@@ -88,9 +88,17 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',14, ncm_id FROM vw_ncm_id_tribu;	
 
+-- --------------------------------------------------------- 23 -  DEVOLUCAO MATERIAL CONSUMO	---------------------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',23, ncm_id FROM vw_ncm_id_tribu;	
+	
 -- --------------------------------------------------------- 25 -  MOVIMENTO JA REGISTRA EM ECF (INTERESTADUAL)		---------------------------------------------------------
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',25, ncm_id FROM vw_ncm_id_tribu;	
+
+-- --------------------------------------------------------- 28 -  DEVOLUCAO MERC. DESTINADA A USO E CONSUMO EM OP. C/ST	---------------------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 8, 'CONSUMO', 0.000000,0.000000, 8, '', 0.000000, 0.000000, 8,'NORMAL',28, ncm_id FROM vw_ncm_id_tribu;	
 	
 -- --------------------------------------------------------- 41 - TRANSFERENCIA (SAIDA) - GARANTIA			---------------------------------------------------------	
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 

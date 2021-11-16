@@ -198,7 +198,7 @@ CREATE TABLE `docu_fisc` (
   `tipo_oper` enum('ENTRADA','SAIDA') DEFAULT NULL,
   `fina_emiss` enum('NORMAL','COMPLEMENTAR','AJUSTE','DEVOLUCAO_MERCADORIA') DEFAULT 'NORMAL',
   `tipo_serv` enum('NENHUM','OUTROS','CTE','ENERGIA','AGUA','INTERNET','TELEFONE_FIXO_MOVEL') DEFAULT 'NENHUM',
-  `modelo` varchar(255) DEFAULT NULL,
+  `modelo` enum('_1','_1A','_2','_2D','_2E','_4','_6','_7','_8','_8B','_9','_10','_11','_13','_14','_15','_16','_18','_21','_22','_26','_27','_28','_29','_55','_57','_59','_60','_63','_65','_66','_67','NFSE') DEFAULT NULL COMMENT 'Modelo do documento fiscal do SPED',
   `status` enum('DIGITACAO','VALIDADA','ASSINADA','PROCESSAMENTO','AUTORIZADA','CANCELADA','INUTILIZADA','DENEGADA') DEFAULT NULL,
   `indi_paga` enum('A_VISTA','A_PRAZO','OUTROS') DEFAULT NULL,
   `nfe_chave_acesso` varchar(44) DEFAULT NULL,
