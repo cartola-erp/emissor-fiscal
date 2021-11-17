@@ -66,7 +66,8 @@ public class DocumentoFiscalApiController {
 	// TODO -> revisar, estava fazendo as remessa em GARANTIA 05.11
 	@PostMapping("/deletar")
 //	public ResponseEntity<Response<DocumentoFiscal>> deleteDocumentoFiscal(@RequestBody DocumentoFiscal docFiscalToBeDeleted) {
-	public ResponseEntity<DocumentoFiscal> deleteDocumentoFiscal(@RequestBody DocumentoFiscal docFiscalToBeDeleted) {
+	public ResponseEntity<Response<DocumentoFiscal>> deleteDocumentoFiscal(@RequestBody DocumentoFiscal docFiscalToBeDeleted) {
+		LOG.log(Level.INFO, "Deletando o DocumentoFiscal {0} ", docFiscalToBeDeleted);
 		Response<DocumentoFiscal> response = new Response<>();
 
 		Optional<DocumentoFiscal> opDocFiscalInDatabase = docFiscalService.findDocumentoFiscal(docFiscalToBeDeleted);
@@ -75,7 +76,8 @@ public class DocumentoFiscalApiController {
 		}
 		
 		docFiscalService.deleteById(opDocFiscalInDatabase.get().getId());
-		return ResponseEntity.ok(null);
+		response.setData(new DocumentoFiscal());
+		return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping()
