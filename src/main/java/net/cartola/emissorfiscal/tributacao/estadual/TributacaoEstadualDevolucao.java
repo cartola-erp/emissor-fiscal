@@ -39,7 +39,7 @@ public class TributacaoEstadualDevolucao implements Serializable {
     private Operacao operacao;
 	private Finalidade finalidade = Finalidade.CONSUMO;
 	private RegimeTributario regimeTributario;
-    private int icmsCst;
+    private Integer icmsCst;
     private int cfopVenda;				// CFOP -> Que saiu na nota de VENDA (Seja ela do fornecedor ou dá própria AG)
     private int cfopEntrada;			// CFOP -> Que foi dado entrada na AG
     private int cfopNotaDevolucao;		// CFOP -> Que saiu/sairá na NF do emitida por contribuinte. PS (Nos caso que emitimos pelo cliente essa CFOP será igual a CFOP de ENTRADA)
@@ -102,11 +102,11 @@ public class TributacaoEstadualDevolucao implements Serializable {
 
 //	@Column(name = "icms_cst", scale = 4, nullable = false)
 	@Column(name = "icms_cst", scale = 4)
-    public int getIcmsCst() {
+    public Integer getIcmsCst() {
         return icmsCst;
     }
 
-    public void setIcmsCst(int icmsCst) {
+    public void setIcmsCst(Integer icmsCst) {
         this.icmsCst = icmsCst;
     }
 

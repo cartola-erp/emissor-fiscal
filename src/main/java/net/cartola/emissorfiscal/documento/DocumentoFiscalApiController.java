@@ -76,6 +76,7 @@ public class DocumentoFiscalApiController {
 		}
 		
 		docFiscalService.deleteById(opDocFiscalInDatabase.get().getId());
+		LOG.log(Level.INFO, "Documento Fiscal deletado ! {0} ", opDocFiscalInDatabase.get());
 		response.setData(new DocumentoFiscal());
 		return ResponseEntity.ok(response);
 	}

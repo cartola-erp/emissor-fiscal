@@ -54,6 +54,8 @@ public class DevolucaoItem extends Item implements Serializable {
 	private String descricao;
 	// ==================================================================================== informacoes que usa para "calcular" os tributos
 	private int cfopFornecedor;
+    private int icmsCstFornecedor;
+
 //	private int cfopEntradaEmpresa;
 //	private Integer icmsCest = 0;
 	
@@ -254,6 +256,16 @@ public class DevolucaoItem extends Item implements Serializable {
 	public void setCfopFornecedor(int cfopFornecedor) {
 		this.cfopFornecedor = cfopFornecedor;
 	}
+	
+	@Column(name = "icms_cst_forn",  nullable = false)
+	public int getIcmsCstFornecedor() {
+		return icmsCstFornecedor;
+	}
+
+	public void setIcmsCstFornecedor(int icmsCstFornecedor) {
+		this.icmsCstFornecedor = icmsCstFornecedor;
+	}
+	
 
 //	@Column(name = "cfop_entr_emp")
 //	public int getCfopEntradaEmpresa() {

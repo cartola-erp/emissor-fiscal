@@ -123,6 +123,7 @@ CREATE TABLE `devo_item` (
   `item` int(11) DEFAULT NULL,
   `origem_item` int(11) DEFAULT NULL,
   `cfop_forn` int(11) NOT NULL,
+  `icms_cst_forn` int(11) NOT NULL,
   `classe_fiscal` varchar(255) DEFAULT NULL,
   `excecao` int(11) NOT NULL,
   `desc_unit` decimal(19,2) DEFAULT NULL,
