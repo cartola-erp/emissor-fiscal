@@ -160,3 +160,18 @@ INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, fin
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
 					VALUES	(90, 5656, 1653, 5662, "COMERCIALIZACAO", "NORMAL", false , "", 28);
 -- ==================================================================================================================================		
+
+
+
+-- ==================================== 10 - REMESSA DE MERCADORIA PARA ANALISE EM GARANTIA =========================================
+-- ICMS_CST == null -> Deverá ser usado a mesma que vier na NF do fornecedor							
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
+					VALUES	(null, 0, 0, 5949, "COMERCIALIZACAO", "NORMAL", true , "", 10);
+-- ==================================================================================================================================		
+
+
+-- ============================== 11 - REMESSA DE MERCADORIA PARA ANALISE EM GARANTIA (INTERESTADUAL) ===================================
+-- ICMS_CST == null -> Deverá ser usado a mesma que vier na NF do fornecedor							
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
+					VALUES	(null, 0, 0, 6949, "COMERCIALIZACAO", "NORMAL", true , "", 11);
+-- ======================================================================================================================================		

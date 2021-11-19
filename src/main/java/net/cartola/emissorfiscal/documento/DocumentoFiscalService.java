@@ -115,7 +115,7 @@ public class DocumentoFiscalService extends DocumentoService {
 	public Optional<DocumentoFiscal> findDocumentoFiscal(DocumentoFiscal newDocFiscal) {
 		Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(newDocFiscal.getOperacao().getDescricao());
 
-		if (opOperacao.isPresent() && opOperacao.get().isDevolucao()) {
+		if (opOperacao.isPresent() && opOperacao.get().ehAlgumaDevolucao()) {
 			Optional<Devolucao> opDevolucao = devolucaoService.findDevolucaoParaODocumentoFiscal(newDocFiscal);
 			
 			if(opDevolucao != null && opDevolucao.isPresent()) {
@@ -223,7 +223,7 @@ public class DocumentoFiscalService extends DocumentoService {
 	
 	public Optional<DocumentoFiscal> save(DocumentoFiscal documentoFiscal, boolean validaTribuEsta, boolean validaTribuFede) {
 		final boolean validaAlgumTributo = (validaTribuEsta || validaTribuFede);
-		if (validaAlgumTributo && !documentoFiscal.getOperacao().isDevolucao()) {
+		if (validaAlgumTributo && !documentoFiscal.getOperacao().ehAlgumaDevolucao()) {
 			// É essencial que o CALCULO de ICMS, seja antes do PIS/COFINS, POIS, agora nas saídas, poderemos retirar o ICMS VALOR da BC do PIS/COFINS
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
 			calcFiscalFederal.calculaImposto(documentoFiscal);

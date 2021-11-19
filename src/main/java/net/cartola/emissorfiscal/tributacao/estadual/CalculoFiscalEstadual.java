@@ -112,12 +112,25 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 	public DocumentoFiscal calculaImposto(DocumentoFiscal docFisc, Devolucao devolucao) {
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
 		final Set<TributacaoEstadualDevolucao> setTribEsta = tribEstaDevolucaoService.findByOperacao(devolucao.getOperacao());
+		/**
+		 * TODO 18.11.2021, aqui terei que pensar em alguma forma, para caso seja "REMESSA PARA FORNECEDOR", montar o mapa de forma diferente...
+		 * provavelmente será dentro de outro método
+		 * 
+		 */
 		final Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda = 
 				setTribEsta.stream().collect(toMap(TributacaoEstadualDevolucao::getCfopVenda, (tribEstaDevo) -> tribEstaDevo));
 		final Map<Integer, Map<Long, Map<String, DevolucaoItem>>> mapDevolucaoPorItemCodigoXECodigoSeq = devolucaoService.getMapDevolucaoPorItemCodigoXECodigoSeq(devolucao);
 
 		docFisc.getItens().forEach(di -> {
 			DevolucaoItem devolucaoItem = mapDevolucaoPorItemCodigoXECodigoSeq.get(di.getItem()).get(di.getCodigoX()).get(di.getCodigoSequencia());
+			/**
+			 * TODO 18.11.2021
+			 * CASO seja "REMESSA PARA FORNECEDOR", não poderei pegar a "tribEstaDevo", pela cfop fornecedor, pois....
+			 * não paremetrizei no DB, pela cfop do fornecedor, pois independente da que veio na de entrada
+			 * deverá sair na CFOP 5949 ou 6949 (nas remessas em garantias), e a CST do ICMS será a msm que veio na entrada...
+			 * basicamente só irei mudar na parte do calculo do IPI, que nas remessas em garantia é adicionado junto com o outras despesas
+			 * ao invés de ir em campo próprio
+			 */
 			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(devolucaoItem.getCfopFornecedor());
 			listCalculoImpostos.add(calculoIpi.calculaIpi(di, devolucaoItem));
 			calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem).ifPresent(listCalculoImpostos::add);

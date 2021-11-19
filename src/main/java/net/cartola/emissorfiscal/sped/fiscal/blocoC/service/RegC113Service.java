@@ -104,7 +104,7 @@ class RegC113Service {
 	}
 	
 	private IndicadorDoEmitente obterIndicadorEmitente(DocumentoFiscal docFisc, Loja lojaSped) {
-		boolean isDevolucao = docFisc.getOperacao().isDevolucao();
+		boolean isDevolucao = docFisc.getOperacao().ehAlgumaDevolucao();
 		if (isDevolucao) {
 			boolean isParaFornecedor = docFisc.getDevolucao().getDevolucaoTipo().equals(DevolucaoTipo.PARA_FORNECEDOR);
 			return isParaFornecedor ? IndicadorDoEmitente.TERCEIROS : IndicadorDoEmitente.EMISSAO_PROPRIA;

@@ -27,6 +27,7 @@ public class Operacao implements Serializable, Comparable<Operacao> {
 	private Long id;
 	private String descricao;
 	private boolean isDevolucao;
+	private boolean isRemessaParaFornecedor;			// Poderá ser: "Remessa em Garantia" ou "Remessa para conserto"
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +61,27 @@ public class Operacao implements Serializable, Comparable<Operacao> {
 		this.isDevolucao = isDevolucao;
 	}
 
+	@Column(name = "remessa_fornecedor", columnDefinition = "tinyint(1) NOT NULL DEFAULT '0' ")
+	public boolean isRemessaParaFornecedor() {
+		return isRemessaParaFornecedor;
+	}
+
+	public void setRemessaParaFornecedor(boolean isRemessaParaFornecedor) {
+		this.isRemessaParaFornecedor = isRemessaParaFornecedor;
+	}
+
+	/**
+	 * Retorna true, se <br> 
+	 * 
+	 * isDevolucao <br>
+	 * isRemessaParaFornecedor
+	 * 
+	 * @return
+	 */
+	public boolean ehAlgumaDevolucao() {
+		return this.isDevolucao || this.isRemessaParaFornecedor;
+	}
+	
 	@Override
 	public int hashCode() {
 		int hash = 0;
