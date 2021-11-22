@@ -43,6 +43,7 @@ public class Inventario implements Serializable {
 	
 	private Long id;
 	private int inventarioCodigoErp;						// --> Código do inventário no ERPJ
+	private int inventarioLojaErp;
 //	private int loja;
 	private Loja loja;							// --> PS: Tenho que verificar qual é o ID no DB do EMISSOR-FISCAL, pois poderá não ser o msm que esteja no DB da AUTOGERAL;
 	private LocalDate inicio;
@@ -74,6 +75,15 @@ public class Inventario implements Serializable {
 
 	public void setInventarioCodigoErp(int inventarioCodigoErp) {
 		this.inventarioCodigoErp = inventarioCodigoErp;
+	}
+
+	@Column(name="inve_loja_erp", columnDefinition=" INT(11) COMMENT 'Código da loja do inventário no ERP - DB autogeral' ")
+	public int getInventarioLojaErp() {
+		return inventarioLojaErp;
+	}
+
+	public void setInventarioLojaErp(int inventarioLojaErp) {
+		this.inventarioLojaErp = inventarioLojaErp;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
