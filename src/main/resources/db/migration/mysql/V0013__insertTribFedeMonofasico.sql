@@ -47,9 +47,14 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',9, ncm_id FROM vw_ncm_id_mono;
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
--- --------------------------------------------------------- 	10 - OUTRAS SAIDA NAO ESPECIFICADAS 	---------------------------------------------------------
+-- --------------------------------------------------------- 	10 - REMESSA DE MERCADORIA PARA ANALISE EM GARANTIA 	-------------------------------------
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',10, ncm_id FROM vw_ncm_id_mono;
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- --------------------------------------------------------- 	11 - REMESSA DE MERCADORIA PARA ANALISE EM GARANTIA (INTERESTADUAL) 	---------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',11, ncm_id FROM vw_ncm_id_mono;
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- --------------------------------------------------------- 	13 - TRANSFERENCIA DE SALDO DEVEDOR ART.98 DO RICMS 	---------------------------------------------------------
@@ -210,3 +215,4 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 
 
 DROP VIEW vw_ncm_id_mono;
+

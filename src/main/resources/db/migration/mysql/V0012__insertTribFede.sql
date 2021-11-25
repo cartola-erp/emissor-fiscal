@@ -131,9 +131,13 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 -- ========================================================================================================================================================
 -- ============================================================== CST 49 - Tributacao Zerada ==============================================================	
 -- ========================================================================================================================================================
--- --------------------------------------------------------- 10 - OUTRAS SAIDA NAO ESPECIFICADAS	---------------------------------------------------------
+-- ----------------------------------------------- 10 - REMESSA DE MERCADORIA PARA ANALISE EM GARANTIA (INTERESTADUAL)	----------------------------------------------------
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 49, 'CONSUMO', 0.000000,0.000000, 49, '', 0.000000, 0.000000, 49,'NORMAL', 10, ncm_id FROM vw_ncm_id_tribu;	
+
+-- ----------------------------------------------- 11 - REMESSA DE MERCADORIA PARA ANALISE EM GARANTIA (INTERESTADUAL) 	---------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 49, 'CONSUMO', 0.000000,0.000000, 49, '', 0.000000, 0.000000, 49,'NORMAL', 11, ncm_id FROM vw_ncm_id_tribu;	
 
 -- --------------------------------------------------------- 29 - OUTRAS SAIDAS NAO ESPECIFICADAS	---------------------------------------------------------//
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
