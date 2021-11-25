@@ -432,7 +432,7 @@ UNLOCK TABLES;
   PRIMARY KEY (`inve_id`),
   KEY `fnk_inve_loja_id` (`loja_id`),
   CONSTRAINT `fnk_inve_loja_id` FOREIGN KEY (`loja_id`) REFERENCES `loja` (`id`)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `inve`
@@ -481,7 +481,7 @@ CREATE TABLE `inve_item` (
   PRIMARY KEY (`inve_item_id`),
   KEY `fk_inve_item_inve` (`inve_id`),
   CONSTRAINT `fk_inve_item_inve` FOREIGN KEY (`inve_id`) REFERENCES `inve` (`inve_id`)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `inve_item`
