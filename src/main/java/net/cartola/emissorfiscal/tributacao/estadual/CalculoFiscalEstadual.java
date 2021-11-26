@@ -27,6 +27,7 @@ import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalService;
 import net.cartola.emissorfiscal.ncm.Ncm;
+import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 //import net.cartola.emissorfiscal.tributacao.CalculoImpostoFcpSt;
@@ -111,31 +112,20 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 	@Override
 	public DocumentoFiscal calculaImposto(DocumentoFiscal docFisc, Devolucao devolucao) {
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
-		final Set<TributacaoEstadualDevolucao> setTribEsta = tribEstaDevolucaoService.findByOperacao(devolucao.getOperacao());
-		/**
-		 * TODO 18.11.2021, aqui terei que pensar em alguma forma, para caso seja "REMESSA PARA FORNECEDOR", montar o mapa de forma diferente...
-		 * provavelmente será dentro de outro método
-		 * 
-		 */
+		Operacao operacao = devolucao.getOperacao();
+		final Set<TributacaoEstadualDevolucao> setTribEsta = tribEstaDevolucaoService.findByOperacao(operacao);
 		final Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda = 
 				setTribEsta.stream().collect(toMap(TributacaoEstadualDevolucao::getCfopVenda, (tribEstaDevo) -> tribEstaDevo));
 		final Map<Integer, Map<Long, Map<String, DevolucaoItem>>> mapDevolucaoPorItemCodigoXECodigoSeq = devolucaoService.getMapDevolucaoPorItemCodigoXECodigoSeq(devolucao);
 
-		docFisc.getItens().forEach(di -> {
+		for (DocumentoFiscalItem di : docFisc.getItens()) {
 			DevolucaoItem devolucaoItem = mapDevolucaoPorItemCodigoXECodigoSeq.get(di.getItem()).get(di.getCodigoX()).get(di.getCodigoSequencia());
-			/**
-			 * TODO 18.11.2021
-			 * CASO seja "REMESSA PARA FORNECEDOR", não poderei pegar a "tribEstaDevo", pela cfop fornecedor, pois....
-			 * não paremetrizei no DB, pela cfop do fornecedor, pois independente da que veio na de entrada
-			 * deverá sair na CFOP 5949 ou 6949 (nas remessas em garantias), e a CST do ICMS será a msm que veio na entrada...
-			 * basicamente só irei mudar na parte do calculo do IPI, que nas remessas em garantia é adicionado junto com o outras despesas
-			 * ao invés de ir em campo próprio
-			 */
-			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(devolucaoItem.getCfopFornecedor());
-			listCalculoImpostos.add(calculoIpi.calculaIpi(di, devolucaoItem));
+			TributacaoEstadualDevolucao tribEstaDevo = getTribEstaDevo(mapTribEstaDevoPorCfopVenda, devolucaoItem, operacao);
+			if (operacao.isDevolucao()) {
+				listCalculoImpostos.add(calculoIpi.calculaIpi(di, devolucaoItem));
+			}
 			calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem).ifPresent(listCalculoImpostos::add);
-		});
-			
+		}
 
 		setaIcmsBaseEValor(docFisc, listCalculoImpostos);
 		docFisc.setValorOutrasDespesasAcessorias(calcularTotalOutrasDespesasAcessorias(docFisc));
@@ -152,7 +142,28 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		
 		return docFisc;
 	}
-	
+
+
+	/**
+	 * Irá Obter a TributacaoEstadualDevolucao, do mapa, para o item <br>
+	 * Conforme a operação de devolução 
+	 * 
+	 * @param mapTribEstaDevoPorCfopVenda
+	 * @param devolucaoItem
+	 * @param operacao
+	 * @return
+	 */
+	private TributacaoEstadualDevolucao getTribEstaDevo(Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda, DevolucaoItem devolucaoItem, Operacao operacao) {
+		if (operacao.isDevolucao()) {
+			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(devolucaoItem.getCfopFornecedor());
+			return tribEstaDevo;
+		} else if (operacao.isRemessaParaFornecedor()) {
+			// Se for "remessa para fornecedor", estará buscando pela CFOP "0", pois não tem uma parametrização especifica para cada cfop da nota de venda do fornecedor (é a msm para qualquer CFOP de venda deles que devolveremos)
+			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(0);
+			return tribEstaDevo;
+		}
+		return null;
+	}
 
 	/**
 	 * Atualmente o que tem aqui é o calcular do total, que temos de crédito nas entradas. Referente ao "DocumentoFiscal" (compra)

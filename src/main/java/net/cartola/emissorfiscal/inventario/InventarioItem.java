@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import net.cartola.emissorfiscal.documento.Finalidade;
 
 /**
  * COPIEI, os mesmos atributos que estão NO ERP !!!
@@ -42,6 +46,7 @@ public class InventarioItem implements Serializable {
 	
 //	private int inventarioCodigoErp;
 	private int produtoCodigoErp;					// PK ->  de Produtos_dbf (autogeral)
+	private Finalidade finalidadeEmpresa;			// Será a finaldiade que está no produto, no momento que copiou o invetário do DB da AG para o do emissorfiscal
 	private BigDecimal saldoAnterior;
 	private BigDecimal entradasCompras;
 	private BigDecimal entradasTransferencias;
@@ -138,6 +143,16 @@ public class InventarioItem implements Serializable {
 
 	public void setProdutoCodigoErp(int produtoCodigoErp) {
 		this.produtoCodigoErp = produtoCodigoErp;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "finalidade_empresa", columnDefinition="enum('COMERCIALIZACAO', 'BRINDE', 'DOACAO', 'PATRIMONIO', 'CONSUMO') default null ")
+	public Finalidade getFinalidadeEmpresa() {
+		return finalidadeEmpresa;
+	}
+
+	public void setFinalidadeEmpresa(Finalidade finalidadeEmpresa) {
+		this.finalidadeEmpresa = finalidadeEmpresa;
 	}
 
 	@Column(name = "sald_ante", columnDefinition=" decimal(19,2) COMMENT 'Saldo anterior' ")

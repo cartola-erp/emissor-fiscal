@@ -52,6 +52,7 @@ public class Inventario implements Serializable {
 	private BigDecimal valorTransferindo;
 	private BigDecimal valorConsumo;
 	private BigDecimal valorSaldo;
+	private BigDecimal valorDeclarado;
 	private LocalDateTime cadastro;
 	private LocalDateTime alterado;
 	private List<InventarioItem> itens;
@@ -150,6 +151,15 @@ public class Inventario implements Serializable {
 
 	public void setValorSaldo(BigDecimal valorSaldo) {
 		this.valorSaldo = valorSaldo;
+	}
+
+	@Column(name = "vlr_decl", columnDefinition = " decimal(19,2) COMMENT 'Valor declarado' ")
+	public BigDecimal getValorDeclarado() {
+		return valorDeclarado;
+	}
+
+	public void setValorDeclarado(BigDecimal valorDeclarado) {
+		this.valorDeclarado = valorDeclarado;
 	}
 
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)

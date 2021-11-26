@@ -63,9 +63,7 @@ public class DocumentoFiscalApiController {
 		return ResponseEntity.ok(response);
 	}
 	
-	// TODO -> revisar, estava fazendo as remessa em GARANTIA 05.11
 	@PostMapping("/deletar")
-//	public ResponseEntity<Response<DocumentoFiscal>> deleteDocumentoFiscal(@RequestBody DocumentoFiscal docFiscalToBeDeleted) {
 	public ResponseEntity<Response<DocumentoFiscal>> deleteDocumentoFiscal(@RequestBody DocumentoFiscal docFiscalToBeDeleted) {
 		LOG.log(Level.INFO, "Deletando o DocumentoFiscal {0} ", docFiscalToBeDeleted);
 		Response<DocumentoFiscal> response = new Response<>();
@@ -77,7 +75,6 @@ public class DocumentoFiscalApiController {
 		
 		docFiscalService.deleteById(opDocFiscalInDatabase.get().getId());
 		LOG.log(Level.INFO, "Documento Fiscal deletado ! {0} ", opDocFiscalInDatabase.get());
-		response.setData(new DocumentoFiscal());
 		return ResponseEntity.ok(response);
 	}
 	
