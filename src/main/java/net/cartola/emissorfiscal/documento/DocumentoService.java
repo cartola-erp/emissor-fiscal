@@ -17,6 +17,7 @@ import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
 import net.cartola.emissorfiscal.devolucao.DevolucaoItemService;
 import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoService;
+import net.cartola.emissorfiscal.exception.EmissorFiscalException;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.loja.LojaService;
 import net.cartola.emissorfiscal.ncm.Ncm;
@@ -194,6 +195,9 @@ public abstract class DocumentoService {
 		
 		mapErros.put("O CNPJ: " +docuFisc.getEmitente().getCnpj()+ " do emitente NÃO existe" , !opEmitente.isPresent());
 		mapErros.put("O CNPJ: " +docuFisc.getDestinatario().getCnpj()+ " do destinatário NÃO existe", !opDestinatario.isPresent());
+		if (mapErros.containsValue(true)) {
+			throw new EmissorFiscalException(mapErros);
+		}
 		
 	}
 

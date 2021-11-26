@@ -2,7 +2,9 @@ package net.cartola.emissorfiscal.util;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
+import net.cartola.emissorfiscal.exception.EmissorFiscalException;
 import net.cartola.emissorfiscal.response.Response;
 
 /**
@@ -11,7 +13,16 @@ import net.cartola.emissorfiscal.response.Response;
  */
 public final class ApiUtil {
 	
+	private static final Logger LOG = Logger.getLogger(ApiUtil.class.getName());
+	
+	private ApiUtil () {}
+	
+	public static <T> Response <T> criarResponseDeErro(EmissorFiscalException ex) {
+		return criaResponseDeErro(ex.getMessage());
+	}
+	
 	public static <T> Response <T> criaResponseDeErro(String erro) {
+		LOG.info(erro);
 		return criaResponseDeErros(Arrays.asList(erro));
 	}
 	
@@ -24,6 +35,8 @@ public final class ApiUtil {
 		response.setErrors(errors);
 		return response;
 	}
+
+	
 	
 	
 }
