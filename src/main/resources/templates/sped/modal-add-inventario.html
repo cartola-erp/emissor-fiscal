@@ -1,0 +1,85 @@
+<!-- Esse FRAGMENTO de MODAL serve para
+	ADICIONAR o NCM no formularios de cadastros de:
+	TRIBUTACAO ESTADUAL, FEDERAL e SIMULAÇÃO
+-->
+
+		<!-- <div class="modal" tabindex="-1" role="dialog" th:fragment="modal-deletar"> -->
+
+			<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="modal-add-ncm"
+				aria-hidden="true" th:fragment="modal-add-inventario">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="labelModalAdicionarInventario">Pesquisar Inventário</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+
+
+						<div class="container">
+							<div id="spanMensagemErroModal" >
+
+							</div>
+									
+							<div id="spanMensagemSucessoModal" >
+
+							</div>
+						</div>
+
+
+						ACREDITO QUE NÃO IREI PRECISAR DISSO 
+						<!-- FORMULÁRIO para CONSULTAR OS NCMS -->
+						<!-- <form action="/inventario/consulta" method="POST"> -->
+							<!-- <div class="form-group form-row zera-padd-left col-md-12"> -->
+								<!-- <div class="form-group col-md-8">
+									<label><b>Pesquisar NCM pelo Número: </b></label>
+									<input type="text" class="form-control somenteNumeros" id="txtNumeroNcmModal" name="numeroNcmModal"
+										placeholder="Informe o número do NCM..." maxlength="8">
+								</div> -->
+			
+								<!-- <div>
+									<button class="btn btn-outline-primary" type="submit" id="btnPesquisar" name="btnPesquisarModalNcm">
+										<span data-feather="search">search</span>
+									</button>
+								</div>
+							</div> -->
+						<!-- </form> -->
+			
+			
+						<!-- TABELA COM OS NCMS CONSULTADOS-->
+						<table class="table table-hover table-responsive ">
+							<thead>
+								<tr>
+									<!-- <th scope="col"> <b> ID </b> </th> -->
+									<th scope="col"> <b> Número</b> </th>
+									<th scope="col"> <b> Exceção </b> </th>
+									<th scope="col"> <b> Descrição </b> </th>
+									<th scope="col"> <b> Adicionar NCM </b> </th>
+								</tr>
+							</thead>
+			
+							<tbody id="tbNcmModal">
+								<!-- AS LINHAS DA TABELA É MONTADA DINAMICAMENTE PELO ARQUIVO -->
+												<!-- /js/ncm/getRequest.js -->
+
+								<!-- <tr th:each="ncm : ${listNcm}"> -->
+									<!-- <td scope="row" id="tdNumeroNcm" th:text="${ncm.numero}"> 12.000.021-90 </td>
+									<td scope="row" id="tdExcecaoNcm" th:text="${ncm.excecao}"> 123.321.901-99 </td>
+									<td scope="row" id="tdDescricaoNcm" th:text="${ncm.descricao}"> Essa é uma descrição qualquer do NCM </td> -->
+			
+									<!-- BTN ADICIONAR NCM -->
+									<!-- <td scope="row">
+										<a th:href="@{'/ncm/editar/' + ${ncm.id}}">
+											<button type="button" class="btn btn-outline-primary ajusta-botao-tbl">
+												<span data-feather="edit-3">Adicionar Ncm</span>
+											</button>
+										</a>
+									</td> -->
+								<!-- </tr> -->
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+			</div>

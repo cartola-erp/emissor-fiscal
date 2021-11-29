@@ -64,8 +64,23 @@
 								<option th:each="contador : ${listContador}" th:value="${contador.id}" th:id="${contador.id}" th:selected="${contador.id == contadorIdSelecionado}" th:text="${contador.nome}" ></option>
 							</select>
 						</div>
-					</div> 
 
+						<!-- TODO  -->
+						<!-- O BTN de Buscar inventário só deverá estar habilitado caso selecionem alguma LOJA -->
+						<!-- Se selecionarem todas as LOJAS, pretendo dar a opção de selecionar o PERIODO que sairá do inventário -->
+						<!-- PS.: Também pretendo adicioanr um CHK, para que indiquem que de fato querem exportar o inventário -->
+						<div class="form-group col-md-6">
+							<label for="txtInventario"><strong>Inventário</strong></label>
+							<!-- <input type="hidden" th:value="${listInventario[0].id}" id="txtInventarioId" name="inventarioId" readonly required />  -->
+							<!-- <input type="text" class="form-control" id="txtInventarioId" th:value="${listInventario[0].id}" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" disabled required /> -->
+							<input type="text" class="form-control" id="txtInventarioSelecionado" name="txtInventarioSelecionado" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" readonly>
+						</div> 
+						
+						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnAdicionarNcm" data-toggle="modal" data-target=".bd-example-modal-lg">
+							<span data-feather="plus">Buscar inventário disponivel</span>
+						</button>
+	
+					</div> 
 
 					<!-- <div class="form-row">
 					</div>  -->
@@ -79,6 +94,9 @@
 					</div>
 	
 				</form>
+
+
+				<div th:replace="/sped/modal-add-inventario :: modal-add-inventario"></div>
 
 			</div>
 		</section>

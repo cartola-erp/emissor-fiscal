@@ -24,6 +24,7 @@ import net.cartola.emissorfiscal.contador.Contador;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
+import net.cartola.emissorfiscal.inventario.Inventario;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.model.sped.fiscal.difal.SpedFiscalRegE310;
 import net.cartola.emissorfiscal.model.sped.fiscal.icms.propria.SpedFiscalRegE110;
@@ -80,6 +81,11 @@ public class MovimentoMensalIcmsIpi {
 	private Loja loja;
 //	private Pessoa loja;			// CONFESSO que ainda tou na duvida se pego a loja de "CADASTROS" ou da tbl "LOJA" msm
 	private Contador contador;
+	/**
+	 * TODO tenho que buscar o inventario, selecionado pelo usuário
+	 * 
+	 */
+	private Inventario inventario;
 	
 	private List<CodificacaoReg0450InfoComplementarFisco> listCodInfoComplementarFisco;
 	/**

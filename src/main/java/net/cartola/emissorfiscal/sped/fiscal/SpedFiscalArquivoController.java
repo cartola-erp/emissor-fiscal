@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hibernate.type.descriptor.sql.NVarcharTypeDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.cartola.emissorfiscal.contador.ContadorService;
+import net.cartola.emissorfiscal.inventario.Inventario;
+import net.cartola.emissorfiscal.inventario.InventarioService;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.loja.LojaService;
 
@@ -30,6 +31,9 @@ public class SpedFiscalArquivoController {
 	
 	@Autowired
 	private ContadorService contadorService;
+	
+	@Autowired
+	private InventarioService inventarioService;
 	
 	private static final Logger LOG = Logger.getLogger(SpedFiscalArquivoController.class.getName());
 
@@ -59,6 +63,9 @@ public class SpedFiscalArquivoController {
 		// PS: Tenho que inserir para buscar as informações das lojas;
 		List<Loja> listLojas = new ArrayList<>();
 		listLojas.addAll(lojaService.findAll());
+		
+		List<Inventario> listInventario =  new ArrayList<>();
+		listInventario.add(new Inventario());
 		
 		mv.addObject("moviMensalIcmsIpi", moviMensalIcmsIpi);
 		mv.addObject("listLojas", listLojas);
