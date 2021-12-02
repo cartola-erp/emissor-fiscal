@@ -73,7 +73,7 @@ public class DocumentoFiscalApiController {
 			return ResponseEntity.notFound().build();
 		}
 		
-		docFiscalService.deleteById(opDocFiscalInDatabase.get().getId());
+		docFiscalService.deleteById(opDocFiscalInDatabase.get());
 		LOG.log(Level.INFO, "Documento Fiscal deletado ! {0} ", opDocFiscalInDatabase.get());
 		return ResponseEntity.ok(response);
 	}
@@ -163,7 +163,7 @@ public class DocumentoFiscalApiController {
 		boolean isNewCompra = true;
 		if(opDocFiscal.isPresent()) {
 			docFiscal.setId(opDocFiscal.get().getId());
-			docFiscalService.deleteById(opDocFiscal.get().getId());
+			docFiscalService.deleteById(opDocFiscal.get());
 			isNewCompra = false;
 		}
 		return saveOrEditDocumentoFiscalEntrada(docFiscal, isNewCompra);
