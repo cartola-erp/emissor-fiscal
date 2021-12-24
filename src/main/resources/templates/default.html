@@ -174,6 +174,16 @@
         feather.replace()
     </script>
 
+	<!-- Scripts que irão abrir os modais	 -->
+	<script>
+        // Busca de add inventario
+		$('#modal-add-inventario').on('show.bs.modal', function() {
+			$.get("/modals/inventarios-sped-icms-ipi", function(data) {
+				$('#modal-add-inventario').find('.modal-body').html(data);
+			}) 
+		})
+	</script>
+	
 </body>
 
 </html>

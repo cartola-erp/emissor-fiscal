@@ -71,36 +71,29 @@
 						<!-- PS.: Também pretendo adicioanr um CHK, para que indiquem que de fato querem exportar o inventário -->
 						<div class="form-group col-md-6">
 							<label for="txtInventario"><strong>Inventário</strong></label>
-							<!-- <input type="hidden" th:value="${listInventario[0].id}" id="txtInventarioId" name="inventarioId" readonly required />  -->
-							<!-- <input type="text" class="form-control" id="txtInventarioId" th:value="${listInventario[0].id}" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" disabled required /> -->
-							<input type="text" class="form-control" id="txtInventarioSelecionado" name="txtInventarioSelecionado" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" readonly>
+							<input type="hidden" class="form-control" id="txtInventarioId" th:value="nenhum_valor" name = "inventarioId" readonly required />
+							<input type="text" class="form-control" id="txtInventarioSelecionado" name="txtInventarioSelecionado" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" disabled readonly>
 						</div> 
 						
-						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnAdicionarNcm" data-toggle="modal" data-target=".bd-example-modal-lg">
+						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnSelecionarInventario" data-toggle="modal" data-target="#modal-add-inventario">
 							<span data-feather="plus">Buscar inventário disponivel</span>
 						</button>
-	
 					</div> 
 
-					<!-- <div class="form-row">
-					</div>  -->
-
-						<!-- BTN ALTERAR/CADASTRAR -->
+					<!-- BTN ALTERAR/CADASTRAR -->
 					<div class="form-row">
 						<!-- <input type="text" class="form-control" id="txtId" th:field="*{id}" name="id" hidden="true" > -->
-							<div class = "form-group col-md-12">
+						<div class = "form-group col-md-12">
 							<button type="submit" id="btnGerarSpedIcmsIpi" class="btn btn-outline-primary ajusta-margin-btn col-md-12"><strong>Gerar SPED FISCAL</strong></button>
 						</div>
 					</div>
 	
 				</form>
 
-
-				<div th:replace="/sped/modal-add-inventario :: modal-add-inventario"></div>
+				<th:block th:replace="/modal-template-lg :: modal('modal-add-inventario') ">Modal Inventario</th:block>
 
 			</div>
 		</section>
 
 	</body>
-
 </html>

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+    <html lang="pt-br" xmlns:th="http://www.thymeleaf.org"> 
+    <head></head>
+
+    <body>
+        <div th:fragment="modal(id)" class="modal fade" th:id="${id}" tabindex="-1" role="dialog" 
+            aria-labelledby="modal-template" aria-hidden="true" >
+        <!--  Tamanho do modal LG (large) -->
+        <div class="modal-dialog modal-lg">     
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-template"> Aviso </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <!-- Body que será substituido -->
+                <div class="modal-body"> ------ Nada encontrado ------ </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button> -->
+                </div>
+
+            </div>
+        </div>
+
+        </div>
+    </body>
+
+</html>
