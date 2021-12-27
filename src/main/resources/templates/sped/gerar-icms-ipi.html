@@ -70,8 +70,17 @@
 						<!-- Se selecionarem todas as LOJAS, pretendo dar a opção de selecionar o PERIODO que sairá do inventário -->
 						<!-- PS.: Também pretendo adicioanr um CHK, para que indiquem que de fato querem exportar o inventário -->
 						<div class="form-group col-md-6">
-							<label for="txtInventario"><strong>Inventário</strong></label>
-							<input type="hidden" class="form-control" id="txtInventarioId" th:value="nenhum_valor" name = "inventarioId" readonly required />
+							<!-- <label for="txtInventario"><strong>Inventário</strong></label> -->
+									<div class="form-check form-check-inline">
+								<!-- TODO -->
+								<!-- Se clicarem em exportar inventario e for exportacao de uma loja especifica: -->
+								<!-- Habilita para o usuario escolher o inventario daquela loja especifica -->
+								<!-- Se for para todas as lojas (a exportacao do SPED ICMS IPI) -->
+								<!-- devera habilitar para o usuario escolher o PERIODO -->
+								<input class="form-check-input" type="checkbox" id="chkExportarInventario" name="chkExportarInventario" value="true">
+								<label for="chkExportarInventario"><strong>Exportar Inventário</strong></label>
+							</div>
+							<input type="hidden" class="form-control" id="txtInventarioId" th:value="null" name = "inventarioId" readonly required  />
 							<input type="text" class="form-control" id="txtInventarioSelecionado" name="txtInventarioSelecionado" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" disabled readonly>
 						</div> 
 						

@@ -64,7 +64,7 @@ public class SpedFiscalArquivoService {
 		return spedFiscalArquiRepository.findById(id);
 	}
 
-	public void gerarAquivoSpedFiscal(Long lojaId, Long contadorId, LocalDate dataInicio, LocalDate dataFim) {
+	public void gerarAquivoSpedFiscal(Long lojaId, Long contadorId, Long inventarioId, LocalDate dataInicio, LocalDate dataFim) {
 		List<Loja> listLojas = buscaLojas(lojaId); 		
 
 		for (Loja loja : listLojas) {
@@ -82,7 +82,7 @@ public class SpedFiscalArquivoService {
 				spedFiscalArquivo = opSpedFiscalArqu.get();
 			}
 			
-			MovimentoMensalIcmsIpi moviMensalIcmsIpi = moviMensalIcmsIpiService.buscarMovimentacoesDoPeriodo(loja, contadorId, dataInicio, dataFim);
+			MovimentoMensalIcmsIpi moviMensalIcmsIpi = moviMensalIcmsIpiService.buscarMovimentacoesDoPeriodo(loja, contadorId, inventarioId, dataInicio, dataFim);
 			
 			/***
 			 * APENAS para eu ter definido a URL que será gerado.

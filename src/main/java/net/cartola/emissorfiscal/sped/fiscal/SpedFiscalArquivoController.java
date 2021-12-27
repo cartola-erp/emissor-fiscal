@@ -48,14 +48,13 @@ public class SpedFiscalArquivoController {
 	}
 	
 	@PostMapping("/icms-ipi/gerar")
-	public ModelAndView gerarSpedFiscalIcmsIpi(Long lojaId, Long contadorId, String dataInicio, String dataFim) {
+	public ModelAndView gerarSpedFiscalIcmsIpi(String dataInicio, String dataFim, Long lojaId, Long contadorId, boolean chkExportarInventario, Long inventarioId ) {
 		ModelAndView mv = new ModelAndView("sped/gerar-icms-ipi");
 		LocalDate dtInicio = LocalDate.parse(dataInicio, DTF);
 		LocalDate dtFim = LocalDate.parse(dataFim, DTF);
 		
-		spedFiscalArquService.gerarAquivoSpedFiscal(lojaId, contadorId, dtInicio, dtFim);
+		spedFiscalArquService.gerarAquivoSpedFiscal(lojaId, contadorId, inventarioId, dtInicio, dtFim);
 
-		
 		return mv;
 	}
 	

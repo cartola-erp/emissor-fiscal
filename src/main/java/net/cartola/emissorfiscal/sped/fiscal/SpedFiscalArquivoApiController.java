@@ -29,7 +29,7 @@ public class SpedFiscalArquivoApiController {
 	private static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	@PostMapping(value = "/gerar-arquivo")
-	public ResponseEntity<Response<SpedFiscalArquivo>> gerarArquivoSpedFiscal(Long lojaId, Long contadorId, String dtInicio, String dtFim) {
+	public ResponseEntity<Response<SpedFiscalArquivo>> gerarArquivoSpedFiscal(Long lojaId, Long contadorId, Long inventarioId, String dtInicio, String dtFim) {
 		LOG.log(Level.INFO, "Gerando Arquivo SPED FISCAL (ICMS IPI) ");
 		Response<SpedFiscalArquivo> response = new Response<>();
 		
@@ -44,7 +44,7 @@ public class SpedFiscalArquivoApiController {
 		 */
 		
 		
-		spedFiscalArquService.gerarAquivoSpedFiscal(lojaId, contadorId, dataInicio, dataFim);
+		spedFiscalArquService.gerarAquivoSpedFiscal(lojaId, contadorId, inventarioId, dataInicio, dataFim);
 		
 		return null;
 	}

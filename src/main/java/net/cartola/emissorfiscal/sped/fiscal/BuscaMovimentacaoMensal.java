@@ -15,6 +15,6 @@ public interface BuscaMovimentacaoMensal<T> {
 	 * ???
 	 */
 	
-	T buscarMovimentacoesDoPeriodo(Loja loja, Long contadorId, LocalDate dataInicio, LocalDate dataFim);
+	T buscarMovimentacoesDoPeriodo(Loja loja, Long contadorId, Long inventarioId, LocalDate dataInicio, LocalDate dataFim);
 	
 }
