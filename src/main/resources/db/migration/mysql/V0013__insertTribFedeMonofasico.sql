@@ -136,6 +136,12 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 -- --------------------------------------------------------- 	83 - DISTRIBUICAO GRATUITA DE ITEM DE ESTOQUE 		---------------------------------------------------------
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',83, ncm_id FROM vw_ncm_id_mono;
+				
+-- --------------------------------------------------------- 	84 - REMESSA P/ CONSERTO ATIVO/CONSUMO - INTERESTADUAL 	-------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',84, ncm_id FROM vw_ncm_id_mono;
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
 			
 
