@@ -6,7 +6,7 @@ import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuas
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumo;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumoOuAtivo;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -139,7 +139,7 @@ public class RegC170 {
 		final List<Long> codOperacoesSemMovimentoEstoque = Arrays.asList(15L, 27L, 74L, 82L);
 		final Boolean indMov = !codOperacoesSemMovimentoEstoque.contains(docFisc.getOperacao().getId());
 		final IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-		final boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+		final boolean isEntradaConsumo = isEntradaConsumoOuAtivo(docFisc);
 		
 		this.numItem = item.getItem();
 		this.codItem = SpedFiscalUtil.getCodItem(item);

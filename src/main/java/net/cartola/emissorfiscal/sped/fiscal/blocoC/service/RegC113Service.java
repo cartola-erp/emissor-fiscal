@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.devolucao.DevolucaoTipo;
 import net.cartola.emissorfiscal.documento.ChaveAcesso;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
+import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalIcmsIpi;
 import net.cartola.emissorfiscal.sped.fiscal.blocoC.RegC113;
@@ -56,9 +57,9 @@ class RegC113Service {
 			
 			listChavesRefNoXml.forEach(chaveRefXml -> {
 				// Extrai as informações da chave de acesso;
-				ChaveAcesso chaveAcesso = new ChaveAcesso(chaveRefXml);
-				if (!listCupons.contains(chaveAcesso.getModeloDocumento())) {
-					RegC113 regC113 = preencherRegC113PelaChaveAcesso(docFisc, lojaSped, chaveRefXml, chaveAcesso);
+				ChaveAcesso chaveAcessoNaRef = new ChaveAcesso(chaveRefXml);
+				if (!listCupons.contains(chaveAcessoNaRef.getModeloDocumento())) {
+					RegC113 regC113 = preencherRegC113PelaChaveAcesso(docFisc, lojaSped, chaveRefXml, chaveAcessoNaRef);
 					listRegC113.add(regC113);
 				}
 			});
@@ -84,25 +85,34 @@ class RegC113Service {
 	 * @param docFisc
 	 * @param lojaSped
 	 * @param chaveRefXml
-	 * @param chaveAcesso
+	 * @param chaveAcessoNaRef
 	 * @return
 	 */
-	private RegC113 preencherRegC113PelaChaveAcesso(DocumentoFiscal docFisc, Loja lojaSped, String chaveRefXml, ChaveAcesso chaveAcesso) {
+	private RegC113 preencherRegC113PelaChaveAcesso(DocumentoFiscal docFisc, Loja lojaSped, String chaveRefXml, ChaveAcesso chaveAcessoNaRef) {
 		RegC113 regC113 = new RegC113();
-		regC113.setIndOper(docFisc.getTipoOperacao());
+		regC113.setIndOper(obterIndicadorOperacao(docFisc, lojaSped, chaveAcessoNaRef));
 		regC113.setIndEmit(obterIndicadorEmitente(docFisc, lojaSped)); 
 //		regC113.setIndEmit(getIndicadorEmitente(docFisc, lojaSped)); 
 		regC113.setCodPart(getCodPart(docFisc, this.movimentosIcmsIpi.getMapLojasPorCnpj()));
-		regC113.setCodMod(chaveAcesso.getModeloDocumento());
-		regC113.setSer(Long.parseLong(chaveAcesso.getSerie()));
+		regC113.setCodMod(chaveAcessoNaRef.getModeloDocumento());
+		regC113.setSer(Long.parseLong(chaveAcessoNaRef.getSerie()));
 		regC113.setSub(null);				//	
-		regC113.setNumDoc(Long.parseLong(chaveAcesso.getNumeroNota()));
-		LocalDate dtDoc = LocalDate.of(Integer.parseInt("20"+chaveAcesso.getAnoEmissao()), Integer.parseInt(chaveAcesso.getMesEmissao()), 1);
+		regC113.setNumDoc(Long.parseLong(chaveAcessoNaRef.getNumeroNota()));
+		LocalDate dtDoc = LocalDate.of(Integer.parseInt("20"+chaveAcessoNaRef.getAnoEmissao()), Integer.parseInt(chaveAcessoNaRef.getMesEmissao()), 1);
 		regC113.setDtDoc(dtDoc);
 		regC113.setChvDocE(chaveRefXml);
 		return regC113;
 	}
 	
+	private IndicadorDeOperacao obterIndicadorOperacao(DocumentoFiscal docFisc, Loja lojaSped, ChaveAcesso chaveAcessoNaRef) {
+		// TODO Auto-generated method stub
+//		docFisc.getTipoOperacao()
+		boolean isCnpjLojaEqualChaveRef = lojaSped.getCnpj().equals(chaveAcessoNaRef.getCnpjEmitente());
+		
+		return !isCnpjLojaEqualChaveRef ? IndicadorDeOperacao.ENTRADA : docFisc.getTipoOperacao();
+	}
+
+
 	private IndicadorDoEmitente obterIndicadorEmitente(DocumentoFiscal docFisc, Loja lojaSped) {
 		boolean isDevolucao = docFisc.getOperacao().ehAlgumaDevolucao();
 		if (isDevolucao) {
@@ -113,7 +123,6 @@ class RegC113Service {
 	}
 	
 
-	
 	/**
 	 * Usado quando tem tem algum DocumentoFiscal de referencia
 	 * @param docFisc

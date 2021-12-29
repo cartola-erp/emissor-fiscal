@@ -239,9 +239,9 @@ public final class SpedFiscalUtil {
 	 * @param docFisc
 	 * @return
 	 */
-	public static boolean isEntradaConsumo(DocumentoFiscal docFisc) {
+	public static boolean isEntradaConsumoOuAtivo(DocumentoFiscal docFisc) {
 		final Set<Long> codOperacaoConsumo = new HashSet<>();
-	    codOperacaoConsumo.addAll(Arrays.asList(34l, 35l, 65l));
+	    codOperacaoConsumo.addAll(Arrays.asList(18l, 34l, 35l, 65l, 70l, 78l));
 	    
 	    Operacao oper = docFisc.getOperacao();
 	    Long operId = oper != null ? oper.getId() : 0l;

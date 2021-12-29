@@ -4,7 +4,7 @@ import static java.math.BigDecimal.ZERO;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumo;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumoOuAtivo;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isInformaDesconto;
 
 import java.math.BigDecimal;
@@ -144,7 +144,7 @@ public class RegC100 {
 	 */
 	public RegC100(DocumentoFiscal docFisc, Loja lojaSped, SpedFiscalProperties spedFiscPropertie,  Map<String, Loja> mapLojasPorCnpj) {
 		final IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-		final boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+		final boolean isEntradaConsumo = isEntradaConsumoOuAtivo(docFisc);
 		
 		final BigDecimal icmsStBase = docFisc.getItens().stream().map(DocumentoFiscalItem::getIcmsStBase).reduce(BigDecimal.ZERO, BigDecimal::add);
 		final BigDecimal icmsStValor = docFisc.getItens().stream().map(DocumentoFiscalItem::getIcmsStValor).reduce(BigDecimal.ZERO, BigDecimal::add);
