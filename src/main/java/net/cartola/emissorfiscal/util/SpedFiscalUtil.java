@@ -32,6 +32,7 @@ import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.RegistroAnalitico;
 import net.cartola.emissorfiscal.sped.fiscal.enums.IndicadorDoEmitente;
 import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
+import net.cartola.emissorfiscal.sped.fiscal.enums.ProcessoEmissaoNfe;
 import net.cartola.emissorfiscal.sped.fiscal.enums.SituacaoDoDocumento;
 
 /**
@@ -142,6 +143,10 @@ public final class SpedFiscalUtil {
 			if(docFisc.getFinalidadeEmissao().equals(FinalidadeEmissao.COMPLEMENTAR)) {
 				return SituacaoDoDocumento.DOCUMENTO_FISCAL_COMPLEMENTAR;
 			}
+			
+			if (ModeloDocumentoFiscal._55.equals(docFisc.getModelo()) && isNfeAvulsa(docFisc) ) {
+				return SituacaoDoDocumento.DOCUMENTO_FISCAL_EMITIDO_COM_BASE_EM_REGIME_ESPECIAL_OU_NORMA_ESPECÍFICA;
+			}
 			if (nfeStatus.getCodigo().length() == 2) {
 				int nfeStatusCodigo = Integer.parseInt(nfeStatus.getCodigo());
 				SituacaoDoDocumento sitDoc = SituacaoDoDocumento.values()[nfeStatusCodigo];
@@ -150,6 +155,24 @@ public final class SpedFiscalUtil {
 		return null;
 	}
 	
+	/**
+	 * Será verificado se a NFE, é uma "NFA-e" (Nota Fiscal Avulsa eletronica) <br>
+	 * NFA, são notas emitidas por PJ que não tem obrigatoriedade de emitir NFe, porém quando precisam emitem pela site da SEFAZ !!!
+	 * @param docFisc
+	 * @return
+	 */
+	private static boolean isNfeAvulsa(DocumentoFiscal docFisc) {
+		List<String> tagProcEmit = XmlUtil.getTagConteudo(docFisc.getXml(), "procEmi", false);
+		if(!tagProcEmit.isEmpty()) {
+			String procEmit = tagProcEmit.get(0);
+
+			return procEmit.equals(ProcessoEmissaoNfe.NFE_AVULSA_PELO_FISCO.getCodigo()) 
+					|| procEmit.equals(ProcessoEmissaoNfe.NFE_AVULSA_PELO_CONTRIBUINTE_COM_CERTIFICADO_PELO_SITE_DO_FISCO.getCodigo());
+		}
+		return false;
+	}
+
+
 	/**
 	 * Usado no REG C100;
 	 * 
@@ -232,6 +255,10 @@ public final class SpedFiscalUtil {
 				(tipoOperacao.equals(SAIDA) && spedFiscPropertie.isInformarDescontoSaida());
 	}
 	
+	
+	public static boolean isEntradaEmitidaPelaLoja(DocumentoFiscal docFisc, Loja lojaSped) {
+		return getIndicadorEmitente(docFisc, lojaSped).equals(IndicadorDoEmitente.EMISSAO_PROPRIA) && docFisc.getTipoOperacao().equals(ENTRADA);
+	}
 	
 	/**
 	 * Irá verificar se o DocumentoFiscal, é ou não, uma entrada de consumo
@@ -365,6 +392,5 @@ public final class SpedFiscalUtil {
 								groupingBy(regAnalitico -> getCstIcmsSemOrigem(regAnalitico.getCstIcms()))));
 		return mapRegistroAnaliticoPorCfopECst;
 	}
-
 
 }

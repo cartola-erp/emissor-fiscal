@@ -132,11 +132,17 @@ class RegC190Service {
 	}
 
 	private BigDecimal calcularTotalVlrBcIcmsSt(List<DocumentoFiscalItem> listItens) {
-		return listItens.stream().map(DocumentoFiscalItem::getIcmsStBase).reduce(BigDecimal.ZERO, BigDecimal::add);
+		// Pelo que vi nos arquivos de exemplo do SPED, só informamos o VL ICMS ST no
+		// REG C197 (cod Aj Apur == ) SP90090278, pois somos o "CONTRIBUINTE SUBSTITUÍDO"
+		//		return listItens.stream().map(DocumentoFiscalItem::getIcmsStBase).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return BigDecimal.ZERO;
 	}
 
 	private BigDecimal calcularTotalValorIcmsSt(List<DocumentoFiscalItem> listItens) {
-		return listItens.stream().map(DocumentoFiscalItem::getIcmsStValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+		// Pelo que vi nos arquivos de exemplo do SPED, só informamos o VL ICMS ST no
+		// REG C197 (cod Aj Apur == ) SP90090278, pois somos o "CONTRIBUINTE SUBSTITUÍDO"
+		//		return listItens.stream().map(DocumentoFiscalItem::getIcmsStValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return BigDecimal.ZERO;
 	}
 
 	private BigDecimal calcularTotalValorRedBc(List<DocumentoFiscalItem> listItens, boolean isEntradaConsumo) {

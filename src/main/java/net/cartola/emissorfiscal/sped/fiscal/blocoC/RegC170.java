@@ -158,9 +158,11 @@ public class RegC170 {
 		this.vlBcIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(item.getIcmsBase(), tipoOperacao);			// ICMS
 		this.aliqIcms = isEntradaConsumo ? ZERO : getAliqAsBigDecimal(item.getIcmsAliquota(), tipoOperacao);
 		this.vlIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(item.getIcmsValor(), tipoOperacao);
-		this.vlBcIcmsSt = getVlrOrBaseCalc(item.getIcmsStBase(), tipoOperacao);
+//		this.vlBcIcmsSt = getVlrOrBaseCalc(item.getIcmsStBase(), tipoOperacao);
+		this.vlBcIcmsSt =  BigDecimal.ZERO;			// // Pelo que vi nos arquivos de exemplo do SPED, só informamos o VL ICMS ST no
 		this.aliqSt = getAliqAsBigDecimal(item.getIcmsStAliquota(), tipoOperacao);
-		this.vlIcmsSt = getVlrOrBaseCalc(item.getIcmsStValor(), tipoOperacao);
+//		this.vlIcmsSt = getVlrOrBaseCalc(item.getIcmsStValor(), tipoOperacao);			// REG C197 (cod Aj Apur == ) SP90090278, pois somos o "CONTRIBUINTE SUBSTITUÍDO"
+		this.vlIcmsSt = BigDecimal.ZERO;
 		this.indApur = null;
 		// Null pois segundo o sistema kolossus (validador de efd), como não somos contribuintes de IPI, devemos deixar "VAZIO"
 		this.cstIpi = null;	// IPI

@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoC;
 
 import static java.math.BigDecimal.ZERO;
+import static net.cartola.emissorfiscal.util.NumberUtil.getLongNullSafe;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.documento.ChaveAcesso;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
@@ -143,6 +145,7 @@ public class RegC100 {
 	 * @return 
 	 */
 	public RegC100(DocumentoFiscal docFisc, Loja lojaSped, SpedFiscalProperties spedFiscPropertie,  Map<String, Loja> mapLojasPorCnpj) {
+		ChaveAcesso chaveAcesso = new ChaveAcesso(docFisc.getNfeChaveAcesso());
 		final IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
 		final boolean isEntradaConsumo = isEntradaConsumoOuAtivo(docFisc);
 		
@@ -155,7 +158,7 @@ public class RegC100 {
 		this.codPart = SpedFiscalUtil.getCodPart(docFisc, mapLojasPorCnpj);
 		this.codMod = docFisc.getModelo();
 		this.codSit = getCodSituacao(docFisc);
-		this.ser = docFisc.getSerie();
+		this.ser = getLongNullSafe(chaveAcesso.getSerie()); //docFisc.getSerie();
 		this.numDoc = docFisc.getNumeroNota();
 		this.chvNfe = docFisc.getNfeChaveAcesso();
 		this.dtDoc = docFisc.getEmissao();
@@ -168,7 +171,7 @@ public class RegC100 {
 //		boolean informaDesconto = (tipoOperacao.equals(ENTRADA) && spedFiscPropertie.isInformarDescontoEntrada()) || spedFiscPropertie.isInformarDescontoSaida();
 		boolean informaDesconto = isInformaDesconto(tipoOperacao, spedFiscPropertie);
 
-		this.vlDesc =  informaDesconto ? docFisc.getValorDesconto() : ZERO;
+		this.vlDesc =  (informaDesconto && !SpedFiscalUtil.isEntradaEmitidaPelaLoja(docFisc, lojaSped)) ? docFisc.getValorDesconto() : ZERO;
 //		this.vlDesc = BigDecimal.ZERO;
 		this.vlAbatNt = null;		// REMESSAS p/ ZFM
 		this.vlMerc = docFisc.getValorTotalProduto();
@@ -178,8 +181,10 @@ public class RegC100 {
 		this.vlOutDa = docFisc.getValorOutrasDespesasAcessorias();
 		this.vlBcIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(docFisc.getIcmsBase(), tipoOperacao);
 		this.vlIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(docFisc.getIcmsValor(), tipoOperacao);
-		this.vlBcIcmsSt = getVlrOrBaseCalc(icmsStBase, tipoOperacao);
-		this.vlIcmsSt = getVlrOrBaseCalc(icmsStValor, tipoOperacao);
+//		this.vlBcIcmsSt = getVlrOrBaseCalc(icmsStBase, tipoOperacao);		// Pelo que vi nos arquivos de exemplo do SPED, só informamos o VL ICMS ST no
+//		this.vlIcmsSt = getVlrOrBaseCalc(icmsStValor, tipoOperacao);		// REG C197 (cod Aj Apur == ) SP90090278, pois somos o "CONTRIBUINTE SUBSTITUÍDO"
+		this.vlBcIcmsSt = BigDecimal.ZERO;
+		this.vlIcmsSt = BigDecimal.ZERO;
 //		this.vlIpi(docFisc.getIpiValor());			Não Estamos Enquadrado como contribuinte de IPI. Portanto não informamos NADA de IPI
 		this.vlPis = getVlrOrBaseCalc(docFisc.getPisValor(), tipoOperacao);
 		this.vlCofins = getVlrOrBaseCalc(docFisc.getCofinsValor(), tipoOperacao);

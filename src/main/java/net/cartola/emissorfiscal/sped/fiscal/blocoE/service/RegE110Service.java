@@ -227,11 +227,11 @@ class RegE110Service {
 		
 		BigDecimal vlTotDed = BigDecimal.ZERO;
 
-		if (!isSldApuradoMaiorQueZero) {
-			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms).add(vlSldApurado.abs());	
-		} else {
+//		if (!isSldApuradoMaiorQueZero) {
+//			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms).add(vlSldApurado.abs());	
+//		} else {
 			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms);
-		}
+//		}
 		return vlTotDed;
 	}
 	
