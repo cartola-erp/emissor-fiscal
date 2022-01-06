@@ -44,15 +44,17 @@
 
 						<div class="form-group col-md-4">
 							<label for="cmbLojas"><strong>Loja</strong></label>
-							<select class="custom-select" name="lojaId">
+							<select class="custom-select" name="lojaId" id="cmbLojas">
 								<option selected id="opLoja"> </option>
 								<option th:each="loja : ${listLojas}" th:value="${loja.id}" th:id="${loja.id}" th:selected="${loja.id == lojaIdSelecionado}" th:text="${loja.nomeFantasia}" ></option>
 							</select>
 						</div>
 						
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="checkbox" id="chkTodasLojas" value="true">
-							<label class="form-check-label" for="chkTodasLojas">Todas as Lojas</label>
+							<label class="form-check-label" for="chkTodasLojas">
+								<input class="form-check-input" type="checkbox" id="chkTodasLojas" value="true">
+								Todas as Lojas
+							</label>
 						</div>
 					</div> 
 
@@ -77,14 +79,16 @@
 								<!-- Habilita para o usuario escolher o inventario daquela loja especifica -->
 								<!-- Se for para todas as lojas (a exportacao do SPED ICMS IPI) -->
 								<!-- devera habilitar para o usuario escolher o PERIODO -->
-								<input class="form-check-input" type="checkbox" id="chkExportarInventario" name="chkExportarInventario" value="true">
-								<label for="chkExportarInventario"><strong>Exportar Inventário</strong></label>
+								<label for="chkExportarInventario">
+									<input class="form-check-input" type="checkbox" id="chkExportarInventario" name="chkExportarInventario" value="true" disabled>
+									<strong>Exportar Inventário</strong>
+								</label>
 							</div>
 							<input type="hidden" class="form-control" id="txtInventarioId" th:value="null" name = "inventarioId" readonly required  />
 							<input type="text" class="form-control" id="txtInventarioSelecionado" name="txtInventarioSelecionado" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" disabled readonly>
 						</div> 
 						
-						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnSelecionarInventario" data-toggle="modal" data-target="#modal-add-inventario">
+						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnSelecionarInventario" data-toggle="modal" data-target="#modal-add-inventario" disabled>
 							<span data-feather="plus">Buscar inventário disponivel</span>
 						</button>
 					</div> 
