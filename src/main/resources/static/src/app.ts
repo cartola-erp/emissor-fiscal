@@ -1,5 +1,3 @@
-// onclick="enableOrDisableButtonsInGerarSpedIcmsIpi()"
- // ds
 
 function addListeners() {
     const chkTodasLojas = document.getElementById('chkTodasLojas') as HTMLInputElement;
@@ -12,38 +10,39 @@ function addListeners() {
 }
 
 function enableOrDisableButtonsInGerarSpedIcmsIpi() {
-    // var chkTodasLojas = document.getElementById('chkTodasLojas');
+    const cmbLojas = document.getElementById('cmbLojas') as HTMLSelectElement;
     const chkTodasLojas = document.getElementById('chkTodasLojas') as HTMLInputElement;
 
-    // var chkExportarInventario = document.getElementById('chkExportarInventario');
     const chkExportarInventario = document.getElementById('chkExportarInventario') as HTMLInputElement;
-    const btnSelecionarInventario = document.getElementById('btnSelecionarInventario') as HTMLButtonElement;
+    const txtInventarioSelecionado = document.getElementById('txtInventarioSelecionado') as HTMLInputElement;
 
-    const cmbLojas = document.getElementById('cmbLojas') as HTMLSelectElement;
-    
- 
     if (chkTodasLojas.checked){ 
         cmbLojas.value = "opLoja";
-        // cmbLojas.text = "Todas as lojas serão exportadas"
         cmbLojas.disabled = true;
-        // chkExportarInventario.disabled = false;
-        btnSelecionarInventario.disabled = false;
     } else {
         cmbLojas.disabled = false
         // chkExportarInventario.disabled = true
-        btnSelecionarInventario.disabled = true;
+        // btnSelecionarInventario.disabled = true;
     }
 
     if (!chkTodasLojas.checked && cmbLojas.value == "") {
-        chkExportarInventario.disabled = true
+        chkExportarInventario.disabled = true;
+        chkExportarInventario.checked = false;
     } else {
         chkExportarInventario.disabled = false;
+        txtInventarioSelecionado.value= "";
+        txtInventarioSelecionado.placeholder = "Clique No botão (+) ao lado para buscar o INVENTARIO";
     }
-    
-    if (chkExportarInventario.checked && chkExportarInventario.click) {
+    atualizarBtnSelecionarInventario(cmbLojas, chkTodasLojas, chkExportarInventario);
+}
 
-    }
- 
+function atualizarBtnSelecionarInventario(cmbLojas : HTMLSelectElement, chkTodasLojas : HTMLInputElement, chkExportarInventario : HTMLInputElement ) {
+    const btnSelecionarInventario = document.getElementById('btnSelecionarInventario') as HTMLButtonElement;
+    if ( (chkTodasLojas.checked || cmbLojas.value != "") && chkExportarInventario.checked) {
+        btnSelecionarInventario.disabled = false;
+        return;
+    } 
+    btnSelecionarInventario.disabled = true;
 }
 
 
