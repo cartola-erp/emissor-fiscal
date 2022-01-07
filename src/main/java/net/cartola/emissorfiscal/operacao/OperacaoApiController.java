@@ -33,17 +33,19 @@ public class OperacaoApiController {
 
 
     @PostMapping()
-    public ResponseEntity<Response<Operacao>> save(@Valid @RequestBody Operacao operacao) {
-        LOG.log(Level.INFO, "Salvando uma nova operacao {0} " ,operacao);
+    public ResponseEntity<Response<Operacao>> save(@Valid @RequestBody Operacao operacaoToUpdate) {
+        LOG.log(Level.INFO, "Salvando uma nova operacao {0} " ,operacaoToUpdate);
 		Response<Operacao> response = new Response<>();
 
-        Optional<Operacao> opOperacao = operacaoService.findOperacaoByDescricao(operacao.getDescricao());
+        Optional<Operacao> opOldOperacao = operacaoService.findOperacaoByDescricao(operacaoToUpdate.getDescricao());
 	
-        if(opOperacao.isPresent()) {
-        	response.setData(opOperacao.get());
+        if(opOldOperacao.isPresent()) {
+        	response.setData(opOldOperacao.get());
         	return ResponseEntity.ok(response);
         } else {
-        	Optional<Operacao> opOperacaoSaved = operacaoService.save(operacao);
+        	Optional<Operacao> opOldOperacaoWithSameId = operacaoService.findOne(operacaoToUpdate.getId());
+        	
+        	Optional<Operacao> opOperacaoSaved = operacaoService.save(opOldOperacaoWithSameId.get(), operacaoToUpdate);
             LOG.log(Level.INFO, "Operacao salva {0} " ,opOperacaoSaved);
         	response.setData(opOperacaoSaved.get());
         	return ResponseEntity.ok(response);
@@ -51,11 +53,12 @@ public class OperacaoApiController {
     }
     
     @PutMapping() 
-    public ResponseEntity<Response<Operacao>> update(@Valid @RequestBody Operacao operacao) {
-        LOG.log(Level.INFO, "Atualizando a operacao {0} " ,operacao);
+    public ResponseEntity<Response<Operacao>> update(@Valid @RequestBody Operacao operacaoToUpdate) {
+        LOG.log(Level.INFO, "Atualizando a operacao {0} " ,operacaoToUpdate);
  		Response<Operacao> response = new Response<>();
+ 		Optional<Operacao> opOldOperacaoWithSameId = operacaoService.findOne(operacaoToUpdate.getId());
  		
-        Optional<Operacao> opOperacao = operacaoService.save(operacao);
+        Optional<Operacao> opOperacao = operacaoService.save(opOldOperacaoWithSameId.get(), operacaoToUpdate);
 
         if (!opOperacao.isPresent()) {
         	List<String> listError = Arrays.asList("Operação não encontrada no EMISSOR-FISCAL");
