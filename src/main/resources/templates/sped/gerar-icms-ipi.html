@@ -33,7 +33,7 @@
 					<!-- Data inicio, Fim e Lojas -->
 					<div class="form-row">
 						<div class="form-group col-md-3">
-							<label for="txtDtFim"><strong>Inicio</strong></label>
+							<label for="txtDtInicio"><strong>Inicio</strong></label>
 							<input type="date" class="form-control" id="txtDtInicio" name="dataInicio" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
 						</div>
 
@@ -105,6 +105,7 @@
 
 				<th:block th:replace="/modal-template-lg :: modal('modal-add-inventario') ">Modal Inventario</th:block>
 
+				<th:block th:replace="/modal-template :: modal('modal-add-inventario-periodo')">Modal inventario por periodo</th:block>
 			</div>
 		</section>
 

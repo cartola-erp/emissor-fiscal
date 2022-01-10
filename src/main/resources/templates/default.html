@@ -183,6 +183,14 @@
 				$('#modal-add-inventario').find('.modal-body').html(data);
 			}) 
 		})
+
+        // /inventarios-sped-icms-ipi/por-periodo
+        $('#modal-add-inventario-periodo').on('show.bs.modal', function() {
+			$.get("/modals/inventarios-sped-icms-ipi/por-periodo", function(data) {
+				$('#modal-add-inventario-periodo').find('.modal-body').html(data);
+			}) 
+		})
+
 	</script>
 	
 </body>

@@ -2,9 +2,11 @@ function addListeners() {
     const chkTodasLojas = document.getElementById('chkTodasLojas');
     const chkExportarInventario = document.getElementById('chkExportarInventario');
     const cmbLojas = document.getElementById('cmbLojas');
+    const btnSelecionarInventario = document.getElementById('btnSelecionarInventario');
     chkTodasLojas.addEventListener("click", enableOrDisableButtonsInGerarSpedIcmsIpi);
     chkExportarInventario.addEventListener("click", enableOrDisableButtonsInGerarSpedIcmsIpi);
     cmbLojas.addEventListener("change", enableOrDisableButtonsInGerarSpedIcmsIpi);
+    btnSelecionarInventario.addEventListener("click", enableOrDisableButtonsInGerarSpedIcmsIpi);
 }
 function enableOrDisableButtonsInGerarSpedIcmsIpi() {
     const cmbLojas = document.getElementById('cmbLojas');
@@ -17,8 +19,6 @@ function enableOrDisableButtonsInGerarSpedIcmsIpi() {
     }
     else {
         cmbLojas.disabled = false;
-        // chkExportarInventario.disabled = true
-        // btnSelecionarInventario.disabled = true;
     }
     if (!chkTodasLojas.checked && cmbLojas.value == "") {
         chkExportarInventario.disabled = true;
@@ -33,6 +33,12 @@ function enableOrDisableButtonsInGerarSpedIcmsIpi() {
 }
 function atualizarBtnSelecionarInventario(cmbLojas, chkTodasLojas, chkExportarInventario) {
     const btnSelecionarInventario = document.getElementById('btnSelecionarInventario');
+    if (chkExportarInventario.checked && chkTodasLojas.checked) {
+        btnSelecionarInventario.setAttribute('data-target', "#modal-add-inventario-periodo");
+    }
+    else {
+        btnSelecionarInventario.setAttribute('data-target', "#modal-add-inventario");
+    }
     if ((chkTodasLojas.checked || cmbLojas.value != "") && chkExportarInventario.checked) {
         btnSelecionarInventario.disabled = false;
         return;

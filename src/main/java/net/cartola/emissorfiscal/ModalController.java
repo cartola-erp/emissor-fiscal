@@ -49,6 +49,12 @@ public class ModalController {
 		return mv;
 	}
 	
+	@GetMapping("/inventarios-sped-icms-ipi/por-periodo")
+	public ModelAndView modalInventariosSpedIcmsIpiPorPeriodo() {
+		this.modalTitulo = "Informe o período do inventário!";
+		ModelAndView mv = new ModelAndView("sped/modal-add-inventario-periodo");
+		return mv;
+	}
 	
 	
 	
