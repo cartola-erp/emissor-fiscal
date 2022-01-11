@@ -175,11 +175,14 @@
         feather.replace()
     </script>
 
-	<!-- Scripts que irão abrir os modais	 -->
+	<!-- Scripts que irão abrir os modais (no quando clicarem no botão que abre o modal)	 -->
+    <!-- Será feito a requisição na URL abaixa, e substituido o body do modal -->
 	<script>
         // Busca de add inventario
 		$('#modal-add-inventario').on('show.bs.modal', function() {
-			$.get("/modals/inventarios-sped-icms-ipi", function(data) {
+            var idLojaInventario = document.getElementById('cmbLojas').value;
+            $.get("/modals/inventarios-sped-icms-ipi/"+idLojaInventario, function(data) {
+			// $.get("/modals/inventarios-sped-icms-ipi", function(data) {
 				$('#modal-add-inventario').find('.modal-body').html(data);
 			}) 
 		})

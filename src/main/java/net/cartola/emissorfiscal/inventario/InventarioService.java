@@ -21,6 +21,10 @@ public class InventarioService {
 		return inventarioRepository.findAll();
 	}
 	
+	public List<Inventario> findAllByLojaId(Long lojaId) {
+		return inventarioRepository.findByLojaId(lojaId);
+	}
+	
 	public Optional<Inventario> save(Inventario inventario) {
 		return Optional.ofNullable(inventarioRepository.saveAndFlush(inventario));
 	}

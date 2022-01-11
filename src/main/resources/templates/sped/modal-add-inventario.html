@@ -3,41 +3,48 @@
 
 <!-- TABELA COM Os inventários (deverá aparecer somente o especifico da loja) -->
 <table class="table table-hover table-responsive ">
-	<thead>
-		<tr>
-			<!-- <th scope="col"> <b> ID </b> </th> -->
-			<th scope="col"> <b> ID </b> </th>
-			<th scope="col"> <b> Loja </b> </th>
-			<th scope="col"> <b> Inicio </b> </th>
-			<th scope="col"> <b> Fim </b> </th>
-			<th scope="col"> <b> Valor declarado </b> </th>
-			<th scope="col"> <b> Selecionar Inventário </b> </th>
-		</tr>
-	</thead>
+	<div th:if="${listInventarios != null and !listInventarios.isEmpty()}" >
+		<thead>
+			<tr>
+				<!-- <th scope="col"> <b> ID </b> </th> -->
+				<th scope="col"> <b> ID </b> </th>
+				<th scope="col"> <b> Loja </b> </th>
+				<th scope="col"> <b> Inicio </b> </th>
+				<th scope="col"> <b> Fim </b> </th>
+				<th scope="col"> <b> Valor declarado </b> </th>
+				<th scope="col"> <b> Selecionar Inventário </b> </th>
+			</tr>
+		</thead>
 
-						
-	<tbody>
-		<tr th:each="inve: ${listInventarios}">
-			<!-- <td scope="row"  th:text="${inve.id}"> 1 </td>	 -->
-			<td scope="row" th:text="${inve.inventarioCodigoErp}"> 1 </td>	
-			<td scope="row" th:text="${inve.loja.getLojaAndRazaoSocial()}"> Loja </td>	
-			<td scope="row" th:text="${#temporals.format(inve.inicio, 'dd/MM/yyyy' )}"> Inicio </td>	
-			<td scope="row" th:text="${#temporals.format(inve.fim, 'dd/MM/yyyy' )}"> Fim </td>	
-			<td scope="row" th:text="${inve.valorDeclarado}"> valor declarado </td>
-			<td scope="row" > 
-				<!-- Botão de selecionar inventario -->
-				<button type='button' class='btn btn-outline-primary ajusta-botao-tbl' 
-				 	data-dismiss='modal' 
-					th:id="${inve.id}" 
-					th:value="'Inventário selecionado: ' +${inve.inventarioCodigoErp}+ ' com fim em ' +${#temporals.format(inve.fim, 'dd/MM/yyyy')} "
-				 	onclick='addInventarioToForm(this)' >
-					<span data-feather='plus'>Selecionar</span>
-				</button>
-			</td>
+							
+		<tbody>
+			<tr th:each="inve: ${listInventarios}">
+				<!-- <td scope="row"  th:text="${inve.id}"> 1 </td>	 -->
+				<td scope="row" th:text="${inve.inventarioCodigoErp}"> 1 </td>	
+				<td scope="row" th:text="${inve.loja.getLojaAndRazaoSocial()}"> Loja </td>	
+				<td scope="row" th:text="${#temporals.format(inve.inicio, 'dd/MM/yyyy' )}"> Inicio </td>	
+				<td scope="row" th:text="${#temporals.format(inve.fim, 'dd/MM/yyyy' )}"> Fim </td>	
+				<td scope="row" th:text="${inve.valorDeclarado}"> valor declarado </td>
+				<td scope="row" > 
+					<!-- Botão de selecionar inventario -->
+					<button type='button' class='btn btn-outline-primary ajusta-botao-tbl' 
+						data-dismiss='modal' 
+						th:id="${inve.id}" 
+						th:value="'Inventário selecionado: ' +${inve.inventarioCodigoErp}+ ' com fim em ' +${#temporals.format(inve.fim, 'dd/MM/yyyy')} "
+						onclick='addInventarioToForm(this)' >
+						<span data-feather='plus'>Selecionar</span>
+					</button>
+				</td>
 
-		</tr>
-		
-	<tbody>
+			</tr>
+			
+		<tbody>
+	</div>
+
+	<div th:unless="${listInventarios != null and !listInventarios.isEmpty()}"> 
+		<span>Não foi encontrado inventários para a loja selecionada</span>
+	</div>
+
 </table>
 
 

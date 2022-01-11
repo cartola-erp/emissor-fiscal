@@ -28,18 +28,19 @@
 			<div>
 
 				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
-				<form th:action="@{/sped/icms-ipi/gerar}" th:object="${moviMensalIcmsIpi}" method="POST"  >
-					
+				<!-- <form th:action="@{/sped/icms-ipi/gerar}" th:object="${moviMensalIcmsIpi}" method="POST"  > -->
+				<form th:action="@{/sped/icms-ipi/gerar}" th:object="${moviParametrosBusca}" method="POST"  >
+
 					<!-- Data inicio, Fim e Lojas -->
 					<div class="form-row">
 						<div class="form-group col-md-3">
-							<label for="txtDtInicio"><strong>Inicio</strong></label>
-							<input type="date" class="form-control" id="txtDtInicio" name="dataInicio" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
+							<label for="txtDtInicioSped"><strong>Inicio</strong></label>
+							<input type="date" class="form-control" id="txtDtInicioSped" name="dataInicioSped" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
 						</div>
 
 						<div class="form-group col-md-3">
-							<label for="txtDtFim"><strong>Fim</strong></label>
-							<input type="date" class="form-control" id="txtDtFim" name="dataFim" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
+							<label for="txtDtFimSped"><strong>Fim</strong></label>
+							<input type="date" class="form-control" id="txtDtFimSped" name="dataFimSped" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
 						</div>
 
 						<div class="form-group col-md-4">
@@ -51,8 +52,8 @@
 						</div>
 						
 						<div class="form-check form-check-inline">
-							<label class="form-check-label" for="chkTodasLojas">
-								<input class="form-check-input" type="checkbox" id="chkTodasLojas" value="true">
+							<label class="form-check-label" for="chkExportarSpedTodasLojas">
+								<input class="form-check-input" type="checkbox" id="chkExportarSpedTodasLojas" th:checked="*{exportarSpedTodasLojas}" name="exportarSpedTodasLojas" value="true">
 								Todas as Lojas
 							</label>
 						</div>
@@ -73,14 +74,14 @@
 						<!-- PS.: Também pretendo adicioanr um CHK, para que indiquem que de fato querem exportar o inventário -->
 						<div class="form-group col-md-6">
 							<!-- <label for="txtInventario"><strong>Inventário</strong></label> -->
-									<div class="form-check form-check-inline">
+							<div class="form-check form-check-inline">
 								<!-- TODO -->
 								<!-- Se clicarem em exportar inventario e for exportacao de uma loja especifica: -->
 								<!-- Habilita para o usuario escolher o inventario daquela loja especifica -->
 								<!-- Se for para todas as lojas (a exportacao do SPED ICMS IPI) -->
 								<!-- devera habilitar para o usuario escolher o PERIODO -->
 								<label for="chkExportarInventario">
-									<input class="form-check-input" type="checkbox" id="chkExportarInventario" name="chkExportarInventario" value="true" disabled>
+									<input class="form-check-input" type="checkbox" id="chkExportarInventario" name="exportarInventario" value="true" disabled>
 									<strong>Exportar Inventário</strong>
 								</label>
 							</div>

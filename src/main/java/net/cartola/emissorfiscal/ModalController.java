@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,11 +39,12 @@ public class ModalController {
 	 * 
 	 * @return
 	 */
-	@GetMapping("/inventarios-sped-icms-ipi")
-	public ModelAndView modalInventariosSpedIcmsIpi() {
+	@GetMapping("/inventarios-sped-icms-ipi/{lojaId}")
+	public ModelAndView modalInventariosSpedIcmsIpi(@PathVariable Long lojaId) {
 		this.modalTitulo = "Selecione o inventário!";
 		ModelAndView mv = new ModelAndView("sped/modal-add-inventario");
-		List<Inventario> inventarios = inventarioService.findAll();
+		
+		List<Inventario> inventarios = inventarioService.findAllByLojaId(lojaId);
 		
 		mv.addObject("titulo", modalTitulo);
 		mv.addObject("listInventarios", inventarios);
@@ -51,7 +53,7 @@ public class ModalController {
 	
 	@GetMapping("/inventarios-sped-icms-ipi/por-periodo")
 	public ModelAndView modalInventariosSpedIcmsIpiPorPeriodo() {
-		this.modalTitulo = "Informe o período do inventário!";
+		this.modalTitulo = "Informe o período do inventário, que será exportado para todas as lojas!";
 		ModelAndView mv = new ModelAndView("sped/modal-add-inventario-periodo");
 		return mv;
 	}
