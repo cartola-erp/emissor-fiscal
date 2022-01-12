@@ -1,7 +1,5 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,15 +24,15 @@ public class SpedFiscalArquivoApiController {
 	@Autowired
 	private SpedFiscalArquivoService spedFiscalArquService;
 
-	private static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//	private static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	@PostMapping(value = "/gerar-arquivo")
-	public ResponseEntity<Response<SpedFiscalArquivo>> gerarArquivoSpedFiscal(Long lojaId, Long contadorId, Long inventarioId, String dtInicio, String dtFim) {
+	public ResponseEntity<Response<SpedFiscalArquivo>> gerarArquivoSpedFiscal(MovimentoMensalParametrosBusca paramBuscaSped) {
 		LOG.log(Level.INFO, "Gerando Arquivo SPED FISCAL (ICMS IPI) ");
 		Response<SpedFiscalArquivo> response = new Response<>();
 		
-		LocalDate dataInicio = LocalDate.parse(dtInicio, DTF);
-		LocalDate dataFim = LocalDate.parse(dtFim, DTF);
+//		LocalDate dataInicio = LocalDate.parse(dtInicio, DTF);
+//		LocalDate dataFim = LocalDate.parse(dtFim, DTF);
 		
 		/**
 		 * TODO 
@@ -44,7 +42,7 @@ public class SpedFiscalArquivoApiController {
 		 */
 		
 		
-		spedFiscalArquService.gerarAquivoSpedFiscal(lojaId, contadorId, inventarioId, dataInicio, dataFim);
+		spedFiscalArquService.gerarAquivoSpedFiscal(paramBuscaSped);
 		
 		return null;
 	}
