@@ -147,7 +147,7 @@
 
         <div class="limiter-container">
             <div class="container-form-100">
-                <div class="wrap-form-100 ">
+                <div class="wrap-form-100 " id="wrapForm100">
                     <div th:replace="${content}">
                         <p>Layout content</p>
                     </div>
@@ -178,6 +178,10 @@
 	<!-- Scripts que irão abrir os modais (no quando clicarem no botão que abre o modal)	 -->
     <!-- Será feito a requisição na URL abaixa, e substituido o body do modal -->
 	<script>
+        if (performance.navigation.TYPE_RELOAD) {
+            enableOrDisableButtonsInGerarSpedIcmsIpi();
+        }
+
         // Busca de add inventario
 		$('#modal-add-inventario').on('show.bs.modal', function() {
             var idLojaInventario = document.getElementById('cmbLojas').value;

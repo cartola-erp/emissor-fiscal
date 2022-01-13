@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,6 +29,8 @@ import net.cartola.emissorfiscal.loja.LojaService;
 @RequestMapping("/sped")
 public class SpedFiscalArquivoController {
 
+	private static final Logger LOG = Logger.getLogger(SpedFiscalArquivoController.class.getName());
+
 	@Autowired
 	private SpedFiscalArquivoService spedFiscalArquService;
 
@@ -39,7 +43,6 @@ public class SpedFiscalArquivoController {
 	@Autowired
 	private InventarioService inventarioService;
 	
-	private static final Logger LOG = Logger.getLogger(SpedFiscalArquivoController.class.getName());
 
 	@InitBinder
 	public void initBinder(WebDataBinder webDataBinder) {
@@ -55,10 +58,14 @@ public class SpedFiscalArquivoController {
 	}
 	
 	@PostMapping("/icms-ipi/gerar")
-	public ModelAndView gerarSpedFiscalIcmsIpi(@Valid MovimentoMensalParametrosBusca paramBuscaSped, BindingResult result, RedirectAttributes redirectAttributes) {
+	public ModelAndView gerarSpedFiscalIcmsIpi(@Valid @ModelAttribute("paramBuscaSped") MovimentoMensalParametrosBusca paramBuscaSped, BindingResult result, RedirectAttributes redirectAttributes) {
 		ModelAndView mv = new ModelAndView("sped/gerar-icms-ipi");
-		
-		spedFiscalArquService.gerarAquivoSpedFiscal(paramBuscaSped);
+		if (!result.hasErrors()) {
+			spedFiscalArquService.gerarAquivoSpedFiscal(paramBuscaSped);
+		} else {
+			System.out.println();
+			LOG.log(Level.WARNING, "Errors {0} ", result.getAllErrors());
+		}
 		addObjetosNaView(mv, paramBuscaSped);
 		return mv;
 	}
@@ -71,7 +78,7 @@ public class SpedFiscalArquivoController {
 		List<Inventario> listInventario =  new ArrayList<>();
 		listInventario.add(new Inventario());
 		
-		mv.addObject("moviParametrosBusca", paramBuscaSped);
+		mv.addObject("paramBuscaSped", paramBuscaSped);
 		mv.addObject("listLojas", listLojas);
 		mv.addObject("listContador", contadorService.findAll());
 	}

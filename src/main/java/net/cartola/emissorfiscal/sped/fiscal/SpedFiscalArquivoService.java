@@ -183,7 +183,7 @@ public class SpedFiscalArquivoService {
 		List<Loja> listLojas = new ArrayList<>();
 		if (paramBuscaSped.isExportarSpedTodasLojas()) {
 			return lojaService.findAll();
-		} else if (paramBuscaSped.getLojaId() != null || !paramBuscaSped.getLojaId().equals(0L)) {
+		} else if (paramBuscaSped.getLojaId() != null && !paramBuscaSped.getLojaId().equals(0L)) {
 			lojaService.findOne(paramBuscaSped.getLojaId()).ifPresent(loja -> listLojas.add(loja));
 		}
 		return listLojas;
