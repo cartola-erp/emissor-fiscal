@@ -36,7 +36,6 @@
 					<p th:if="${#fields.hasErrors('dataInicioInventario')}" th:class="${#fields.hasErrors('dataInicioInventario')}?  ' alert-danger' "> A data inicial do inventário tem que ser preenchida</p>
 					<p th:if="${#fields.hasErrors('dataFimInventario')}" th:class="${#fields.hasErrors('dataFimInventario')}?  ' alert-danger' "> A data final do inventário tem que ser preenchida</p>
 
-
 						<!-- Data inicio, Fim e Lojas -->
 					<div class="form-row">
 						<div class="form-group col-md-3">
@@ -72,6 +71,7 @@
 								<option selected id="opContador"> </option>
 								<option th:each="contador : ${listContador}" th:value="${contador.id}" th:id="${contador.id}" th:selected="${contador.id == paramBuscaSped.contadorId}" th:text="${contador.nome}" ></option>
 							</select>
+							<p th:if="${#fields.hasErrors('contadorId')}" th:class="${#fields.hasErrors('contadorId')}?  ' alert-danger' "> É necessário selecionar um contador</p>
 						</div>
 
 						<div class="form-group col-md-6">
@@ -83,6 +83,8 @@
 							</div>
 							<input type="hidden" class="form-control" id="txtInventarioId" th:value="null" name = "inventarioId" readonly required  />
 							<input type="text" class="form-control" id="txtInventarioSelecionado" name="txtInventarioSelecionado" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" disabled readonly>
+							
+							<p th:if="${#fields.hasErrors('inventarioId')}" th:class="${#fields.hasErrors('inventarioId')}?  ' alert-danger' "> É necessário selecionar um inventário, quando a opção de exportar está selecionada</p>
 						</div> 
 						
 						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnSelecionarInventario" data-toggle="modal" data-target="#modal-add-inventario" disabled>
