@@ -144,7 +144,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		// ########## Setando os valores buscados acima que, para retornar o Obj de MOVIMENTACAO MENSAL ##########
 //		TODO	-> SETAR no obj de movimentos --> 	Produto alterado Sped
 	
-		
+		movimentoMensalIcmsIpi.setParamBuscaSped(paramBuscaSped);
 		movimentoMensalIcmsIpi.setListDocumentoFiscal(listDocFiscal);
 		movimentoMensalIcmsIpi.setListDocumentoFiscalServico(listDocFiscalOutrosServicos);
 		movimentoMensalIcmsIpi.setListSatsEmitidos(listSatsEmitidos);
@@ -157,7 +157,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		movimentoMensalIcmsIpi.setMapLojasPorCnpj(mapLojasPorCnpj);
 		movimentoMensalIcmsIpi.setLoja(loja);
 		movimentoMensalIcmsIpi.setContador(contador);
-		movimentoMensalIcmsIpi.setInventario(opInventario.get());
+		opInventario.ifPresent(movimentoMensalIcmsIpi::setInventario);
 		movimentoMensalIcmsIpi.setListDocFiscSantaCatarina(setDocFiscalSantaCatarina);			// Documentos Fiscais de comercialização de santa catarina
 		movimentoMensalIcmsIpi.setSetSpedFiscRegE110ApuracaoPropria(setRegE110ApuracaoPropria);
 		movimentoMensalIcmsIpi.setSetSpedFiscRegE310Difal(setRegE310Difal);

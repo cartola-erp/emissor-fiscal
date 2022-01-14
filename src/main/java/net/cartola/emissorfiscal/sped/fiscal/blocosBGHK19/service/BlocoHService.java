@@ -27,15 +27,14 @@ public class BlocoHService implements MontaBloco<BlocoH, MovimentoMensalIcmsIpi>
 	
 	@Override
 	public BlocoH criarBloco(MovimentoMensalIcmsIpi movimentoMensalIcmsIpi) {
-		// TODO Auto-generated method stub
-		// Pelo menos uma vez por ano terá que ser informado o inventário
-		// TODO - TENHO QUE MONTAR A LÓGICA AINDA
 		LOG.log(Level.INFO, "Montando o BLOCO H, com INICIO em: {0} e TERMINO: {1} ", movimentoMensalIcmsIpi.getDataInicio());
 		BlocoH blocoH = new BlocoH();
 		
 		RegH001AberturaDoBlocoH regH001 = new RegH001AberturaDoBlocoH(movimentoMensalIcmsIpi);
 		blocoH.setRegH001(regH001);
-		blocoH.setRegH005(regH005Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		if (movimentoMensalIcmsIpi.getParamBuscaSped().isExportarInventario()) {
+			blocoH.setRegH005(regH005Service.montarGrupoDeRegistro(movimentoMensalIcmsIpi));
+		}
 		blocoH.setRegH990(montarEncerramentoDoBlocoH(blocoH));
 
 		LOG.log(Level.INFO, "Montagem do BLOCO H, TEMINADA! {0} " ,blocoH);
