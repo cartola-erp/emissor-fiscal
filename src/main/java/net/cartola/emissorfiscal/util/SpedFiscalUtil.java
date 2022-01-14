@@ -25,6 +25,7 @@ import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
 import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.documento.ProdutoOrigem;
+import net.cartola.emissorfiscal.inventario.InventarioItem;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
@@ -195,11 +196,18 @@ public final class SpedFiscalUtil {
 	}
 
 	public static String getCodItem(DocumentoFiscalItem item) {
-		String codItem = item.getCodigoX().toString() + item.getCodigoSequencia();
-		return codItem;
+		return getCodItem(item.getCodigoX().toString(), item.getCodigoSequencia());
 	}
 	
+	public static String getCodItem(InventarioItem item) {
+		return getCodItem(item.getCodigoX().toString(), item.getCodigoSequencia());
+	}
 	
+	private static String getCodItem(String codigoX, String codigoSequencia) {
+		return codigoX + codigoSequencia;
+	}
+
+
 	public static String getCstIcmsComOrigem(ProdutoOrigem origem, int cstIcms) {
 		if (cstIcms == 0) {
 			return Integer.toString(origem.ordinal()) + "00";
@@ -392,5 +400,6 @@ public final class SpedFiscalUtil {
 								groupingBy(regAnalitico -> getCstIcmsSemOrigem(regAnalitico.getCstIcms()))));
 		return mapRegistroAnaliticoPorCfopECst;
 	}
+
 
 }

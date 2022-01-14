@@ -1,10 +1,14 @@
 package net.cartola.emissorfiscal.inventario;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalParametrosBusca;
 
 
 /**
@@ -31,6 +35,14 @@ public class InventarioService {
 		
 	public Optional<Inventario> findOne(Long id) {
 		return inventarioRepository.findById(id);
+	}
+
+	public Optional<Inventario> findByLojaAndPeriodo(Loja loja, MovimentoMensalParametrosBusca paramBuscaSped) {
+		return findByLojaAndPeriodo(loja.getId(), paramBuscaSped.getDataInicioInventario(), paramBuscaSped.getDataFimInventario());
+	}
+
+	private Optional<Inventario> findByLojaAndPeriodo(Long lojaId, LocalDate dataInicioInventario, LocalDate dataFimInventario) {
+		return inventarioRepository.findByLojaIdAndInicioAndFim(lojaId, dataInicioInventario, dataFimInventario);
 	}
 	
 }

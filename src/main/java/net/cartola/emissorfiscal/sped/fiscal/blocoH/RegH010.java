@@ -1,11 +1,15 @@
 package net.cartola.emissorfiscal.sped.fiscal.blocoH;
 
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 import coffeepot.bean.wr.annotation.Field;
 import coffeepot.bean.wr.annotation.Record;
+import net.cartola.emissorfiscal.inventario.InventarioItem;
 import net.cartola.emissorfiscal.sped.fiscal.enums.PropriedadeEPosseItem;
+import net.cartola.emissorfiscal.util.SpedFiscalUtil;
 
 /**
  * 14/09/2020
@@ -44,6 +48,21 @@ public class RegH010 {
 	private List<RegH020> regH020;
 	private RegH030 regH030;
 	
+	
+    private final String CONTA_CONTABIL_MERCADORIA_PARA_VENDA = System.getProperty("contabilidade.folhamatic.exportacao.contaContabil.mercadoria.venda", "1.1.03.01.0001");
+	
+	public RegH010(InventarioItem item) {
+		this.setCodItem(SpedFiscalUtil.getCodItem(item));
+		this.setUnid(item.getUnidade());
+		this.setVlUnit(item.getCusto());
+		this.setVlItem(getBigDecimalNullSafe(item.getCusto()).multiply(item.getEstoqueDeclarado()));
+		this.setIndProp(PropriedadeEPosseItem.ITEM_PROP_INFORMANTE_EM_SEU_PODER);
+//		this.setCodPart(null);
+//		this.setTxtCompl(null);
+		this.setCodCta(CONTA_CONTABIL_MERCADORIA_PARA_VENDA);
+//		this.setVlItemIr(null);
+	}
+
 	public String getReg() {
 		return reg;
 	}

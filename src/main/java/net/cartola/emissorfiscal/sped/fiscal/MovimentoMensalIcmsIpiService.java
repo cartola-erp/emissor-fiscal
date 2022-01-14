@@ -137,7 +137,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		
 		Set<DocumentoFiscal> setDocFiscalSantaCatarina = getListDocFiscalSantaCatarina(paramBuscaSped, loja);
 		Contador contador = contadorService.findOne(paramBuscaSped.getContadorId()).get();
-		Optional<Inventario> opInventario = inventarioService.findOne(1L);
+		Optional<Inventario> opInventario =  getInventario(paramBuscaSped, loja);
 		Set<SpedFiscalRegE110> setRegE110ApuracaoPropria = spedFiscRegE110ApuracaoPropriaService.findRegE110ByPeriodoAndLoja(paramBuscaSped, loja);
 		Set<SpedFiscalRegE310> setRegE310Difal = spedFiscRegE310DifalService.findRegE310ByPeriodoAndLoja(paramBuscaSped, loja);
 
@@ -157,7 +157,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		movimentoMensalIcmsIpi.setMapLojasPorCnpj(mapLojasPorCnpj);
 		movimentoMensalIcmsIpi.setLoja(loja);
 		movimentoMensalIcmsIpi.setContador(contador);
-//		movimentoMensalIcmsIpi.setInventario(opInventario.get());
+		movimentoMensalIcmsIpi.setInventario(opInventario.get());
 		movimentoMensalIcmsIpi.setListDocFiscSantaCatarina(setDocFiscalSantaCatarina);			// Documentos Fiscais de comercialização de santa catarina
 		movimentoMensalIcmsIpi.setSetSpedFiscRegE110ApuracaoPropria(setRegE110ApuracaoPropria);
 		movimentoMensalIcmsIpi.setSetSpedFiscRegE310Difal(setRegE310Difal);
@@ -170,7 +170,7 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 		return movimentoMensalIcmsIpi;
 	}
 
-
+	
 	private Set<String> getListCpfCnpj(List<Pessoa> listCadPessoas) {
 		Set<String> cpfCnpjSet = new HashSet<>();
 		Set<String> cpfSet = listCadPessoas.stream().filter(pessoa -> pessoa.getCpf() != null && !pessoa.getCpf().isEmpty()).map(Pessoa::getCpf).collect(toSet());
@@ -359,6 +359,31 @@ class MovimentoMensalIcmsIpiService implements BuscaMovimentacaoMensal<Movimento
 				&& docFiscSc.getDestinatario().getCnpj().equals(loja.getCnpj())).collect(toSet());
 		
 		return listDocFiscSCLojaAtual;
+	}
+
+	
+	/**
+	 * Se for um inventário específico, será retornado pelo id que está em "paraBuscaSped" <\br>
+	 * Caso seja, por período (quando exporta para todas as lojas), será buscado pelo período informado e da loja 
+	 * que está sendo "iterada" no momento;
+	 * 
+	 * @param paramBuscaSped
+	 * @param loja
+	 * @return
+	 */
+	private Optional<Inventario> getInventario(MovimentoMensalParametrosBusca paramBuscaSped, Loja loja) {
+		Predicate<MovimentoMensalParametrosBusca> exportarInventarioPorId = 
+				inve -> ( inve.isExportarInventario() && inve.getInventarioId() != null  && 
+					inve.getDataInicioInventario() == null && inve.getDataFimInventario() == null);
+		Predicate<MovimentoMensalParametrosBusca> exportarInventarioPorPeriodo = 
+				inve -> inve.isExportarInventario() && inve.getDataInicioInventario() != null && inve.getDataFimInventario() != null;
+				
+		if (exportarInventarioPorId.test(paramBuscaSped)) {
+			 return inventarioService.findOne(paramBuscaSped.getInventarioId());
+		} else if (exportarInventarioPorPeriodo.test(paramBuscaSped)) {
+			return inventarioService.findByLojaAndPeriodo(loja, paramBuscaSped);
+		}
+		return Optional.empty();
 	}
 
 
