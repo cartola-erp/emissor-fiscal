@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.documento;
 
+import static net.cartola.emissorfiscal.documento.IndicadorDeOperacao.SAIDA;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.ToString;
 import net.cartola.emissorfiscal.devolucao.Devolucao;
+import net.cartola.emissorfiscal.devolucao.DevolucaoTipo;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.Pessoa;
@@ -113,6 +116,7 @@ public class DocumentoFiscal extends Documento<DocumentoFiscalItem> implements S
 	 * @param devolucao
 	 */
 	public DocumentoFiscal(Devolucao devolucao) {
+		this.tipoOperacao = DevolucaoTipo.PARA_FORNECEDOR.equals(devolucao.getDevolucaoTipo()) ? SAIDA : null;
 		this.finalidadeEmissao = FinalidadeEmissao.DEVOLUCAO_MERCADORIA;
 		super.operacao = devolucao.getOperacao();
 		super.loja = devolucao.getLoja();
