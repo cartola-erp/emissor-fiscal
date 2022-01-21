@@ -38,6 +38,7 @@ public class Pessoa {
 	private int lojaErp;
 	private int enderecoCodigoErp;
 	private PessoaEndereco endereco; 
+	private boolean zeraOutrasDespesas;
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -143,9 +144,17 @@ public class Pessoa {
 	public PessoaEndereco getEndereco() {
 		return endereco;
 	}
-
+	@Column(name = "end_cod_erp")
 	public void setEndereco(PessoaEndereco endereco) {
 		this.endereco = endereco;
+	}
+	
+	@Column(name = "zera_outras_despesas", columnDefinition = " TINYINT(1) DEFAULT FALSE")
+	public boolean isZeraOutrasDespesas() {
+		return zeraOutrasDespesas;
+	}
+	public void setZeraOutrasDespesas(boolean zeraOutrasDespesas) {
+		this.zeraOutrasDespesas = zeraOutrasDespesas;
 	}
 
 	@Override
@@ -153,9 +162,8 @@ public class Pessoa {
 		return "Pessoa [id=" + id + ", cnpj=" + cnpj + ", cpf=" + cpf + ", regimeTributario=" + regimeTributario
 				+ ", pessoaTipo=" + pessoaTipo + ", ie=" + ie + ", codSuframa=" + codSuframa + ", nome=" + nome
 				+ ", codigoErp=" + codigoErp + ", lojaErp=" + lojaErp + ", enderecoCodigoErp=" + enderecoCodigoErp
-				+ ", endereco=" + endereco + "]";
+				+ ", endereco=" + endereco + ", zeraOutrasDespesas=" + zeraOutrasDespesas + "]";
 	}
-
 }
 
 
