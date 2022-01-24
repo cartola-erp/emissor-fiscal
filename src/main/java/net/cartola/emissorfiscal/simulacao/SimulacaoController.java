@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.simulacao;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.validation.Valid;
 
@@ -30,6 +31,8 @@ import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 @Controller
 public class SimulacaoController {
 	
+	private static final Logger LOG = Logger.getLogger(SimulacaoController.class.getName());
+	
 	@Autowired
 	private OperacaoService operacaoService;
 	
@@ -47,14 +50,22 @@ public class SimulacaoController {
 	
 	@Autowired
 	private SimulacaoService simulacaoService;
+
+	@GetMapping("ressucita-me")
+	public ModelAndView ressucitaMe() {
+		LOG.info("Estou sendo acordado ?");
+		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
+		addObjetosNaView(mv, new DocumentoFiscal());
+		
+		return mv;
+	}
 	
-//	@GetMapping("simulador")
 	@GetMapping({"home", "simulador/calculo"})
 	public ModelAndView loadSimulacaoTeste() {
+		LOG.info("Abrindo a página home (simulador calculo) ");
 		ModelAndView mv = new ModelAndView("simulacao-teste/simulador-calculo");
 		
 		addObjetosNaView(mv, new DocumentoFiscal());
-//		mv.addObject("resultadoCalculo", new StringBuffer("Esperando o calculo").toString());
 
 		return mv;
 	}
