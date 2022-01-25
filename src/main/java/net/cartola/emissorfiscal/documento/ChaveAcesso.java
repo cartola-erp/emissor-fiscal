@@ -52,7 +52,7 @@ public class ChaveAcesso {
 		String numModeloDocFisc = chaveAcesso.substring(20, 22);
 		setModeloDocumento(numModeloDocFisc);
 		
-		this.serie = chaveAcesso.substring(23, 25);
+		this.serie = chaveAcesso.substring(22, 25);
 		this.numeroNota = chaveAcesso.substring(26, 34);
 //		this.tipoEmissao = chaveAcesso.substring(34, 35);
 		

@@ -4,7 +4,7 @@ import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuas
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.multiplicaAliqPorCem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getMapaItensParaRegistroAnalitico;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumo;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumoOuAtivo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -37,7 +37,10 @@ class RegC190Service {
 	 */
 	public List<RegC190> montarGrupoRegC190(DocumentoFiscal docFisc, MovimentoMensalIcmsIpi movimentosIcmsIpi) {
 		List<RegC190> listRegC190 = new ArrayList<>();
-		boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+		boolean isEntradaConsumo = isEntradaConsumoOuAtivo(docFisc);
+		if (isEntradaConsumo) {
+			zerarAliqIcmsItens(docFisc);
+		}
 		
 		/**Um mapa dentro do outro, até retornar uma lista no ultimo. Sendo as seguintes Chaves:
 		 * ProdutoOrigem, CstIcms, Cfop, Aliquota do Icms --> Retornam uma List<DocumentoFiscalItem>
@@ -74,6 +77,10 @@ class RegC190Service {
 	}
 
 	
+	private void zerarAliqIcmsItens(DocumentoFiscal docFisc) {
+		docFisc.getItens().forEach(i -> i.setIcmsAliquota(BigDecimal.ZERO));
+	}
+
 	/**
 	 * Como a base do icms já é (ao menos é para aontecer isso) salva corretamente no banco, só estou acrescentando o valor do FCP;
 	 * não temos FCP ST, por isso não é somado
@@ -109,9 +116,11 @@ class RegC190Service {
 			return BigDecimal.ZERO;
 //			return vlBcIcms;
 		} else {
-			return listItens.stream().map(DocumentoFiscalItem::getIcmsReducaoBaseValor)
-					.reduce(BigDecimal.ZERO, BigDecimal::add)
-					.add(vlBcIcms);
+//			return listItens.stream()
+//					.map(DocumentoFiscalItem::getIcmsReducaoBaseValor)
+//					.reduce(BigDecimal.ZERO, BigDecimal::add)
+//					.add(vlBcIcms);
+			return vlBcIcms;
 		}
 	}
 	
@@ -123,11 +132,17 @@ class RegC190Service {
 	}
 
 	private BigDecimal calcularTotalVlrBcIcmsSt(List<DocumentoFiscalItem> listItens) {
-		return listItens.stream().map(DocumentoFiscalItem::getIcmsStBase).reduce(BigDecimal.ZERO, BigDecimal::add);
+		// Pelo que vi nos arquivos de exemplo do SPED, só informamos o VL ICMS ST no
+		// REG C197 (cod Aj Apur == ) SP90090278, pois somos o "CONTRIBUINTE SUBSTITUÍDO"
+		//		return listItens.stream().map(DocumentoFiscalItem::getIcmsStBase).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return BigDecimal.ZERO;
 	}
 
 	private BigDecimal calcularTotalValorIcmsSt(List<DocumentoFiscalItem> listItens) {
-		return listItens.stream().map(DocumentoFiscalItem::getIcmsStValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+		// Pelo que vi nos arquivos de exemplo do SPED, só informamos o VL ICMS ST no
+		// REG C197 (cod Aj Apur == ) SP90090278, pois somos o "CONTRIBUINTE SUBSTITUÍDO"
+		//		return listItens.stream().map(DocumentoFiscalItem::getIcmsStValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return BigDecimal.ZERO;
 	}
 
 	private BigDecimal calcularTotalValorRedBc(List<DocumentoFiscalItem> listItens, boolean isEntradaConsumo) {

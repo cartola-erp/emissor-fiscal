@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -64,8 +63,8 @@ public class SpedFiscalArquivoService {
 		return spedFiscalArquiRepository.findById(id);
 	}
 
-	public void gerarAquivoSpedFiscal(Long lojaId, Long contadorId, LocalDate dataInicio, LocalDate dataFim) {
-		List<Loja> listLojas = buscaLojas(lojaId); 		
+	public void gerarAquivoSpedFiscal(MovimentoMensalParametrosBusca paramBuscaSped) {
+		List<Loja> listLojas = buscaLojas(paramBuscaSped); 		
 
 		for (Loja loja : listLojas) {
 			LocalDateTime dataHoraInicioGeracao = LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault());
@@ -73,8 +72,8 @@ public class SpedFiscalArquivoService {
 
 			SpedFiscalArquivo spedFiscalArquivo = new SpedFiscalArquivo();
 			spedFiscalArquivo.setLoja(loja);
-			spedFiscalArquivo.setDataInicioSped(dataInicio);
-			spedFiscalArquivo.setDataFimSped(dataFim);
+			spedFiscalArquivo.setDataInicioSped(paramBuscaSped.getDataInicioSped());
+			spedFiscalArquivo.setDataFimSped(paramBuscaSped.getDataFimSped());
 			spedFiscalArquivo.setDataHoraInicioGeracao(dataHoraInicioGeracao);
 			
 			Optional<SpedFiscalArquivo> opSpedFiscalArqu = save(spedFiscalArquivo);
@@ -82,8 +81,8 @@ public class SpedFiscalArquivoService {
 				spedFiscalArquivo = opSpedFiscalArqu.get();
 			}
 			
-			MovimentoMensalIcmsIpi moviMensalIcmsIpi = moviMensalIcmsIpiService.buscarMovimentacoesDoPeriodo(loja, contadorId, dataInicio, dataFim);
-			
+			MovimentoMensalIcmsIpi moviMensalIcmsIpi = moviMensalIcmsIpiService.buscarMovimentacoesDoPeriodo(paramBuscaSped, loja);
+
 			/***
 			 * APENAS para eu ter definido a URL que será gerado.
 			 * Mas provavelmente irei devolver um arquivo para dowload, depois que terminar de gerar. 
@@ -180,12 +179,12 @@ public class SpedFiscalArquivoService {
 		return false;
 	}
 	
-	private List<Loja> buscaLojas(Long lojaId) {
+	private List<Loja> buscaLojas(MovimentoMensalParametrosBusca paramBuscaSped) {
 		List<Loja> listLojas = new ArrayList<>();
-		if (lojaId == null || lojaId.equals(0L)) {
-			listLojas.addAll(lojaService.findAll());
-		} else {
-			lojaService.findOne(lojaId).ifPresent(loja -> listLojas.add(loja));
+		if (paramBuscaSped.isExportarSpedTodasLojas()) {
+			return lojaService.findAll();
+		} else if (paramBuscaSped.getLojaId() != null && !paramBuscaSped.getLojaId().equals(0L)) {
+			lojaService.findOne(paramBuscaSped.getLojaId()).ifPresent(loja -> listLojas.add(loja));
 		}
 		return listLojas;
 	}

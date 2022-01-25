@@ -1,7 +1,5 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
-import java.time.LocalDate;
-
 import net.cartola.emissorfiscal.loja.Loja;
 
 /**
@@ -15,6 +13,6 @@ public interface BuscaMovimentacaoMensal<T> {
 	 * ???
 	 */
 	
-	T buscarMovimentacoesDoPeriodo(Loja loja, Long contadorId, LocalDate dataInicio, LocalDate dataFim);
-	
+	T buscarMovimentacoesDoPeriodo(MovimentoMensalParametrosBusca paramBuscaSped, Loja loja);
+
 }

@@ -64,6 +64,10 @@ public class MovimentoMensalIcmsIpi {
 	 */
 	@Setter(value = AccessLevel.NONE) private Map<SituacaoDoDocumento, Set<DocumentoFiscal>> mapDocumentoFiscalPorSituacao;
 	
+	/**
+	 * Parametros de para buscar das inforamções que serão geradas no SPED ICMS IPI. (Usuário informou na tela gerar-icms-ipi.html)
+	 */
+	private MovimentoMensalParametrosBusca paramBuscaSped;
 	private List<DocumentoFiscal> listDocumentoFiscal;
 	private List<DocumentoFiscal> listDocumentoFiscalServico;
 	private Set<DocumentoFiscal> listDocFiscSantaCatarina;

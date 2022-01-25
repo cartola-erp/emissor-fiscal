@@ -32,11 +32,18 @@ public class OperacaoService {
 	}
 	
 	public Optional<Operacao> save(Operacao operacao) {
-		String descricao = StringUtil.prepareString(operacao.getDescricao());
-		operacao.setDescricao(descricao);
 		return Optional.ofNullable(operacaoRepository.saveAndFlush(operacao));
 	}
 
+	public Optional<Operacao> save(Operacao oldOperacao, Operacao operacaoToUpdate) {
+		String descricao = StringUtil.prepareString(operacaoToUpdate.getDescricao());
+		operacaoToUpdate.setDescricao(descricao);
+		// Para manter as mesmas configuracoes da opeacão que estava anteriormente
+		operacaoToUpdate.setDevolucao(oldOperacao.isDevolucao());
+		operacaoToUpdate.setRemessaParaFornecedor(oldOperacao.isRemessaParaFornecedor());
+		return save(operacaoToUpdate);
+	}
+	
 	public List<Operacao> findByParteDaDescricao(String descricaoOperacao) {
 		return operacaoRepository.findOperacaoByParteDaDescricao(descricaoOperacao);
 	}

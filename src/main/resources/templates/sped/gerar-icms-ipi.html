@@ -28,31 +28,39 @@
 			<div>
 
 				<!-- FORMULÁRIO p/ CADASTRAR/ EDITAR -->
-				<form th:action="@{/sped/icms-ipi/gerar}" th:object="${moviMensalIcmsIpi}" method="POST"  >
-					
-					<!-- Data inicio, Fim e Lojas -->
+				<form th:action="@{/sped/icms-ipi/gerar}" th:object="${paramBuscaSped}" method="POST"  >
+					<!-- MSG dos erros -->
+
+					<!-- <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>     -->
+					<!-- alert alert-danger -->
+					<p th:if="${#fields.hasErrors('dataInicioInventario')}" th:class="${#fields.hasErrors('dataInicioInventario')}?  ' alert-danger' "> A data inicial do inventário tem que ser preenchida</p>
+					<p th:if="${#fields.hasErrors('dataFimInventario')}" th:class="${#fields.hasErrors('dataFimInventario')}?  ' alert-danger' "> A data final do inventário tem que ser preenchida</p>
+
+						<!-- Data inicio, Fim e Lojas -->
 					<div class="form-row">
 						<div class="form-group col-md-3">
-							<label for="txtDtFim"><strong>Inicio</strong></label>
-							<input type="date" class="form-control" id="txtDtInicio" name="dataInicio" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
+							<label for="txtDtInicioSped"><strong>Inicio</strong></label>
+							<input type="date" class="form-control" id="txtDtInicioSped" th:value="*{dataInicioSped}" name="dataInicioSped" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
 						</div>
 
 						<div class="form-group col-md-3">
-							<label for="txtDtFim"><strong>Fim</strong></label>
-							<input type="date" class="form-control" id="txtDtFim" name="dataFim" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
+							<label for="txtDtFimSped"><strong>Fim</strong></label>
+							<input type="date" class="form-control" id="txtDtFimSped" th:value="*{dataFimSped}" name="dataFimSped" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
 						</div>
 
 						<div class="form-group col-md-4">
 							<label for="cmbLojas"><strong>Loja</strong></label>
-							<select class="custom-select" name="lojaId">
+							<select class="custom-select" name="lojaId" id="cmbLojas">
 								<option selected id="opLoja"> </option>
-								<option th:each="loja : ${listLojas}" th:value="${loja.id}" th:id="${loja.id}" th:selected="${loja.id == lojaIdSelecionado}" th:text="${loja.nomeFantasia}" ></option>
+								<option th:each="loja : ${listLojas}" th:value="${loja.id}" th:id="${loja.id}" th:selected="${loja.id == paramBuscaSped.lojaId}" th:text="${loja.nomeFantasia}" ></option>
 							</select>
 						</div>
 						
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="checkbox" id="chkTodasLojas" value="true">
-							<label class="form-check-label" for="chkTodasLojas">Todas as Lojas</label>
+							<label class="form-check-label" for="chkExportarSpedTodasLojas">
+								<input class="form-check-input" type="checkbox" id="chkExportarSpedTodasLojas" th:checked="*{exportarSpedTodasLojas}" name="exportarSpedTodasLojas" >
+								Todas as Lojas
+							</label>
 						</div>
 					</div> 
 
@@ -61,46 +69,48 @@
 							<label for="cmbContadores"><strong>Contador</strong></label>
 							<select class="custom-select" name="contadorId">
 								<option selected id="opContador"> </option>
-								<option th:each="contador : ${listContador}" th:value="${contador.id}" th:id="${contador.id}" th:selected="${contador.id == contadorIdSelecionado}" th:text="${contador.nome}" ></option>
+								<option th:each="contador : ${listContador}" th:value="${contador.id}" th:id="${contador.id}" th:selected="${contador.id == paramBuscaSped.contadorId}" th:text="${contador.nome}" ></option>
 							</select>
+							<p th:if="${#fields.hasErrors('contadorId')}" th:class="${#fields.hasErrors('contadorId')}?  ' alert-danger' "> É necessário selecionar um contador</p>
 						</div>
 
-						<!-- TODO  -->
-						<!-- O BTN de Buscar inventário só deverá estar habilitado caso selecionem alguma LOJA -->
-						<!-- Se selecionarem todas as LOJAS, pretendo dar a opção de selecionar o PERIODO que sairá do inventário -->
-						<!-- PS.: Também pretendo adicioanr um CHK, para que indiquem que de fato querem exportar o inventário -->
 						<div class="form-group col-md-6">
-							<label for="txtInventario"><strong>Inventário</strong></label>
-							<!-- <input type="hidden" th:value="${listInventario[0].id}" id="txtInventarioId" name="inventarioId" readonly required />  -->
-							<!-- <input type="text" class="form-control" id="txtInventarioId" th:value="${listInventario[0].id}" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" disabled required /> -->
-							<input type="text" class="form-control" id="txtInventarioSelecionado" name="txtInventarioSelecionado" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" readonly>
+							<div class="form-check form-check-inline">
+								<label for="chkExportarInventario">
+									<input class="form-check-input" type="checkbox" id="chkExportarInventario" th:checked="*{exportarInventario}" name="exportarInventario" disabled >
+									<strong>Exportar Inventário</strong>
+								</label>
+							</div>
+							<input type="hidden" class="form-control" id="txtInventarioId" th:value="null" name = "inventarioId" readonly required  />
+							<input type="text" class="form-control" id="txtInventarioSelecionado" name="txtInventarioSelecionado" placeholder="Clique No botão (+) ao lado para buscar o INVENTARIO" disabled readonly>
+							
+							<p th:if="${#fields.hasErrors('inventarioId')}" th:class="${#fields.hasErrors('inventarioId')}?  ' alert-danger' "> É necessário selecionar um inventário, quando a opção de exportar está selecionada</p>
 						</div> 
 						
-						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnAdicionarNcm" data-toggle="modal" data-target=".bd-example-modal-lg">
+						<button type="button" class="btn btn-outline-primary form-control col-md-1 ajusta-botao-tbl" id="btnSelecionarInventario" data-toggle="modal" data-target="#modal-add-inventario" disabled>
 							<span data-feather="plus">Buscar inventário disponivel</span>
 						</button>
-	
+
 					</div> 
 
-					<!-- <div class="form-row">
-					</div>  -->
-
-						<!-- BTN ALTERAR/CADASTRAR -->
+					<!-- BTN ALTERAR/CADASTRAR -->
 					<div class="form-row">
 						<!-- <input type="text" class="form-control" id="txtId" th:field="*{id}" name="id" hidden="true" > -->
-							<div class = "form-group col-md-12">
+						<div class = "form-group col-md-12">
 							<button type="submit" id="btnGerarSpedIcmsIpi" class="btn btn-outline-primary ajusta-margin-btn col-md-12"><strong>Gerar SPED FISCAL</strong></button>
 						</div>
 					</div>
 	
 				</form>
 
+				<!-- O "btnSelecionarInventario", irá abrir um dos dois modais abaixo  -->
+				<!-- Será mudado de um modal para, outro, conforme selecionem exportarSpedTodasLojas ou não -->
+				<th:block th:replace="/modal-template-lg :: modal('modal-add-inventario') ">Modal Inventario</th:block>
 
-				<div th:replace="/sped/modal-add-inventario :: modal-add-inventario"></div>
-
+				<th:block th:replace="/modal-template :: modal('modal-add-inventario-periodo')">Modal inventario por periodo</th:block>
+		
 			</div>
 		</section>
 
 	</body>
-
 </html>

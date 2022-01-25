@@ -50,10 +50,10 @@ class RegC197Service {
 //		Portanto é preciso de pensar em uma forma de salvar esses códigos numa lista do OBJETO movimentosIcmsIpi (para serem escriturados), 
 		
 		
-		//	SP90090104 
+		//	SP90090104 	-> Valor correspondente à coluna Isentas/Não tributadas e Outras (artigos 214 e 215 do RICMS/00)|01072018|
 		RegC197 regC197VlIcmsIsentasNtOutras = gerarRegC197ParaOValorIcmsIsentasNaoTributadasOutras(cfop, mapRegistroAnaliticoPorCst);
 		
-		// 	SP90090278 
+		// 	SP90090278 	-> Valor correspondente ao ICMS ST na condição de substituído (artigo 278, § 1º, do RICMS/00)|01072018|
 		RegC197 regC197VlIcmsSt = gerarRegC197IcmsStPagoPeloFornecedor(cfop, mapRegistroAnaliticoPorCst, docFisc);
 		
 		if(regC197VlIcmsIsentasNtOutras.getVlOutros() != null &&  !isBigDecimalZero(regC197VlIcmsIsentasNtOutras.getVlOutros())) {

@@ -83,7 +83,7 @@ class RegE110Service {
 		 *  acho que inclusive, isso seja viável salvar numa tabela, em que o Analista fiscal, possa editar ou até msm adicionar esses tipos de informações
 		 *  antes de gerar o SPED FISCAL, 
 		 */
-		regE110.setVlTotDebitos(calcularVlAjApur(listRegE111, ICMS_PROPRIA, OUTROS_DEBITOS));					/** (Ref.: Reg E111)	CAMPO 04  **/ 
+		regE110.setVlTotAjDebitos(calcularVlAjApur(listRegE111, ICMS_PROPRIA, OUTROS_DEBITOS));					/** (Ref.: Reg E111)	CAMPO 04  **/ 
 		regE110.setVlEstornosCred(calcularVlAjApur(listRegE111, ICMS_PROPRIA, ESTORNO_DE_CREDITOS));			/** (Ref.: Reg E111)	CAMPO 05  **/
 		/** CAMPO 06  **/
 		regE110.setVlTotCreditos(calcularVlTotalCreditos(movimentosIcmsIpi.getMapRegistroAnaliticoPorTipoOperacao()));		
@@ -98,7 +98,7 @@ class RegE110Service {
 		 * AO MENOS, no começo do sistema já que não terei como buscar essas informações das escriturações anteriores
 		 * 
 		 */
-		regE110.setVlSldCredorAnt(null);
+		regE110.setVlSldCredorAnt(BigDecimal.ZERO);
 
 		/** CAMPO 11  **/
 		BigDecimal vlSldApurado = calcularVlSldApurado(regE110);
@@ -227,11 +227,11 @@ class RegE110Service {
 		
 		BigDecimal vlTotDed = BigDecimal.ZERO;
 
-		if (!isSldApuradoMaiorQueZero) {
-			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms).add(vlSldApurado.abs());	
-		} else {
+//		if (!isSldApuradoMaiorQueZero) {
+//			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms).add(vlSldApurado.abs());	
+//		} else {
 			vlTotDed = totalVlIcmsOutrasObrigacoes.add(totalRegE111DeducaoIcms);
-		}
+//		}
 		return vlTotDed;
 	}
 	

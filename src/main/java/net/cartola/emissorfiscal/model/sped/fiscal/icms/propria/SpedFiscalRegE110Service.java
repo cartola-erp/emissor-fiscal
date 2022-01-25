@@ -1,7 +1,6 @@
 package net.cartola.emissorfiscal.model.sped.fiscal.icms.propria;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalParametrosBusca;
 
 /**
  * @date 5 de jul. de 2021
@@ -45,13 +45,21 @@ public class SpedFiscalRegE110Service {
 		return Optional.ofNullable(spedFiscRegE110Repo.saveAndFlush(spedFiscRegE110));
 	}
 	
-	
 	public Set<SpedFiscalRegE110> findRegE110ByPeriodoAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja) {
-		Set<SpedFiscalRegE110> listRegE110 = spedFiscRegE110Repo.findByDataInicioApuracaoGreaterThanEqualAndDataFimApuracaoLessThanEqualAndLoja(dataInicio, dataFim, loja);
+		MovimentoMensalParametrosBusca paramBuscaSped = new MovimentoMensalParametrosBusca();
+		paramBuscaSped.setDataInicioSped(dataInicio);
+		paramBuscaSped.setDataFimSped(dataFim);
+		return findRegE110ByPeriodoAndLoja(paramBuscaSped, loja);
+	}
+	
+	public Set<SpedFiscalRegE110> findRegE110ByPeriodoAndLoja(MovimentoMensalParametrosBusca paramBuscaSped, Loja loja) {
+		Set<SpedFiscalRegE110> listRegE110 = spedFiscRegE110Repo.
+				findByDataInicioApuracaoGreaterThanEqualAndDataFimApuracaoLessThanEqualAndLoja(paramBuscaSped.getDataInicioSped(), paramBuscaSped.getDataFimSped(), loja);
 		if (listRegE110 != null) {
 			return listRegE110;
 		}
 		return new HashSet<>();
 	}
-	
+
+
 }

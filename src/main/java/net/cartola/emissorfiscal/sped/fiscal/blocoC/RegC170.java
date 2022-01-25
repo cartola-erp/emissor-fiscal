@@ -6,7 +6,7 @@ import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalDuas
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getVlrOrBaseCalc;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCstIcmsComOrigem;
-import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumo;
+import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isEntradaConsumoOuAtivo;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -139,7 +139,7 @@ public class RegC170 {
 		final List<Long> codOperacoesSemMovimentoEstoque = Arrays.asList(15L, 27L, 74L, 82L);
 		final Boolean indMov = !codOperacoesSemMovimentoEstoque.contains(docFisc.getOperacao().getId());
 		final IndicadorDeOperacao tipoOperacao = docFisc.getTipoOperacao();
-		final boolean isEntradaConsumo = isEntradaConsumo(docFisc);
+		final boolean isEntradaConsumo = isEntradaConsumoOuAtivo(docFisc);
 		
 		this.numItem = item.getItem();
 		this.codItem = SpedFiscalUtil.getCodItem(item);
@@ -158,9 +158,11 @@ public class RegC170 {
 		this.vlBcIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(item.getIcmsBase(), tipoOperacao);			// ICMS
 		this.aliqIcms = isEntradaConsumo ? ZERO : getAliqAsBigDecimal(item.getIcmsAliquota(), tipoOperacao);
 		this.vlIcms = isEntradaConsumo ? ZERO : getVlrOrBaseCalc(item.getIcmsValor(), tipoOperacao);
-		this.vlBcIcmsSt = getVlrOrBaseCalc(item.getIcmsStBase(), tipoOperacao);
+//		this.vlBcIcmsSt = getVlrOrBaseCalc(item.getIcmsStBase(), tipoOperacao);
+		this.vlBcIcmsSt =  BigDecimal.ZERO;			// // Pelo que vi nos arquivos de exemplo do SPED, só informamos o VL ICMS ST no
 		this.aliqSt = getAliqAsBigDecimal(item.getIcmsStAliquota(), tipoOperacao);
-		this.vlIcmsSt = getVlrOrBaseCalc(item.getIcmsStValor(), tipoOperacao);
+//		this.vlIcmsSt = getVlrOrBaseCalc(item.getIcmsStValor(), tipoOperacao);			// REG C197 (cod Aj Apur == ) SP90090278, pois somos o "CONTRIBUINTE SUBSTITUÍDO"
+		this.vlIcmsSt = BigDecimal.ZERO;
 		this.indApur = null;
 		// Null pois segundo o sistema kolossus (validador de efd), como não somos contribuintes de IPI, devemos deixar "VAZIO"
 		this.cstIpi = null;	// IPI

@@ -35,7 +35,6 @@ public class DevolucaoService extends DocumentoService {
 	@Autowired
 	private DevolucaoOrigemService devolucaoOrigemService;
 
-	
 	public Map<Integer, Map<Long, Map<String, DevolucaoItem>>> getMapDevolucaoPorItemCodigoXECodigoSeq(Devolucao devolucao) {
 		return devolucao.getItens().stream().collect(groupingBy(DevolucaoItem::getItem, groupingBy(DevolucaoItem::getCodigoX,
 						toMap(DevolucaoItem::getCodigoSequencia, (devoItem) -> devoItem ))));
@@ -50,6 +49,10 @@ public class DevolucaoService extends DocumentoService {
 		return opDevolucao;
 	}
 
+	public void deleteById(Long id) {
+		devolucaoRepository.deleteById(id);
+	}
+	
 	public Optional<Devolucao> save(Devolucao devolucao) {
 		LOG.log(Level.INFO, "Salvando a Devolucao {0} ", devolucao);
 		Map<String, Boolean> mapErros = new HashMap<>();
@@ -97,5 +100,6 @@ public class DevolucaoService extends DocumentoService {
 		mapErros.put(sb.toString(), true);
 		return false;
 	}
+
 
 }

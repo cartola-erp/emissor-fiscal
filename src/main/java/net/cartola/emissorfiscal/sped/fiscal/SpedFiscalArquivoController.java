@@ -1,17 +1,23 @@
 package net.cartola.emissorfiscal.sped.fiscal;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.cartola.emissorfiscal.contador.ContadorService;
 import net.cartola.emissorfiscal.inventario.Inventario;
@@ -22,6 +28,8 @@ import net.cartola.emissorfiscal.loja.LojaService;
 @Controller
 @RequestMapping("/sped")
 public class SpedFiscalArquivoController {
+
+	private static final Logger LOG = Logger.getLogger(SpedFiscalArquivoController.class.getName());
 
 	@Autowired
 	private SpedFiscalArquivoService spedFiscalArquService;
@@ -35,31 +43,34 @@ public class SpedFiscalArquivoController {
 	@Autowired
 	private InventarioService inventarioService;
 	
-	private static final Logger LOG = Logger.getLogger(SpedFiscalArquivoController.class.getName());
 
-	
-	private static DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	@InitBinder
+	public void initBinder(WebDataBinder webDataBinder) {
+		webDataBinder.addValidators(new MovimentoMensalParametrosBuscaValidator());
+	}
+
 	
 	@GetMapping("/icms-ipi/gerar")
 	public ModelAndView loadTelaGerarSpedFiscal() {
 		ModelAndView mv = new ModelAndView("sped/gerar-icms-ipi");
-		addObjetosNaView(mv, new MovimentoMensalIcmsIpi());
+		addObjetosNaView(mv, new MovimentoMensalParametrosBusca());
 		return mv;
 	}
 	
 	@PostMapping("/icms-ipi/gerar")
-	public ModelAndView gerarSpedFiscalIcmsIpi(Long lojaId, Long contadorId, String dataInicio, String dataFim) {
+	public ModelAndView gerarSpedFiscalIcmsIpi(@Valid @ModelAttribute("paramBuscaSped") MovimentoMensalParametrosBusca paramBuscaSped, BindingResult result, RedirectAttributes redirectAttributes) {
 		ModelAndView mv = new ModelAndView("sped/gerar-icms-ipi");
-		LocalDate dtInicio = LocalDate.parse(dataInicio, DTF);
-		LocalDate dtFim = LocalDate.parse(dataFim, DTF);
-		
-		spedFiscalArquService.gerarAquivoSpedFiscal(lojaId, contadorId, dtInicio, dtFim);
-
-		
+		if (!result.hasErrors()) {
+			spedFiscalArquService.gerarAquivoSpedFiscal(paramBuscaSped);
+		} else {
+			System.out.println();
+			LOG.log(Level.WARNING, "Errors {0} ", result.getAllErrors());
+		}
+		addObjetosNaView(mv, paramBuscaSped);
 		return mv;
 	}
 	
-	private void addObjetosNaView(ModelAndView mv, MovimentoMensalIcmsIpi moviMensalIcmsIpi) {
+	private void addObjetosNaView(ModelAndView mv, MovimentoMensalParametrosBusca paramBuscaSped) {
 		// PS: Tenho que inserir para buscar as informações das lojas;
 		List<Loja> listLojas = new ArrayList<>();
 		listLojas.addAll(lojaService.findAll());
@@ -67,7 +78,7 @@ public class SpedFiscalArquivoController {
 		List<Inventario> listInventario =  new ArrayList<>();
 		listInventario.add(new Inventario());
 		
-		mv.addObject("moviMensalIcmsIpi", moviMensalIcmsIpi);
+		mv.addObject("paramBuscaSped", paramBuscaSped);
 		mv.addObject("listLojas", listLojas);
 		mv.addObject("listContador", contadorService.findAll());
 	}

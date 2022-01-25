@@ -182,7 +182,7 @@ public class Inventario implements Serializable {
 		this.alterado = alterado;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "inventario")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "inventario")
 	public List<InventarioItem> getItens() {
 		return itens;
 	}
