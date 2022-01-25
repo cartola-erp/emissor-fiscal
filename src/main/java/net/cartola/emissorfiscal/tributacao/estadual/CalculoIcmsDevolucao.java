@@ -116,8 +116,6 @@ public class CalculoIcmsDevolucao {
 	private BigDecimal calcularBaseIcmsSt(DevolucaoItem devoItem) {
 		BigDecimal icmsIvaAliquota = BigDecimal.ONE.add(devoItem.getIcmsIva());
 		if (devoItem.getIcmsIva().compareTo(BigDecimal.ZERO) <= 0) {
-//			final BigDecimal icmsIvaAliquota = BigDecimal.ONE.add(devoItem.getIcmsIva());
-//			BigDecimal icmsIvaAliquota = BigDecimal.ONE.add(devoItem.g
 			icmsIvaAliquota = BigDecimal.ZERO;
 		}
 //		final BigDecimal baseIcmsSt = calcularIpiDevolvido(devoItem).add(calcularIcmsBase(devoItem));
@@ -163,7 +161,6 @@ public class CalculoIcmsDevolucao {
 //		setOrdem
 		calcIcms.setValor(valorIcms);
 
-//		di.setIcmsCst(tribEstaDevo.getIcmsCst());
 		di.setIcmsCst(icmsCst);
 //		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
@@ -176,12 +173,6 @@ public class CalculoIcmsDevolucao {
 		di.setIcmsIva(devoItem.getIcmsIva());
 		di.setIcmsStAliquota(devoItem.getIcmsStAliquota());
 //		di.setIcmsAliquotaDestino(tributacao.getIcmsAliquotaDestino());	
-		
-		/**
-		 * O IPI devolvido não é calculado AQUI
-		 */
-//		di.setIpiValor(calcularIpiDevolvido(devoItem));
-
 	}
 	
 	
@@ -237,7 +228,6 @@ public class CalculoIcmsDevolucao {
 		CalculoImpostoIcms60 icms60 = new CalculoImpostoIcms60();
 		
 		di.setIcmsCst(icmsCst);
-//		di.setIcmsCst(tribEstaDevo.getIcmsCst());
 //		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
 //		di.setCodigoAnp(tributacao.getCodigoAnp());				// verificar se irei receber isso da origem

@@ -42,24 +42,15 @@ public class DevolucaoItem extends Item implements Serializable {
 
 	private Long id;
 	/** Serão somente usada em ENTRADAS/COMPRAS, as info abaixo? Não sei, mas acredito que sim !!!**/
-	// referente a "origemCodigo", do ERP
 	// no ERP o "origemCodigo", é basicamente o campo "numero_nota" que tem em DocumentoFiscal
 	// Com esse objeto que é o "DocumentoFiscal", origem terei que verificar se o mesmo já está salvo no DB do emissorfiscal
-	// caso NÃO irei SALVAR
     private Long documentoOrigemCodigo;  // OR origem nota
     private int origemItem;
-    // private DocumentoFiscal documentoFiscalOrigem;
-	// referente a "origemLoja"
 	private Loja lojaOrigem;
 	private String descricao;
-	// ==================================================================================== informacoes que usa para "calcular" os tributos
 	private int cfopFornecedor;
     private int icmsCstFornecedor;
-
-//	private int cfopEntradaEmpresa;
 //	private Integer icmsCest = 0;
-	
-	// ====================================================================================
     private VendaTipo origemTipo = VendaTipo.NFE;
 	private LocalDateTime cadastro;
 	private LocalDateTime alterado;
