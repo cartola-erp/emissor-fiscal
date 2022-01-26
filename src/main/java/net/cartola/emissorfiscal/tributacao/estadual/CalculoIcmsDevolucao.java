@@ -10,9 +10,11 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.operacao.Operacao;
+import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
@@ -102,15 +104,16 @@ public class CalculoIcmsDevolucao {
 	}
 	
 	
-	private BigDecimal calcularOutrasDespesasAcessorias(DevolucaoItem devoItem, Operacao operacao) {
+	private BigDecimal calcularOutrasDespesasAcessorias(DevolucaoItem devoItem, Operacao operacao, Devolucao devolucao ) {
 		final BigDecimal valorIcms = calcularIcmsBase(devoItem).multiply(devoItem.getIcmsAliquota());
 	
 		BigDecimal valorTotalFreteAndOutrasDespesDaOrigem = devoItem.getValorFrete()
 							.add(devoItem.getValorOutrasDespesasAcessorias())
 //							.add(devoItem.getIpi)
 							.multiply(devoItem.getQuantidade());
-		
-		if(operacao.isRemessaParaFornecedor()) {
+	
+		 if(operacao.isRemessaParaFornecedor()) {
+			operacao.isRemessaParaFornecedor();
 			BigDecimal valorIpi = calculoIpi.calcularIpiDevolvido(devoItem);
 			valorTotalFreteAndOutrasDespesDaOrigem = valorTotalFreteAndOutrasDespesDaOrigem.add(valorIpi);
 		}
@@ -144,7 +147,7 @@ public class CalculoIcmsDevolucao {
 //		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
 //		di.setCodigoAnp(tributacao.getCodigoAnp());
-		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao()));
+		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao(), null));
 		di.setIcmsBase(valorIcmsBase);
 //		di.setIcmsReducaoBaseAliquota(devoItem.getIcmsReducaoBaseAliquota());
 		di.setIcmsValor(valorIcms);
@@ -187,7 +190,7 @@ public class CalculoIcmsDevolucao {
 		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
 //		di.setCodigoAnp(tributacao.getCodigoAnp());				// verificar se irei receber isso da origem
 
-		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao()));
+		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao(), null));
 //		di.setIpiValor(calcularIpiDevolvido(devoItem));
 //		di.setIcmsStBaseRetido(valorBaseIcmsStRet);
 //		di.setIcmsStValorRetido(vlrIcmsStRetido);
