@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.tributacao.federal;
 
 import static net.cartola.emissorfiscal.tributacao.Imposto.COFINS;
 import static net.cartola.emissorfiscal.tributacao.Imposto.PIS;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.isBigDecimalMaiorQueZero;
 
 import java.math.BigDecimal;
 import java.util.logging.Level;
@@ -36,7 +37,7 @@ public class CalculoPisCofins {
 		CalculoImposto pis = new CalculoImposto(PIS);
 		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
 		BigDecimal valorPisBase = tributacao.getPisBase().multiply(valorTotal);
-		if (isDocumentoDeSaida(documentoFiscal)) {
+		if (isDocumentoReduzValorIcmsNaBasePisCofins(documentoFiscal) && isBigDecimalMaiorQueZero(valorPisBase)) {
 				valorPisBase = valorPisBase.subtract(di.getIcmsValor());					// Nova regra
 		}
 		BigDecimal valorPis = valorPisBase.multiply(tributacao.getPisAliquota());
@@ -53,8 +54,8 @@ public class CalculoPisCofins {
 		return pis;
 	}
 
-	private boolean isDocumentoDeSaida(DocumentoFiscal documentoFiscal) {
-		return IndicadorDeOperacao.SAIDA.equals(documentoFiscal.getTipoOperacao());
+	private boolean isDocumentoReduzValorIcmsNaBasePisCofins(DocumentoFiscal documentoFiscal) {
+		return IndicadorDeOperacao.SAIDA.equals(documentoFiscal.getTipoOperacao()) || documentoFiscal.getOperacao().isDevolucao();
 	}
 
 	public CalculoImposto calculaCofins(DocumentoFiscal documentoFiscal, DocumentoFiscalItem di, TributacaoFederal tributacao) {
@@ -62,7 +63,7 @@ public class CalculoPisCofins {
 		CalculoImposto cofins = new CalculoImposto(COFINS);
 		BigDecimal valorTotal = di.getQuantidade().multiply(di.getValorUnitario());
 		BigDecimal valorCofinsBase = tributacao.getCofinsBase().multiply(valorTotal);
-		if (isDocumentoDeSaida(documentoFiscal)) {
+		if (isDocumentoReduzValorIcmsNaBasePisCofins(documentoFiscal) && isBigDecimalMaiorQueZero(valorCofinsBase)) {
 			valorCofinsBase = valorCofinsBase.subtract(di.getIcmsValor());			// Nova regra
 		}
 		BigDecimal valorCofins = valorCofinsBase.multiply(tributacao.getCofinsAliquota());
