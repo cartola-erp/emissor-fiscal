@@ -197,6 +197,14 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 70, 'CONSUMO', 0.000000,0.000000, 70, '', 0.000000, 0.000000, 70,'NORMAL',18, ncm_id FROM vw_ncm_id_mono;		
+
+
+
+-- ------------------------------------------------ 33 - AQUISICAO DE MERCADORIAS FORA DO ESTADO PARA COMERCIALIZACAO ---------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 70, 'CONSUMO', 0.000000,0.000000, 70, '', 0.000000, 0.000000, 70,'NORMAL',33, ncm_id FROM vw_ncm_id_mono;
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- ========================================================================================================================================================
 
 
