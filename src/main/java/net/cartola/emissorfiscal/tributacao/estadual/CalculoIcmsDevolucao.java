@@ -30,9 +30,10 @@ import net.cartola.emissorfiscal.tributacao.federal.CalculoIpi;
 public class CalculoIcmsDevolucao {
 
 	private static final Logger LOG = Logger.getLogger(CalculoIcmsDevolucao.class.getName());
-	
+	private Devolucao devo;
 	@Autowired
 	private CalculoIpi calculoIpi;
+	
 	
 	/**
 	 * Esse é o método que irá calcular o ICMS para as: DEVOLUÇÕES, REMESSSAS EM GARANTIAS e OUTRAS SAÍDAS
@@ -42,9 +43,11 @@ public class CalculoIcmsDevolucao {
 	 * @param devoItem
 	 * @return 
 	 */
-	public Optional<CalculoImposto> calculaIcmsDevolucao(DocumentoFiscalItem di, TributacaoEstadualDevolucao tribEstaDevo, DevolucaoItem devoItem) {
+	public Optional<CalculoImposto> calculaIcmsDevolucao(DocumentoFiscalItem di, TributacaoEstadualDevolucao tribEstaDevo, DevolucaoItem devoItem, Devolucao devo) {
 		Optional<CalculoImposto> opCalcImposto;
 
+		 this.devo = devo;
+				 
 		if(tribEstaDevo.isUsaMesmaCstFornecedor()) {
 			opCalcImposto = calculaIcmsDevolucao(di, tribEstaDevo, devoItem, devoItem.getIcmsCstFornecedor());
 		} else {
@@ -104,15 +107,18 @@ public class CalculoIcmsDevolucao {
 	}
 	
 	
-	private BigDecimal calcularOutrasDespesasAcessorias(DevolucaoItem devoItem, Operacao operacao, Devolucao devolucao ) {
+	private BigDecimal calcularOutrasDespesasAcessorias(DevolucaoItem devoItem, Operacao operacao) {
 		final BigDecimal valorIcms = calcularIcmsBase(devoItem).multiply(devoItem.getIcmsAliquota());
 	
 		BigDecimal valorTotalFreteAndOutrasDespesDaOrigem = devoItem.getValorFrete()
 							.add(devoItem.getValorOutrasDespesasAcessorias())
 //							.add(devoItem.getIpi)
 							.multiply(devoItem.getQuantidade());
-	
-		 if(operacao.isRemessaParaFornecedor()) {
+		Pessoa pessoa = devo.getDestinatario();
+		if(pessoa.isZeraOutrasDespesas() &  operacao.isRemessaParaFornecedor()) {
+		     BigDecimal result = BigDecimal.ZERO;
+		     return result;
+		} else {		
 			operacao.isRemessaParaFornecedor();
 			BigDecimal valorIpi = calculoIpi.calcularIpiDevolvido(devoItem);
 			valorTotalFreteAndOutrasDespesDaOrigem = valorTotalFreteAndOutrasDespesDaOrigem.add(valorIpi);
@@ -147,7 +153,7 @@ public class CalculoIcmsDevolucao {
 //		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
 //		di.setCodigoAnp(tributacao.getCodigoAnp());
-		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao(), null));
+		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao()));
 		di.setIcmsBase(valorIcmsBase);
 //		di.setIcmsReducaoBaseAliquota(devoItem.getIcmsReducaoBaseAliquota());
 		di.setIcmsValor(valorIcms);
@@ -190,7 +196,7 @@ public class CalculoIcmsDevolucao {
 		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
 //		di.setCodigoAnp(tributacao.getCodigoAnp());				// verificar se irei receber isso da origem
 
-		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao(), null));
+		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao()));
 //		di.setIpiValor(calcularIpiDevolvido(devoItem));
 //		di.setIcmsStBaseRetido(valorBaseIcmsStRet);
 //		di.setIcmsStValorRetido(vlrIcmsStRetido);

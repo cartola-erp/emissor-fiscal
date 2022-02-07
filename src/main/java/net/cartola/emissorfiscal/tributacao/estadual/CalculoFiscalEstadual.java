@@ -124,7 +124,7 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 			if (operacao.isDevolucao()) {
 				listCalculoImpostos.add(calculoIpi.calculaIpi(di, devolucaoItem));
 			}
-			calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem).ifPresent(listCalculoImpostos::add);
+			calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem, devolucao).ifPresent(listCalculoImpostos::add);
 		}
 
 		setaIcmsBaseEValor(docFisc, listCalculoImpostos);
