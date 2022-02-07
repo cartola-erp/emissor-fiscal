@@ -162,7 +162,10 @@ INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, fin
 -- ==================================================================================================================================		
 
 
-
+-- =========================================== 21 - REMESSA P/ CONSERTO (ATIVO IMOBILIZADO/USO E CONSUMO) ===================================================
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
+					VALUES	(41, 5102, 1556, 5915, "COMERCIALIZACAO", "NORMAL", false , "", 21);
+-- ===============================================================================================================================
 
 -- =========================================== 84 - REMESSA P/ CONSERTO (ATIVO/CONSUMO) - INTERESTADUAL ===================================================
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
