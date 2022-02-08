@@ -40,6 +40,7 @@ import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcmsSt;
 import net.cartola.emissorfiscal.tributacao.Imposto;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoIpi;
+import net.cartola.emissorfiscal.util.DocumentoFiscalUtil;
 
 
 @Service
@@ -176,8 +177,9 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		if (operacao.isDevolucao()) {
 			return mapTribEstaDevoPorCfopVenda.get(devoItem.getCfopFornecedor());
 		} else if (operacao.isRemessaParaFornecedor()) {
+			boolean isFornSn = DocumentoFiscalUtil.isItemFromSimplesNacionalFor(devoItem);
 			// Se for "remessa para fornecedor", estará buscando pela CFOP "0", pois não tem uma parametrização especifica para cada cfop da nota de venda do fornecedor (é a msm para qualquer CFOP de venda deles que devolveremos)
-			return mapTribEstaDevoPorCfopVenda.get(0);
+			return isFornSn ? mapTribEstaDevoPorCfopVenda.get(devoItem.getCfopFornecedor()) : mapTribEstaDevoPorCfopVenda.get(0);
 		}
 		return null;
 	}

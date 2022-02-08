@@ -1,9 +1,11 @@
 package net.cartola.emissorfiscal.util;
 
+import static java.lang.Integer.toString;
 import static net.cartola.emissorfiscal.util.XmlUtil.getTagConteudo;
 
 import java.util.List;
 
+import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 
 /**
@@ -25,6 +27,8 @@ public final class DocumentoFiscalUtil {
 		return false;
 	}
 
-	
+	public static boolean isItemFromSimplesNacionalFor(DevolucaoItem item) {
+		return Integer.toString(item.getIcmsCstFornecedor()).length() >= 3;
+	}
     
 }
