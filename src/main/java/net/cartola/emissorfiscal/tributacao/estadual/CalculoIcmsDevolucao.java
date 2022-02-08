@@ -118,8 +118,8 @@ public class CalculoIcmsDevolucao {
 		if(pessoa.isZeraOutrasDespesas() &  operacao.isRemessaParaFornecedor()) {
 		     BigDecimal result = BigDecimal.ZERO;
 		     return result;
-		} else {		
-			operacao.isRemessaParaFornecedor();
+		} 
+		if(operacao.isRemessaParaFornecedor()) {		
 			BigDecimal valorIpi = calculoIpi.calcularIpiDevolvido(devoItem);
 			valorTotalFreteAndOutrasDespesDaOrigem = valorTotalFreteAndOutrasDespesDaOrigem.add(valorIpi);
 		}
