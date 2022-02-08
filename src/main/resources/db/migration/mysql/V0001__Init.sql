@@ -616,6 +616,7 @@ CREATE TABLE `pess` (
   `nome` varchar(255) DEFAULT NULL,
   `pess_tipo` enum('FISICA','JURIDICA') DEFAULT 'FISICA',
   `regime_tributario` enum('SIMPLES','SIMPLES_EXCESSO','NORMAL') DEFAULT NULL,
+  `zera_outras_despesas` tinyint(1) DEFAULT '0',
   `end_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fnk_pessoa_end_id` (`end_id`),
@@ -877,7 +878,7 @@ CREATE TABLE `trib_esta_devo` (
   `regime_tributario` enum('SIMPLES','SIMPLES_EXCESSO','NORMAL') DEFAULT NULL,
   `oper_id` bigint(20) NOT NULL,
   PRIMARY KEY (`trib_esta_id`),
-  UNIQUE KEY `unk_trib_esta_devo_oper_fina_regi_trib_cfop_venda` (`oper_id`,`finalidade`,`regime_tributario`,`cfop_venda`),
+  UNIQUE KEY `unk_trib_esta_devo_oper_fina_regi_trib_cfop_venda_icms_cst` (`oper_id`,`finalidade`,`regime_tributario`,`cfop_venda`,`icms_cst`),
   CONSTRAINT `fnk_trib_esta_devo_oper_id` FOREIGN KEY (`oper_id`) REFERENCES `oper` (`oper_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

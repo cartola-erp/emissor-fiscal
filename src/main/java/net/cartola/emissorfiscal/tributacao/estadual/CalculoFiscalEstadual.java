@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
 import net.cartola.emissorfiscal.devolucao.DevolucaoService;
+import net.cartola.emissorfiscal.devolucao.DevolucaoTipo;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItemService;
@@ -73,6 +74,8 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 	@Autowired
 	private CalculoIpi calculoIpi;
 	
+	private final Predicate<Devolucao> IS_DEVOLUCAO_DE_CLIENTE = devo -> devo.getOperacao().isDevolucao() && DevolucaoTipo.DE_CLIENTE.equals(devo.getDevolucaoTipo());
+
 	/**
 	 * O calculo de imposto retornado aqui é do TOTAL DA NFE (aparentemente)
 	 */
@@ -114,13 +117,21 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
 		Operacao operacao = devolucao.getOperacao();
 		final Set<TributacaoEstadualDevolucao> setTribEsta = tribEstaDevolucaoService.findByOperacao(operacao);
-		final Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda = 
-				setTribEsta.stream().collect(toMap(TributacaoEstadualDevolucao::getCfopVenda, (tribEstaDevo) -> tribEstaDevo));
-		final Map<Integer, Map<Long, Map<String, DevolucaoItem>>> mapDevolucaoPorItemCodigoXECodigoSeq = devolucaoService.getMapDevolucaoPorItemCodigoXECodigoSeq(devolucao);
+		Map<Integer, Map<Integer, TributacaoEstadualDevolucao>> mapTribEstaDevoPorCfopVendaEIcmsCst = null;
+		Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda = null;
+		if (IS_DEVOLUCAO_DE_CLIENTE.test(devolucao)) {
+			// devolucao de venda futura precisa do map abaixo, portanto para as Devoluções de cliente será usado ele
+			mapTribEstaDevoPorCfopVendaEIcmsCst = setTribEsta.stream()
+					.collect(groupingBy(TributacaoEstadualDevolucao::getCfopVenda,
+							toMap(TributacaoEstadualDevolucao::getIcmsCst, (tribEstaDevo) -> tribEstaDevo)));
+		} else {
+			 mapTribEstaDevoPorCfopVenda = setTribEsta.stream().collect(toMap(TributacaoEstadualDevolucao::getCfopVenda, (tribEstaDevo) -> tribEstaDevo));
+		}
 
+		final Map<Integer, Map<Long, Map<String, DevolucaoItem>>> mapDevolucaoPorItemCodigoXECodigoSeq = devolucaoService.getMapDevolucaoPorItemCodigoXECodigoSeq(devolucao);
 		for (DocumentoFiscalItem di : docFisc.getItens()) {
 			DevolucaoItem devolucaoItem = mapDevolucaoPorItemCodigoXECodigoSeq.get(di.getItem()).get(di.getCodigoX()).get(di.getCodigoSequencia());
-			TributacaoEstadualDevolucao tribEstaDevo = getTribEstaDevo(mapTribEstaDevoPorCfopVenda, devolucaoItem, operacao);
+			TributacaoEstadualDevolucao tribEstaDevo = getTribEstaDevo(mapTribEstaDevoPorCfopVenda, mapTribEstaDevoPorCfopVendaEIcmsCst, devolucaoItem, devolucao);
 			if (operacao.isDevolucao()) {
 				listCalculoImpostos.add(calculoIpi.calculaIpi(di, devolucaoItem));
 			}
@@ -143,24 +154,30 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		return docFisc;
 	}
 
-
 	/**
 	 * Irá Obter a TributacaoEstadualDevolucao, do mapa, para o item <br>
 	 * Conforme a operação de devolução 
 	 * 
-	 * @param mapTribEstaDevoPorCfopVenda
-	 * @param devolucaoItem
+	 * @param mapTribEstaDevoPorCfopVenda				- Usando em todos os casos em que a devolução NÃO é DE CLIENTE
+	 * @param mapTribEstaDevoPorCfopVendaEIcmsCst		- Usado para buscar a parametrização quando a devolução for de cliente
+	 * @param devoItem
 	 * @param operacao
 	 * @return
 	 */
-	private TributacaoEstadualDevolucao getTribEstaDevo(Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda, DevolucaoItem devolucaoItem, Operacao operacao) {
+	private TributacaoEstadualDevolucao getTribEstaDevo(
+			Map<Integer, TributacaoEstadualDevolucao> mapTribEstaDevoPorCfopVenda,
+			Map<Integer, Map<Integer, TributacaoEstadualDevolucao>> mapTribEstaDevoPorCfopVendaEIcmsCst,
+			DevolucaoItem devoItem, Devolucao devolucao) {
+		Operacao operacao = devolucao.getOperacao();
+		
+		if (IS_DEVOLUCAO_DE_CLIENTE.test(devolucao)) {
+			return mapTribEstaDevoPorCfopVendaEIcmsCst.get(devoItem.getCfopFornecedor()).get(devoItem.getIcmsCstFornecedor());
+		}
 		if (operacao.isDevolucao()) {
-			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(devolucaoItem.getCfopFornecedor());
-			return tribEstaDevo;
+			return mapTribEstaDevoPorCfopVenda.get(devoItem.getCfopFornecedor());
 		} else if (operacao.isRemessaParaFornecedor()) {
 			// Se for "remessa para fornecedor", estará buscando pela CFOP "0", pois não tem uma parametrização especifica para cada cfop da nota de venda do fornecedor (é a msm para qualquer CFOP de venda deles que devolveremos)
-			TributacaoEstadualDevolucao tribEstaDevo = mapTribEstaDevoPorCfopVenda.get(0);
-			return tribEstaDevo;
+			return mapTribEstaDevoPorCfopVenda.get(0);
 		}
 		return null;
 	}

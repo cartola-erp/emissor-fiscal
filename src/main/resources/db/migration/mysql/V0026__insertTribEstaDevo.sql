@@ -222,6 +222,13 @@ INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, fin
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
 					VALUES	(60, 5656, 1662, 1662, "COMERCIALIZACAO", "NORMAL", false , "", 8);
 
+-- devolucao de venda futura
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
+					VALUES	(00, 5117, 1202, 1202, "COMERCIALIZACAO", "NORMAL", false , "", 8);
+
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
+					VALUES	(60, 5117, 1411, 1411, "COMERCIALIZACAO", "NORMAL", false , "", 8);
+					
 -- =========================================== 9 - DEVOLUCAO DO CLIENTE INTERESTADUAL ===================================================
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
 					VALUES	(0, 6101, 2102, 2102, "COMERCIALIZACAO", "NORMAL", false , "", 9);

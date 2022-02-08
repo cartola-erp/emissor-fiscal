@@ -14,7 +14,6 @@ import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.operacao.Operacao;
-import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
@@ -130,18 +129,18 @@ public class CalculoIcmsDevolucao {
 	
 	
 	private BigDecimal calcularOutrasDespesasAcessorias(DevolucaoItem devoItem, Operacao operacao) {
+		if(devo.getDestinatario().isZeraOutrasDespesas() && operacao.isRemessaParaFornecedor()) {
+		     return BigDecimal.ZERO;
+		}
+		
 		final BigDecimal valorIcms = calcularIcmsBase(devoItem).multiply(devoItem.getIcmsAliquota());
 	
 		BigDecimal valorTotalFreteAndOutrasDespesDaOrigem = devoItem.getValorFrete()
 							.add(devoItem.getValorOutrasDespesasAcessorias())
 //							.add(devoItem.getIpi)
 							.multiply(devoItem.getQuantidade());
-		Pessoa pessoa = devo.getDestinatario();
-		if(pessoa.isZeraOutrasDespesas() &  operacao.isRemessaParaFornecedor()) {
-		     BigDecimal result = BigDecimal.ZERO;
-		     return result;
-		} 
-		if(operacao.isRemessaParaFornecedor()) {		
+	
+		if(operacao.isRemessaParaFornecedor()) {
 			BigDecimal valorIpi = calculoIpi.calcularIpiDevolvido(devoItem);
 			valorTotalFreteAndOutrasDespesDaOrigem = valorTotalFreteAndOutrasDespesDaOrigem.add(valorIpi);
 		}

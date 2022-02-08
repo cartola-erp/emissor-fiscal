@@ -27,8 +27,8 @@ import net.cartola.emissorfiscal.pessoa.RegimeTributario;
  * @author robson.costa
  */
 @Entity
-@Table(name = "trib_esta_devo", uniqueConstraints = @UniqueConstraint(name = "unk_trib_esta_devo_oper_fina_regi_trib_cfop_venda", columnNames = {
-		"oper_id", "finalidade", "regime_tributario", "cfop_venda" }))
+@Table(name = "trib_esta_devo", uniqueConstraints = @UniqueConstraint(name = "unk_trib_esta_devo_oper_fina_regi_trib_cfop_venda_icms_cst", columnNames = {
+		"oper_id", "finalidade", "regime_tributario", "cfop_venda", "icms_cst" }))
 public class TributacaoEstadualDevolucao implements Serializable {
 
     private static final long serialVersionUID = 970384982433L;
