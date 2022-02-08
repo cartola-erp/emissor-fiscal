@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.sped.fiscal.blocoC.service;
 
 import static java.util.stream.Collectors.toList;
 import static net.cartola.emissorfiscal.sped.fiscal.blocoC.service.TipoPreenchimentoRegC100.EX_1_COD_SITUACAO;
+import static net.cartola.emissorfiscal.util.NumberUtil.getLongNullSafe;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodPart;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getCodSituacao;
 import static net.cartola.emissorfiscal.util.SpedFiscalUtil.getIndicadorEmitente;
@@ -10,7 +11,6 @@ import static net.cartola.emissorfiscal.util.SpedFiscalUtil.isNfeReferenteASat;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,10 +18,10 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.cartola.emissorfiscal.documento.ChaveAcesso;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.FinalidadeEmissao;
 import net.cartola.emissorfiscal.documento.IndicadorDeOperacao;
-import net.cartola.emissorfiscal.documento.NFeStatus;
 import net.cartola.emissorfiscal.loja.Loja;
 import net.cartola.emissorfiscal.properties.SpedFiscalProperties;
 import net.cartola.emissorfiscal.sped.fiscal.MontaGrupoDeRegistroList;
@@ -271,13 +271,15 @@ class RegC100Service implements MontaGrupoDeRegistroList<RegC100, MovimentoMensa
 	 *         {@linkplain TipoPreenchimentoRegC100}.EX_1_COD_SITUACAO
 	 */
 	private RegC100 prencherC100ExcecaoUmCodSit(DocumentoFiscal docFisc, Loja lojaSped) {
+		ChaveAcesso chaveAcesso = new ChaveAcesso(docFisc.getNfeChaveAcesso());
+
 		RegC100 regC100 = new RegC100();
 
 		regC100.setIndOper(docFisc.getTipoOperacao());
 		regC100.setIndEmit(getIndicadorEmitente(docFisc, lojaSped));
 		regC100.setCodMod(docFisc.getModelo());
 		regC100.setCodSit(getCodSituacao(docFisc));
-		regC100.setSer(docFisc.getSerie());
+		regC100.setSer(getLongNullSafe(chaveAcesso.getSerie()));
 		regC100.setNumDoc(docFisc.getNumeroNota());
 		regC100.setChvNfe(docFisc.getNfeChaveAcesso());
 		// ACHO QUE NEM PRECISA DISSO

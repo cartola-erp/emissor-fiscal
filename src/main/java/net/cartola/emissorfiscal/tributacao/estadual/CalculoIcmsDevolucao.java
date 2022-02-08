@@ -18,8 +18,10 @@ import net.cartola.emissorfiscal.pessoa.Pessoa;
 import net.cartola.emissorfiscal.tributacao.CalculoImposto;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms00;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms10;
+import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms20;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms60;
 import net.cartola.emissorfiscal.tributacao.CalculoImpostoIcms90;
+import net.cartola.emissorfiscal.tributacao.Imposto;
 import net.cartola.emissorfiscal.tributacao.federal.CalculoIpi;
 
 /**
@@ -58,13 +60,20 @@ public class CalculoIcmsDevolucao {
 
 	private Optional<CalculoImposto> calculaIcmsDevolucao(DocumentoFiscalItem di, TributacaoEstadualDevolucao tribEstaDevo, DevolucaoItem devoItem, int icmsCst) {
 		Optional<CalculoImposto> opCalcImposto;
-//		switch (tribEstaDevo.getIcmsCst()) {
 		switch (icmsCst) {
 		case 00:
 			opCalcImposto = Optional.of((CalculoImpostoIcms00) calculaIcms00(di, tribEstaDevo, devoItem, icmsCst));
 			break;
 		case 10:
 			opCalcImposto = Optional.of((CalculoImpostoIcms10) calculaIcms10(di, tribEstaDevo, devoItem, icmsCst));
+			break;
+		case 20: 
+			opCalcImposto = Optional.of((CalculoImpostoIcms20) calculaIcms20(di, tribEstaDevo, devoItem, icmsCst));
+			break;
+		case 40:
+		case 41:
+		case 50:
+			opCalcImposto = Optional.of((CalculoImposto) calculaIcms40(di, tribEstaDevo, devoItem, icmsCst));
 			break;
 		case 60:
 			opCalcImposto = Optional.of((CalculoImpostoIcms60) calculaIcms60(di, tribEstaDevo, devoItem, icmsCst));
@@ -79,12 +88,27 @@ public class CalculoIcmsDevolucao {
 		return opCalcImposto;
 	}
 
+
 	/**
 	 * 
 	 * @param devoItem
-	 * @return Base de calculo do ICMS próprio
+	 * @return Base de calculo do ICMS próprio com a reducao da base de calculo 
 	 */
-	public BigDecimal calcularIcmsBase (DevolucaoItem devoItem) {
+	public BigDecimal calcularIcmsBase(DevolucaoItem devoItem) {
+		BigDecimal valorIcmsBase = calcularIcmsBaseSemReducao(devoItem);
+		if (isBigDecimalMaiorQueZero(devoItem.getIcmsReducaoBaseAliquota())) {
+			final BigDecimal icmsBaseAConsiderar = BigDecimal.ONE.subtract(devoItem.getIcmsReducaoBaseAliquota());
+			valorIcmsBase = valorIcmsBase.multiply(icmsBaseAConsiderar);
+		}
+		return valorIcmsBase;
+	}
+	
+	/**
+	 * 
+	 * @param devoItem
+	 * @return Base de calculo do ICMS próprio sem reducao da BC 
+	 */
+	public BigDecimal calcularIcmsBaseSemReducao(DevolucaoItem devoItem) {
 		final BigDecimal valorIcmsBase = devoItem.getValorUnitario()
 				.add(devoItem.getValorSeguro())
 				.add(devoItem.getValorOutrasDespesasAcessorias())
@@ -97,8 +121,6 @@ public class CalculoIcmsDevolucao {
 	private BigDecimal calcularBaseIcmsSt(DevolucaoItem devoItem) {
 		BigDecimal icmsIvaAliquota = BigDecimal.ONE.add(devoItem.getIcmsIva());
 		if (devoItem.getIcmsIva().compareTo(BigDecimal.ZERO) <= 0) {
-//			final BigDecimal icmsIvaAliquota = BigDecimal.ONE.add(devoItem.getIcmsIva());
-//			BigDecimal icmsIvaAliquota = BigDecimal.ONE.add(devoItem.g
 			icmsIvaAliquota = BigDecimal.ZERO;
 		}
 //		final BigDecimal baseIcmsSt = calcularIpiDevolvido(devoItem).add(calcularIcmsBase(devoItem));
@@ -148,7 +170,6 @@ public class CalculoIcmsDevolucao {
 //		setOrdem
 		calcIcms.setValor(valorIcms);
 
-//		di.setIcmsCst(tribEstaDevo.getIcmsCst());
 		di.setIcmsCst(icmsCst);
 //		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
@@ -161,12 +182,6 @@ public class CalculoIcmsDevolucao {
 		di.setIcmsIva(devoItem.getIcmsIva());
 		di.setIcmsStAliquota(devoItem.getIcmsStAliquota());
 //		di.setIcmsAliquotaDestino(tributacao.getIcmsAliquotaDestino());	
-		
-		/**
-		 * O IPI devolvido não é calculado AQUI
-		 */
-//		di.setIpiValor(calcularIpiDevolvido(devoItem));
-
 	}
 	
 	
@@ -182,16 +197,46 @@ public class CalculoIcmsDevolucao {
 	private CalculoImpostoIcms10 calculaIcms10(DocumentoFiscalItem di, TributacaoEstadualDevolucao tribEstaDevo, DevolucaoItem devoItem, int icmsCst) {
 		CalculoImpostoIcms10 icms10 = new CalculoImpostoIcms10();
 		this.calculaImpostoBase(di, tribEstaDevo, icms10, devoItem, icmsCst);
-
+		
 		return icms10;
 	}
 
+	private CalculoImpostoIcms20 calculaIcms20(DocumentoFiscalItem di, TributacaoEstadualDevolucao tribEstaDevo, DevolucaoItem devoItem, int icmsCst) {
+		CalculoImpostoIcms20 icms20 = new CalculoImpostoIcms20();
+		final BigDecimal icmsReducaoBaseValor =  calcularIcmsBaseSemReducao(devoItem).multiply(devoItem.getIcmsReducaoBaseAliquota());
+
+		this.calculaImpostoBase(di, tribEstaDevo, icms20, devoItem, icmsCst);
+		di.setIcmsReducaoBaseAliquota(devoItem.getIcmsReducaoBaseAliquota());
+		di.setIcmsReducaoBaseStAliquota(devoItem.getIcmsReducaoBaseStAliquota());
+		di.setIcmsReducaoBaseValor(icmsReducaoBaseValor);
+		return icms20;
+	}
+	
+	private CalculoImposto calculaIcms40(DocumentoFiscalItem di, TributacaoEstadualDevolucao tribEstaDevo, DevolucaoItem devoItem, int icmsCst) {
+		LOG.log(Level.INFO, "Calculando o ICMS 40 (DEVOLUCAO) para o ITEM: {0} ", devoItem);
+		CalculoImposto calcImposto = new CalculoImposto(Imposto.ICMS_40);
+		calcImposto.setValorUnitario(BigDecimal.ZERO);
+		calcImposto.setQuantidade(BigDecimal.ZERO);
+		calcImposto.setBaseDeCalculo(BigDecimal.ZERO);
+		calcImposto.setAliquota(BigDecimal.ZERO);
+//		calcIcms.setOrdem(di.getId().intValue()); // -> mudar
+		calcImposto.setValor(BigDecimal.ZERO);
+		
+		di.setIcmsCst(icmsCst);
+		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
+//		di.setCodigoAnp(tributacao.getCodigoAnp());				// verificar se irei receber isso da origem
+
+		di.setValorOutrasDespesasAcessorias(calcularOutrasDespesasAcessorias(devoItem, tribEstaDevo.getOperacao()));
+		di.setIcmsStAliquota(new BigDecimal(0.18));
+		
+		return calcImposto;
+	}
+	
 	private CalculoImpostoIcms60 calculaIcms60(DocumentoFiscalItem di, TributacaoEstadualDevolucao tribEstaDevo, DevolucaoItem devoItem, int icmsCst) {
 		LOG.log(Level.INFO, "Calculando o ICMS 60 (DEVOLUCAO) para o ITEM: {0} ", devoItem);
 		CalculoImpostoIcms60 icms60 = new CalculoImpostoIcms60();
 		
 		di.setIcmsCst(icmsCst);
-//		di.setIcmsCst(tribEstaDevo.getIcmsCst());
 //		di.setIcmsCest(tributacao.getCest());
 		di.setCfop(tribEstaDevo.getCfopNotaDevolucao());
 //		di.setCodigoAnp(tributacao.getCodigoAnp());				// verificar se irei receber isso da origem

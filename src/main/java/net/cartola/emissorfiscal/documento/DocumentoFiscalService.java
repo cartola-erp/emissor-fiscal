@@ -146,7 +146,15 @@ public class DocumentoFiscalService extends DocumentoService {
 		return Optional.ofNullable(documentoFiscalRepository.findByDevolucaoId(devolucao.getId()));
 	}
 	
-	public void deleteById(Long id) {
+	public void deleteById(DocumentoFiscal docFisc) {
+		this.deleteById(docFisc.getId());
+		
+		if (docFisc.getDevolucao() != null) {
+			devolucaoService.deleteById(docFisc.getDevolucao().getId());
+		}
+	}
+	
+	private void deleteById(Long id) {
 		documentoFiscalRepository.deleteById(id);
 	}
 	

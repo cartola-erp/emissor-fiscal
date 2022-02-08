@@ -1,0 +1,34 @@
+
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<label for="txtDtInicioInventario"><strong>Inicio do inventário</strong></label>
+		<input type="date" class="form-control" id="txtDtInicioInventario" name="dataInicioInventario" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
+	</div>
+
+	<div class="form-group col-md-6">
+		<label for="txtDtFimInventario"><strong>Fim do inventário</strong></label>
+		<input type="date" class="form-control" id="txtDtFimInventario" name="dataFimInventario" placeholder="DD/MM/AAAA" data-date-format="dd/mm/yyyy" required>
+	</div>
+
+</div>
+
+
+<script>
+	// Essa função será passado o ID e a DESCRIÇÃO do inventário selecionado no MODAL, para o
+	// input do FORM
+	function addInventarioToForm(btnInventarioSelecionado) {
+		let text = btnInventarioSelecionado.value;
+		let idInventario = btnInventarioSelecionado.id;
+		console.log(`Passando os valores: (id) = ${idInventario} | text = ${text}, para o form`)
+
+		const txtInventarioId = document.getElementById("txtInventarioId");
+		const txtInventarioDescricao = document.getElementById("txtInventarioSelecionado");
+
+		txtInventarioId.value = idInventario;
+		txtInventarioDescricao.value = text;
+
+		console.log(`fim do codigo JS de passagem de valores`)
+	}
+
+</script>
+

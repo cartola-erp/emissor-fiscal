@@ -24,7 +24,7 @@
 
 </head>
 
-<body>
+<body onload="addListeners()">
 
     <nav sec:authorize="isAuthenticated()" class="navbar navbar  navbar-expand-lg navbar-dark bg-dark fixed-top">
         <!-- <a class="navbar-brand mr-5" th:href="@{/}" style="color: azure; font-weight: bold">Emissor Fiscal</a> -->
@@ -147,7 +147,7 @@
 
         <div class="limiter-container">
             <div class="container-form-100">
-                <div class="wrap-form-100 ">
+                <div class="wrap-form-100 " id="wrapForm100">
                     <div th:replace="${content}">
                         <p>Layout content</p>
                     </div>
@@ -164,6 +164,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+    <script th:src="@{/js/app.js}" type="text/javascript"></script> 
     <script th:src="@{/js/validacoes.js}" type="text/javascript"></script> 
     <script th:src="@{/js/ncm/getRequest.js}" type="text/javascript"></script> 
  
@@ -174,6 +175,31 @@
         feather.replace()
     </script>
 
+	<!-- Scripts que irão abrir os modais (no quando clicarem no botão que abre o modal)	 -->
+    <!-- Será feito a requisição na URL abaixa, e substituido o body do modal -->
+	<script>
+        if (performance.navigation.TYPE_RELOAD) {
+            enableOrDisableButtonsInGerarSpedIcmsIpi();
+        }
+
+        // Busca de add inventario
+		$('#modal-add-inventario').on('show.bs.modal', function() {
+            var idLojaInventario = document.getElementById('cmbLojas').value;
+            $.get("/modals/inventarios-sped-icms-ipi/"+idLojaInventario, function(data) {
+			// $.get("/modals/inventarios-sped-icms-ipi", function(data) {
+				$('#modal-add-inventario').find('.modal-body').html(data);
+			}) 
+		})
+
+        // /inventarios-sped-icms-ipi/por-periodo
+        $('#modal-add-inventario-periodo').on('show.bs.modal', function() {
+			$.get("/modals/inventarios-sped-icms-ipi/por-periodo", function(data) {
+				$('#modal-add-inventario-periodo').find('.modal-body').html(data);
+			}) 
+		})
+
+	</script>
+	
 </body>
 
 </html>

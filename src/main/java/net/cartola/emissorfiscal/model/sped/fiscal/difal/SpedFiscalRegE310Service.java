@@ -1,7 +1,5 @@
 package net.cartola.emissorfiscal.model.sped.fiscal.difal;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.loja.Loja;
+import net.cartola.emissorfiscal.sped.fiscal.MovimentoMensalParametrosBusca;
 
 /**
  * @date 6 de jul. de 2021
@@ -43,14 +42,15 @@ public class SpedFiscalRegE310Service {
 	}
 
 
-	public Set<SpedFiscalRegE310> findRegE310ByPeriodoAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja) {
-		Set<SpedFiscalRegE310> listREgE310 = spedFiscReg310Repo.findByDataInicioApuracaoGreaterThanEqualAndDataFimApuracaoLessThanEqualAndLoja(dataInicio, dataFim, loja);
+	public Set<SpedFiscalRegE310> findRegE310ByPeriodoAndLoja(MovimentoMensalParametrosBusca paramBuscaSped, Loja loja) {
+		Set<SpedFiscalRegE310> listREgE310 = spedFiscReg310Repo.
+				findByDataInicioApuracaoGreaterThanEqualAndDataFimApuracaoLessThanEqualAndLoja(paramBuscaSped.getDataInicioSped(), paramBuscaSped.getDataFimSped(), loja);
 		if (listREgE310 != null) {
 			return listREgE310;
 		}
 		return new HashSet<>();
 	}
-	
+
 	
 //	public Optional<SpedFiscalRegE111> findRegE111ByPeriodoAndLoja(LocalDate dataInicio, LocalDate dataFim, Loja loja) {
 //		return spedFiscReg310Repo.findByDataInicioSpedAndDataFimSpedAndLoja(dataInicio, dataFim, loja);

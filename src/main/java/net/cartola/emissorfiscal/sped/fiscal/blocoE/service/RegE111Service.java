@@ -236,8 +236,13 @@ class RegE111Service {
 		RegE111 regE111DebitoUsoConsumoOuAtivoInterestadual = gerarDebitosUsoConsumoAtivoInterestadual(listDocFiscItemAtivoOuConsumoInterestadual, descComplAjApura);
 		RegE111 regE111CreditoUsoConsumoOuAtivoInterestadual = gerarCreditosUsoConsumoAtivoInterestadual(listDocFiscItemAtivoOuConsumoInterestadual, descComplAjApura);
 		
-		listRegE111.add(regE111DebitoUsoConsumoOuAtivoInterestadual);
-		listRegE111.add(regE111CreditoUsoConsumoOuAtivoInterestadual);
+		if(isAdicionaRegE111NaLista(regE111DebitoUsoConsumoOuAtivoInterestadual)) {
+			listRegE111.add(regE111DebitoUsoConsumoOuAtivoInterestadual);
+		}
+		
+		if(isAdicionaRegE111NaLista(regE111CreditoUsoConsumoOuAtivoInterestadual)) {
+			listRegE111.add(regE111CreditoUsoConsumoOuAtivoInterestadual);
+		}
 		
 		return listRegE111;
 	}

@@ -37,16 +37,6 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',7, ncm_id FROM vw_ncm_id_mono;
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
--- --------------------------------------------------------- 	8 - DEVOLUCAO DO CLIENTE 				---------------------------------------------------------
-INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
-				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',8, ncm_id FROM vw_ncm_id_mono;
--- ----------------------------------------------------------------------------------------------------------------------------------------------------------
-
--- --------------------------------------------------------- 	9 - DEVOLUCAO DO CLIENTE INTERESTADUAL 	---------------------------------------------------------
-INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
-				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',9, ncm_id FROM vw_ncm_id_mono;
--- ----------------------------------------------------------------------------------------------------------------------------------------------------------
-
 -- --------------------------------------------------------- 	10 - REMESSA DE MERCADORIA PARA ANALISE EM GARANTIA 	-------------------------------------
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',10, ncm_id FROM vw_ncm_id_mono;
@@ -136,6 +126,12 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 -- --------------------------------------------------------- 	83 - DISTRIBUICAO GRATUITA DE ITEM DE ESTOQUE 		---------------------------------------------------------
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',83, ncm_id FROM vw_ncm_id_mono;
+				
+-- --------------------------------------------------------- 	84 - REMESSA P/ CONSERTO ATIVO/CONSUMO - INTERESTADUAL 	-------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 4, 'CONSUMO', 0.000000,0.000000, 4, '', 0.000000, 0.000000, 4,'NORMAL',84, ncm_id FROM vw_ncm_id_mono;
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
 			
 
@@ -187,9 +183,28 @@ INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_a
 -- ============================================================== CST 70 - Tributacao Zerada ==============================================================	
 -- ========================================================================================================================================================
 -- --------------------------------------------------------- 18 - COMPRA DE BEM PARA ATIVO IMOBILIZADO	---------------------------------------------------------
--- Entrada emitida pela AG
+-- Entradas emitida pela AG
+-- --------------------------------------------------------- 	8 - DEVOLUCAO DO CLIENTE 				---------------------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 70, 'CONSUMO', 0.000000,0.000000, 70, '', 0.000000, 0.000000, 70,'NORMAL',8, ncm_id FROM vw_ncm_id_mono;
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- --------------------------------------------------------- 	9 - DEVOLUCAO DO CLIENTE INTERESTADUAL 	---------------------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 70, 'CONSUMO', 0.000000,0.000000, 70, '', 0.000000, 0.000000, 70,'NORMAL',9, ncm_id FROM vw_ncm_id_mono;
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
 				SELECT 0.000000, 0.000000, 70, 'CONSUMO', 0.000000,0.000000, 70, '', 0.000000, 0.000000, 70,'NORMAL',18, ncm_id FROM vw_ncm_id_mono;		
+
+
+
+-- ------------------------------------------------ 33 - AQUISICAO DE MERCADORIAS FORA DO ESTADO PARA COMERCIALIZACAO ---------------------------------------------
+INSERT INTO `trib_fede` (cofins_aliq, cofins_base, cofins_cst, finalidade, ipi_aliq, ipi_base, ipi_cst, mens, pis_aliq, pis_base, pis_cst, regime_tributario, oper_id, ncm_id) 
+				SELECT 0.000000, 0.000000, 70, 'CONSUMO', 0.000000,0.000000, 70, '', 0.000000, 0.000000, 70,'NORMAL',33, ncm_id FROM vw_ncm_id_mono;
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -- ========================================================================================================================================================
 
 

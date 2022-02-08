@@ -28,6 +28,13 @@ Ex.: mvn clean install -Pproducao install -DskipTests	, etc....
 	# PRODUCAO
 		gcloud config set project erpj-br
 		
+
+# Vendo os projetos que tenho permissão 
+	gcloud projects list
+		
+# Vendo o projeto que estou "setado", atualmente
+	gcloud config list project
+
 # Vendo instancias SQL
 
 	gcloud sql instances list

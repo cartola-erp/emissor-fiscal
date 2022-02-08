@@ -104,6 +104,18 @@
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+	
+		-- 41 | TRANSFERENCIA (SAIDA) - GARANTIA
+		
+	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, mens, regime_tributario, 
+		cod_anp, esta_dest_id, esta_orig_id, ncm_id, oper_id, is_prod_impor ) 
+	(select cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, '', regime_tributario, 
+		cod_anp, esta_dest_id, esta_orig_id, ncm_id, 41, true FROM trib_esta where oper_id = 4 and is_prod_impor = true);
+	
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 	-- 45 | VENDA DE PRODUTO PARA  ENTREGA FUTURA (CST 90 | CFOP - 5922, para qualquer ncm)
 -- -----------------------------------------------------------------------------------------------------------------------------------------------------
 	INSERT INTO `trib_esta` (cest, cfop, fcp_aliq, finalidade, icms_aliq, icms_aliq_dest, icms_base, icms_cst, icms_iva, icms_st_aliq, 
