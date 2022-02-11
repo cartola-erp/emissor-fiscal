@@ -248,7 +248,7 @@ INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, fin
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
 					VALUES	(60, 6403, 2403, 6949, "COMERCIALIZACAO", "NORMAL", false , "", 30);
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
-					VALUES	(60, 6405, 2403, 6949, "COMERCIALIZACAO", "NORMAL", false , "", 30);
+					VALUES	(60, 6405, 2403, 6949, "COMERCIALIZACAO", "NORMAL", false , "", 11);
 -- ======================================================================================================================================		
 
 
@@ -277,7 +277,13 @@ INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, fin
 
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
 					VALUES	(60, 5117, 1411, 1411, "COMERCIALIZACAO", "NORMAL", false , "", 8);
-					
+
+-- Devolucao de Sat que Virou NFE (encima da operação "movimento já registra em ECF")					
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
+					VALUES	(00, 5929, 1202, 1202, "COMERCIALIZACAO", "NORMAL", false , "", 8);
+
+INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
+					VALUES	(60, 5929, 1411, 1411, "COMERCIALIZACAO", "NORMAL", false , "", 8);
 -- =========================================== 9 - DEVOLUCAO DO CLIENTE INTERESTADUAL ===================================================
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
 					VALUES	(0, 6101, 2102, 2102, "COMERCIALIZACAO", "NORMAL", false , "", 9);
