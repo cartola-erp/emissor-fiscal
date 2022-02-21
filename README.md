@@ -5,9 +5,11 @@ de documentos fiscais de saídas (emitidos), assim como a geração do arquivo S
 
 BREVE RESUMO
 ---- 
-- Ao receber um **DocumentoFiscal (de emissão própria, que geralmente é de saída)**, com as devidas tributações cadastradas, será calculado os impostos (que é retornado num JSON), caso não tenha a tributação para algum item do DocumentoFiscal, não será calculado NADA, e apenas retornando que falta X tributação para o NCM do item, que está sem. (A intenção no futuro é fazer com que esse projeto também faça toda a parte de comunicação com a SEFAZ (geração do xml, envio, cancelamento, consulta etc....)
+- Ao receber um **DocumentoFiscal (de emissão própria, que geralmente é de saída)**, com as devidas tributações cadastradas, será calculado os impostos (que é retornado num JSON), caso não tenha a tributação para algum item do DocumentoFiscal, não será calculado NADA, e será apenas retornado uma mensagem avisando que falta X tributação para o NCM do item. (A intenção no futuro é fazer com que esse projeto também faça toda a parte de comunicação com a SEFAZ (geração do xml, envio, cancelamento, consulta etc....)
 
-- Ao receber um **DocumentoFiscal (de emissão de terceiros, que é entradas)**, apenas será salvo na tabela docu_fisc. Exceto se for alguma NFE que **seja de SC, ES, MG** (nesses casos, será verificado na tabela **trib_esta_guia**, se algum item dessa nota de entrada, teremos que recolher o ICMS ST pela Guia gare, caso sim será enviado um email para o setor fiscal, utilizando API do sendgrid com os devidos calculos e retornado um JSON com os valores desse calculo). 
+- Ao receber um **DocumentoFiscal (de devolução/remessa em garantia, que podem ser de entrada ou saída, mas que são sempre emitido pela autogeral)**, com a devida parametrização na tabela **(trib_esta_devo)**, e o cadastro correto da operação **(oper)**, indicando que a operação é de **devolução** OU **remessa em garantia**, será realizado o calculo do ICMS. **Caso não** esteja parametrizado para alguma operação provavelmente **irá ocorrer algum NullPointerException**.
+
+- Ao receber um **DocumentoFiscal (de emissão de terceiros, que é de entrada)**, apenas será salvo na tabela docu_fisc. Exceto se for alguma NFE que **seja de SC, ES, MG** (nesses casos, será verificado na tabela **trib_esta_guia**, se algum item dessa nota de entrada, teremos que recolher o ICMS ST pela Guia gare, caso sim será enviado um email para o setor fiscal, utilizando API do sendgrid com os devidos calculos e retornado um JSON com os valores desse calculo). 
   * PS¹: Atualmente, toda a parte de calculo de impostos na entrada que teremos crédito é feita pelo ERPJ.
   * PS²: Não é feita nenhuma emissão de guia gare (das entrada de SC, ES e MG), pois não encontrei nenhuma forma de integração para fazer isso
 
@@ -17,12 +19,17 @@ BREVE RESUMO
 
 ### 2. Criando login
 
- **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as 3 propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I
+ **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I
 
 ```
 emissor-fiscal.ativo=true
-emissor-fiscal.server=http://localhost:8080          (TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL) 
 emissor-fiscal.compra.ativo=true                     (Até o momento somente é salvo, a compra no emissor-fiscal, não fazendo nenhum calculo (exceto as de SC que é feito da guia Gare))
+operacoes.devolucao.pelo.emissor-fiscal=6,7,23,28,39,40,10,11,29,30,21,84,8,9                    (As operações que tiverem nessa propertie são as de devoluções que serão calculadas pelo emissorfiscal )
+
+emissor-fiscal.server=http://localhost:8080          (TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL) 
+emissor-fiscal-homologacao.server=http://localhost:8080                 (Caso o **nfe.ambiente=2**, no ERP, será usado a URL, que estiver nessa propertie para enviar a para o emissorfiscal)
+
+
 ```
 
 <p align="left">
