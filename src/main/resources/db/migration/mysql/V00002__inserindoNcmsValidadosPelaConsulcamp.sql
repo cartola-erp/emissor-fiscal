@@ -1,4 +1,4 @@
-
+DROP TABLE IF EXISTS ncms_validados_consulcamp;
 
 CREATE TABLE `ncms_validados_consulcamp` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
