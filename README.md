@@ -26,18 +26,17 @@ emissor-fiscal.ativo=true
 emissor-fiscal.compra.ativo=true                     (Até o momento somente é salvo, a compra no emissor-fiscal, não fazendo nenhum calculo (exceto as de SC que é feito da guia Gare))
 operacoes.devolucao.pelo.emissor-fiscal=6,7,23,28,39,40,10,11,29,30,21,84,8,9                    (As operações que tiverem nessa propertie são as de devoluções que serão calculadas pelo emissorfiscal )
 
-emissor-fiscal.server=http://localhost:8080          (TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL) 
-emissor-fiscal-homologacao.server=http://localhost:8080                 (Caso o **nfe.ambiente=2**, no ERP, será usado a URL, que estiver nessa propertie para enviar a para o emissorfiscal)
+emissor-fiscal.server=http://localhost:8080                             (TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL) 
+emissor-fiscal-homologacao.server=http://localhost:8080                 (Caso a propertie de envio de NFE no ERP seja para homologação (**nfe.ambiente=2**), será usado a URL, que estiver nessa propertie para fazer requisições para o emissorfiscal)
 
 
 ```
-
 <p align="left">
   <img src="./doc/Telas do Sistema/01 - Caminho (ERP) para criar usuario.png" width="190" height="400" />
   <img src="./doc/Telas do Sistema/01.1 - Tela (ERP) Cadastrar usuario.png" width="670" height="400" />
 </p>
 
-Para criar o login, no ERP vá no menu: **CONTABILIDADE**>**CRIAR USUARIO EMISSOR-FISCAL**. (Somente será mostrada, caso as properties acima estejam configuradas).
+Para criar o login, no ERP vá no menu: **CONTABILIDADE**>**CRIAR USUARIO EMISSOR-FISCAL**. (Somente será mostrado esse menu, caso as properties acima estejam configuradas).
 Na tela aberta teremos os seguintes botões:
 
 1. **Cancelar** - Fecha a tela aberta.
@@ -50,7 +49,7 @@ Quando o usuário enviar/exportar uma NFE e estiver com as properties acima ativ
 net.cartola.emissorfiscal.usuario.Perfil
 ```
 
-### 3. Arquivos de configurações (application.properties e bootstrap.properties)
+### 3. Arquivos de configurações (application.properties)
 Temos quatro arquivos aplication.properties, sendo eles:
 
 |nome|Usado em|
@@ -60,12 +59,26 @@ Temos quatro arquivos aplication.properties, sendo eles:
 |application-homologacao.properties|Para fazer o deploy no [GAE](https://cloud.google.com/appengine). E conseguirmos testar a aplicação no mesmo ambiente do usuário |
 |application-producao.properties|Para fazer o deploy em produção no GAE|
 |application-test.properties|Para rodar os testes no localhost, usando o DB (emissorfiscal_teste) |
-|bootstrap.properties|Para utilizarmos o serviço [Secret Manager do GCP](https://cloud.google.com/secret-manager). Quando é feito o deploy esse arquivo é carregado antes do application|
-|bootstrap-homologacao.properties|Deploy no projeto do GCP de homologacao|
-|bootstrap-producao.properties|Deploy em produção|
 
 PS: No aplication.properties, temos algumas propriedades, que são referente a "regras de negócios". Exemplos: codigos das origens dos produtos que são importados, email para
 quem é enviado os calculos das GUIA GARE (entradas de SC, MS e ES) etc...
+
+### 3.1 pom.xml (usando maven profile para fazer deploy)
+
+No trecho abaixo está o perfil, que é usado pela linha de comando para gerar o .WAR e fazer o deploy no GAE (Google App Engine)
+ ```
+	<profiles>
+		<profile>
+			<id>producao</id>
+      <dependencies>
+       .... 
+               Dependências que irão entrar somente no perfil de produção (ou seja, quando estiverem fazendo o deploy no GAE 
+       ....
+   			</dependencies>
+		</profile>
+		
+	</profiles>
+```
 
 ### 4. "Parametrização/Inserção", das tributações federais e estadual (PIS/COFINS e ICMS) (nos DocumentosFiscais emitidos por nóis)
 Dentro da pasta **./doc/scripts**, temos as duas pastas a seguir, que serviram para cadastrar as tributações, em três tabelas (Tais informações foram passados pela Contabilidade/Fiscal): 
