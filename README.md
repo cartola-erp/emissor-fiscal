@@ -15,7 +15,7 @@ BREVE RESUMO
 
 - **SPED FISCAL** -> Parte que está atualmente em desenvolvimento. Antes de começarmos a gerar os arquivos, é necessário que de fato todos os DocumentoFiscais sejam salvos nesse projeto (hoje em dia é a maioria). Ao menos nesse primeiro momento, a preocupação é fazer com que gere o arquivo corretamente igual é gerado hoje em dia utilizando o software de terceiros. Após isso terá a parte de **Assinatura** e **Envio** etc...
 
-- **TODO** -> Integração para ser emitida as guias GNRE (Que é necessário quando vendemos para outro estado e a pessoa seja PF ou PJ não seja contribuinte de icms, ou seja, é quando tem o calculo de DIFAL na nota que emitimos) 
+~~- **TODO** -> Integração para ser emitida as guias GNRE (Que é necessário quando vendemos para outro estado e a pessoa seja PF ou PJ não seja contribuinte de icms, ou seja, é quando tem o calculo de DIFAL na nota que emitimos) ~~
 
 ### 2. Criando login
 
@@ -75,7 +75,7 @@ Temos quatro arquivos aplication.properties, sendo eles:
 PS: No aplication.properties, temos algumas propriedades, que são referente a "regras de negócios". Exemplos: codigos das origens dos produtos que são importados, email para
 quem é enviado os calculos das GUIA GARE (entradas de SC, MS e ES) etc...
 
-### 3.1 pom.xml (usando maven profile para fazer deploy)
+### 3.1. pom.xml (usando maven profile para fazer deploy)
 
 No trecho abaixo está o perfil, que é usado pela linha de comando para gerar o .WAR e fazer o deploy no GAE (Google App Engine)
  ```
@@ -92,6 +92,15 @@ No trecho abaixo está o perfil, que é usado pela linha de comando para gerar o
 	</profiles>
 ```
 
+### 3.2. appengine-web.xml 
+
+Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google.com/appengine). Além disso qual o perfil do spring ("application.properties) que estará ativo para fazer deploy. Basicamente será um dos dois abaixo:
+```
+<property name="spring.profiles.active" value="producao"/>					-> Usado para fazer deploy em produção no projeto: **erpj-br**, do GCP.
+<property name="spring.profiles.active" value="homologacao"/>					-> Para fazer deploy em homologação (testes no GCP), projeto: **erpj-dev**
+```
+
+	
 ### 4. "Parametrização/Inserção", das tributações federais e estadual (PIS/COFINS e ICMS) (nos DocumentosFiscais emitidos por nóis)
 Dentro da pasta **./doc/scripts**, temos as duas pastas a seguir, que serviram para cadastrar as tributações, em três tabelas (Tais informações foram passados pela Contabilidade/Fiscal): 
   * trib_fede
