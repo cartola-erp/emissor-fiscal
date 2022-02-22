@@ -11,7 +11,7 @@ BREVE RESUMO
 
 - Ao receber um **DocumentoFiscal (de emissão de terceiros, que é de entrada)**, apenas será salvo na tabela docu_fisc. Exceto se for alguma NFE que **seja de SC, ES, MG** (nesses casos, será verificado na tabela **trib_esta_guia**, se algum item dessa nota de entrada, teremos que recolher o ICMS ST pela Guia gare, caso sim será enviado um email para o setor fiscal, utilizando API do sendgrid com os devidos calculos e retornado um JSON com os valores desse calculo). 
   * PS¹: Atualmente, toda a parte de calculo de impostos na entrada que teremos crédito é feita pelo ERPJ.
-  * PS²: Não é feita nenhuma emissão de guia gare (das entrada de SC, ES e MG), pois não encontrei nenhuma forma de integração para fazer isso
+  * PS²: Não é feita nenhuma emissão de guia gare (das entrada de SC, ES e MG), pois não encontrei nenhuma forma de integração para fazer isso.
 
 - **SPED FISCAL** -> Parte que está atualmente em desenvolvimento. Antes de começarmos a gerar os arquivos, é necessário que de fato todos os DocumentoFiscais sejam salvos nesse projeto (hoje em dia é a maioria). Ao menos nesse primeiro momento, a preocupação é fazer com que gere o arquivo corretamente igual é gerado hoje em dia utilizando o software de terceiros. Após isso terá a parte de **Assinatura** e **Envio** etc...
 
@@ -23,11 +23,11 @@ BREVE RESUMO
 
 ```
 emissor-fiscal.ativo=true
-emissor-fiscal.compra.ativo=true                     (Até o momento somente é salvo, a compra no emissor-fiscal, não fazendo nenhum calculo (exceto as de SC que é feito da guia Gare))
-operacoes.devolucao.pelo.emissor-fiscal=6,7,23,28,39,40,10,11,29,30,21,84,8,9                    (As operações que tiverem nessa propertie são as de devoluções que serão calculadas pelo emissorfiscal )
+emissor-fiscal.compra.ativo=true					(Até o momento somente é salvo, a compra no emissor-fiscal, não fazendo nenhum calculo (exceto as de SC que é feito da guia Gare))
+operacoes.devolucao.pelo.emissor-fiscal=6,7,23,28,39,40,10,11,29,30,21,84,8,9		(As operações que tiverem nessa propertie são as de devoluções que serão calculadas pelo emissorfiscal )
 
-emissor-fiscal.server=http://localhost:8080                             (TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL) 
-emissor-fiscal-homologacao.server=http://localhost:8080                 (Caso a propertie de envio de NFE no ERP seja para homologação (**nfe.ambiente=2**), será usado a URL, que estiver nessa propertie para fazer requisições para o emissorfiscal)
+emissor-fiscal.server=http://localhost:8080				(TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL) 
+emissor-fiscal-homologacao.server=http://localhost:8080			(Caso a propertie de envio de NFE no ERP seja para homologação (**nfe.ambiente=2**), será usado a URL, que estiver nessa propertie para fazer requisições para o emissorfiscal)
 
 
 ```
@@ -44,7 +44,19 @@ Na tela aberta teremos os seguintes botões:
 3. **Efetuar Cadastro** - Irá criar um usuário no emissor-fiscal, com as mesmas informações do ERP.
 
 ### 2.1. Criando Login através do envio/exportação de um documento fiscal
-Quando o usuário enviar/exportar uma NFE e estiver com as properties acima ativadas, também será criado um usuário (com o Perfil de ***API_ACESS***), veja os outros perfis no enum: 
+Quando o usuário enviar/exportar uma NFE e estiver com as properties acima ativadas, também será criado um usuário (com o Perfil de ***API_ACESS***),
+
+
+### 2.2. Perfis
+|Perfil|Permissões|
+|------|---------|
+|ADMIN|Acesso a tudo|
+|WEB_ACESS|Somente consulta nas páginas WEB|
+|CONTADOR|Consegue fazer alterações em tributações, operações etc.Nas telas WEB.|
+|ESCRITURADOR|Consegue gerar o arquivo do SPED FISCAL ICMS IPI|
+|API_ACESS|Acesso somente para consumir a parte de API desse projeto|
+
+veja os perfis no enum: 
 ```
 net.cartola.emissorfiscal.usuario.Perfil
 ```
