@@ -190,10 +190,10 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
 </details>
 
 #### 4.1 Inserção", das tributações federais e estaduais (PIS/COFINS e ICMS) (usando os Scripts que o Flyway)
-
+Um ponto de extrema importância é a parte abaixo onde estão os scripts, que servem para cadastrar as tributações estaduais (venda, transferencia, devoluções e outras operações emitimos NFEs ou até mesmo para as entradas de SC, ES e MS (que serve para fazer o calculo do ICMS ST que temos que pagar a guia gare). Assim como para o PIS/COFINS)
 
 <details>
-  <summary>Um ponto de extrema importância é a parte abaixo onde estão os scripts</summary>
+  <summary>Scripts pelo flyway, para parametrizações nas tabelas: trib_esta, trib_esta_guia, trib_esta_devo e trib_fede</summary>
 
 ```
 📦src
@@ -232,8 +232,8 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00008__insertIntoTribEstaGuiaGareCompraParaComercia.sql		-> tabela: **(trib_esta_guia)**: Aqui está a parametrização dos calculos das "Guias Gare". São calculadas toda vez que dão entrada no ERPJ. Quando salvam uma compra cujo a UF seja diferente de SP, ou seja compra interestadual: (SC, MS, ES), será buscado a parametrização nessa tabela caso tenha para algum item, será calculado e enviado no email (grupo @fiscal) os calculos! PS: Os ncms nesse script a Gabi/fiscal foi me passando ao longo do tempo.
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00009__insertTribEstaSaidaDentroEstado.sql			->  tabela: **(trib_esta)**: Insert de icms, para outras operações que são de saídas. (Ou que ao menos a autogeral faça a emissão de NFe)
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00010__insertTribEstaSaidaDentroEstadoProdutoImportado.sql	->  tabela: **(trib_esta)**: Mesma coisa do script acima. PORÉM para os produtos que SÃO IMPORTADOS. Com o acréscimo que aqui tem o insert para VENDA e TRANSFERENCIA. Para essas duas operações quando é nacional eles estão no script **V0001__Init.sql**, ou no **V00002__inserindoNcmsValidadosPelaConsulcamp.sql**
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00011__correcaoIcms.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00011__correcaoIcms.sql					-> tabela: **(trib_esta)**:  É o script para corrigir a tributação de ICMS em (vendas/transferências/entrega futura/distribuicao de brindes, a maioria dos ncms que estão nesse script estavam cadastrados errado no emissorfiscal)
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql	-> tabela: **(trib_esta)**: Script que servirá para "copiar", a tributação do ICMS para as outras exceções do NCM. (Caso ele tenha mais de uma) 
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql
  ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql
