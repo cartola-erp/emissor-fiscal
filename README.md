@@ -3,6 +3,8 @@
 Projeto criado para um analista fiscal, ser o responsável por manter as tributações estaduais e federais que serão usadas no cálculo, 
 de documentos fiscais de saídas (emitidos), assim como a geração do arquivo SPED FISCAL (EFD ICMS IPI). Até o Momento funciona basicamente da seguinte forma:  
 
+
+
 BREVE RESUMO
 ---- 
 - Ao receber um **DocumentoFiscal (de emissão própria, que geralmente é de saída)**, com as devidas tributações cadastradas, será calculado os impostos (que é retornado num JSON), caso não tenha a tributação para algum item do DocumentoFiscal, não será calculado NADA, e será apenas retornado uma mensagem avisando que falta X tributação para o NCM do item. (A intenção no futuro é fazer com que esse projeto também faça toda a parte de comunicação com a SEFAZ (geração do xml, envio, cancelamento, consulta etc....)
@@ -15,7 +17,7 @@ BREVE RESUMO
 
 - **SPED FISCAL** -> Parte que está atualmente em desenvolvimento. Antes de começarmos a gerar os arquivos, é necessário que de fato todos os DocumentoFiscais sejam salvos nesse projeto (hoje em dia é a maioria). Ao menos nesse primeiro momento, a preocupação é fazer com que gere o arquivo corretamente igual é gerado hoje em dia utilizando o software de terceiros. Após isso terá a parte de **Assinatura** e **Envio** etc...
 
-~~- **TODO** -> Integração para ser emitida as guias GNRE (Que é necessário quando vendemos para outro estado e a pessoa seja PF ou PJ não seja contribuinte de icms, ou seja, é quando tem o calculo de DIFAL na nota que emitimos) ~~
+~~**TODO**-> Integração para ser emitida as guias GNRE (Que é necessário quando vendemos para outro estado e a pessoa seja PF ou PJ não seja contribuinte de icms, ou seja, é quando tem o calculo de DIFAL na nota que emitimos)~~
 
 ### 2. Criando login
 
@@ -28,9 +30,8 @@ operacoes.devolucao.pelo.emissor-fiscal=6,7,23,28,39,40,10,11,29,30,21,84,8,9		(
 
 emissor-fiscal.server=http://localhost:8080				(TROCAR essa URL(link), para a dá página inicial do EMISSOR-FISCAL) 
 emissor-fiscal-homologacao.server=http://localhost:8080			(Caso a propertie de envio de NFE no ERP seja para homologação (**nfe.ambiente=2**), será usado a URL, que estiver nessa propertie para fazer requisições para o emissorfiscal)
-
-
 ```
+
 <p align="left">
   <img src="./doc/Telas do Sistema/01 - Caminho (ERP) para criar usuario.png" width="190" height="400" />
   <img src="./doc/Telas do Sistema/01.1 - Tela (ERP) Cadastrar usuario.png" width="670" height="400" />
@@ -62,7 +63,7 @@ net.cartola.emissorfiscal.usuario.Perfil
 ```
 
 ### 3. Arquivos de configurações (application.properties)
-Temos quatro arquivos aplication.properties, sendo eles:
+Temos cincum ~~(sim, sou flamenguista, como adivinhou!?)~~ arquivos aplication.properties, sendo eles:
 
 |nome|Usado em|
 |----|---------|
@@ -96,13 +97,106 @@ No trecho abaixo está o perfil, que é usado pela linha de comando para gerar o
 
 Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google.com/appengine). Além disso qual o perfil do spring ("application.properties) que estará ativo para fazer deploy. Basicamente será um dos dois abaixo:
 ```
-<property name="spring.profiles.active" value="producao"/>					-> Usado para fazer deploy em produção no projeto: **erpj-br**, do GCP.
-<property name="spring.profiles.active" value="homologacao"/>					-> Para fazer deploy em homologação (testes no GCP), projeto: **erpj-dev**
+<property name="spring.profiles.active" value="producao"/>				-> Usado para fazer deploy em produção no projeto: **erpj-br**, do GCP.
+<property name="spring.profiles.active" value="homologacao"/>				-> Para fazer deploy em homologação (testes no GCP), projeto: **erpj-dev**
 ```
 
-	
-### 4. "Parametrização/Inserção", das tributações federais e estadual (PIS/COFINS e ICMS) (nos DocumentosFiscais emitidos por nóis)
+### 4. Estrutura de pastas
+
+<details>
+  <summary>De forma resumida temos basicamente essa estrutura de projeto</summary>
+
+```
+📦src
+ ┣ 📂main
+ ┃ ┣ 📂java
+ ┃ ┃ ┗ 📂net
+ ┃ ┃ ┃ ┗ 📂cartola
+ ┃ ┃ ┃ ┃ ┗ 📂emissorfiscal -> Aqui estará todas as classes do projeto
+ ┃ ┣ 📂resources
+ ┃ ┃ ┣ 📂db
+ ┃ ┃ ┃ ┗ 📂migration
+ ┃ ┃ ┃ ┃ ┗ 📂mysql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-clientes-outras-ufs
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OBS.txt
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00019__1_VENDA_PRODUTO_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00020__1_VENDA_PRODUTO_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00021__45_VENDA_FUTURA_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00022__45_VENDA_FUTURA_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00023__46_REMESSA_FUTURA_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00024__46_REMESSA_FUTURA_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00025__63_VENDA_DE_SUCATA_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00026__63_VENDA_DE_SUCATA_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00027__73_COMPRA_DE_SUCATA_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00028__73_COMPRA_DE_SUCATA_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00029__83_DISTRIBUICAO_GRATUITA_ITEM_ESTOQUE_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00030__83_DISTRIBUICAO_GRATUITA_ITEM_ESTOQUE_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-interestadual
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00013__3_VENDA_INTERESTADUAL_FISICA_PRODUTO_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00014__3_VENDA_INTERESTADUAL_FISICA_PRODUTO_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00015__2_VENDA_INTERESTADUAL_JURIDICA_PRODUTO_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00016__2_VENDA_INTERESTADUAL_JURIDICA_PRODUTO_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00032__AquisicoesInterestaduaisEmitidasPelaAg.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜NCMs - Validado pela Consulcamp.csv
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00002__inserindoNcmsValidadosPelaConsulcamp.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00007__createNcmsMonofasicosEmissorFiscal.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00008__insertIntoTribEstaGuiaGareCompraParaComercia.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00009__insertTribEstaSaidaDentroEstado.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00010__insertTribEstaSaidaDentroEstadoProdutoImportado.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00011__correcaoIcms.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V0001__Init.sql
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql
+ ┃ ┃ ┣ 📂public
+ ┃ ┃ ┃ ┗ 📂error
+ ┃ ┃ ┃ ┃ ┣ 📜400.html
+ ┃ ┃ ┣ 📂src
+ ┃ ┃ ┃ ┗ 📂assets
+ ┃ ┃ ┃ ┃ ┗ 📂scripts
+ ┃ ┃ ┣ 📂static
+ ┃ ┃ ┃ ┣ 📂assets
+ ┃ ┃ ┃ ┃ ┗ 📂static
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂fonts
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂icons
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂fontawesome
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂themify
+ ┃ ┃ ┃ ┣ 📂css
+ ┃ ┃ ┃ ┣ 📂fonts
+ ┃ ┃ ┃ ┣ 📂img
+ ┃ ┃ ┃ ┣ 📂js
+ ┃ ┃ ┃ ┃ ┣ 📂ncm
+ ┃ ┃ ┃ ┃ ┣ 📂tilt
+ ┃ ┃ ┃ ┣ 📂src
+ ┃ ┃ ┣ 📂templates
+ ┃ ┃ ┃ ┣ 📜Htmls do projeto
+ ┃ ┃ ┣ 📜application-dev.properties
+ ┃ ┃ ┣ 📜application-homologacao.properties
+ ┃ ┃ ┣ 📜application-producao.properties
+ ┃ ┃ ┣ 📜application-test.properties
+ ┃ ┃ ┗ 📜application.properties
+ ┃ ┗ 📂webapp
+ ┃ ┃ ┗ 📂WEB-INF
+ ┃ ┃ ┃ ┣ 📜appengine-web.xml
+ ┃ ┃ ┃ ┗ 📜logging.properties
+ ┗ 📂test
+ ┃ ┗ 📂java
+ ┃ ┃ ┗ 📂net
+ ┃ ┃ ┃ ┗ 📂cartola
+ ┃ ┃ ┃ ┃ ┗ 📂emissorfiscal
+
+```
+</details>
+
+
+### 4. "Parametrização/Inserção", das tributações federais e estaduais (PIS/COFINS e ICMS)
+
+src/main/resources/db/migration/mysql
+
+
 Dentro da pasta **./doc/scripts**, temos as duas pastas a seguir, que serviram para cadastrar as tributações, em três tabelas (Tais informações foram passados pela Contabilidade/Fiscal): 
+
   * trib_fede
   * trib_esta
   * trib_esta_guia 
