@@ -44,11 +44,11 @@ Na tela aberta teremos os seguintes botões:
 2. **Atualizar Usuário** - Caso tenha feito, alguma alteração no usuário do ERP (EX.: de Senha) e queira que essas alterações tenham efeito no emissor-fiscal, clique nesse botão.
 3. **Efetuar Cadastro** - Irá criar um usuário no emissor-fiscal, com as mesmas informações do ERP.
 
-### 2.1. Criando Login através do envio/exportação de um documento fiscal
+#### 2.1. Criando Login através do envio/exportação de um documento fiscal
 Quando o usuário enviar/exportar uma NFE e estiver com as properties acima ativadas, também será criado um usuário (com o Perfil de ***API_ACESS***),
 
 
-### 2.2. Perfis
+#### 2.2. Perfis
 |Perfil|Permissões|
 |------|---------|
 |ADMIN|Acesso a tudo|
@@ -76,7 +76,7 @@ Temos cincum ~~(sim, sou flamenguista, como adivinhou!?)~~ arquivos aplication.p
 PS: No aplication.properties, temos algumas propriedades, que são referente a "regras de negócios". Exemplos: codigos das origens dos produtos que são importados, email para
 quem é enviado os calculos das GUIA GARE (entradas de SC, MS e ES) etc...
 
-### 3.1. pom.xml (usando maven profile para fazer deploy)
+#### 3.1. pom.xml (usando maven profile para fazer deploy)
 
 No trecho abaixo está o perfil, que é usado pela linha de comando para gerar o .WAR e fazer o deploy no GAE (Google App Engine)
  ```
@@ -93,7 +93,7 @@ No trecho abaixo está o perfil, que é usado pela linha de comando para gerar o
 	</profiles>
 ```
 
-### 3.2. appengine-web.xml 
+#### 3.2. appengine-web.xml 
 
 Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google.com/appengine). Além disso qual o perfil do spring ("application.properties) que estará ativo para fazer deploy. Basicamente será um dos dois abaixo:
 ```
@@ -188,6 +188,59 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
 
 ```
 </details>
+
+#### 4.1 Inserção", das tributações federais e estaduais (PIS/COFINS e ICMS) (usando os Scripts que o Flyway)
+
+
+<details>
+  <summary>Um ponto de extrema importância é a parte abaixo onde estão os scripts</summary>
+
+```
+📦src
+ ┣ 📂main
+ ┃ ┣ 📂java
+ ┃ ┃ ┗ 📂net
+ ┃ ┃ ┃ ┗ 📂cartola
+ ┃ ┣ 📂resources
+ ┃ ┃ ┣ 📂db
+ ┃ ┃ ┃ ┗ 📂migration
+ ┃ ┃ ┃ ┃ ┗ 📂mysql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-clientes-outras-ufs			->  tabela: **(trib_esta)**: Aqui está sendo parametrizado algumas operações que são usadas no "Balcão", mas o cliente possa ser de outro estado (Ex.: Estamos VENDENDO para um cliente na loja, mas ele não é de SP, a parametrização estará dentro dessa pasta)
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OBS.txt
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00019__1_VENDA_PRODUTO_IMPORTADO.sql							
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00020__1_VENDA_PRODUTO_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00021__45_VENDA_FUTURA_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00022__45_VENDA_FUTURA_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00023__46_REMESSA_FUTURA_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00024__46_REMESSA_FUTURA_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00025__63_VENDA_DE_SUCATA_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00026__63_VENDA_DE_SUCATA_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00027__73_COMPRA_DE_SUCATA_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00028__73_COMPRA_DE_SUCATA_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00029__83_DISTRIBUICAO_GRATUITA_ITEM_ESTOQUE_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00030__83_DISTRIBUICAO_GRATUITA_ITEM_ESTOQUE_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-interestadual			-> tabela: **(trib_esta)**: Aqui está sendo parametrizado, de fato as operações que são interestaduais, inclusive no caso das VENDAS é onde de fato tem diferenças de aliquotas caso o produto SEJA IMPORTADO, diferente das outras situações que geralmente tem apenas para que o sistema encontre a tributação já que é usado a mesma query.
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00013__3_VENDA_INTERESTADUAL_FISICA_PRODUTO_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00014__3_VENDA_INTERESTADUAL_FISICA_PRODUTO_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00015__2_VENDA_INTERESTADUAL_JURIDICA_PRODUTO_IMPORTADO.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00016__2_VENDA_INTERESTADUAL_JURIDICA_PRODUTO_NACIONAL.sql
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00032__AquisicoesInterestaduaisEmitidasPelaAg.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜NCMs - Validado pela Consulcamp.csv			->.CSV, que criei para deixar os ncms validados pela consulcamp. Usei para inserir aqueles que ainda não estavam cadastrados no emissorfiscal, e sempre davam b.o para enviar o SAT.
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00002__inserindoNcmsValidadosPelaConsulcamp.sql		-> Script que lê o .csv, acima e insere na **tabela: trib_esta)**, o icms de VENDA e TRANSFERÊNCIA. Confesso que ainda não testei rodando pelo flyway. Foi importante colocar esse script aqui nessa ordem, para que o script **V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql**, copie o icms desses ncms para as outras execeções deles caso eles tenham mais de uma. (Para o ICMS a tributação é a mesma para o ncm em todas as suas exceções)
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00007__createNcmsMonofasicosEmissorFiscal.sql		-> Cria a tabela de **ncms_monofasicos**, e insere nela todos os ncms monofásicos (aqui a exceção do ncm é de extrema importância). Essa tabela é para facilitar nos inserts das tributações federais (trib_fede), que estão um pouco mais abaixo. 
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00008__insertIntoTribEstaGuiaGareCompraParaComercia.sql		-> tabela: **(trib_esta_guia)**: Aqui está a parametrização dos calculos das "Guias Gare". São calculadas toda vez que dão entrada no ERPJ. Quando salvam uma compra cujo a UF seja diferente de SP, ou seja compra interestadual: (SC, MS, ES), será buscado a parametrização nessa tabela caso tenha para algum item, será calculado e enviado no email (grupo @fiscal) os calculos!
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00009__insertTribEstaSaidaDentroEstado.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00010__insertTribEstaSaidaDentroEstadoProdutoImportado.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00011__correcaoIcms.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V0001__Init.sql
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql
+
+```
+</details>
+
 
 
 ### 4. "Parametrização/Inserção", das tributações federais e estaduais (PIS/COFINS e ICMS)
