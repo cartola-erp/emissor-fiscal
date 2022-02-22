@@ -226,16 +226,16 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00016__2_VENDA_INTERESTADUAL_JURIDICA_PRODUTO_NACIONAL.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00032__AquisicoesInterestaduaisEmitidasPelaAg.sql
  ┃ ┃ ┃ ┃ ┃ ┣ 📜NCMs - Validado pela Consulcamp.csv			->.CSV, que criei para deixar os ncms validados pela consulcamp. Usei para inserir aqueles que ainda não estavam cadastrados no emissorfiscal, e sempre davam b.o para enviar o SAT.
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00001__Init.sql						-> Tem a estrutura básica do banco de dados. E a população de algumas tabelas no banco. Ex.: estado, trib_esta...
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00002__inserindoNcmsValidadosPelaConsulcamp.sql		-> Script que lê o .csv, acima e insere na **tabela: trib_esta)**, o icms de VENDA e TRANSFERÊNCIA. Confesso que ainda não testei rodando pelo flyway. Foi importante colocar esse script aqui nessa ordem, para que o script **V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql**, copie o icms desses ncms para as outras execeções deles caso eles tenham mais de uma. (Para o ICMS a tributação é a mesma para o ncm em todas as suas exceções)
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00007__createNcmsMonofasicosEmissorFiscal.sql		-> Cria a tabela de **ncms_monofasicos**, e insere nela todos os ncms monofásicos (aqui a exceção do ncm é de extrema importância). Essa tabela é para facilitar nos inserts das tributações federais (trib_fede), que estão um pouco mais abaixo. 
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00008__insertIntoTribEstaGuiaGareCompraParaComercia.sql		-> tabela: **(trib_esta_guia)**: Aqui está a parametrização dos calculos das "Guias Gare". São calculadas toda vez que dão entrada no ERPJ. Quando salvam uma compra cujo a UF seja diferente de SP, ou seja compra interestadual: (SC, MS, ES), será buscado a parametrização nessa tabela caso tenha para algum item, será calculado e enviado no email (grupo @fiscal) os calculos!
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00009__insertTribEstaSaidaDentroEstado.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00010__insertTribEstaSaidaDentroEstadoProdutoImportado.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00008__insertIntoTribEstaGuiaGareCompraParaComercia.sql		-> tabela: **(trib_esta_guia)**: Aqui está a parametrização dos calculos das "Guias Gare". São calculadas toda vez que dão entrada no ERPJ. Quando salvam uma compra cujo a UF seja diferente de SP, ou seja compra interestadual: (SC, MS, ES), será buscado a parametrização nessa tabela caso tenha para algum item, será calculado e enviado no email (grupo @fiscal) os calculos! PS: Os ncms nesse script a Gabi/fiscal foi me passando ao longo do tempo.
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00009__insertTribEstaSaidaDentroEstado.sql			->  tabela: **(trib_esta)**: Insert de icms, para outras operações que são de saídas. (Ou que ao menos a autogeral faça a emissão de NFe)
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00010__insertTribEstaSaidaDentroEstadoProdutoImportado.sql	->  tabela: **(trib_esta)**: Mesma coisa do script acima. PORÉM para os produtos que SÃO IMPORTADOS. Com o acréscimo que aqui tem o insert para VENDA e TRANSFERENCIA. Para essas duas operações quando é nacional eles estão no script **V0001__Init.sql**, ou no **V00002__inserindoNcmsValidadosPelaConsulcamp.sql**
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00011__correcaoIcms.sql
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V0001__Init.sql
  ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql
 
 ```
