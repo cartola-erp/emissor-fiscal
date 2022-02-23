@@ -234,9 +234,9 @@ Um ponto de extrema importância é a parte abaixo onde estão os scripts, que s
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00010__insertTribEstaSaidaDentroEstadoProdutoImportado.sql	->  tabela: **(trib_esta)**: Mesma coisa do script acima. PORÉM para os produtos que SÃO IMPORTADOS. Com o acréscimo que aqui tem o insert para VENDA e TRANSFERENCIA. Para essas duas operações quando é nacional eles estão no script **V0001__Init.sql**, ou no **V00002__inserindoNcmsValidadosPelaConsulcamp.sql**
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00011__correcaoIcms.sql					-> tabela: **(trib_esta)**:  É o script para corrigir a tributação de ICMS em (vendas/transferências/entrega futura/distribuicao de brindes, a maioria dos ncms que estão nesse script estavam cadastrados errado no emissorfiscal)
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql	-> tabela: **(trib_esta)**: Script que servirá para "copiar", a tributação do ICMS para as outras exceções do NCM. (Caso ele tenha mais de uma) 
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql
- ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql				-> tabela: **(trib_fede)**: Esse script depende do: **V00007__createNcmsMonofasicosEmissorFiscal.sql**, pois será inserido o PIS/COFINS para todos os NCMS que NÃO são monofásicos.
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql			-> tabela: **(trib_fede)**: Já esse script será inserido para todos os NCMS MONOFÁSICOS, ou seja, para todos que estão no script: **V00007__createNcmsMonofasicosEmissorFiscal.sql**.
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql				-> tabela: **(trib_esta_devo)**: Será inserido todas as parametrizações para as operações de: "Devoluções e Remessas em Garantias".
 
 ```
 </details>
