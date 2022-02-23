@@ -242,24 +242,6 @@ Um ponto de extrema importância é a parte abaixo onde estão os scripts, que s
 </details>
 
 
-
-### 4. "Parametrização/Inserção", das tributações federais e estaduais (PIS/COFINS e ICMS)
-
-src/main/resources/db/migration/mysql
-
-
-Dentro da pasta **./doc/scripts**, temos as duas pastas a seguir, que serviram para cadastrar as tributações, em três tabelas (Tais informações foram passados pela Contabilidade/Fiscal): 
-
-  * trib_fede
-  * trib_esta
-  * trib_esta_guia 
-
-![image](https://user-images.githubusercontent.com/29218270/121573885-1b2fef80-c9fc-11eb-92c8-f32691b1015b.png)
-
-Dentro das tributações federais temos os scripts abaixo (Devem ser rodados na ordem que estão no print)
-PS: O último script, contém todos os inserts das duas procedures acima. (Sim, o melhor era ter feito INSERT com subquery, igual foi feito nas trib_esta)
-![image](https://user-images.githubusercontent.com/29218270/121576332-a7dbad00-c9fe-11eb-8f45-30b61c7cc4e9.png)
-
 As tributações federais (PIS/COFINS), funcionam basicamente da seguinte forma (estamos considerando a operação 1 - VENDA), Se o NCM é:
 
 ```
@@ -270,9 +252,6 @@ As tributações federais (PIS/COFINS), funcionam basicamente da seguinte forma 
 
 ### 4.1. trib_esta (inserindo informações referente a Aliq de ICMS, CFOP, CEST COD ANP etc)
 
-- Na primeira pasta do print abaixo, temos o script para inserir a tributação na tabela: **trib_esta_guia** (Todos os ncms que tiverem nessa tabela serão calculados, 
-o valor da guia gare quando derem entrada em um DocumentoFiscal)
-PS: Ao invés de usar um campo do tipo enum para considerar a Origem do produto (o ideal é trocar, para um boolean para saber se a tributação é ou não para um produto importado)
 
 - **Interestadual** Script com todas as tributações em VENDAS interestaduais de SP x Qualquer outra UF. No caso das operações foi feito o seguinte para saber se tem que calcular ou não difal/fcp. Equivalência de operações: 
 
@@ -292,9 +271,6 @@ PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o
 - Os dois últimos, scripts do print: Pode se dizer que são "repetidos", já que a tributação dentro do estado não muda quando o produto é ou não importado (porém tem os dois para ser calculados em ambos os casos). A informação do produto ser ou não importado, tem grande importancia nas VENDAS interestaduais, pois é essa aliquota (4%) que tem prevalência
 (conforme está nos scripts mencionados acima) caso o produto seja importado.
 
-- Esses dois scripts funcionam com as tributações de vendas, que já foram inseridas previamente, ao iniciar o projeto utilizando o **flyway**
-
-![image](https://user-images.githubusercontent.com/29218270/121580538-39e5b480-ca03-11eb-8562-0ae71ce307e0.png)
 
 ### 5. DocumentoFiscal (package extremamente importante), breve explicação sobre as classes do projeto
 
