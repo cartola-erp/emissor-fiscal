@@ -11,7 +11,7 @@ BREVE RESUMO
 
 - Ao receber um **DocumentoFiscal (de devolução/remessa em garantia, que podem ser de entrada ou saída, mas que são sempre emitido pela autogeral)**, com a devida parametrização na tabela **(trib_esta_devo)**, e o cadastro correto da operação **(oper)**, indicando que a operação é de **devolução** OU **remessa em garantia**, será realizado o calculo do ICMS. **Caso não** esteja parametrizado para alguma operação provavelmente **irá ocorrer algum NullPointerException**.
 
-- Ao receber um **DocumentoFiscal (de emissão de terceiros, que é de entrada)**, apenas será salvo na tabela docu_fisc. Exceto se for alguma NFE que **seja de SC, ES, MG** (nesses casos, será verificado na tabela **trib_esta_guia**, se algum item dessa nota de entrada, teremos que recolher o ICMS ST pela Guia gare, caso sim será enviado um email para o setor fiscal, utilizando API do sendgrid com os devidos calculos e retornado um JSON com os valores desse calculo). 
+- Ao receber um **DocumentoFiscal (de emissão de terceiros, que é de entrada)**, apenas será salvo na tabela docu_fisc. Exceto se for alguma NFE que **seja de SC, ES, MG** (nesses casos, será verificado na tabela **trib_esta_guia**, se para algum item dessa nota de entrada, teremos que recolher o ICMS ST pela Guia gare, caso sim será enviado um email para o setor fiscal, utilizando API do sendgrid com os devidos calculos e retornado um JSON com os valores desse calculo). 
   * PS¹: Atualmente, toda a parte de calculo de impostos na entrada que teremos crédito é feita pelo ERPJ.
   * PS²: Não é feita nenhuma emissão de guia gare (das entrada de SC, ES e MG), pois não encontrei nenhuma forma de integração para fazer isso.
 
@@ -22,7 +22,7 @@ BREVE RESUMO
 
 ### 2. Criando login
 
- **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I
+ **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I.
 
 ```
 emissor-fiscal.ativo=true
@@ -84,19 +84,18 @@ No trecho abaixo está o perfil, que é usado pela linha de comando (maven) para
 	<profiles>
 		<profile>
 			<id>producao</id>
-      <dependencies>
-       .... 
-               Dependências que irão entrar somente no perfil de produção (ou seja, quando estiverem fazendo o deploy no GAE 
-       ....
-   			</dependencies>
+    			  	<dependencies>
+       			.... 
+              				 Dependências que irão entrar somente no perfil de produção (ou seja, quando estiverem fazendo o deploy no GAE 
+       			....
+				</dependencies>
 		</profile>
-		
 	</profiles>
 ```
 
 #### 3.2. appengine-web.xml 
 
-Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google.com/appengine). Além disso qual o perfil do spring ("application.properties) que estará ativo para fazer deploy. Basicamente será um dos dois abaixo:
+Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google.com/appengine). Além disso qual o perfil do spring ("application.properties") que estará ativo para fazer deploy. Basicamente será um dos dois abaixo:
 ```
 <property name="spring.profiles.active" value="producao"/>				-> Usado para fazer deploy em produção no projeto: **erpj-br**, do GCP.
 <property name="spring.profiles.active" value="homologacao"/>				-> Para fazer deploy em homologação (testes no GCP), projeto: **erpj-dev**
@@ -190,11 +189,11 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
 ```
 </details>
 
-#### 4.1 Inserção", das tributações federais (PIS/COFINS) e estaduais (ICMS), usando os scripts pelo flyway
-Um ponto de extrema importância é a parte abaixo onde estão os scripts, que servem para cadastrar as tributações estaduais (venda, transferencia, devoluções e outras operações que emitimos NFEs ou até mesmo para calcular o ICMS ST para as entradas de SC, ES e MS (temos que pagar a guia gare em alguns casos dessas UFs). Assim como para o PIS/COFINS)
+#### 4.1 Cadastrando as tributações federais (PIS/COFINS) e estaduais (ICMS), usando os scripts pelo flyway
+Um ponto de extrema importância é a parte abaixo onde estão os scripts, que servem para cadastrar as tributações estaduais (venda, transferência, devoluções e outras operações que emitimos NFEs ou até mesmo para calcular o ICMS ST para as entradas de SC, ES e MS (temos que pagar a guia gare em alguns casos dessas UFs). E além disso a parametrização para o PIS/COFINS)
 
 <details>
-  <summary>Scripts pelo flyway, para parametrizações nas tabelas: trib_esta, trib_esta_guia, trib_esta_devo e trib_fede</summary>
+  <summary>Scripts pelo flyway, para parametrizações nas tabelas: <strong>trib_esta, trib_esta_guia, trib_esta_devo e trib_fede</strong></summary>
 
 ```
 📦src
@@ -248,16 +247,15 @@ As tributações federais (PIS/COFINS), funcionam basicamente da seguinte forma 
  Monofásico - CST 04  (Sem tributação, Base de calculo, aliq, e valor imposto ZERADO)
  Se não é monofásico - CST 01 - Pis Aliq = 1,65% | Cofins Aliq = 7,60%
 ``` 
+
   OBS: ***Dependendo da operação a CST poderá ser diferente*** (conforme está nos scripts), assim como não ocorrer a incidência de impostos. PORÉM, sempre que um NCM for monofásico essa será a regra que tem prevalência;
 
-### 4.1. trib_esta (inserindo informações referente a Aliq de ICMS, CFOP, CEST COD ANP etc)
-
+### 4.2. Funcionamento das VENDAS interestaduais (inserindo informações referente a Aliq de ICMS, CFOP, CEST COD ANP etc)
 
 - **Interestadual** Script com todas as tributações em VENDAS interestaduais de SP x Qualquer outra UF. No caso das operações foi feito o seguinte para saber se tem que calcular ou não difal/fcp. Equivalência de operações: 
 
-
 |Operação|Equivalente a|
-|---|----|
+|--------|-------------|
 |2 - VENDA INTERESTADUAL (JURIDICA)|Pessoa contribuinte de icms, ou seja, quando usar as tributações dessa operação para fazer o calculo NUNCA será calculado o DIFAL e FCP|
 |3 - VENDA INTERESTADUAL (FISICA) |Pessoa não contribuinte, sempre será calculado o DIFAL, e o FCP para os estados que tiverem|
 
