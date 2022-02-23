@@ -15,7 +15,8 @@ BREVE RESUMO
   * PS¹: Atualmente, toda a parte de calculo de impostos na entrada que teremos crédito é feita pelo ERPJ.
   * PS²: Não é feita nenhuma emissão de guia gare (das entrada de SC, ES e MG), pois não encontrei nenhuma forma de integração para fazer isso.
 
-- **SPED FISCAL** -> Parte que está atualmente em desenvolvimento. Antes de começarmos a gerar os arquivos, é necessário que de fato todos os DocumentoFiscais sejam salvos nesse projeto (hoje em dia é a maioria). Ao menos nesse primeiro momento, a preocupação é fazer com que gere o arquivo corretamente igual é gerado hoje em dia utilizando o software de terceiros. Após isso terá a parte de **Assinatura** e **Envio** etc...
+- **SPED FISCAL** -> Parte que está atualmente em TESTE. Antes de começarmos a gerar os arquivos, é necessário que de fato todos os DocumentoFiscais sejam salvos nesse projeto (hoje em dia é a maioria). Ao menos nesse primeiro momento, a preocupação é fazer com que gere o arquivo corretamente igual é gerado hoje em dia utilizando o software de terceiros. A estrutura em si do Layout eu estava conseguindo gerar corretamente e iria começar a verificar as partes referentes a valores se está sendo feita corretamente.
+(a melhor forma seria validar com todos os documentos), para alguns registros especificos, Ex.: REGs: C197, D197, Bloco E  etc...
 
 ~~**TODO**-> Integração para ser emitida as guias GNRE (Que é necessário quando vendemos para outro estado e a pessoa seja PF ou PJ não seja contribuinte de icms, ou seja, é quando tem o calculo de DIFAL na nota que emitimos)~~
 
@@ -73,12 +74,12 @@ Temos cincum ~~(sim, sou flamenguista, como adivinhou!?)~~ arquivos aplication.p
 |application-producao.properties|Para fazer o deploy em produção no GAE|
 |application-test.properties|Para rodar os testes no localhost, usando o DB (emissorfiscal_teste) |
 
-PS: No aplication.properties, temos algumas propriedades, que são referente a "regras de negócios". Exemplos: codigos das origens dos produtos que são importados, email para
+PS: No application.properties, temos algumas propriedades, que são referente a "regras de negócios". Exemplos: codigos das origens dos produtos que são importados, email para
 quem é enviado os calculos das GUIA GARE (entradas de SC, MS e ES) etc...
 
 #### 3.1. pom.xml (usando maven profile para fazer deploy)
 
-No trecho abaixo está o perfil, que é usado pela linha de comando para gerar o .WAR e fazer o deploy no GAE (Google App Engine)
+No trecho abaixo está o perfil, que é usado pela linha de comando (maven) para gerar o .WAR e fazer o deploy no GAE (Google App Engine)
  ```
 	<profiles>
 		<profile>
@@ -115,7 +116,7 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
  ┃ ┃ ┃ ┃ ┗ 📂emissorfiscal -> Aqui estará todas as classes do projeto
  ┃ ┣ 📂resources
  ┃ ┃ ┣ 📂db
- ┃ ┃ ┃ ┗ 📂migration
+ ┃ ┃ ┃ ┗ 📂migration		-> E aqui todos os scripts das "migrations", no nosso caso estamos usando o flyway para isso
  ┃ ┃ ┃ ┃ ┗ 📂mysql
  ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-clientes-outras-ufs
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OBS.txt
@@ -189,8 +190,8 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
 ```
 </details>
 
-#### 4.1 Inserção", das tributações federais e estaduais (PIS/COFINS e ICMS) (usando os Scripts que o Flyway)
-Um ponto de extrema importância é a parte abaixo onde estão os scripts, que servem para cadastrar as tributações estaduais (venda, transferencia, devoluções e outras operações emitimos NFEs ou até mesmo para as entradas de SC, ES e MS (que serve para fazer o calculo do ICMS ST que temos que pagar a guia gare). Assim como para o PIS/COFINS)
+#### 4.1 Inserção", das tributações federais (PIS/COFINS) e estaduais (ICMS), usando os scripts pelo flyway
+Um ponto de extrema importância é a parte abaixo onde estão os scripts, que servem para cadastrar as tributações estaduais (venda, transferencia, devoluções e outras operações que emitimos NFEs ou até mesmo para calcular o ICMS ST para as entradas de SC, ES e MS (temos que pagar a guia gare em alguns casos dessas UFs). Assim como para o PIS/COFINS)
 
 <details>
   <summary>Scripts pelo flyway, para parametrizações nas tabelas: trib_esta, trib_esta_guia, trib_esta_devo e trib_fede</summary>
@@ -205,7 +206,7 @@ Um ponto de extrema importância é a parte abaixo onde estão os scripts, que s
  ┃ ┃ ┣ 📂db
  ┃ ┃ ┃ ┗ 📂migration
  ┃ ┃ ┃ ┃ ┗ 📂mysql
- ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-clientes-outras-ufs			->  tabela: **(trib_esta)**: Aqui está sendo parametrizado algumas operações que são usadas no "Balcão", mas o cliente possa ser de outro estado (Ex.: Estamos VENDENDO para um cliente na loja, mas ele não é de SP, a parametrização estará dentro dessa pasta)
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-clientes-outras-ufs			->  tabela: **(trib_esta)**: Aqui está sendo parametrizado algumas operações que são usadas no "Balcão", mas o cliente possa ser de outro estado (Ex.: Estamos VENDENDO para um cliente na loja, mas ele não é de SP, a parametrização estará dentro dessa pasta, CASO NÃO, esteja basta acrescentar outro script para a operação em especifíco, no mesmo padrão das já existentes)
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OBS.txt
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00019__1_VENDA_PRODUTO_IMPORTADO.sql							
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00020__1_VENDA_PRODUTO_NACIONAL.sql
@@ -219,7 +220,7 @@ Um ponto de extrema importância é a parte abaixo onde estão os scripts, que s
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00028__73_COMPRA_DE_SUCATA_NACIONAL.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00029__83_DISTRIBUICAO_GRATUITA_ITEM_ESTOQUE_IMPORTADO.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00030__83_DISTRIBUICAO_GRATUITA_ITEM_ESTOQUE_NACIONAL.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-interestadual			-> tabela: **(trib_esta)**: Aqui está sendo parametrizado, de fato as operações que são interestaduais, inclusive no caso das VENDAS é onde de fato tem diferenças de aliquotas caso o produto SEJA IMPORTADO, diferente das outras situações que geralmente tem apenas para que o sistema encontre a tributação já que é usado a mesma query.
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-interestadual			-> tabela: **(trib_esta)**: Aqui está sendo parametrizado, de fato as operações que são interestaduais, inclusive no caso das VENDAS INTERESTADUAIS é onde tem diferenças de aliquotas caso o produto SEJA IMPORTADO, diferente das outras situações que geralmente tem a tributação apenas para que o sistema encontre para quando for o produto for NACIONAL ou IMPORTADO, já que é usado a mesma query.
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00013__3_VENDA_INTERESTADUAL_FISICA_PRODUTO_IMPORTADO.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00014__3_VENDA_INTERESTADUAL_FISICA_PRODUTO_NACIONAL.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00015__2_VENDA_INTERESTADUAL_JURIDICA_PRODUTO_IMPORTADO.sql
@@ -237,7 +238,6 @@ Um ponto de extrema importância é a parte abaixo onde estão os scripts, que s
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql				-> tabela: **(trib_fede)**: Esse script depende do: **V00007__createNcmsMonofasicosEmissorFiscal.sql**, pois será inserido o PIS/COFINS para todos os NCMS que NÃO são monofásicos.
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql			-> tabela: **(trib_fede)**: Já esse script será inserido para todos os NCMS MONOFÁSICOS, ou seja, para todos que estão no script: **V00007__createNcmsMonofasicosEmissorFiscal.sql**.
  ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql				-> tabela: **(trib_esta_devo)**: Será inserido todas as parametrizações para as operações de: "Devoluções e Remessas em Garantias".
-
 ```
 </details>
 
@@ -270,7 +270,6 @@ PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o
 
 - Os dois últimos, scripts do print: Pode se dizer que são "repetidos", já que a tributação dentro do estado não muda quando o produto é ou não importado (porém tem os dois para ser calculados em ambos os casos). A informação do produto ser ou não importado, tem grande importancia nas VENDAS interestaduais, pois é essa aliquota (4%) que tem prevalência
 (conforme está nos scripts mencionados acima) caso o produto seja importado.
-
 
 ### 5. DocumentoFiscal (package extremamente importante), breve explicação sobre as classes do projeto
 
