@@ -322,7 +322,7 @@ create database emissorfiscal;
 create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
 ```
 
-## Deployment
+## 8. Deployment
 
 - 1. Necessário deixar o perfil correto definido no arquivo **appengine-web.xml** (homologacao ou producao
 ![image](https://user-images.githubusercontent.com/29218270/155608033-37b247f7-ce57-4e92-87de-a10ce13d697e.png)
@@ -338,19 +338,6 @@ create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
 		- 4.4.2 ```mvn package -Pproducao -DskipTests```
 		- 4.4.3 ```mvn appengine:deploy -Pproducao -DskipTests```
 		 
-
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
