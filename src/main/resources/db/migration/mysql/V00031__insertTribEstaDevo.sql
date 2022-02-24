@@ -248,7 +248,7 @@ INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, fin
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
 					VALUES	(60, 6403, 2403, 6949, "COMERCIALIZACAO", "NORMAL", false , "", 30);
 INSERT INTO trib_esta_devo (icms_cst, cfop_venda, cfop_entr, cfop_nota_devo, finalidade, regime_tributario , usa_mesm_cst_forn, mens, oper_id) 
-					VALUES	(60, 6405, 2403, 6949, "COMERCIALIZACAO", "NORMAL", false , "", 11);
+					VALUES	(60, 6405, 2403, 6949, "COMERCIALIZACAO", "NORMAL", false , "", 30);
 -- ======================================================================================================================================		
 
 
