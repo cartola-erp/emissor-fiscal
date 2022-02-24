@@ -250,7 +250,7 @@ As tributações federais (PIS/COFINS), funcionam basicamente da seguinte forma 
 
   OBS: ***Dependendo da operação a CST poderá ser diferente*** (conforme está nos scripts), assim como não ocorrer a incidência de impostos. PORÉM, sempre que um NCM for monofásico essa será a regra que tem prevalência;
 
-### 4.2. Funcionamento das VENDAS interestaduais (inserindo informações referente a Aliq de ICMS, CFOP, CEST COD ANP etc)
+#### 4.2. Funcionamento das VENDAS interestaduais (inserindo informações referente a Aliq de ICMS, CFOP, CEST COD ANP etc)
 
 - **Interestadual** Script com todas as tributações em VENDAS interestaduais de SP x Qualquer outra UF. No caso das operações foi feito o seguinte para saber se tem que calcular ou não difal/fcp. Equivalência de operações: 
 
@@ -264,10 +264,6 @@ NÃO contribuinte, deverá ser calculado o DIFAL, mas não será.
 
 PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o **DocumentoFiscal**, se a pessoa é ou não contribuinte de icms, para assim ser buscada a tributação correta.
 
-![image](https://user-images.githubusercontent.com/29218270/121577555-0190a700-ca00-11eb-9597-24be7f46b3c7.png)
-
-- Os dois últimos, scripts do print: Pode se dizer que são "repetidos", já que a tributação dentro do estado não muda quando o produto é ou não importado (porém tem os dois para ser calculados em ambos os casos). A informação do produto ser ou não importado, tem grande importancia nas VENDAS interestaduais, pois é essa aliquota (4%) que tem prevalência
-(conforme está nos scripts mencionados acima) caso o produto seja importado.
 
 ### 5. DocumentoFiscal (package extremamente importante), breve explicação sobre as classes do projeto
 
@@ -277,27 +273,27 @@ PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o
  
 ![image](https://user-images.githubusercontent.com/29218270/121585029-7f58b080-ca08-11eb-9c83-e4c0055b6fdb.png)
 
-DocumentoFiscalApiController, é a classe utilizada para fazer integração com o ERP. Através dela terá mapeamentos de recursos para atualizar e ou salvar um DocumentoFiscal, seja de compra ou de saída. Nela também é que está "integrado", a chamada dos métodos na service para calcular os impostos (que é necessários em todos os DocumentoFiscais, que emitimos);
-
+**DocumentoFiscalApiController**, é a classe utilizada para fazer integração com o ERP. Através dela terá mapeamentos de recursos para atualizar e ou salvar um DocumentoFiscal, seja de entrada ou de saída. Nela também é que está "integrado", a chamada dos métodos na service para calcular os impostos (que é necessários em todos os DocumentoFiscais, que emitimos); Além disso nela também está mapeado a rota que irá salvar uma Devolucao, e retornar um **DocumentoFiscal**, com os calculos dos tributos.
 
 ### 6. SpedFiscal (ICMS IPI)
-* Essa parte ainda está em desenvolvimento, porém os layout do arquivo foi criado da seguinte forma: cada bloco tem seu pacote com sua modelagem:
+* Essa parte ainda está em desenvolvimento (fase de testes), porém os layout do arquivo foi criado da seguinte forma: cada bloco tem seu pacote com sua modelagem:
 
 ![image](https://user-images.githubusercontent.com/29218270/121586857-8a144500-ca0a-11eb-86b1-3001ca3faeb6.png)
 
-1 - Cada registro tem sua classe (isso equivale a uma linha no arquivo txt);
-2 - Um registro de Nivel DOIS tem como um (objeto) "registro filho" que é de nivel 3, E o de nivel três terá o registro de Nivel QUATRO, como registro filho (essa informação de registros filhos etc é consultado na documentação do governo)...
-3 - Exemplo Registro C100 (RegC100.java), que além de seus campos, tem os registros filhos que podem ou não serem preenchidos, porém somente poderão caso tenha preenchido a linha do REG C100. 
+- 1 - Cada registro tem sua classe (isso equivale a uma linha no arquivo txt);
+- 2 - Um registro de Nivel DOIS tem como um (objeto) "registro filho" que é de nivel 3, E o de nivel três terá o registro de Nivel QUATRO, como registro filho (essa informação de registros filhos etc é consultado na documentação do governo)...
+- 3 - Exemplo Registro C100 (RegC100.java), que além de seus campos, tem os registros filhos que podem ou não serem preenchidos, porém somente poderão caso tenha preenchido a linha do REG C100. 
 
 ![image](https://user-images.githubusercontent.com/29218270/121588139-f3e11e80-ca0b-11eb-8a80-17c36a10b1f8.png)
 
-- **SpedFiscalArquivoController** -> Classe que irá carregar a tela, para a geração do arquivo SPED e receber os parametros (data inicio, fim, loja e contador) para processar o arquivo.
+- **SpedFiscalArquivoController** -> Classe que irá carregar a tela, para a geração do arquivo SPED e receber os parametros (data inicio, fim, loja, contador, se exportará ou não o inventário) para processar o arquivo.
 - **SpedFiscalArquivoService** -> As informações acima serão passadas para o método **gerarAquivoSpedFiscal(...)**, da Service, que será responsável por buscar todas as informações fiscais do período, e popular um objeto do tipo **MovimentoMensalIcmsIpi**
 - **SpedFiscalService** -> Recebe um objeto do tipo **MovimentoMensalIcmsIpi**, e chama as services de cada bloco, para preencher os registros do SpedFiscal, que precisamos escriturar e devolve um objeto do tipo **SpedFiscal** que nada mais é do que a modelagem que citamos anteriormente (SpedFiscal -> Blocos do Sped -> Registros dos Blocos)
 - **SpedFiscalArquivoService** -> Com todos os registros necessários preenchidos/escriturados, ainda dentro do método **gerarArquivoSpedFiscal(...)**, será chamado o método 
-**gerarArquivoSped(....)**, dentro dessa service, que é o "transformará", no arquivo **.txt** (utilzando a **lib: coffeepot-bean-wr**). E salvará o arquivo na tabela **sped_fisc_aqu** (SpedFiscalArquivo). OBS: No futuro isso será mudado, para salvar somente o link do arquivo que está no bucket do GCP.
+**gerarArquivoSped(....)**, dentro dessa service, será "transformado" o objeto preenchido anteriormente, no arquivo **.txt** (utilzando a **lib: coffeepot-bean-wr**). E por fim  o arquivo será salvo na tabela **sped_fisc_aqu** (SpedFiscalArquivo). 
+- **OBS: No futuro isso será mudado, para salvar somente o link do arquivo que está no bucket do GCP.**
 
-## Começando
+## 7. Começando
 
 Clone esse projeto em um diretório de sua máquina
 
@@ -305,22 +301,24 @@ Clone esse projeto em um diretório de sua máquina
 git clone https://github.com/cartola-erp/emissor-fiscal.git
 ```
 
-### Pré requisitos
+### 7.1 - Pré requisitos
 
 
 * 1 - [MySql - v5.7 ou maior](https://www.youtube.com/watch?v=WuBcTJnIuzo)
 * 2 - [Java 8](https://www.youtube.com/watch?v=rzto4yY3pVw)
 * 3 - [STS - Spring Tool Suite ](https://spring.io/tools#suite-three) (IDE - recomendada)
+* 4 - [Maven 3.6.3 (ou que tenha suporte para a JDK 8)](https://maven.apache.org/docs/3.6.3/release-notes.html)
 
-### Instalando o projeto no ambiente de desenvolvimento
+É Necessário estar configurado corretamente as variáveis de ambientes ! (JAVA e MAVEN)
+
+### 7.2 - Rodando o projeto no ambiente de desenvolvimento
 
 * 1 - [Importe o projeto maven no STS](https://www.lagomframework.com/documentation/1.6.x/java/EclipseMavenInt.html)
 * 2 - Crie os seguinte bancos de dados:
 
-```
-create database emissorfiscal;
-create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
-```
+> create database emissorfiscal;
+> create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
+
 
 And repeat
 
@@ -370,9 +368,9 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **[Robson Henrique Ramalho Costa](https://github.com/robsonhenriq)** - *Trabalho inicial (Desenvovimento dos calculos das operações das NFEs, Assim como todo o desenvolvimento da lógica do preenchimento dos registros referentes ao SPED FISCAL ICMS IPI)* - [robsonhenriq](https://github.com/robsonhenriq)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+Veja também a lista de [contribuidores](https://github.com/cartola-erp/emissor-fiscal/graphs/contributors) que participaram deste projeto.
 
 ## License
 
