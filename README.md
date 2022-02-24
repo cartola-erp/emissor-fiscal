@@ -308,6 +308,7 @@ git clone https://github.com/cartola-erp/emissor-fiscal.git
 * 2 - [Java 8](https://www.youtube.com/watch?v=rzto4yY3pVw)
 * 3 - [STS - Spring Tool Suite ](https://spring.io/tools#suite-three) (IDE - recomendada)
 * 4 - [Maven 3.6.3 (ou que tenha suporte para a JDK 8)](https://maven.apache.org/docs/3.6.3/release-notes.html)
+* 5 - [SDK/CLI do GCP - Google Cloud Platform](https://cloud.google.com/sdk/docs/install) - Para realizar o deploy da aplicação na "nuvem"
 
 É Necessário estar configurado corretamente as variáveis de ambientes ! (JAVA e MAVEN)
 
@@ -316,39 +317,28 @@ git clone https://github.com/cartola-erp/emissor-fiscal.git
 * 1 - [Importe o projeto maven no STS](https://www.lagomframework.com/documentation/1.6.x/java/EclipseMavenInt.html)
 * 2 - Crie os seguinte bancos de dados:
 
-> create database emissorfiscal;
-> create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
-
-
-And repeat
-
 ```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
+create database emissorfiscal;
+create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
 ```
 
 ## Deployment
+
+- 1. Necessário deixar o perfil correto definido no arquivo **appengine-web.xml** (homologacao ou producao
+![image](https://user-images.githubusercontent.com/29218270/155608033-37b247f7-ce57-4e92-87de-a10ce13d697e.png)
+ 
+- 2. Colocar a chave do Sendgrid, no **application.properties**. Propriedade: "**spring.sendgrid.api-key=**"   
+- 3. Ter instalado na máquina o [SDK do GCP](https://cloud.google.com/sdk/docs/install)
+- 4. Pelo CMD: 
+	- 4.1 Se autentique no GCP, para isso digite ->  **gcloud auth list**
+	- 4.2 Verifique os projetos que você tem permissão -> **gcloud projects list**
+	- 4.3 Defina um desses projetos (o que será feito o deploy da aplicação) -> **gcloud config set project NOME__DO__PROJETO** | (Atualmente erpj-dev é o de homologacao e o erpj-br o de producao).
+	- 4.4 Rode o **deploy.bat**, que está na raiz da pasta do projeto! Ou os comandos abaixo:
+		- 4.4.1 ```mvn clean install -Pproducao -DskipTests ``` 
+		- 4.4.2 ```mvn package -Pproducao -DskipTests```
+		- 4.4.3 ```mvn appengine:deploy -Pproducao -DskipTests```
+		 
+
 
 Add additional notes about how to deploy this on a live system
 
