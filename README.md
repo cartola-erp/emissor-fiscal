@@ -11,17 +11,18 @@ BREVE RESUMO
 
 - Ao receber um **DocumentoFiscal (de devolução/remessa em garantia, que podem ser de entrada ou saída, mas que são sempre emitido pela autogeral)**, com a devida parametrização na tabela **(trib_esta_devo)**, e o cadastro correto da operação **(oper)**, indicando que a operação é de **devolução** OU **remessa em garantia**, será realizado o calculo do ICMS. **Caso não** esteja parametrizado para alguma operação provavelmente **irá ocorrer algum NullPointerException**.
 
-- Ao receber um **DocumentoFiscal (de emissão de terceiros, que é de entrada)**, apenas será salvo na tabela docu_fisc. Exceto se for alguma NFE que **seja de SC, ES, MG** (nesses casos, será verificado na tabela **trib_esta_guia**, se algum item dessa nota de entrada, teremos que recolher o ICMS ST pela Guia gare, caso sim será enviado um email para o setor fiscal, utilizando API do sendgrid com os devidos calculos e retornado um JSON com os valores desse calculo). 
+- Ao receber um **DocumentoFiscal (de emissão de terceiros, que é de entrada)**, apenas será salvo na tabela docu_fisc. Exceto se for alguma NFE que **seja de SC, ES, MG** (nesses casos, será verificado na tabela **trib_esta_guia**, se para algum item dessa nota de entrada, teremos que recolher o ICMS ST pela Guia gare, caso sim será enviado um email para o setor fiscal, utilizando API do sendgrid com os devidos calculos e retornado um JSON com os valores desse calculo). 
   * PS¹: Atualmente, toda a parte de calculo de impostos na entrada que teremos crédito é feita pelo ERPJ.
   * PS²: Não é feita nenhuma emissão de guia gare (das entrada de SC, ES e MG), pois não encontrei nenhuma forma de integração para fazer isso.
 
-- **SPED FISCAL** -> Parte que está atualmente em desenvolvimento. Antes de começarmos a gerar os arquivos, é necessário que de fato todos os DocumentoFiscais sejam salvos nesse projeto (hoje em dia é a maioria). Ao menos nesse primeiro momento, a preocupação é fazer com que gere o arquivo corretamente igual é gerado hoje em dia utilizando o software de terceiros. Após isso terá a parte de **Assinatura** e **Envio** etc...
+- **SPED FISCAL** -> Parte que está atualmente em TESTE. Antes de começarmos a gerar os arquivos, é necessário que de fato todos os DocumentoFiscais sejam salvos nesse projeto (hoje em dia é a maioria). Ao menos nesse primeiro momento, a preocupação é fazer com que gere o arquivo corretamente igual é gerado hoje em dia utilizando o software de terceiros. A estrutura em si do Layout eu estava conseguindo gerar corretamente e iria começar a verificar as partes referentes a valores se está sendo feita corretamente.
+(a melhor forma seria validar com todos os documentos), para alguns registros especificos, Ex.: REGs: C197, D197, Bloco E  etc...
 
 ~~**TODO**-> Integração para ser emitida as guias GNRE (Que é necessário quando vendemos para outro estado e a pessoa seja PF ou PJ não seja contribuinte de icms, ou seja, é quando tem o calculo de DIFAL na nota que emitimos)~~
 
 ### 2. Criando login
 
- **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I
+ **Antes de tudo**. Para o ERP, ter "comunicação", ou seja, funcionar junto com o emissor-fiscal. É necessário ter as propriedades abaixo configuradas. Para isso abra o arquivo **dbf.properties**, que provavelmente esteja em: **C:\DBF\dist**. Caso tenha dúvida, peça a ajuda para alguém de T.I.
 
 ```
 emissor-fiscal.ativo=true
@@ -73,29 +74,28 @@ Temos cincum ~~(sim, sou flamenguista, como adivinhou!?)~~ arquivos aplication.p
 |application-producao.properties|Para fazer o deploy em produção no GAE|
 |application-test.properties|Para rodar os testes no localhost, usando o DB (emissorfiscal_teste) |
 
-PS: No aplication.properties, temos algumas propriedades, que são referente a "regras de negócios". Exemplos: codigos das origens dos produtos que são importados, email para
+PS: No application.properties, temos algumas propriedades, que são referente a "regras de negócios". Exemplos: codigos das origens dos produtos que são importados, email para
 quem é enviado os calculos das GUIA GARE (entradas de SC, MS e ES) etc...
 
 #### 3.1. pom.xml (usando maven profile para fazer deploy)
 
-No trecho abaixo está o perfil, que é usado pela linha de comando para gerar o .WAR e fazer o deploy no GAE (Google App Engine)
+No trecho abaixo está o perfil, que é usado pela linha de comando (maven) para gerar o .WAR e fazer o deploy no GAE (Google App Engine)
  ```
 	<profiles>
 		<profile>
 			<id>producao</id>
-      <dependencies>
-       .... 
-               Dependências que irão entrar somente no perfil de produção (ou seja, quando estiverem fazendo o deploy no GAE 
-       ....
-   			</dependencies>
+    			  	<dependencies>
+       			.... 
+              				 Dependências que irão entrar somente no perfil de produção (ou seja, quando estiverem fazendo o deploy no GAE 
+       			....
+				</dependencies>
 		</profile>
-		
 	</profiles>
 ```
 
 #### 3.2. appengine-web.xml 
 
-Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google.com/appengine). Além disso qual o perfil do spring ("application.properties) que estará ativo para fazer deploy. Basicamente será um dos dois abaixo:
+Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google.com/appengine). Além disso qual o perfil do spring ("application.properties") que estará ativo para fazer deploy. Basicamente será um dos dois abaixo:
 ```
 <property name="spring.profiles.active" value="producao"/>				-> Usado para fazer deploy em produção no projeto: **erpj-br**, do GCP.
 <property name="spring.profiles.active" value="homologacao"/>				-> Para fazer deploy em homologação (testes no GCP), projeto: **erpj-dev**
@@ -115,7 +115,7 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
  ┃ ┃ ┃ ┃ ┗ 📂emissorfiscal -> Aqui estará todas as classes do projeto
  ┃ ┣ 📂resources
  ┃ ┃ ┣ 📂db
- ┃ ┃ ┃ ┗ 📂migration
+ ┃ ┃ ┃ ┗ 📂migration		-> E aqui todos os scripts das "migrations", no nosso caso estamos usando o flyway para isso
  ┃ ┃ ┃ ┃ ┗ 📂mysql
  ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-clientes-outras-ufs
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OBS.txt
@@ -189,11 +189,11 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
 ```
 </details>
 
-#### 4.1 Inserção", das tributações federais e estaduais (PIS/COFINS e ICMS) (usando os Scripts que o Flyway)
-
+#### 4.1 Cadastrando as tributações federais (PIS/COFINS) e estaduais (ICMS), usando os scripts pelo flyway
+Um ponto de extrema importância é a parte abaixo onde estão os scripts, que servem para cadastrar as tributações estaduais (venda, transferência, devoluções e outras operações que emitimos NFEs ou até mesmo para calcular o ICMS ST para as entradas de SC, ES e MS (temos que pagar a guia gare em alguns casos dessas UFs). E além disso a parametrização para o PIS/COFINS)
 
 <details>
-  <summary>Um ponto de extrema importância é a parte abaixo onde estão os scripts</summary>
+  <summary>Scripts pelo flyway, para parametrizações nas tabelas: <strong>trib_esta, trib_esta_guia, trib_esta_devo e trib_fede</strong></summary>
 
 ```
 📦src
@@ -205,7 +205,7 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
  ┃ ┃ ┣ 📂db
  ┃ ┃ ┃ ┗ 📂migration
  ┃ ┃ ┃ ┃ ┗ 📂mysql
- ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-clientes-outras-ufs			->  tabela: **(trib_esta)**: Aqui está sendo parametrizado algumas operações que são usadas no "Balcão", mas o cliente possa ser de outro estado (Ex.: Estamos VENDENDO para um cliente na loja, mas ele não é de SP, a parametrização estará dentro dessa pasta)
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-clientes-outras-ufs			->  tabela: **(trib_esta)**: Aqui está sendo parametrizado algumas operações que são usadas no "Balcão", mas o cliente possa ser de outro estado (Ex.: Estamos VENDENDO para um cliente na loja, mas ele não é de SP, a parametrização estará dentro dessa pasta, CASO NÃO, esteja basta acrescentar outro script para a operação em especifíco, no mesmo padrão das já existentes)
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OBS.txt
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00019__1_VENDA_PRODUTO_IMPORTADO.sql							
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00020__1_VENDA_PRODUTO_NACIONAL.sql
@@ -219,7 +219,7 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00028__73_COMPRA_DE_SUCATA_NACIONAL.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00029__83_DISTRIBUICAO_GRATUITA_ITEM_ESTOQUE_IMPORTADO.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00030__83_DISTRIBUICAO_GRATUITA_ITEM_ESTOQUE_NACIONAL.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-interestadual			-> tabela: **(trib_esta)**: Aqui está sendo parametrizado, de fato as operações que são interestaduais, inclusive no caso das VENDAS é onde de fato tem diferenças de aliquotas caso o produto SEJA IMPORTADO, diferente das outras situações que geralmente tem apenas para que o sistema encontre a tributação já que é usado a mesma query.
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂cadastro-tributacao-interestadual			-> tabela: **(trib_esta)**: Aqui está sendo parametrizado, de fato as operações que são interestaduais, inclusive no caso das VENDAS INTERESTADUAIS é onde tem diferenças de aliquotas caso o produto SEJA IMPORTADO, diferente das outras situações que geralmente tem a tributação apenas para que o sistema encontre para quando for o produto for NACIONAL ou IMPORTADO, já que é usado a mesma query.
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00013__3_VENDA_INTERESTADUAL_FISICA_PRODUTO_IMPORTADO.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00014__3_VENDA_INTERESTADUAL_FISICA_PRODUTO_NACIONAL.sql
  ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00015__2_VENDA_INTERESTADUAL_JURIDICA_PRODUTO_IMPORTADO.sql
@@ -232,33 +232,14 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00008__insertIntoTribEstaGuiaGareCompraParaComercia.sql		-> tabela: **(trib_esta_guia)**: Aqui está a parametrização dos calculos das "Guias Gare". São calculadas toda vez que dão entrada no ERPJ. Quando salvam uma compra cujo a UF seja diferente de SP, ou seja compra interestadual: (SC, MS, ES), será buscado a parametrização nessa tabela caso tenha para algum item, será calculado e enviado no email (grupo @fiscal) os calculos! PS: Os ncms nesse script a Gabi/fiscal foi me passando ao longo do tempo.
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00009__insertTribEstaSaidaDentroEstado.sql			->  tabela: **(trib_esta)**: Insert de icms, para outras operações que são de saídas. (Ou que ao menos a autogeral faça a emissão de NFe)
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00010__insertTribEstaSaidaDentroEstadoProdutoImportado.sql	->  tabela: **(trib_esta)**: Mesma coisa do script acima. PORÉM para os produtos que SÃO IMPORTADOS. Com o acréscimo que aqui tem o insert para VENDA e TRANSFERENCIA. Para essas duas operações quando é nacional eles estão no script **V0001__Init.sql**, ou no **V00002__inserindoNcmsValidadosPelaConsulcamp.sql**
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00011__correcaoIcms.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql
- ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql
- ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql
-
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00011__correcaoIcms.sql					-> tabela: **(trib_esta)**:  É o script para corrigir a tributação de ICMS em (vendas/transferências/entrega futura/distribuicao de brindes, a maioria dos ncms que estão nesse script estavam cadastrados errado no emissorfiscal)
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00012__copiandoIcmsParaOsNcmsComVariasExcecoes.sql	-> tabela: **(trib_esta)**: Script que servirá para "copiar", a tributação do ICMS para as outras exceções do NCM. (Caso ele tenha mais de uma) 
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00017__insertTribFede.sql				-> tabela: **(trib_fede)**: Esse script depende do: **V00007__createNcmsMonofasicosEmissorFiscal.sql**, pois será inserido o PIS/COFINS para todos os NCMS que NÃO são monofásicos.
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql			-> tabela: **(trib_fede)**: Já esse script será inserido para todos os NCMS MONOFÁSICOS, ou seja, para todos que estão no script: **V00007__createNcmsMonofasicosEmissorFiscal.sql**.
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql				-> tabela: **(trib_esta_devo)**: Será inserido todas as parametrizações para as operações de: "Devoluções e Remessas em Garantias".
 ```
 </details>
 
-
-
-### 4. "Parametrização/Inserção", das tributações federais e estaduais (PIS/COFINS e ICMS)
-
-src/main/resources/db/migration/mysql
-
-
-Dentro da pasta **./doc/scripts**, temos as duas pastas a seguir, que serviram para cadastrar as tributações, em três tabelas (Tais informações foram passados pela Contabilidade/Fiscal): 
-
-  * trib_fede
-  * trib_esta
-  * trib_esta_guia 
-
-![image](https://user-images.githubusercontent.com/29218270/121573885-1b2fef80-c9fc-11eb-92c8-f32691b1015b.png)
-
-Dentro das tributações federais temos os scripts abaixo (Devem ser rodados na ordem que estão no print)
-PS: O último script, contém todos os inserts das duas procedures acima. (Sim, o melhor era ter feito INSERT com subquery, igual foi feito nas trib_esta)
-![image](https://user-images.githubusercontent.com/29218270/121576332-a7dbad00-c9fe-11eb-8f45-30b61c7cc4e9.png)
 
 As tributações federais (PIS/COFINS), funcionam basicamente da seguinte forma (estamos considerando a operação 1 - VENDA), Se o NCM é:
 
@@ -266,19 +247,15 @@ As tributações federais (PIS/COFINS), funcionam basicamente da seguinte forma 
  Monofásico - CST 04  (Sem tributação, Base de calculo, aliq, e valor imposto ZERADO)
  Se não é monofásico - CST 01 - Pis Aliq = 1,65% | Cofins Aliq = 7,60%
 ``` 
+
   OBS: ***Dependendo da operação a CST poderá ser diferente*** (conforme está nos scripts), assim como não ocorrer a incidência de impostos. PORÉM, sempre que um NCM for monofásico essa será a regra que tem prevalência;
 
-### 4.1. trib_esta (inserindo informações referente a Aliq de ICMS, CFOP, CEST COD ANP etc)
-
-- Na primeira pasta do print abaixo, temos o script para inserir a tributação na tabela: **trib_esta_guia** (Todos os ncms que tiverem nessa tabela serão calculados, 
-o valor da guia gare quando derem entrada em um DocumentoFiscal)
-PS: Ao invés de usar um campo do tipo enum para considerar a Origem do produto (o ideal é trocar, para um boolean para saber se a tributação é ou não para um produto importado)
+#### 4.2. Funcionamento das VENDAS interestaduais (inserindo informações referente a Aliq de ICMS, CFOP, CEST COD ANP etc)
 
 - **Interestadual** Script com todas as tributações em VENDAS interestaduais de SP x Qualquer outra UF. No caso das operações foi feito o seguinte para saber se tem que calcular ou não difal/fcp. Equivalência de operações: 
 
-
 |Operação|Equivalente a|
-|---|----|
+|--------|-------------|
 |2 - VENDA INTERESTADUAL (JURIDICA)|Pessoa contribuinte de icms, ou seja, quando usar as tributações dessa operação para fazer o calculo NUNCA será calculado o DIFAL e FCP|
 |3 - VENDA INTERESTADUAL (FISICA) |Pessoa não contribuinte, sempre será calculado o DIFAL, e o FCP para os estados que tiverem|
 
@@ -287,14 +264,6 @@ NÃO contribuinte, deverá ser calculado o DIFAL, mas não será.
 
 PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o **DocumentoFiscal**, se a pessoa é ou não contribuinte de icms, para assim ser buscada a tributação correta.
 
-![image](https://user-images.githubusercontent.com/29218270/121577555-0190a700-ca00-11eb-9597-24be7f46b3c7.png)
-
-- Os dois últimos, scripts do print: Pode se dizer que são "repetidos", já que a tributação dentro do estado não muda quando o produto é ou não importado (porém tem os dois para ser calculados em ambos os casos). A informação do produto ser ou não importado, tem grande importancia nas VENDAS interestaduais, pois é essa aliquota (4%) que tem prevalência
-(conforme está nos scripts mencionados acima) caso o produto seja importado.
-
-- Esses dois scripts funcionam com as tributações de vendas, que já foram inseridas previamente, ao iniciar o projeto utilizando o **flyway**
-
-![image](https://user-images.githubusercontent.com/29218270/121580538-39e5b480-ca03-11eb-8562-0ae71ce307e0.png)
 
 ### 5. DocumentoFiscal (package extremamente importante), breve explicação sobre as classes do projeto
 
@@ -304,27 +273,27 @@ PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o
  
 ![image](https://user-images.githubusercontent.com/29218270/121585029-7f58b080-ca08-11eb-9c83-e4c0055b6fdb.png)
 
-DocumentoFiscalApiController, é a classe utilizada para fazer integração com o ERP. Através dela terá mapeamentos de recursos para atualizar e ou salvar um DocumentoFiscal, seja de compra ou de saída. Nela também é que está "integrado", a chamada dos métodos na service para calcular os impostos (que é necessários em todos os DocumentoFiscais, que emitimos);
-
+**DocumentoFiscalApiController**, é a classe utilizada para fazer integração com o ERP. Através dela terá mapeamentos de recursos para atualizar e ou salvar um DocumentoFiscal, seja de entrada ou de saída. Nela também é que está "integrado", a chamada dos métodos na service para calcular os impostos (que é necessários em todos os DocumentoFiscais, que emitimos); Além disso nela também está mapeado a rota que irá salvar uma Devolucao, e retornar um **DocumentoFiscal**, com os calculos dos tributos.
 
 ### 6. SpedFiscal (ICMS IPI)
-* Essa parte ainda está em desenvolvimento, porém os layout do arquivo foi criado da seguinte forma: cada bloco tem seu pacote com sua modelagem:
+* Essa parte ainda está em desenvolvimento (fase de testes), porém os layout do arquivo foi criado da seguinte forma: cada bloco tem seu pacote com sua modelagem:
 
 ![image](https://user-images.githubusercontent.com/29218270/121586857-8a144500-ca0a-11eb-86b1-3001ca3faeb6.png)
 
-1 - Cada registro tem sua classe (isso equivale a uma linha no arquivo txt);
-2 - Um registro de Nivel DOIS tem como um (objeto) "registro filho" que é de nivel 3, E o de nivel três terá o registro de Nivel QUATRO, como registro filho (essa informação de registros filhos etc é consultado na documentação do governo)...
-3 - Exemplo Registro C100 (RegC100.java), que além de seus campos, tem os registros filhos que podem ou não serem preenchidos, porém somente poderão caso tenha preenchido a linha do REG C100. 
+- 1 - Cada registro tem sua classe (isso equivale a uma linha no arquivo txt);
+- 2 - Um registro de Nivel DOIS tem como um (objeto) "registro filho" que é de nivel 3, E o de nivel três terá o registro de Nivel QUATRO, como registro filho (essa informação de registros filhos etc é consultado na documentação do governo)...
+- 3 - Exemplo Registro C100 (RegC100.java), que além de seus campos, tem os registros filhos que podem ou não serem preenchidos, porém somente poderão caso tenha preenchido a linha do REG C100. 
 
 ![image](https://user-images.githubusercontent.com/29218270/121588139-f3e11e80-ca0b-11eb-8a80-17c36a10b1f8.png)
 
-- **SpedFiscalArquivoController** -> Classe que irá carregar a tela, para a geração do arquivo SPED e receber os parametros (data inicio, fim, loja e contador) para processar o arquivo.
+- **SpedFiscalArquivoController** -> Classe que irá carregar a tela, para a geração do arquivo SPED e receber os parametros (data inicio, fim, loja, contador, se exportará ou não o inventário) para processar o arquivo.
 - **SpedFiscalArquivoService** -> As informações acima serão passadas para o método **gerarAquivoSpedFiscal(...)**, da Service, que será responsável por buscar todas as informações fiscais do período, e popular um objeto do tipo **MovimentoMensalIcmsIpi**
 - **SpedFiscalService** -> Recebe um objeto do tipo **MovimentoMensalIcmsIpi**, e chama as services de cada bloco, para preencher os registros do SpedFiscal, que precisamos escriturar e devolve um objeto do tipo **SpedFiscal** que nada mais é do que a modelagem que citamos anteriormente (SpedFiscal -> Blocos do Sped -> Registros dos Blocos)
 - **SpedFiscalArquivoService** -> Com todos os registros necessários preenchidos/escriturados, ainda dentro do método **gerarArquivoSpedFiscal(...)**, será chamado o método 
-**gerarArquivoSped(....)**, dentro dessa service, que é o "transformará", no arquivo **.txt** (utilzando a **lib: coffeepot-bean-wr**). E salvará o arquivo na tabela **sped_fisc_aqu** (SpedFiscalArquivo). OBS: No futuro isso será mudado, para salvar somente o link do arquivo que está no bucket do GCP.
+**gerarArquivoSped(....)**, dentro dessa service, será "transformado" o objeto preenchido anteriormente, no arquivo **.txt** (utilzando a **lib: coffeepot-bean-wr**). E por fim  o arquivo será salvo na tabela **sped_fisc_aqu** (SpedFiscalArquivo). 
+- **OBS: No futuro isso será mudado, para salvar somente o link do arquivo que está no bucket do GCP.**
 
-## Começando
+## 7. Começando
 
 Clone esse projeto em um diretório de sua máquina
 
@@ -332,22 +301,24 @@ Clone esse projeto em um diretório de sua máquina
 git clone https://github.com/cartola-erp/emissor-fiscal.git
 ```
 
-### Pré requisitos
+### 7.1 - Pré requisitos
 
 
 * 1 - [MySql - v5.7 ou maior](https://www.youtube.com/watch?v=WuBcTJnIuzo)
 * 2 - [Java 8](https://www.youtube.com/watch?v=rzto4yY3pVw)
 * 3 - [STS - Spring Tool Suite ](https://spring.io/tools#suite-three) (IDE - recomendada)
+* 4 - [Maven 3.6.3 (ou que tenha suporte para a JDK 8)](https://maven.apache.org/docs/3.6.3/release-notes.html)
 
-### Instalando o projeto no ambiente de desenvolvimento
+É Necessário estar configurado corretamente as variáveis de ambientes ! (JAVA e MAVEN)
+
+### 7.2 - Rodando o projeto no ambiente de desenvolvimento
 
 * 1 - [Importe o projeto maven no STS](https://www.lagomframework.com/documentation/1.6.x/java/EclipseMavenInt.html)
 * 2 - Crie os seguinte bancos de dados:
 
-```
-create database emissorfiscal;
-create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
-```
+> create database emissorfiscal;
+> create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
+
 
 And repeat
 
@@ -397,9 +368,9 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **[Robson Henrique Ramalho Costa](https://github.com/robsonhenriq)** - *Trabalho inicial (Desenvovimento dos calculos das operações das NFEs, Assim como todo o desenvolvimento da lógica do preenchimento dos registros referentes ao SPED FISCAL ICMS IPI)* - [robsonhenriq](https://github.com/robsonhenriq)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+Veja também a lista de [contribuidores](https://github.com/cartola-erp/emissor-fiscal/graphs/contributors) que participaram deste projeto.
 
 ## License
 
