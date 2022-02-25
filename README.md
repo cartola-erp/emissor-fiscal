@@ -390,7 +390,7 @@ create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
 		- 4.4.2 ```mvn package -Pproducao -DskipTests```
 		- 4.4.3 ```mvn appengine:deploy -Pproducao -DskipTests```
 
-PS: [Clique aqui para ver sobre o man profile "-Pproducao"](https://github.com/cartola-erp/emissor-fiscal#31-pomxml-usando-maven-profile-para-fazer-deploy)
+PS: [Clique aqui para ver sobre o maven profile "-Pproducao"](https://github.com/cartola-erp/emissor-fiscal#31-pomxml-usando-maven-profile-para-fazer-deploy)
 		 
 
 
