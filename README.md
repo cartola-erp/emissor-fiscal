@@ -196,7 +196,14 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
 #### 4.1 Cadastrando as tributações federais (PIS/COFINS) e estaduais (ICMS), usando os scripts pelo flyway
 Um ponto de extrema importância é a parte abaixo onde estão os scripts, que servem para cadastrar as tributações estaduais (venda, transferência, devoluções e outras operações que emitimos NFEs ou até mesmo para calcular o ICMS ST para as entradas de SC, ES e MS (temos que pagar a guia gare em alguns casos dessas UFs). E além disso a parametrização para o PIS/COFINS)
 
-- Scripts pelo flyway, para parametrizações nas tabelas: <strong>trib_esta, trib_esta_guia, trib_esta_devo e trib_fede</strong>
+- Scripts pelo flyway, para parametrizações nas tabelas: 
+
+|	Tabela	      |			Model			|				Responsável Por						|
+|---------------------|-----------------------------------------|---------------------------------------------------------------------------------------|
+| **trib_esta**       |		TributacaoEstadual.java		| **ICMS**, nas operações de vendas, transferências entre outras movimentações	     	|
+| **trib_esta_guia**  |	TributacaoEstadualGuia.java		| **ICMS ST**, na operação de Compra Para Comercialização interestadual (SC, ES e MG)	|
+| **trib_esta_devo**  |	TributacaoEstadualDevolucao.java	| **ICMS**, nas operações de devoluções e remessas em garantias				|	
+| **trib_fede**       |		TributacaoFederal.java		| **PIS/COFINS**, nas operações de vendas, transferências, devoluções, remessas em garantias etc...|
 
 ```
 📦src
