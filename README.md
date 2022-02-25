@@ -273,8 +273,9 @@ NÃO contribuinte, deverá ser calculado o DIFAL, mas não será.
 PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o **DocumentoFiscal**, se a pessoa é ou não contribuinte de icms, para assim ser buscada a tributação correta.
 
 
-### 5. DocumentoFiscal (package extremamente importante), breve explicação sobre as classes do projeto
+### 5. breve explicação sobre algumas classes do projeto
 
+#### 5.1 DocumentoFiscal (package extremamente importante), 
 * 1 - O projeto é feito utilizando:
 	* 1.1 - JPA/Hibernate
 	* 1.2 - Spring boot, data, e security 
@@ -293,6 +294,9 @@ PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o
 **CalculoFiscalFederal**, responsável por fazer todo o cálculo de **PIS/COFINS**, e **IPI** (esse último exclusivamente para devoluções/remessas em garantias);
 
 **CalculoGuiaEstadualService**, responsável por fazer o cálculo das guia gare **(ICMS ST)**, das entradas de comercialização que são de **SC, ES e MS**;
+
+#### 5.2 Operacao
+- Essa classe é a model da tabela de operações do emissorfiscal tabela (**oper**). Um ponto **importante** nela, é que o emissorfiscal entende quando é uma **operação** de **devolução ou remessa em garantia**, pelas propriedades booleanas, que tem na classe, sendo elas respectivamentes **isDevolucao** ou **isRemessaParaFornecedor**;
 
 
 ### 6. EFD ICMS IPI (SpedFiscal ICMS IPI)
