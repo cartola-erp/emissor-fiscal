@@ -196,8 +196,7 @@ Nesse arquivo estão as configurações referentes ao [GAE](https://cloud.google
 #### 4.1 Cadastrando as tributações federais (PIS/COFINS) e estaduais (ICMS), usando os scripts pelo flyway
 Um ponto de extrema importância é a parte abaixo onde estão os scripts, que servem para cadastrar as tributações estaduais (venda, transferência, devoluções e outras operações que emitimos NFEs ou até mesmo para calcular o ICMS ST para as entradas de SC, ES e MS (temos que pagar a guia gare em alguns casos dessas UFs). E além disso a parametrização para o PIS/COFINS)
 
-<details>
-  <summary>Scripts pelo flyway, para parametrizações nas tabelas: <strong>trib_esta, trib_esta_guia, trib_esta_devo e trib_fede</strong></summary>
+- Scripts pelo flyway, para parametrizações nas tabelas: <strong>trib_esta, trib_esta_guia, trib_esta_devo e trib_fede</strong>
 
 ```
 📦src
@@ -242,8 +241,6 @@ Um ponto de extrema importância é a parte abaixo onde estão os scripts, que s
  ┃ ┃ ┃ ┃ ┃ ┣ 📜V00018__insertTribFedeMonofasico.sql			-> tabela: **(trib_fede)**: Já esse script será inserido para todos os NCMS MONOFÁSICOS, ou seja, para todos que estão no script: **V00007__createNcmsMonofasicosEmissorFiscal.sql**.
  ┃ ┃ ┃ ┃ ┃ ┗ 📜V00031__insertTribEstaDevo.sql				-> tabela: **(trib_esta_devo)**: Será inserido todas as parametrizações para as operações de: "Devoluções e Remessas em Garantias".
 ```
-</details>
-
 
 As tributações federais (PIS/COFINS), funcionam basicamente da seguinte forma (estamos considerando a operação 1 - VENDA), Se o NCM é:
 
@@ -291,14 +288,42 @@ PS: Isso será corrigido, no futuro da seguinte forma: Será enviado junto com o
 **CalculoGuiaEstadualService**, responsável por fazer o cálculo das guia gare **(ICMS ST)**, das entradas de comercialização que são de **SC, ES e MS**;
 
 
-### 6. SpedFiscal (ICMS IPI)
-* Essa parte ainda está em desenvolvimento (fase de testes), porém os layout do arquivo foram criados da seguinte forma: cada bloco tem seu pacote com sua modelagem:
+### 6. EFD ICMS IPI (SpedFiscal ICMS IPI)
+É um dos módulos que faz parte do projeto: [SPED - Sistema Público De Escrituração Digital](http://sped.rfb.gov.br/projeto/show/274), assim como os documentos fiscais NF-e, CT-e, NFS-e.
+
+* Essa parte ainda está em desenvolvimento (fase de testes), porém os layout do arquivo foram criados da seguinte forma: cada bloco tem seu pacote com sua modelagem e outro exclusivamente para as services(regras de preenchimento de cada registro):
 
 ![image](https://user-images.githubusercontent.com/29218270/121586857-8a144500-ca0a-11eb-86b1-3001ca3faeb6.png)
 
 - 1 - Cada registro tem sua classe (isso equivale a uma linha no arquivo txt);
 - 2 - Um registro de Nivel DOIS tem como um (objeto) "registro filho" que é de nivel 3, E o de nivel três terá o registro de Nivel QUATRO, como registro filho (essa informação de registros filhos etc é consultado na documentação do governo)...
 - 3 - Exemplo Registro C100 (RegC100.java), que além de seus campos, tem os registros filhos que podem ou não serem preenchidos, porém somente poderão caso tenha preenchido a linha do REG C100. 
+
+Cada pacote da imagem acima basicamente é referente a um Bloco do [Sped Fiscal ICMS IPI](http://sped.rfb.gov.br/estatico/8D/519392B83F160FA92AF2A21532ADDC16703E1B/Guia%20Pr%c3%a1tico%20EFD%20-%20Vers%c3%a3o%203.0.8.pdf);
+
+Ex.: 
+```
+net.cartola.emissorfiscal.sped.fiscal.bloco0						-> Todas Models/Registros (pelo menos as que usamos), referentes ao Bloco 0 
+net.cartola.emissorfiscal.sped.fiscal.bloco0.service					-> Services Referentes aos Registros do Bloco 0 (Na maioria das vezes são services referentes a "registros de nível 2" (conforme a documentação da EFD ICMS IPI). Nelas é que estaram de fato o preenchimento dos Registros de Cada Bloco.
+```
+
+<details>
+  <summary>Atualmente temos esses Blocos abaixo no SPED ICMS IPI (clique aqui para expandir)</strong></summary>
+
+
+| Bloco	|			Descrição				| 	Foi implementado ?	 |			
+|-------|---------------------------------------------------------------|--------------------------------|
+|0	| Abertura, Identificação e Referências				|   	**Sim** 		 |
+|B***	| Escrituração e Apuração do ISS				|	Não precisamos		 | 
+|C 	| Documentos Fiscais I – Mercadorias (ICMS/IPI)      		|	**Sim**			 |	
+|D 	| Documentos Fiscais II – Serviços (ICMS)            		|	**Sim**   		 |	
+|E 	| Apuração do ICMS e do IPI                          		|       **Sim**        		 |
+|G*	| Controle do Crédito de ICMS do Ativo Permanente – CIAP	|        Não        		 |
+|H 	| Inventário Físico                                        	|       **Sim**       		 |
+|K**	| Controle da Produção e do Estoque                      	|       Não, precisamos		 |
+|1 	| Outras Informações                                       	|       **Sim**       		 |
+|9 	| Controle e Encerramento do Arquivo Digital               	|       **Sim**        		 |
+</details>
 
 ![image](https://user-images.githubusercontent.com/29218270/121588139-f3e11e80-ca0b-11eb-8a80-17c36a10b1f8.png)
 
