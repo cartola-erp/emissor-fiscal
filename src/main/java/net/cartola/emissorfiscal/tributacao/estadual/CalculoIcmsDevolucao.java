@@ -31,11 +31,27 @@ import net.cartola.emissorfiscal.tributacao.federal.CalculoIpi;
 public class CalculoIcmsDevolucao {
 
 	private static final Logger LOG = Logger.getLogger(CalculoIcmsDevolucao.class.getName());
-	private Devolucao devo;
+	
 	@Autowired
 	private CalculoIpi calculoIpi;
 	
+	/**
+	 * Variáveis criadas, apenas para "expor", os valores de IPI e ICMS ST, que estão presentes na Devolução/Remessa Em Garantia;
+	 * E assim conseguirmos montar a String de informações complementares que irão sair nesse campo
+	 */
+	private BigDecimal valorIcmsSt = BigDecimal.ZERO;
+	private BigDecimal valorIpi = BigDecimal.ZERO;
 	
+	private Devolucao devo;
+	
+	public BigDecimal getValorIcmsSt() {
+		return valorIcmsSt;
+	}
+
+	public BigDecimal getValorIpi() {
+		return valorIpi;
+	}
+
 	/**
 	 * Esse é o método que irá calcular o ICMS para as: DEVOLUÇÕES, REMESSSAS EM GARANTIAS e OUTRAS SAÍDAS
 	 * 
@@ -142,6 +158,7 @@ public class CalculoIcmsDevolucao {
 	
 		if(operacao.isRemessaParaFornecedor()) {
 			BigDecimal valorIpi = calculoIpi.calcularIpiDevolvido(devoItem);
+			this.valorIpi = valorIpi;
 			valorTotalFreteAndOutrasDespesDaOrigem = valorTotalFreteAndOutrasDespesDaOrigem.add(valorIpi);
 		}
 		
@@ -149,6 +166,7 @@ public class CalculoIcmsDevolucao {
 		BigDecimal valorIcmsSt = BigDecimal.ZERO;
 		if (isBigDecimalMaiorQueZero(icmsStBase)) {
 			valorIcmsSt = icmsStBase.multiply(devoItem.getIcmsStAliquota()).subtract(valorIcms);
+			this.valorIcmsSt = valorIcmsSt;
 		}
 		
 		final BigDecimal valorOutrasDespesasAcessorias = valorTotalFreteAndOutrasDespesDaOrigem.add(valorIcmsSt);

@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static net.cartola.emissorfiscal.util.NumberUtilRegC100.getBigDecimalNullSafe;
+import static net.cartola.emissorfiscal.util.NumberUtilRegC100.isBigDecimalMaiorQueZero;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -116,6 +117,8 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 	@Override
 	public DocumentoFiscal calculaImposto(DocumentoFiscal docFisc, Devolucao devolucao) {
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
+		BigDecimal valorIpi = BigDecimal.ZERO;
+		BigDecimal valorIcmsSt = BigDecimal.ZERO;
 		Operacao operacao = devolucao.getOperacao();
 		final Set<TributacaoEstadualDevolucao> setTribEsta = tribEstaDevolucaoService.findByOperacao(operacao);
 		Map<Integer, Map<Integer, TributacaoEstadualDevolucao>> mapTribEstaDevoPorCfopVendaEIcmsCst = null;
@@ -135,8 +138,15 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 			TributacaoEstadualDevolucao tribEstaDevo = getTribEstaDevo(mapTribEstaDevoPorCfopVenda, mapTribEstaDevoPorCfopVendaEIcmsCst, devolucaoItem, devolucao);
 			if (operacao.isDevolucao()) {
 				listCalculoImpostos.add(calculoIpi.calculaIpi(di, devolucaoItem));
+				valorIpi = valorIpi.add(di.getIpiValor());									// Aqui está sendo adicionado o valor de IPI, pois nas Devoluções ele vai em campo separado. do Outras Despesas
 			}
-			calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem, devolucao).ifPresent(listCalculoImpostos::add);
+			Optional<CalculoImposto> opCalcIcmsDevolucao = calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem, devolucao);
+			if (opCalcIcmsDevolucao.isPresent()) {
+				CalculoImposto calculoImposto = opCalcIcmsDevolucao.get();
+				listCalculoImpostos.add(calculoImposto);
+				valorIpi = valorIpi.add(calculoIcmsDevolucao.getValorIpi());				// Esse aqui está sendo somado, pois quando é "REMESSAS EM GARANTIA", o valor do IPI, está junto do outras despesas. 
+				valorIcmsSt = valorIcmsSt.add(calculoIcmsDevolucao.getValorIcmsSt());
+			}
 		}
 
 		setaIcmsBaseEValor(docFisc, listCalculoImpostos);
@@ -151,8 +161,22 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		 */
 		BigDecimal valorTotalDocumento = calcularValorTotalDocumento(docFisc).subtract(docFisc.getValorDesconto());
 		docFisc.setValorTotalDocumento(valorTotalDocumento);
-		
+		docFisc.setInfoComplementar(montarInfoComplementarDevolucao(valorIpi, valorIcmsSt));
+
 		return docFisc;
+	}
+
+	
+	private String montarInfoComplementarDevolucao(BigDecimal valorIpi, BigDecimal valorIcmsSt) {
+		StringBuilder sb = new StringBuilder();
+		if (isBigDecimalMaiorQueZero(valorIpi)) {
+			sb.append("Valor do IPI R$ ").append(valorIpi.setScale(2, RoundingMode.HALF_EVEN)).append(" ");
+		}
+		
+		if (isBigDecimalMaiorQueZero(valorIcmsSt)) {
+			sb.append("Valor do ICMS ST R$ ").append(valorIcmsSt.setScale(2, RoundingMode.HALF_EVEN));
+		}
+		return sb.toString();
 	}
 
 	/**
