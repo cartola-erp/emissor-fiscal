@@ -119,6 +119,8 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		List<CalculoImposto> listCalculoImpostos = new ArrayList<>();
 		BigDecimal valorIpi = BigDecimal.ZERO;
 		BigDecimal valorIcmsSt = BigDecimal.ZERO;
+		BigDecimal valorFrete = BigDecimal.ZERO;
+		BigDecimal valorOutrasDespesas = BigDecimal.ZERO;
 		Operacao operacao = devolucao.getOperacao();
 		final Set<TributacaoEstadualDevolucao> setTribEsta = tribEstaDevolucaoService.findByOperacao(operacao);
 		Map<Integer, Map<Integer, TributacaoEstadualDevolucao>> mapTribEstaDevoPorCfopVendaEIcmsCst = null;
@@ -140,12 +142,17 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 				listCalculoImpostos.add(calculoIpi.calculaIpi(di, devolucaoItem));
 				valorIpi = valorIpi.add(di.getIpiValor());									// Aqui está sendo adicionado o valor de IPI, pois nas Devoluções ele vai em campo separado. do Outras Despesas
 			}
-			Optional<CalculoImposto> opCalcIcmsDevolucao = calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo, devolucaoItem, devolucao);
+			Optional<CalculoImposto> opCalcIcmsDevolucao = calculoIcmsDevolucao.calculaIcmsDevolucao(di, tribEstaDevo,
+					devolucaoItem, devolucao);
 			if (opCalcIcmsDevolucao.isPresent()) {
 				CalculoImposto calculoImposto = opCalcIcmsDevolucao.get();
 				listCalculoImpostos.add(calculoImposto);
-				valorIpi = valorIpi.add(calculoIcmsDevolucao.getValorIpi());				// Esse aqui está sendo somado, pois quando é "REMESSAS EM GARANTIA", o valor do IPI, está junto do outras despesas. 
-				valorIcmsSt = valorIcmsSt.add(calculoIcmsDevolucao.getValorIcmsSt());
+				if (!devolucao.getDestinatario().isZeraOutrasDespesas() || !operacao.isRemessaParaFornecedor()) {
+					valorIpi = valorIpi.add(calculoIcmsDevolucao.getValorIpi()); // Esse aqui está sendo somado, pois quando é "REMESSAS EM GARANTIA", o valor do IPI, está junto do outras despesas.
+					valorIcmsSt = valorIcmsSt.add(calculoIcmsDevolucao.getValorIcmsSt());
+					valorFrete = valorFrete.add(devolucaoItem.getValorFrete().multiply(di.getQuantidade()));
+					valorOutrasDespesas = valorOutrasDespesas.add(devolucaoItem.getValorOutrasDespesasAcessorias().multiply(di.getQuantidade()));
+				}
 			}
 		}
 
@@ -161,20 +168,28 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 		 */
 		BigDecimal valorTotalDocumento = calcularValorTotalDocumento(docFisc).subtract(docFisc.getValorDesconto());
 		docFisc.setValorTotalDocumento(valorTotalDocumento);
-		docFisc.setInfoComplementar(montarInfoComplementarDevolucao(valorIpi, valorIcmsSt));
+		docFisc.setInfoComplementar(montarInfoComplementarDevolucao(valorIpi, valorIcmsSt, valorFrete, valorOutrasDespesas));//descobrir se teve frete e outras despesas na compra e passar aqui tbm
 
 		return docFisc;
 	}
 
 	
-	private String montarInfoComplementarDevolucao(BigDecimal valorIpi, BigDecimal valorIcmsSt) {
+	private String montarInfoComplementarDevolucao(BigDecimal valorIpi, BigDecimal valorIcmsSt, BigDecimal valorFrete, BigDecimal valorOutrasDespesas) {
 		StringBuilder sb = new StringBuilder();
 		if (isBigDecimalMaiorQueZero(valorIpi)) {
 			sb.append("Valor do IPI R$ ").append(valorIpi.setScale(2, RoundingMode.HALF_EVEN)).append(" ");
 		}
 		
 		if (isBigDecimalMaiorQueZero(valorIcmsSt)) {
-			sb.append("Valor do ICMS ST R$ ").append(valorIcmsSt.setScale(2, RoundingMode.HALF_EVEN));
+			sb.append("Valor do ICMS ST R$ ").append(valorIcmsSt.setScale(2, RoundingMode.HALF_EVEN)).append(" ");
+		}
+		
+		if(isBigDecimalMaiorQueZero(valorFrete)) {
+			sb.append("Valor do frete R$ ").append(valorFrete.setScale(2, RoundingMode.HALF_EVEN)).append(" ");
+		}
+		
+		if(isBigDecimalMaiorQueZero(valorOutrasDespesas)) {
+			sb.append("Valor de Outras Despesas R$ ").append(valorOutrasDespesas.setScale(2, RoundingMode.HALF_EVEN));
 		}
 		return sb.toString();
 	}
