@@ -101,12 +101,15 @@ public class TributacaoEstadualService {
 	}
 	
 	public List<TributacaoEstadual> findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(DocumentoFiscal docuFisc) {
+		Operacao operacao = docuFisc.getOperacao();
 		Optional<Estado> opUfOrigem = estadoService.findBySigla(docuFisc.getEmitente().getEndereco().getUf());
-		Optional<Estado> opUfDestino = estadoService.findBySigla(docuFisc.getDestinatario().getEndereco().getUf());
+		Optional<Estado> opUfDestino = operacao.isInterestatual()
+				? estadoService.findBySigla(docuFisc.getDestinatario().getEndereco().getUf())
+				: opUfOrigem;
 		RegimeTributario regimeTributarioEmitente = docuFisc.getEmitente().getRegimeTributario();
 		Set<Finalidade> finalidades = docuFisc.getItens().stream().map(DocumentoFiscalItem::getFinalidade).collect(toSet());
 
-		return this.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(docuFisc.getOperacao(), opUfOrigem.get(), opUfDestino.get(),
+		return this.findTribuEstaByOperUfOrigemUfDestinoRegTribuEFinalidadeENcms(operacao, opUfOrigem.get(), opUfDestino.get(),
 				regimeTributarioEmitente, finalidades, docuFisc.getNcms());
 	}
 	

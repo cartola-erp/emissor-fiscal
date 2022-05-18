@@ -28,6 +28,7 @@ public class Operacao implements Serializable, Comparable<Operacao> {
 	private String descricao;
 	private boolean isDevolucao;
 	private boolean isRemessaParaFornecedor;			// Poderá ser: "Remessa em Garantia" ou "Remessa para conserto"
+	private boolean isInterestadual;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,6 +69,15 @@ public class Operacao implements Serializable, Comparable<Operacao> {
 
 	public void setRemessaParaFornecedor(boolean isRemessaParaFornecedor) {
 		this.isRemessaParaFornecedor = isRemessaParaFornecedor;
+	}
+	
+	@Column(name = "interestadual", columnDefinition = "tinyint(1) NOT NULL DEFAULT '0' ")
+	public boolean isInterestatual() {
+		return isInterestadual;
+	}
+				
+	public void setInterestatual(boolean isInterestadual) {
+		this.isInterestadual = isInterestadual;
 	}
 
 	/**
