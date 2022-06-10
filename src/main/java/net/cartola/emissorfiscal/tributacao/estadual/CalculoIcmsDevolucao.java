@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.devolucao.DevolucaoItem;
@@ -28,6 +29,7 @@ import net.cartola.emissorfiscal.tributacao.federal.CalculoIpi;
  * @author robson.costa
  */
 @Service
+@RequestScope
 public class CalculoIcmsDevolucao {
 
 	private static final Logger LOG = Logger.getLogger(CalculoIcmsDevolucao.class.getName());
