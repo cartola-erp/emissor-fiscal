@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>net.cartola.emissorfiscal</groupId>
 	<artifactId>emissor-fiscal</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>0.1</version>
 	<name>emissor-fiscal</name>
 	<description>Projeto de emissao de documentos fiscais</description>
