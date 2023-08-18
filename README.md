@@ -383,6 +383,7 @@ PS: Necessário ter o usuário root com a senha root (ou alterar no **applicatio
 
 ## 8. Deployment
 
+### 8.a Deployment no GAE (Google App Engine)
 - 1. Necessário deixar o perfil correto definido no arquivo **appengine-web.xml** (homologacao ou producao
 ![image](https://user-images.githubusercontent.com/29218270/155608033-37b247f7-ce57-4e92-87de-a10ce13d697e.png)
  
@@ -398,7 +399,14 @@ PS: Necessário ter o usuário root com a senha root (ou alterar no **applicatio
 		- 4.4.3 ```mvn appengine:deploy -Pproducao -DskipTests```
 
 PS: [Clique aqui para ver sobre o maven profile "-Pproducao"](https://github.com/cartola-erp/emissor-fiscal#31-pomxml-usando-maven-profile-para-fazer-deploy)
-		 
+
+### 8.a Deployment no compute engine
+- 1 Compile e empacote o arquivo na sua máquina : ```mvn clean package -Pproducao -DskipTests```
+- 2 Copie o arquivo jar gerado a máquina de destino, na linha abaixo a máquina é o a emissorfiscal do projeto erpj-br.
+```
+gcloud compute scp target\emissor-fiscal-0.1.jar muril@emissorfiscal:/home/muril --project=erpj-br
+```
+
 
 
 ## Autores
