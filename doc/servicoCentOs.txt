@@ -1,0 +1,16 @@
+Criar o arquivo /lib/systemd/system/emissorfiscal.service
+
+systemctl daemon-reload; systemctl enable emissorfiscal; systemctl start emissorfiscal; systemctl status emissorfiscal
+
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Web Servivice De emissao de documentos fiscais da Auto Geral
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/emissorfiscal/
+ExecStart=/usr/bin/java -jar -Xmx2G /opt/emissorfiscal/emissorfiscal.jar
+Restart=always
+StandardOutput=journal 
