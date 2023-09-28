@@ -3,7 +3,6 @@ package net.cartola.emissorfiscal.documento;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -57,9 +56,8 @@ public class DocumentoFiscalReferencia implements Serializable {
 	
 //	@Column(name = "icms_cst", scale = 4, nullable = false)
 	@ToString.Exclude
-	@Nullable
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "docu_fisc_id", unique = false, foreignKey = @ForeignKey(name = "fnk_docu_fisc"))
+	@JoinColumn(name = "docu_fisc_id", unique = false, nullable = true, foreignKey = @ForeignKey(name = "fnk_docu_fisc"))
 	private DocumentoFiscal documentoFiscal;
 
 	
