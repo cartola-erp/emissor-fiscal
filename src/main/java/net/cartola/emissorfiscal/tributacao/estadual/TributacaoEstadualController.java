@@ -86,19 +86,32 @@ public class TributacaoEstadualController {
 		attributes.addFlashAttribute("mensagemSucesso", "ICMS alterado/cadastrado com sucesso!");
 		return mv;
 	}
-		
+
 	@GetMapping("/consulta")
-	public ModelAndView findAll(Model model, @RequestParam(defaultValue="0") int page) {
-		ModelAndView mv = new ModelAndView("tributacao-estadual/consulta");
-		Page<TributacaoEstadual> pageTribuEsta = icmsService.findAll(PageRequest.of(page, 30));
-		
+	public ModelAndView findAll(Model model, @RequestParam(defaultValue = "0") int page) {
+		// Definindo o número de itens por página
+		int pageSize = 20;
+
+		// Obtendo a página atual e a lista paginada de tributações
+		Page<TributacaoEstadual> pageTribuEsta = icmsService.findAll(PageRequest.of(page, pageSize));
+
+		// Multiplicando os valores da tributação por cem
 		if (!pageTribuEsta.isEmpty()) {
 			pageTribuEsta.forEach(tributacaoEstadual -> {
 				icmsService.multiplicaTributacaoEstadualPorCem(tributacaoEstadual);
 			});
 		}
+
+		int totalPages = pageTribuEsta.getTotalPages();
+		int startPage = Math.max(0, Math.min(page - 1, totalPages - 3));
+		int endPage = Math.min(startPage + 2, totalPages - 1);
+
+		// Adicionando dados ao ModelAndView
+		ModelAndView mv = new ModelAndView("tributacao-estadual/consulta");
 		mv.addObject("listTributacaoEstadual", pageTribuEsta);
-		model.addAttribute("paginaAtual",page);
+		mv.addObject("paginaAtual", page);
+		mv.addObject("startPage", startPage);
+		mv.addObject("endPage", endPage);
 
 		return mv;
 	}

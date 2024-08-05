@@ -3,6 +3,8 @@ package net.cartola.emissorfiscal.cfop;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -51,12 +53,23 @@ public class CfopController {
 		attributes.addFlashAttribute("mensagemSucesso", "CFOP alterado/cadastrado com sucesso!");
 		return mv;
 	}
-		
+
 	@GetMapping("/consulta")
-	public ModelAndView findAll() {
+	public ModelAndView findAll(@RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("cfop/consulta");
-		mv.addObject("listCfop", cfopService.findAll());
-		
+		int pageSize = 20;
+		Page<Cfop> cfopPage = cfopService.rtnTodos(PageRequest.of(page, pageSize));
+
+		int totalPages = cfopPage.getTotalPages();
+		int startPage = Math.max(0, Math.min(page - 1, totalPages - 3));
+		int endPage = Math.min(startPage + 2, totalPages - 1);
+
+		mv.addObject("listCfop", cfopPage.getContent());
+		mv.addObject("paginaAtual", page);
+		mv.addObject("totalPages", totalPages);
+		mv.addObject("startPage", startPage);
+		mv.addObject("endPage", endPage);
+
 		return mv;
 	}
 

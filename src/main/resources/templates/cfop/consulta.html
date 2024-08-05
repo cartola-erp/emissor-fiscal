@@ -107,6 +107,32 @@
 							</li>	
 						</ul>
 						-->
+
+				<!-- PAGINAÇÃO -->
+				<nav aria-label="Page navigation">
+					<ul class="pagination">
+						<!-- Link para a página anterior -->
+						<li class="page-item" th:classappend="${paginaAtual == 0} ? 'disabled' : ''">
+							<a class="page-link" th:href="@{/cfop/consulta(page=${paginaAtual - 1})}">Anterior</a>
+						</li>
+
+						<!-- Links para as páginas -->
+						<li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}"
+							th:classappend="${i == paginaAtual} ? 'active' : ''">
+							<a class="page-link" th:href="@{/cfop/consulta(page=${i})}" th:text="${i + 1}"></a>
+						</li>
+
+						<!-- Link para a próxima página -->
+						<li class="page-item" th:classappend="${paginaAtual >= totalPages - 1} ? 'disabled' : ''">
+							<a class="page-link" th:href="@{/cfop/consulta(page=${paginaAtual + 1})}">Próxima</a>
+						</li>
+
+						<!-- Link para a última página -->
+						<li class="page-item" th:if="${paginaAtual < totalPages - 1}">
+							<a class="page-link" th:href="@{/cfop/consulta(page=${totalPages - 1})}">Última</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		</section>
 

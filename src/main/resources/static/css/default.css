@@ -112,3 +112,43 @@ section {
     /* Space for fixed navbar */
     /* background-color: #ececec; */
 }
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+
+.nav-item {
+    margin-bottom: 10px;
+}
+
+.dropdown-menu {
+    position: static;
+    float: none;
+    padding: 0;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+}
+
+.nav-link:hover, .dropdown-item:hover {
+    background-color: #444;
+}
+
+.btn-danger {
+    margin: 20px;
+}

@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeOperacao;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import net.cartola.emissorfiscal.devolucao.Devolucao;
@@ -19,6 +23,7 @@ import net.cartola.emissorfiscal.sped.fiscal.enums.ModeloDocumentoFiscal;
 public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal, Long> {
 
 	List<DocumentoFiscal> findByOperacao(Operacao operacao);
+
 
 	List<DocumentoFiscal> findByOperacaoIn(Collection<Operacao> operacoes);
 
@@ -79,8 +84,13 @@ public interface DocumentoFiscalRepository extends JpaRepository<DocumentoFiscal
 			+ "	   	 WHERE d.cadastro BETWEEN :dtInicio AND :dtFim ;", nativeQuery = true)
 	Set<DocumentoFiscal> findAllDocsInterestadualQuePagamosIcmsNaEntradaPorPeriodo(LocalDateTime dtInicio, LocalDateTime dtFim);
 
+	@Query(value = "SELECT d FROM DocumentoFiscal d WHERE d.tipoOperacao = :tipoOperacao AND d.nfeChaveAcesso IS NOT NULL")
+	Page<DocumentoFiscal> findByTipoOperacao(IndicadorDeOperacao tipoOperacao, Pageable pageable);
 
-	
-	
-	
+	@Query("SELECT d FROM DocumentoFiscal d WHERE d.tipoOperacao = :tipoOperacao AND d.nfeChaveAcesso IS NOT NULL and d.nfeChaveAcesso LIKE %:nfeChaveAcesso%")
+	Page<DocumentoFiscal>buscarPorChaveOperacao(
+			@Param("nfeChaveAcesso") String nfeChave,
+			@Param("tipoOperacao") IndicadorDeOperacao  tipoDeOperacao,
+			Pageable pageable
+	);
 }

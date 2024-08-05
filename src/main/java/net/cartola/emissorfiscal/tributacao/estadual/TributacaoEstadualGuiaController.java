@@ -77,22 +77,43 @@ public class TributacaoEstadualGuiaController {
 		attributes.addFlashAttribute("mensagemSucesso", "ICMS alterado/cadastrado com sucesso!");
 		return mv;
 	}
-		
+
 	@GetMapping("/consulta")
-	public ModelAndView findAll(Model model, @RequestParam(defaultValue="0") int page) {
+	public ModelAndView findAll(@RequestParam(defaultValue = "0") int page) {
 		ModelAndView mv = new ModelAndView("tributacao-estadual-guia/consulta");
-		Page<TributacaoEstadualGuia> pageTribuEsta = tribEstaGuiaService.findAll(PageRequest.of(page, 30));
-		
-		if (!pageTribuEsta.isEmpty()) {
-			pageTribuEsta.forEach(TributacaoEstadualGuia -> {
-				tribEstaGuiaService.multiplicaTribEstaGuiaPorCem(TributacaoEstadualGuia);
-			});
+
+		try {
+			// Cria o PageRequest para a página atual e tamanho de página
+			PageRequest pr = PageRequest.of(page, 20);
+
+			// Busca a página de resultados
+			Page<TributacaoEstadualGuia> pageTribuEsta = tribEstaGuiaService.findAll(pr);
+
+			// Multiplica os valores por cem se houver resultados
+			if (!pageTribuEsta.isEmpty()) {
+				pageTribuEsta.forEach(tribEstaGuia -> {
+					tribEstaGuiaService.multiplicaTribEstaGuiaPorCem(tribEstaGuia);
+				});
+			}
+
+			// Calcula o intervalo de páginas a ser exibido
+			int totalPages = pageTribuEsta.getTotalPages();
+			int startPage = Math.max(0, Math.min(page - 1, totalPages - 3));
+			int endPage = Math.min(startPage + 2, totalPages - 1);
+
+			// Adiciona os dados para a view
+			mv.addObject("listTribEstaGuia", pageTribuEsta);
+			mv.addObject("paginaAtual", page); // Página atual
+			mv.addObject("totalPages", totalPages); // Total de páginas
+			mv.addObject("startPage", startPage); // Início do intervalo de páginas
+			mv.addObject("endPage", endPage); // Fim do intervalo de páginas
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação");
 		}
-		mv.addObject("listTribEstaGuia", pageTribuEsta);
-		model.addAttribute("paginaAtual",page);
 
 		return mv;
 	}
+
 
 	@PostMapping("/consulta")
 	public ModelAndView findByNumero(@RequestParam("ncm") String numeroNcm, Model model, @RequestParam(defaultValue="0") int page) {

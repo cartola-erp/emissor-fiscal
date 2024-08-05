@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -125,7 +127,22 @@ public class UsuarioService implements UserDetailsService {
 		}
 		return Optional.empty();
 	}
-	
+
+	//Listar todos usuarios
+	public Page<Usuario> findAllUsers(Pageable pageable) {
+		return usuarioRepository.findAll(pageable);
+	}
+
+	//Buscar por nome
+	public Page<Usuario> findUsersByName(String nome, Pageable pageable){
+		return  usuarioRepository.findByNomeContainingIgnoreCase(nome, pageable);
+	}
+
+	//Atualizar usuario
+
+	//Exluir usuario
+
+	//Buscar usuario por nome
 }
 
 

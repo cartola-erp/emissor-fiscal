@@ -3,6 +3,8 @@ package net.cartola.emissorfiscal.operacao;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,10 +55,22 @@ public class OperacaoController {
 	}
 		
 	@GetMapping("/consulta")
-	public ModelAndView findAll() {
+	public ModelAndView findAll(@RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("operacao/consulta");
-		mv.addObject("listOperacao", operacaoService.findAll());
-		
+		int pageSize = 20;
+
+		Page<Operacao> operacaoPage = operacaoService.rtnTodos(PageRequest.of(page, pageSize));
+
+		int totalPages = operacaoPage.getTotalPages();
+		int startPage = Math.max(0, Math.min(page - 1, totalPages - 3));
+		int endPage = Math.min(startPage + 2, totalPages - 1);
+
+		mv.addObject("listOperacao", operacaoPage.getContent());
+		mv.addObject("paginaAtual", page);
+		mv.addObject("totalPages", totalPages);
+		mv.addObject("startPage", startPage);
+		mv.addObject("endPage", endPage);
+
 		return mv;
 	}
 

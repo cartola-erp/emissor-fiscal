@@ -76,20 +76,40 @@ public class TributacaoFederalController {
 		attributes.addFlashAttribute("mensagemSucesso", "Tributação Federal alterado/cadastrado com sucesso!");
 		return mv;
 	}
-		
+
 	@GetMapping("/consulta")
-	public ModelAndView findAll(Model model, @RequestParam(defaultValue="0") int page) {
+	public ModelAndView findAll(Model model, @RequestParam(defaultValue = "0") int page) {
 		ModelAndView mv = new ModelAndView("tributacao-federal/consulta");
-//		List<TributacaoFederal> listTributacaoFederal = tributacaoFederalService.findAll();
-			
-		Page<TributacaoFederal> pageTribuFede = tributacaoFederalService.findAll(PageRequest.of(page, 30));
-		if (!pageTribuFede.isEmpty()) {
-			pageTribuFede.forEach(tributacaoFederal -> {
-				tributacaoFederalService.multiplicaTributacaoFederalPorCem(tributacaoFederal);
-			});
+
+		try {
+			// Cria o PageRequest para a página atual e tamanho de página
+			PageRequest pageRequest = PageRequest.of(page, 20);
+
+			// Busca a página de resultados
+			Page<TributacaoFederal> pageTribuFede = tributacaoFederalService.findAll(pageRequest);
+
+			// Multiplica os valores por cem se houver resultados
+			if (!pageTribuFede.isEmpty()) {
+				pageTribuFede.forEach(tributacaoFederal -> {
+					tributacaoFederalService.multiplicaTributacaoFederalPorCem(tributacaoFederal);
+				});
+			}
+
+			// Adiciona os dados para a view
+			mv.addObject("listTributacaoFederal", pageTribuFede);
+			model.addAttribute("paginaAtual", page);
+			model.addAttribute("totalPages", pageTribuFede.getTotalPages());
+
+			// Calcula o intervalo de páginas a ser exibido
+			int startPage = Math.max(0, page - 2); // Exibir até 2 páginas anteriores
+			int endPage = Math.min(pageTribuFede.getTotalPages() - 1, page + 2); // Exibir até 2 páginas seguintes
+
+			model.addAttribute("startPage", startPage);
+			model.addAttribute("endPage", endPage);
+
+		} catch (Exception ex) {
+			mv.addObject("mensagemErro", "Erro ao tentar buscar a tributação");
 		}
-		mv.addObject("listTributacaoFederal", pageTribuFede);
-		model.addAttribute("paginaAtual",page);
 
 		return mv;
 	}
@@ -130,18 +150,20 @@ public class TributacaoFederalController {
 		return mv;
 	}
 
-//	@PostMapping("/deletar/{id}")
-//	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes, Model model) {
-//		try {
-//
-//			tributacaoFederalService.deleteById(id);
-//		} catch (Exception ex) {
-//			model.addAttribute("mensagemErro", "Erro ao tentar deletar a tributação estadual de ID: " + id);
-//		}
-//		attributes.addFlashAttribute("mensagemSucesso", "Tributação Estadual deletado com sucesso!");
-//		return new ModelAndView("redirect:/tributacaoEstadual/consulta");
-//	}
-	
+	/*
+	@PostMapping("/deletar/{id}")
+	public ModelAndView delete(@PathVariable("id") long id, RedirectAttributes attributes, Model model) {
+		try {
+
+			tributacaoFederalService.deleteById(id);
+		} catch (Exception ex) {
+			model.addAttribute("mensagemErro", "Erro ao tentar deletar a tributação estadual de ID: " + id);
+		}
+		attributes.addFlashAttribute("mensagemSucesso", "Tributação Estadual deletado com sucesso!");
+		return new ModelAndView("redirect:/tributacaoEstadual/consulta");
+	}
+	*/
+
 	private void addObjetosNaView(ModelAndView mv, TributacaoFederal tributacaoFederal) {
 		mv.addObject("tributacaoFederal", tributacaoFederal);
 		mv.addObject("listOperacao", operacaoService.findAll());

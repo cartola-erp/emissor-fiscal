@@ -1,115 +1,111 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{default :: layout(~{::title}, ~{::section})}">
-	
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-		<title> Consulta de NCM </title>
-	</head>
 
-	<body>
-		<section id="consulta-ncm-container">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Consulta de NCM</title>
+</head>
 
-			<!-- BREADCRUMB -->
-			<div>
-				<div class="row mb-3 ">
-					<div class="col-md-12">
-						<nav aria-label="breadcrumb">
-							<ol class="breadcrumb breadcrumb-personalizado">
-								<li class="breadcrumb-item"><a href="/home" class="breadcrumb-item-personalizado">Home</a></li>
-								<li class="breadcrumb-item"><a href="/ncm/consulta" class="breadcrumb-item-personalizado">Consultar</a></li>			
-								<li class="breadcrumb-item active" aria-current="page">NCM</li>
-							</ol>
-						</nav>
-					</div>
-				</div>
-			</div>
+<body>
+<section id="consulta-ncm-container">
 
-			<div>
+    <!-- BREADCRUMB -->
+    <div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-personalizado">
+                        <li class="breadcrumb-item"><a href="/home" class="breadcrumb-item-personalizado">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/ncm/consulta" class="breadcrumb-item-personalizado">Consultar</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">NCM</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
 
-				<!-- FORMULÁRIO para CONSULTAR OS NCMS -->
-				<form action="/ncm/consulta" method="POST" >
-                    <div class="form-group form-row zera-padd-left col-md-12">
-                        <div class="form-group col-md-8">
-                            <label><b>Pesquisar NCM pelo Número: </b></label>
-                            <input type="text" class="form-control somenteNumeros" id="txtNumero" name="numeroNcm" placeholder="Informe o número do NCM..." maxlength="8"> 
-                        </div>
+    <div>
 
-						<div>
-                            <button class="btn btn-outline-primary" type="submit" id="btnPesquisar">
-                                <span data-feather="search">search</span>
-                            </button>
-                        </div>
-                    </div>
-				</form>
+        <!-- FORMULÁRIO para CONSULTAR OS NCMS -->
+        <form action="/ncm/consulta" method="POST">
+            <div class="form-group form-row zera-padd-left col-md-12">
+                <div class="form-group col-md-8">
+                    <label><b>Pesquisar NCM pelo Número: </b></label>
+                    <input type="text" class="form-control somenteNumeros" id="txtNumero" name="numeroNcm" placeholder="Informe o número do NCM..." maxlength="8">
+                </div>
 
+                <div>
+                    <button class="btn btn-outline-primary" type="submit" id="btnPesquisar">
+                        <span data-feather="search">search</span>
+                    </button>
+                </div>
+            </div>
+        </form>
 
-				<!-- TABELA COM OS NCMS CONSULTADOS-->
-				<table class="table table-hover table-responsive ">
-					<thead>
-						<tr>
-							<!-- <th scope="col"> <b> ID </b> </th> -->	
-							<th scope="col"> <b> Número</b> </th>
-							<th scope="col"> <b> Exceção </b> </th>	
-                            <th scope="col"> <b> Descrição </b> </th>	
-					
-                            <th scope="col"> <b> Editar </b> </th>	
-                            <th scope="col"> <b> Deletar </b> </th>
-						</tr>
-					</thead>
-									
-					<tbody>
-						<tr th:each="ncm : ${listNcm}">
-							<!-- <th scope="row" th:text="${consultorio.id}"> 2</th> -->
-							<td scope="row" th:text="${ncm.numero}"> 12.000.021-90 </td>	
-							<td scope="row" th:text="${ncm.excecao}"> 123.321.901-99 </td>	
-                            <td scope="row" th:text="${ncm.descricao}"> Essa é uma descrição qualquer do NCM </td>	
-											
-					      <!-- 			EDITAR -->
-                            <td scope="row">
-                                <a th:href="@{'/ncm/editar/' + ${ncm.id}}">
-                                    <button type="button" class="btn btn-outline-primary ajusta-botao-tbl">
-                                        <span data-feather="edit-3">Editar</span>
-                                    </button>
-                                </a>
-                            </td>
+        <!-- TABELA COM OS NCMS CONSULTADOS -->
+        <table class="table table-hover table-responsive">
+            <thead>
+            <tr>
+                <th scope="col"><b>Número</b></th>
+                <th scope="col"><b>Exceção</b></th>
+                <th scope="col"><b>Descrição</b></th>
+                <th scope="col"><b>Editar</b></th>
+                <th scope="col"><b>Deletar</b></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ncm : ${listNcm}">
+                <td scope="row" th:text="${ncm.numero}">12.000.021-90</td>
+                <td scope="row" th:text="${ncm.excecao}">123.321.901-99</td>
+                <td scope="row" th:text="${ncm.descricao}">Essa é uma descrição qualquer do NCM</td>
+                <td scope="row">
+                    <a th:href="@{'/ncm/editar/' + ${ncm.id}}">
+                        <button type="button" class="btn btn-outline-primary ajusta-botao-tbl">
+                            <span data-feather="edit-3">Editar</span>
+                        </button>
+                    </a>
+                </td>
+                <td scope="row">
+                    <form th:method="POST" method="DELETE" th:action="@{'/ncm/deletar/' + ${ncm.id}}">
+                        <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl">
+                            <span data-feather="trash-2">Deletar</span>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-                            <!-- DELETAR -->
-                            <td scope="row">
-                                <!-- <form th:method="DELETE" th:action="${(#mvc.url('NC#delete').arg(0, ncm.id)).build()}"> -->
-                                <form th:method="POST" method="DELETE" th:action="@{'/ncm/deletar/' + ${ncm.id}}">
-                                    <button type="submit" class="btn btn-outline-primary ajusta-botao-tbl">
-                                        <span data-feather="trash-2">Deletar</span>
-                                    </button>
-                                </form>
-                            </td>
+        <!-- PAGINAÇÃO -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <!-- Link para a página anterior -->
+                <li class="page-item" th:classappend="${paginaAtual == 0} ? 'disabled' : ''">
+                    <a class="page-link" th:href="@{/ncm/consulta(page=${paginaAtual - 1})}">Anterior</a>
+                </li>
 
-						 </tr>
-					</tbody>
-							
-						<!-- PAGINAÇÃO ? -->
-						<!-- <ul class="nav nav-pills ">
-							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listNcm.totalPages)}">
-								 <a th:href="@{/ncm/consulta/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
-									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">
-								 </a>
-							</li>	
-						</ul> -->
-						
-				</table>
-						
-						
-						<ul class="nav nav-pills ">
-							<li class="nav-item" th:each= "pg : ${#numbers.sequence(0,listNcm.totalPages)}">
-								 <a th:href="@{/ncm/consulta/(page=${pg})}"  th:text="${pg} +1" class="nav-link"  
-									 th:classappend="${paginaAtual} == ${pg} ? 'active': '' ">1
-								 </a>
-							</li>	
-						</ul>
-						
-			</div>
-		</section>
+                <!-- Links para as páginas -->
+                <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                    th:classappend="${i == paginaAtual} ? 'active' : ''">
+                    <a class="page-link" th:href="@{/ncm/consulta(page=${i})}" th:text="${i + 1}"></a>
+                </li>
 
-	</body>
+                <!-- Link para a próxima página -->
+                <li class="page-item" th:classappend="${paginaAtual >= totalPages - 1} ? 'disabled' : ''">
+                    <a class="page-link" th:href="@{/ncm/consulta(page=${paginaAtual + 1})}">Próxima</a>
+                </li>
+
+                <!-- Link para a última página -->
+                <li class="page-item" th:if="${paginaAtual < totalPages - 1}">
+                    <a class="page-link" th:href="@{/ncm/consulta(page=${totalPages - 1})}">Última</a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+</section>
+
+</body>
 
 </html>

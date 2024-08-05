@@ -4,6 +4,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,14 +57,23 @@ public class NcmController {
 		attributes.addFlashAttribute("mensagemSucesso", "NCM alterado/cadastrado com sucesso!");
 		return mv;
 	}
-		
+
 	@GetMapping("/consulta")
 	public ModelAndView findAll(Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("ncm/consulta");
-//		mv.addObject("listNcm", ncmService.findAll());
-		mv.addObject("listNcm", ncmService.findAll(PageRequest.of(page, 20)));
-		model.addAttribute("paginaAtual",page);
-		
+		int pageSize = 20;
+		Page<Ncm> ncmPage = ncmService.findAll(PageRequest.of(page, pageSize));
+
+		int totalPages = ncmPage.getTotalPages();
+		int startPage = Math.max(0, Math.min(page - 1, totalPages - 3));
+		int endPage = Math.min(startPage + 2, totalPages - 1);
+
+		mv.addObject("listNcm", ncmPage);
+		model.addAttribute("paginaAtual", page);
+		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+
 		return mv;
 	}
 

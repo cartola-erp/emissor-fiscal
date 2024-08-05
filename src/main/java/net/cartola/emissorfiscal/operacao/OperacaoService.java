@@ -9,6 +9,10 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -25,6 +29,11 @@ public class OperacaoService {
 		List<Operacao> listOperacoes = operacaoRepository.findAll();
 		listOperacoes.sort(Comparator.comparing(Operacao::getId));
 		return listOperacoes;
+	}
+
+	public Page<Operacao> rtnTodos(Pageable pageable){
+
+		return operacaoRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id")));
 	}
 
 	public List<Operacao> findByIdsIn(Set<Long> operacaoIds) {

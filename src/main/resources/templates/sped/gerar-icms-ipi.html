@@ -52,7 +52,7 @@
 							<label for="cmbLojas"><strong>Loja</strong></label>
 							<select class="custom-select" name="lojaId" id="cmbLojas">
 								<option selected id="opLoja"> </option>
-								<option th:each="loja : ${listLojas}" th:value="${loja.id}" th:id="${loja.id}" th:selected="${loja.id == paramBuscaSped.lojaId}" th:text="${loja.nomeFantasia}" ></option>
+								<option th:each="loja : ${listLojas}" th:value="${loja.id}" th:id="${loja.id}" th:selected="${loja.id == paramBuscaSped.lojaId}" th:text="${loja.nome}" ></option>
 							</select>
 						</div>
 						

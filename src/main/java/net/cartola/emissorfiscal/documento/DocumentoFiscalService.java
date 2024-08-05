@@ -6,18 +6,15 @@ import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.DESTINATARI
 import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.TERCEIROS;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeOperacao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.devolucao.Devolucao;
@@ -38,6 +35,8 @@ import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
 import net.cartola.emissorfiscal.util.ValidationHelper;
+
+import javax.print.Doc;
 
 @Service
 public class DocumentoFiscalService extends DocumentoService {
@@ -96,12 +95,21 @@ public class DocumentoFiscalService extends DocumentoService {
 		return documentoFiscalRepository.findAll();
 	}
 
+	public Page<DocumentoFiscal> findAllDocs(Pageable pageable){
+		return  documentoFiscalRepository.findAll(pageable);
+	}
+
 	public List<DocumentoFiscal> findByNfeChaveAcessoIn(Collection<String> setChaveAcessoReferencia) {
 		return documentoFiscalRepository.findByNfeChaveAcessoIn(setChaveAcessoReferencia);
 	}
 	
 	private List<DocumentoFiscal> findDocumentoFiscalByOperacao(Operacao operacao) {
 		return documentoFiscalRepository.findByOperacao(operacao);
+	}
+
+	public Page<DocumentoFiscal> buscarPorTipoDeOperacao(IndicadorDeOperacao tipoOperacao, Pageable pageable){
+
+		return documentoFiscalRepository.findByTipoOperacao(tipoOperacao, pageable);
 	}
 	
 	private List<DocumentoFiscal> findDocumentoFiscalByVariasOperacoes(Collection<Operacao> operacoes) {
@@ -463,8 +471,11 @@ public class DocumentoFiscalService extends DocumentoService {
 						.findAny().isPresent()));
 		return mapaTributacoesPorNcm;
 	}
+
 	// ==================================================================================================================================
 
+	public Page<DocumentoFiscal> buscarPorTipoDeOperacaoEChave (String nfeChaveAcesso, IndicadorDeOperacao  tipoDeOperacao, Pageable pageable){
 
-
+		return documentoFiscalRepository.buscarPorChaveOperacao(nfeChaveAcesso, tipoDeOperacao, pageable);
+	}
 }
