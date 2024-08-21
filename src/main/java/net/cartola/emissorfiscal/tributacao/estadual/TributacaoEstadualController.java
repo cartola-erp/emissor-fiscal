@@ -120,9 +120,9 @@ public class TributacaoEstadualController {
 	public ModelAndView findByNumero(@RequestParam("ncm") String numeroNcm, Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("tributacao-estadual/consulta");
 		try {
-			PageRequest pr = PageRequest.of(page, 30);
+			//PageRequest pr = PageRequest.of(page, 500);
 			List<Ncm> listNcm = ncmService.findByNumero(Integer.parseInt(numeroNcm));
-			Page<TributacaoEstadual> pageTribuEsta = icmsService.findTributacaoEstadualByNcms(listNcm, PageRequest.of(page, 30));
+			Page<TributacaoEstadual> pageTribuEsta = icmsService.findTributacaoEstadualByNcms(listNcm, PageRequest.of(page, 500));
 			
 			if (!pageTribuEsta.isEmpty()) {
 				pageTribuEsta.forEach(tributacaoEstadual -> {

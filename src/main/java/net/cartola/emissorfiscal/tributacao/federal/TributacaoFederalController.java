@@ -119,7 +119,7 @@ public class TributacaoFederalController {
 		ModelAndView mv = new ModelAndView("tributacao-federal/consulta");
 		try {
 			List<Ncm> listNcm = ncmService.findByNumero(Integer.parseInt(numeroNcm));
-			Page<TributacaoFederal> pageTribuFede = tributacaoFederalService.findTributacaoFederalByVariosNcms(listNcm, PageRequest.of(page, 30));
+			Page<TributacaoFederal> pageTribuFede = tributacaoFederalService.findTributacaoFederalByVariosNcms(listNcm, PageRequest.of(page, 500));
 			
 			if (!pageTribuFede.isEmpty()) {
 				pageTribuFede.forEach(tributacaoFederal -> {

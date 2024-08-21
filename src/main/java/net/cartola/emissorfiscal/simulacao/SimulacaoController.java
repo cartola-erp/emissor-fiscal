@@ -69,8 +69,8 @@ public class SimulacaoController {
 
 		return mv;
 	}
-	
-	
+
+
 	@PostMapping("simulador/calculo")
 //	@PostMapping
 	public ModelAndView calculaTributacaoEstadual(@Valid DocumentoFiscal documentoFiscal, Long ufOrigemId, Long ufDestinoId, Long operacaoId, Long ncmId, String regimeTributario, BindingResult result, RedirectAttributes attributes) {
@@ -80,13 +80,13 @@ public class SimulacaoController {
 		Integer qtdLinhas = null;
 		try {
 			simulacaoService.setValuesForCalc(documentoFiscal, ufOrigemId, ufDestinoId, operacaoId, ncmId, regimeTributario);
-			
+
 			calcFiscalFederal.calculaImposto(documentoFiscal);
 			calcFiscalEstadual.calculaImposto(documentoFiscal);
-			
+
 //			erros = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal);
 //			System.out.println("ERROS AO CALCULAR: " +erros);
-			
+
 			sbResultCalculo = simulacaoService.getStrbuffMsgResultadoCalculo(documentoFiscal, qtdLinhas);
 
 			addObjetosNaView(mv, documentoFiscal);
@@ -107,7 +107,7 @@ public class SimulacaoController {
 
 		return mv;
 	}
-	
+
 	public void addObjetosNaView(ModelAndView mv, DocumentoFiscal documentoFiscal) {
 		// ISSO ABAIXO, BASICAMENTE é para INICIALIZAR o ID do NCM, para não quebrar a página
 //		DocumentoFiscal docFiscal = new DocumentoFiscal();
@@ -120,7 +120,7 @@ public class SimulacaoController {
 
 		mv.addObject("listOperacao", operacaoService.findAll());
 		mv.addObject("listEstado", estadoService.findAll());
-//		mv.addObject("listNcm", ncmService.findAll());
+		//mv.addObject("listNcm", ncmService.findAll());
 		mv.addObject("finalidades", Arrays.asList(Finalidade.values()));
 		mv.addObject("regimesTributarios", Arrays.asList(RegimeTributario.values()));
 

@@ -61,6 +61,10 @@ public class NcmController {
 	@GetMapping("/consulta")
 	public ModelAndView findAll(Model model, @RequestParam(defaultValue="0") int page) {
 		ModelAndView mv = new ModelAndView("ncm/consulta");
+//		mv.addObject("listNcm", ncmService.findAll());
+		mv.addObject("listNcm", ncmService.findAll(PageRequest.of(page, 20)));
+		model.addAttribute("paginaAtual",page);
+
 		int pageSize = 20;
 		Page<Ncm> ncmPage = ncmService.findAll(PageRequest.of(page, pageSize));
 

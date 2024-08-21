@@ -187,6 +187,10 @@ public class DocumentoFiscalApiController {
 		}
 	}
 
+	@PostMapping(value =  "/recalculo")
+	public void recalculo(){
+		System.out.println("Chegams até aqui");
+	}
 }
 
 
