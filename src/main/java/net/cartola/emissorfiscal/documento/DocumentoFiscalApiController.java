@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.validation.Valid;
 
+import net.cartola.emissorfiscal.recalculo.RecalculoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,10 @@ public class DocumentoFiscalApiController {
 	
 	@Autowired
 	private DocumentoFiscalService docFiscalService;
-	
+
+	@Autowired
+	private RecalculoService recalculoService;
+
 	@Autowired
 	private DeOlhoNoImpostoService olhoNoImpostoService;
 	
@@ -66,8 +70,9 @@ public class DocumentoFiscalApiController {
 	@PostMapping("/deletar")
 	public ResponseEntity<Response<DocumentoFiscal>> deleteDocumentoFiscal(@RequestBody DocumentoFiscal docFiscalToBeDeleted) {
 		LOG.log(Level.INFO, "Deletando o DocumentoFiscal {0} ", docFiscalToBeDeleted);
-		Response<DocumentoFiscal> response = new Response<>();
+		System.out.println(docFiscalToBeDeleted);
 
+		Response<DocumentoFiscal> response = new Response<>();
 		Optional<DocumentoFiscal> opDocFiscalInDatabase = docFiscalService.findDocumentoFiscal(docFiscalToBeDeleted);
 		if(!opDocFiscalInDatabase.isPresent()) {
 			return ResponseEntity.notFound().build();
@@ -116,7 +121,11 @@ public class DocumentoFiscalApiController {
 		if (!opOldDocFiscal.isPresent()) {
 			return ResponseEntity.noContent().build();
 		}
-		docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
+		try {
+			docFiscalService.prepareDocumentoFiscalToUpdate(opOldDocFiscal, newDocFiscal);
+		}catch (Exception e){
+			System.out.println("Não foi possivel atualizar o documento " + e);
+		}
 		return saveOrEditDocumentoFiscal(opOldDocFiscal.get(), false, false);
 	}
 	
@@ -145,7 +154,7 @@ public class DocumentoFiscalApiController {
 		
 		Optional<DocumentoFiscal> opDocFiscal = docFiscalService.save(docFiscal, validaTribuEsta, validaTribuFede);
 		if (opDocFiscal.isPresent()) {
-			response.setData(opDocFiscal.get());
+				response.setData(opDocFiscal.get());
 			return ResponseEntity.ok(response);
 		} else {
 			return ResponseEntity.noContent().build();
@@ -187,9 +196,30 @@ public class DocumentoFiscalApiController {
 		}
 	}
 
-	@PostMapping(value =  "/recalculo")
-	public void recalculo(){
-		System.out.println("Chegams até aqui");
+		@PostMapping(value = "/recalcular")
+		public ResponseEntity<Response<DocumentoFiscal>> recalculo(@RequestBody DocumentoFiscal docFiscalRecebido) {
+		LOG.log(Level.INFO, "Preparando recalculo {0}", docFiscalRecebido);
+		Optional<DocumentoFiscal> docParaRecalculo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
+
+		if(docParaRecalculo.isPresent()){
+			recalculoService.documentoFiscalExiste(docParaRecalculo.get());
+		}else {
+			recalculoService.documentoFiscalNaoExiste(); // Ainda irei implementar
+		}
+			Response<DocumentoFiscal> response = new Response<>();
+			try {
+				if (docParaRecalculo.isPresent()) {
+					DocumentoFiscal documentoFiscalAtualizado = docParaRecalculo.get();
+					response.setData(documentoFiscalAtualizado);
+					return ResponseEntity.ok(response);
+				} else {
+					response.getErrors().add("Documento fiscal não encontrado.");
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+				}
+			} catch (Exception e) {
+				response.getErrors().add("Erro ao recalcular o documento fiscal: " + e.getMessage());
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			}
 	}
 }
 
