@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.print.Doc;
 import javax.validation.Valid;
 
 import net.cartola.emissorfiscal.recalculo.RecalculoService;
@@ -199,17 +200,25 @@ public class DocumentoFiscalApiController {
 		@PostMapping(value = "/recalcular")
 		public ResponseEntity<Response<DocumentoFiscal>> recalculo(@RequestBody DocumentoFiscal docFiscalRecebido) {
 		LOG.log(Level.INFO, "Preparando recalculo {0}", docFiscalRecebido);
-		Optional<DocumentoFiscal> docParaRecalculo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
 
+		Optional<DocumentoFiscal> docParaRecalculo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
+		Optional<DocumentoFiscal> documentoFiscalNaoSalvo = Optional.empty();
+
+		Optional<DocumentoFiscal> documentoCalculado = Optional.empty();
 		if(docParaRecalculo.isPresent()){
-			recalculoService.documentoFiscalExiste(docParaRecalculo.get());
+			documentoCalculado = recalculoService.documentoFiscalExiste(docParaRecalculo.get());
 		}else {
-			recalculoService.documentoFiscalNaoExiste(); // Ainda irei implementar
+			saveCompra(docFiscalRecebido);
+			Optional<DocumentoFiscal> isDocumentoFiscalFoiSalvo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
+			if(isDocumentoFiscalFoiSalvo.isPresent()){
+				documentoFiscalNaoSalvo = recalculoService.documentoFiscalNaoExiste(docFiscalRecebido);
+				documentoCalculado = documentoFiscalNaoSalvo;
+			}
 		}
 			Response<DocumentoFiscal> response = new Response<>();
 			try {
-				if (docParaRecalculo.isPresent()) {
-					DocumentoFiscal documentoFiscalAtualizado = docParaRecalculo.get();
+				if (documentoCalculado.isPresent()) {
+					DocumentoFiscal documentoFiscalAtualizado = documentoCalculado.get();
 					response.setData(documentoFiscalAtualizado);
 					return ResponseEntity.ok(response);
 				} else {
@@ -217,7 +226,7 @@ public class DocumentoFiscalApiController {
 					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 				}
 			} catch (Exception e) {
-				response.getErrors().add("Erro ao recalcular o documento fiscal: " + e.getMessage());
+				response.getErrors().add("Erro ao recalcular o documento fiscal: ");
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 			}
 	}
