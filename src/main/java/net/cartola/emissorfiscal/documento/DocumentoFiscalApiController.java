@@ -197,6 +197,8 @@ public class DocumentoFiscalApiController {
 		}
 	}
 
+	// ** PARA ME LEMBRAR DE CRIAR O METODO QUE IRA SALVAR O DOCUMENTO FISCAL ATUALIZADO NO BANCO DO EMISSOR 
+
 		@PostMapping(value = "/recalcular")
 		public ResponseEntity<Response<DocumentoFiscal>> recalculo(@RequestBody DocumentoFiscal docFiscalRecebido) {
 		LOG.log(Level.INFO, "Preparando recalculo {0}", docFiscalRecebido);

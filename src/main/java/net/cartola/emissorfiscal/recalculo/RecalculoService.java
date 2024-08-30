@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.recalculo;
 
+import io.micrometer.core.instrument.util.JsonUtils;
 import jdk.nashorn.internal.runtime.regexp.joni.ast.StringNode;
 import net.cartola.emissorfiscal.documento.CompraDto;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
@@ -11,22 +12,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-
-/*
- para me lembrar de fazer algumas verificaçao de campos e tratativa de retorno de erro
- */
 
 @Service
 public class RecalculoService {
 
     @Autowired
     RecalculoRepository recalculoRepository;
+    Long ifOperation;
 
     public Optional<DocumentoFiscal> documentoFiscalExiste(DocumentoFiscal docParaRecalculo) {
-        System.out.println("Chegamos aqui no documento existente: " + docParaRecalculo);
 
+        System.out.println("Chegamos aqui no documento existente: " + docParaRecalculo);
+        ifOperation = docParaRecalculo.getOperacao().getId();
+
+        if(ifOperation == 71  || ifOperation == 34 || ifOperation == 16 || ifOperation == 19){
+
+             Optional<DocumentoFiscal> docTribuFixas = TributacoesFixas(docParaRecalculo);
+             return (docTribuFixas);
+         }
          Optional<DocumentoFiscal> docComImpostoEstadualCalculado = calcularImpostoEstadual(docParaRecalculo);
          calcularImpostoFederal(docComImpostoEstadualCalculado.get());
 
@@ -193,6 +199,73 @@ public class RecalculoService {
         throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
     }
 
+    // *-------- ESSE METODO IRA LIDAR COM OPERAÇOES ONDE AS TRIBUTAÇOES SÃO FIXAS, ANULAM A DO NCM ------* //
+    private Optional<DocumentoFiscal>TributacoesFixas(DocumentoFiscal docComTributacaoFixa){
+        System.out.println("Chegamos aqui nos documentos com tributacões fixas" + docComTributacaoFixa);
+
+        List<DocumentoFiscalItem> itensDoDoc = docComTributacaoFixa.getItens();
+
+        for(DocumentoFiscalItem item : itensDoDoc){
+
+            //PIS ST
+            if(ifOperation == 71){
+                item.setPisCst(98); // **
+            }else if(ifOperation == 16 || ifOperation == 19){
+                item.setPisCst(70);
+            }
+
+            item.setPisAliquota(BigDecimal.valueOf(0.0));
+            item.setPisBase(BigDecimal.valueOf(0.0));
+            item.setPisValor(BigDecimal.valueOf(0.0));
+
+            // CFOPS
+            if(ifOperation == 71) {
+                item.setCfop(1908); // *
+            } else if (ifOperation == 34 && item.getIcmsCst() == 0) {
+                item.setCfop(1556);
+            }else if (ifOperation == 34 && item.getIcmsCst() == 60 ){
+                item.setCfop(1407);
+            } else if (ifOperation == 16 || ifOperation == 19 && item.getIcmsCst() == 0) {
+                item.setIcmsAliquota(BigDecimal.valueOf(18.00));
+                item.setCfop(1949);
+            }else if (ifOperation == 16 || ifOperation == 19 && item.getIcmsCst() == 60){
+                item.setIcmsAliquota(BigDecimal.valueOf(0.0));
+                item.setCfop(1949);
+            }
+
+            /* IPI NÃO É UTILIZADO //
+            item.setIpiBase(BigDecimal.valueOf(0.0));
+            item.setIpiAliquota(BigDecimal.valueOf(0.0));
+            item.setIpiValor(BigDecimal.valueOf(0.0));
+            item.setIpiCst(0);
+            */
+
+            // COFINS ST
+            if(ifOperation == 71){
+                item.setCofinsCst(98); // *
+            }else if (ifOperation == 16 || ifOperation == 19){
+                item.setCofinsCst(70);
+            }
+            item.setCofinsBase(BigDecimal.valueOf(0.0));
+            item.setCofinsAliquota(BigDecimal.valueOf(0.0));
+            item.setCofinsValor(BigDecimal.valueOf(0.0));
+
+            /* DEFINIR ESSAS TRIBUTAÇÃO APENAS SE PRECISAR
+            item.setIcmsCest(0);
+            item.setCodigoAnp(0);
+            item.setIcmsFcpAliquota(BigDecimal.valueOf(0.0));
+            item.setIcmsCst(41); // *
+            item.setIcmsReducaoBaseAliquota(BigDecimal.valueOf(0.0));
+
+            item.setIcmsIva(BigDecimal.valueOf(0.0));
+            item.setIcmsValor(BigDecimal.valueOf(0.0));
+            item.setIcmsStBase(BigDecimal.valueOf(0.0));
+            item.setIcmsStBaseRetido(BigDecimal.valueOf(0));
+             */
+        }
+
+        return Optional.of(docComTributacaoFixa);
+    }
 
     public class CalculaImpostoException extends RuntimeException {
         public CalculaImpostoException(String mensagem){
