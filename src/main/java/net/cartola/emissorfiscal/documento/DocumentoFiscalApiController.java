@@ -197,16 +197,15 @@ public class DocumentoFiscalApiController {
 		}
 	}
 
-	// ** PARA ME LEMBRAR DE CRIAR O METODO QUE IRA SALVAR O DOCUMENTO FISCAL ATUALIZADO NO BANCO DO EMISSOR 
+	// ** PARA ME LEMBRAR DE CRIAR O METODO QUE IRA SALVAR O DOCUMENTO FISCAL ATUALIZADO NO BANCO DO EMISSOR
 
 		@PostMapping(value = "/recalcular")
 		public ResponseEntity<Response<DocumentoFiscal>> recalculo(@RequestBody DocumentoFiscal docFiscalRecebido) {
-		LOG.log(Level.INFO, "Preparando recalculo {0}", docFiscalRecebido);
 
 		Optional<DocumentoFiscal> docParaRecalculo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
 		Optional<DocumentoFiscal> documentoFiscalNaoSalvo = Optional.empty();
-
 		Optional<DocumentoFiscal> documentoCalculado = Optional.empty();
+
 		if(docParaRecalculo.isPresent()){
 			documentoCalculado = recalculoService.documentoFiscalExiste(docParaRecalculo.get());
 		}else {
