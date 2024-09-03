@@ -36,7 +36,9 @@ import net.cartola.emissorfiscal.util.ValidationHelper;
 public class DocumentoFiscalApiController {
 
 	private static final Logger LOG = Logger.getLogger(DocumentoFiscalApiController.class.getName());
-	
+
+	@Autowired
+	private DocumentoFiscalRepository documentoFiscalRepository;
 	@Autowired
 	private DocumentoFiscalService docFiscalService;
 
@@ -209,7 +211,6 @@ public class DocumentoFiscalApiController {
 		if(docParaRecalculo.isPresent()){
 			documentoCalculado = recalculoService.documentoFiscalExiste(docParaRecalculo.get());
 		}else {
-			saveCompra(docFiscalRecebido);
 			Optional<DocumentoFiscal> isDocumentoFiscalFoiSalvo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
 			if(isDocumentoFiscalFoiSalvo.isPresent()){
 				documentoFiscalNaoSalvo = recalculoService.documentoFiscalNaoExiste(docFiscalRecebido);
@@ -221,6 +222,7 @@ public class DocumentoFiscalApiController {
 				if (documentoCalculado.isPresent()) {
 					DocumentoFiscal documentoFiscalAtualizado = documentoCalculado.get();
 					response.setData(documentoFiscalAtualizado);
+					documentoFiscalRepository.saveAndFlush(documentoFiscalAtualizado);
 					return ResponseEntity.ok(response);
 				} else {
 					response.getErrors().add("Documento fiscal não encontrado.");

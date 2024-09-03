@@ -94,7 +94,7 @@ public class CalculoFiscalEstadual implements CalculoFiscalDevolucao {
 			boolean isProdutoImportado = docFiscItemService.verificaSeEhImportado(docItem);
 			TributacaoEstadual tributacao = mapaTributacoesPorNcmEOrigem.get(docItem.getNcm()).get(isProdutoImportado);
 			calculoIcms.calculaIcms(docItem, tributacao, documentoFiscal).ifPresent(listCalculoImpostos::add);;
-//			listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
+			//listCalculoImpostos.add(calculoIcms.calculaIcms(docItem, tributacao));
 		});
 
 		setaIcmsBaseEValor(documentoFiscal, listCalculoImpostos);
