@@ -17,7 +17,7 @@ Para que o usuario possa adquirir o token de acesso e utilizar as funcionalidade
 {
   "login": "erpj-ws",
   "nome": "usuario do sistema",
-  "email": "erpjws@autogeral.com.br",
+  "email": "dev@autogeral.com.br",
   "senha": "erpj-ws-homologacao",
   "perfis": [
     {
