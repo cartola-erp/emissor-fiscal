@@ -381,7 +381,9 @@ create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
 
 PS: Necessário ter o usuário root com a senha root (ou alterar no **application.properties**, para a que você deseja)
 
-## 8. Deployment
+## 8. Deployment -- ATUALIZADO NO DIA 05/09/2024 ---- 
+
+<!-- VERSÃO ANTIGA DA REALIZAÇÃO DO DEPLOYMENT 
 
 ### 8.a Deployment no GAE (Google App Engine)
 - 1. Necessário deixar o perfil correto definido no arquivo **appengine-web.xml** (homologacao ou producao
@@ -407,7 +409,57 @@ PS: [Clique aqui para ver sobre o maven profile "-Pproducao"](https://github.com
 gcloud compute scp target\emissor-fiscal-0.1.jar muril@emissorfiscal:/home/muril --project=erpj-br
 ```
 
+--> 
 
+### Deployment na VM do google cloud 
+
+<p>
+Para iniciar o ** Deployment ** na vm do google é necessario antes criar um serviço para rodar o emissor all time <br> 
+Fazeremos isso acessando a vm, e utilizando o seguinte comando: 
+</p>
+
+```
+cd lib/etc/systemd/system/ 
+vim emissor-fiscal 
+```
+<p>
+O arquivo de configuração do serviço ficara assim: 
+</p>
+
+```
+ [Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Web Service fiscal interno autogeral
+Requires=cloud-sql-proxy.service
+After=cloud-sql-proxy.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/emissor-fiscal
+ExecStart=/usr/bin/java -jar -Xmx3G /opt/emissor-fiscal/emissor-fiscal.jar
+Restart=always
+StandardOutput=journap[Install]
+WantedBy=multi-user.target
+```
+<p>
+Apos a configuração do arquivo, iremos criar uma pasta que receberá o aquivo JAR do projeto do emissor fiscal, <br> 
+o ** arquivo jar ** pode ser gerado atraves do comando ** MVN PACKAGE **, apos gerar o arquivo jar usaremos o comando para transferir o arquivo local 
+para dentro da vm 
+</p>
+
+```
+gcloud compute scp C:\Users\wesley.cristian\Documents\intelijj-projetos\emissor-fiscal\target\emissor-fiscal-0.1.jar fiscal:/home/wesley.cristian --zone=southamerica-east1-c --project=erpj-br --recurse
+```
+<p>
+E por ultimo iremos transferir o arquivo da pasta do usuario na vm, para a pasta ** OPT **, que será onde o arquivo do serviço ira buscar para começar a inicialização
+e por o deploy no ar 
+</p>
+
+```
+mv emissor-fiscal-0.1.jar /opt/emissor-fiscal/emissor-fiscal.jar
+```
 
 ## Autores
 
