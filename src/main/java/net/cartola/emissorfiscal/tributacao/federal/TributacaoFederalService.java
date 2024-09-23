@@ -3,14 +3,12 @@ package net.cartola.emissorfiscal.tributacao.federal;
 import static java.util.stream.Collectors.toSet;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
@@ -43,7 +41,18 @@ public class TributacaoFederalService {
 	public Optional<TributacaoFederal> save(TributacaoFederal tributacaoFederal) {
 //		if (tributacaoFederal.getId() == null) {
 		if (tributacaoFederal != null) {
-			divideTributacaoFederalPorCem(tributacaoFederal);
+
+			Long tribuId = tributacaoFederal.getId();
+			Optional<TributacaoFederal> isTribuExiste = Optional.ofNullable(tributacaoFederalRepository.findByIdTribu(tribuId));
+			if(isTribuExiste.isPresent()) {
+				divideTributacaoFederalPorCem(tributacaoFederal);
+				tributacaoFederal.setDataAlteracao(new Date());
+				tributacaoFederal.setAlteradoPor(SecurityContextHolder.getContext().getAuthentication().getName());
+			}else{
+				divideTributacaoFederalPorCem(tributacaoFederal);
+				tributacaoFederal.setDataCriacao(new Date());
+				tributacaoFederal.setCriadoPor(SecurityContextHolder.getContext().getAuthentication().getName());
+			}
 		}
 		return Optional.ofNullable(tributacaoFederalRepository.saveAndFlush(tributacaoFederal));
 	}

@@ -161,6 +161,12 @@ public class DocumentoFiscalService extends DocumentoService {
 			devolucaoService.deleteById(docFisc.getDevolucao().getId());
 		}
 	}
+
+	public Optional<DocumentoFiscal>deletarPorId(DocumentoFiscal documentoFiscal){
+		this.deleteById(documentoFiscal.getId());
+		return Optional.empty();
+	}
+
 	
 	private void deleteById(Long id) {
 		documentoFiscalRepository.deleteById(id);
