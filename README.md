@@ -414,7 +414,7 @@ gcloud compute scp target\emissor-fiscal-0.1.jar muril@emissorfiscal:/home/muril
 ### Deployment na VM do google cloud 
 
 <p>
-Para iniciar o ** Deployment ** na vm do google é necessario antes criar um serviço para rodar o emissor all time <br> 
+Para iniciar o <b>Deployment</b> na vm do google é necessario antes criar um serviço para rodar o emissor all time <br> 
 Fazeremos isso acessando a vm, e utilizando o seguinte comando: 
 </p>
 
@@ -445,7 +445,7 @@ WantedBy=multi-user.target
 ```
 <p>
 Apos a configuração do arquivo, iremos criar uma pasta que receberá o aquivo JAR do projeto do emissor fiscal, <br> 
-o ** arquivo jar ** pode ser gerado atraves do comando ** MVN PACKAGE **, apos gerar o arquivo jar usaremos o comando para transferir o arquivo local 
+o <b>arquivo jar</b> pode ser gerado atraves do comando <b>MVN PACKAGE</b>, apos gerar o arquivo jar usaremos o comando para transferir o arquivo local 
 para dentro da vm 
 </p>
 
@@ -453,12 +453,25 @@ para dentro da vm
 gcloud compute scp C:\Users\wesley.cristian\Documents\intelijj-projetos\emissor-fiscal\target\emissor-fiscal-0.1.jar fiscal:/home/wesley.cristian --zone=southamerica-east1-c --project=erpj-br --recurse
 ```
 <p>
-E por ultimo iremos transferir o arquivo da pasta do usuario na vm, para a pasta ** OPT **, que será onde o arquivo do serviço ira buscar para começar a inicialização
+E por ultimo iremos transferir o arquivo da pasta do usuario na vm, para a pasta <b>OPT</b>, que será onde o arquivo do serviço ira buscar para começar a inicialização
 e por o deploy no ar 
 </p>
 
 ```
 mv emissor-fiscal-0.1.jar /opt/emissor-fiscal/emissor-fiscal.jar
+```
+
+## permissões 
+* Para dar acesso do systemd com o usuario root acesso o cloud:
+```
+sudo semanage fcontext -a -t bin_t "/usr/local/bin/cloud-sql-proxy"
+```
+```
+sudo restorecon -v /usr/local/bin/cloud-sql-proxy
+```
+* Para o nginx porder acessar localhost:8080:
+```
+sudo setsebool -P httpd_can_network_connect 1
 ```
 
 ## Autores
