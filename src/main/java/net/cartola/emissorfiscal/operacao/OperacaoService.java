@@ -1,18 +1,16 @@
 package net.cartola.emissorfiscal.operacao;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import javax.validation.Valid;
 
+import javassist.expr.NewArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -41,6 +39,15 @@ public class OperacaoService {
 	}
 	
 	public Optional<Operacao> save(Operacao operacao) {
+		String desc = operacao.getDescricao();
+		List<Operacao> isOperacaoExiste = operacaoRepository.findOperacaoByParteDaDescricao(desc);
+		if(!isOperacaoExiste.isEmpty()){
+			operacao.setDataAlteracao(new Date());
+			operacao.setAlteradoPor(SecurityContextHolder.getContext().getAuthentication().getName());
+		}else {
+			operacao.setDataCriacao(new Date());
+			operacao.setCriadoPor(SecurityContextHolder.getContext().getAuthentication().getName());
+		}
 		return Optional.ofNullable(operacaoRepository.saveAndFlush(operacao));
 	}
 
@@ -69,7 +76,10 @@ public class OperacaoService {
 		return operacaoRepository.findById(id);
 	}
 
+	// TA EXCLUINDO O REGISTRO NO BANCO, PRECISO ARRUMAR DEPOIS.
 	public void deleteById(long id) {
+		Optional<Operacao> operacao = Optional.of(findOne(id).get());
+		operacao.get().setExcluidoPor(SecurityContextHolder.getContext().getAuthentication().getName());
 		operacaoRepository.deleteById(id);
 	}
 
