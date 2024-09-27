@@ -56,7 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 					logger.error("Authentication Failed. Username or Password not valid.");
 				}
 			} else {
-				logger.warn("couldn't find bearer string, will ignore the header");
+				logger.warn("couldn't find bearer string, will ignore the header : " + request.getPathTranslated());
 			}
 			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
