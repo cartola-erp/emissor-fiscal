@@ -1,6 +1,5 @@
 package net.cartola.emissorfiscal.recalculo;
 
-import io.micrometer.core.instrument.util.JsonUtils;
 import jdk.nashorn.internal.runtime.regexp.joni.ast.StringNode;
 import net.cartola.emissorfiscal.documento.*;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
@@ -109,21 +108,19 @@ public class RecalculoService {
                     }
                 }
                 if (!itensSemTributacao.isEmpty()) {
-                    throw new CalculaImpostoException("Não foram encontradas tributações estaduais para os seguintes NCMS: "
-                            + String.join(", ", itensSemTributacao) + " " + operacaoDesc +
-                            "| VERIFICAR / CADASTRAR no EMISSOR FISCAL");
+                    throw new CalculaImpostoException(
+                            "Não foram encontradas as TRIBUTAÇOES ESTADUAIS para os NCMS( " + String.join(", ", itensSemTributacao) + " )."
+                                    + " | VERIFICAR / CADASTRAR no EMISSOR FISCAL com a OPERAÇÃO descrita na nota.");
                 }
 
                 return Optional.of(documentoFiscalParaCalcularImpostoIcms);
             } else {
-                throw new CalculaImpostoException("Não existe nenhuma tributação estadual cadastrada para a operação: " + operacaoDesc + " para os NCMS da nota " +
-                        " NECESSARIO CADASTRAR A TRIBUTAÇÃO NO EMISSOR FISCAL");
+                throw new CalculaImpostoException("Nenhum NCM da nota, possui TRIBUTAÇÃO ESTADUAL cadastrada. Favor conferir no EMISSOR FISCAL.");
             }
         }
         throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
     }
     public Optional<DocumentoFiscal> calcularImpostoFederal(DocumentoFiscal documentoFiscalCalculado){
-        System.out.println("Chegamos aqui no documento para recalcular imposto federal" + documentoFiscalCalculado);
 
         Long operacaoId = documentoFiscalCalculado.getOperacao().getId();
         String operacaoDesc = documentoFiscalCalculado.getOperacao().getDescricao();
@@ -173,38 +170,31 @@ public class RecalculoService {
 
                     if (tributacao != null) {
                         // Atualize os campos do item com os valores da tributação
-                        item.setCofinsAliquota(tributacao.getCofinsAliquota().multiply((new BigDecimal("100"))));
-                        item.setCofinsBase(tributacao.getCofinsBase().multiply(new BigDecimal(100)));
+                        item.setCofinsAliquota(tributacao.getCofinsAliquota());
+                        item.setCofinsBase(tributacao.getCofinsBase());
                         item.setCofinsCst(tributacao.getCofinsCst());
                         item.setIpiAliquota(tributacao.getIpiAliquota());
                         item.setIpiBase(tributacao.getIpiBase());
                         item.setIpiCst(tributacao.getIpiCst());
-                        item.setPisAliquota(tributacao.getPisAliquota().multiply(new BigDecimal("100"))); // Divisão por 100
-                        item.setPisBase(tributacao.getPisBase().multiply(new BigDecimal("100")));
+                        item.setPisAliquota(tributacao.getPisAliquota());
+                        item.setPisBase(tributacao.getPisBase());
                         item.setPisCst(tributacao.getPisCst());
                     }else{
                         itensSemTributacao.add(item.getClasseFiscal());
                     }
                 }
                 if (!itensSemTributacao.isEmpty()) {
-                    throw new CalculaImpostoException("Não foram encontradas tributações federal para os seguintes NCMS: "
-                            + String.join(", ", itensSemTributacao ) + " " + operacaoDesc +
-                            "| VERIFICAR / CADASTRAR no EMISSOR FISCAL");
+                    throw new CalculaImpostoException(
+                            "Não foram encontradas TRIBUTAÇOES FEDERAIS para os NCMS( " +String.join(", ", itensSemTributacao ) + " )"
+                                    + " | VERIFICAR / CADASTRAR no EMISSOR FISCAL com a OPERAÇÃO descrita na nota.");
                 }
 
                 return Optional.of(documentoFiscalCalculado);
             } else {
-                throw new CalculaImpostoException(" Não existe nenhuma tributação federal cadastrada com a operação: " + operacaoDesc + " para os NCMS da nota. |" +
-                        " NECESSARIO CADASTRAR A TRIBUTAÇÃO NO EMISSOR FISCAL");
+                throw new CalculaImpostoException("Nenhum NCM da nota, possui TRIBUTAÇÃO FEDERAL cadastrada. Favor conferir no EMISSOR FISCAL.");
             }
         }
         throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
-    }
-
-    // *-------- ESSE METODO IRA LIDAR COM OPERAÇOES ONDE AS TRIBUTAÇOES SÃO FIXAS, ANULAM A DO NCM ------* //
-    private Optional<DocumentoFiscal> docFixoTributacao(DocumentoFiscal documentoTribuFixa){
-        System.out.println("teste");
-        return Optional.of(documentoTribuFixa);
     }
 
     public static class CalculaImpostoException extends RuntimeException {
