@@ -47,10 +47,10 @@ public class OperacaoController {
 	
 		try {
 			operacaoService.save(operacao);
+			attributes.addFlashAttribute("mensagemSucesso", "OPERAÇÃO alterado/cadastrado com sucesso!");
 		} catch (Exception ex) {
 			mv.addObject("mensagemErro", "Houve um erro ao tentar salvar/editar a OPERAÇÃO: " +operacao.getDescricao());
 		}
-		attributes.addFlashAttribute("mensagemSucesso", "OPERAÇÃO alterado/cadastrado com sucesso!");
 		return mv;
 	}
 		

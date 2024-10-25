@@ -1,5 +1,7 @@
 package net.cartola.emissorfiscal.api.controller;
 
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -17,10 +19,9 @@ import net.cartola.emissorfiscal.usuario.Usuario;
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AuthorizationTestHelper<T> {
-	
+
 	private String token;
-	
-	private String gerarToken(TestRestTemplate restTemplate) {
+	public String gerarToken(TestRestTemplate restTemplate) {
 		Usuario user = new Usuario();
 		user.setLogin("root");
 		user.setSenha("root");
@@ -47,8 +48,5 @@ public class AuthorizationTestHelper<T> {
 		HttpEntity<T> request = new HttpEntity<>(entity, headers);
 		return request;
 	}
-
-
-
 }
 

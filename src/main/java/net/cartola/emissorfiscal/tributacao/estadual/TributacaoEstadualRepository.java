@@ -15,6 +15,7 @@ import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.ncm.Ncm;
 import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.pessoa.RegimeTributario;
+import org.springframework.data.repository.query.Param;
 
 public interface TributacaoEstadualRepository extends JpaRepository<TributacaoEstadual, Long> {
 	
@@ -42,7 +43,7 @@ public interface TributacaoEstadualRepository extends JpaRepository<TributacaoEs
 	@Query(value = "SELECT t FROM TributacaoEstadual t INNER JOIN t.operacao o INNER JOIN t.estadoOrigem origem INNER JOIN t.estadoDestino d "
 				+ " WHERE o.id = 3 AND t.regimeTributario = :regimeTributario  AND origem.sigla = :ufOrigem AND d.sigla = :ufDestino GROUP BY t.produtoImportado")
 	Set<TributacaoEstadual> findByRegimeTributarioAndOrigemSiglaAndDestinoSigla(RegimeTributario regimeTributario, EstadoSigla ufOrigem, EstadoSigla ufDestino);
-	
-	
-	
+
+	@Query("SELECT t FROM TributacaoEstadual t WHERE t.id = :tribuId")
+	TributacaoEstadual findByIdTribu(@Param("tribuId")Long id);
 }

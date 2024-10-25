@@ -3,16 +3,13 @@ package net.cartola.emissorfiscal.tributacao.estadual;
 import static java.util.stream.Collectors.toSet;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.math.BigInteger;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -70,7 +67,19 @@ public class TributacaoEstadualService {
 	
 	public Optional<TributacaoEstadual> save(TributacaoEstadual tributacaoEstadual) {
 		if (tributacaoEstadual != null) {
-			divideTributacaoEstadualPorCem(tributacaoEstadual);
+
+			Long tribuId = tributacaoEstadual.getId();
+
+			Optional<TributacaoEstadual> isTribuExiste = Optional.ofNullable(repository.findByIdTribu(tribuId));
+			if(isTribuExiste.isPresent()){
+				divideTributacaoEstadualPorCem(tributacaoEstadual);
+				tributacaoEstadual.setDataAlteracao(new Date());
+				tributacaoEstadual.setAlteradoPor(SecurityContextHolder.getContext().getAuthentication().getName());
+			}else{
+				tributacaoEstadual.setDataCriacao(new Date());
+				tributacaoEstadual.setCriadoPor(SecurityContextHolder.getContext().getAuthentication().getName());
+				divideTributacaoEstadualPorCem(tributacaoEstadual);
+			};
 		}
 		return Optional.ofNullable(repository.saveAndFlush(tributacaoEstadual));
 	}

@@ -2,6 +2,7 @@ package net.cartola.emissorfiscal.tributacao.federal;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,6 +51,13 @@ public class TributacaoFederal implements Serializable {
 	private BigDecimal ipiBase;
 	private BigDecimal ipiAliquota;
 	private String mensagem;
+
+	//Campos de LOG
+	private String criadoPor;
+	private Date dataCriacao;
+	private String alteradoPor;
+	private Date dataAlteracao;
+	private String excluidoPor;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -191,6 +199,51 @@ public class TributacaoFederal implements Serializable {
 
 	public void setMensagem(String mensagem) {
 		this.mensagem = mensagem;
+	}
+
+	// Metodos do Log -----------
+	@Column(name="criado_por")
+	public String getCriadoPor(){
+		return criadoPor;
+	};
+
+	public void setCriadoPor(String criadoPor){
+		this.criadoPor = criadoPor;
+	};
+	@Column(name="data_criacao")
+	public Date getDataCriacao(){
+		return dataCriacao;
+	}
+
+	public void setDataCriacao(Date dataCriacao){
+		this.dataCriacao = dataCriacao;
+	}
+
+	@Column(name="alterado_por")
+	public String getAlteradoPor(){
+		return alteradoPor;
+	}
+
+	public void setAlteradoPor(String alteradoPor){
+		this.alteradoPor = alteradoPor;
+	}
+
+	@Column(name="data_alteracao")
+	public Date getDataAlteracao(){
+		return dataAlteracao;
+	}
+
+	public void setDataAlteracao(Date dataAlteracao){
+		this.dataAlteracao = dataAlteracao;
+	}
+
+	@Column(name="excluido_por")
+	public String getExcluidoPor(){
+		return excluidoPor;
+	}
+
+	public void setExcluidoPor(String excluidoPor){
+		this.excluidoPor = excluidoPor;
 	}
 
 	@Override

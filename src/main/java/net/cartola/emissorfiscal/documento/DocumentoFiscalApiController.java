@@ -36,7 +36,9 @@ import net.cartola.emissorfiscal.util.ValidationHelper;
 public class DocumentoFiscalApiController {
 
 	private static final Logger LOG = Logger.getLogger(DocumentoFiscalApiController.class.getName());
-	
+
+	@Autowired
+	private DocumentoFiscalRepository documentoFiscalRepository;
 	@Autowired
 	private DocumentoFiscalService docFiscalService;
 
@@ -197,29 +199,45 @@ public class DocumentoFiscalApiController {
 		}
 	}
 
+	// ** PARA ME LEMBRAR DE CRIAR O METODO QUE IRA SALVAR O DOCUMENTO FISCAL ATUALIZADO NO BANCO DO EMISSOR
+
 		@PostMapping(value = "/recalcular")
 		public ResponseEntity<Response<DocumentoFiscal>> recalculo(@RequestBody DocumentoFiscal docFiscalRecebido) {
-		LOG.log(Level.INFO, "Preparando recalculo {0}", docFiscalRecebido);
 
-		Optional<DocumentoFiscal> docParaRecalculo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
-		Optional<DocumentoFiscal> documentoFiscalNaoSalvo = Optional.empty();
+		Response<DocumentoFiscal> response = new Response<>();
+		 List<DocumentoFiscalItem> itensSemNcm = docFiscalRecebido.getItens();
 
-		Optional<DocumentoFiscal> documentoCalculado = Optional.empty();
+		 for(DocumentoFiscalItem item : itensSemNcm ){
+			 if(item.getClasseFiscal() == ""){
+				 //item.setClasseFiscal("39172290");
+				 response.getErrors().add("Não foi possivel encontrar todos ncm dos itens, ncm faltante: " + item.getDescricaoEmpresa());
+				 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+			 }
+		 }
+		 saveCompra(docFiscalRecebido);
+
+		 Optional<DocumentoFiscal> docParaRecalculo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
+		 Optional<DocumentoFiscal> documentoFiscalNaoSalvo = Optional.empty();
+		 Optional<DocumentoFiscal> documentoCalculado = Optional.empty();
+
 		if(docParaRecalculo.isPresent()){
 			documentoCalculado = recalculoService.documentoFiscalExiste(docParaRecalculo.get());
-		}else {
-			saveCompra(docFiscalRecebido);
+		}
+		/*
+		else {
+			documentoFiscalRepository.saveAndFlush(docFiscalRecebido);
 			Optional<DocumentoFiscal> isDocumentoFiscalFoiSalvo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
 			if(isDocumentoFiscalFoiSalvo.isPresent()){
 				documentoFiscalNaoSalvo = recalculoService.documentoFiscalNaoExiste(docFiscalRecebido);
 				documentoCalculado = documentoFiscalNaoSalvo;
 			}
 		}
-			Response<DocumentoFiscal> response = new Response<>();
+		 */
 			try {
 				if (documentoCalculado.isPresent()) {
 					DocumentoFiscal documentoFiscalAtualizado = documentoCalculado.get();
 					response.setData(documentoFiscalAtualizado);
+					documentoFiscalRepository.saveAndFlush(documentoFiscalAtualizado);
 					return ResponseEntity.ok(response);
 				} else {
 					response.getErrors().add("Documento fiscal não encontrado.");

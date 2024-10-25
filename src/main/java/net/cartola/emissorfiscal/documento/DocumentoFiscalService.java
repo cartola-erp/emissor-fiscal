@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.org.apache.bcel.internal.generic.DCONST;
 import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeOperacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -161,6 +162,12 @@ public class DocumentoFiscalService extends DocumentoService {
 			devolucaoService.deleteById(docFisc.getDevolucao().getId());
 		}
 	}
+
+	public Optional<DocumentoFiscal>deletarPorId(DocumentoFiscal documentoFiscal){
+		this.deleteById(documentoFiscal.getId());
+		return Optional.empty();
+	}
+
 	
 	private void deleteById(Long id) {
 		documentoFiscalRepository.deleteById(id);
