@@ -461,6 +461,19 @@ e por o deploy no ar
 mv emissor-fiscal-0.1.jar /opt/emissor-fiscal/emissor-fiscal.jar
 ```
 
+## Atualizaçõa para a emissão de NFes e NFCes
+A patir de agora os projetos abaixo são necessários para conseguir compilar o projeto.
+É importante salientar que o interesse é emitir a nota fiscal eletrônica e a nota fiscal do consumidor eletrônica, direto do emissor-fiscal e para isso iremos utilizar bibliotecas de terceiros.
+
+```bash
+git clone -b feat/nfce https://github.com/cartola-erp/emissor-fiscal.git 
+git clone -b feature/nfce https://github.com/autogeral/DBF.git
+git clone -b feature/nfce https://github.com/autogeral/DBFModel.git
+git clone https://github.com/Samuel-Oliveira/Java_NFe
+git clone https://github.com/Samuel-Oliveira/Java_Certificado
+git clone https://github.com/Samuel-Oliveira/Java_Danfe
+```
+
 ## permissões 
 * Para dar acesso do systemd com o usuario root acesso o cloud:
 ```
