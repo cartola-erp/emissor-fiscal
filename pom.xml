@@ -231,6 +231,17 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<dependency>
+			<groupId>br.com.swconsultoria</groupId>
+			<artifactId>java-nfe</artifactId>
+			<version>4.00.35-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>br.com.swconsultoria</groupId>
+			<artifactId>Java_Certificado</artifactId>
+			<version>3.8-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
