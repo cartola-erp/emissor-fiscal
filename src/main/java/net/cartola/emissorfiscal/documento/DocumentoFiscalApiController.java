@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import net.cartola.emissorfiscal.recalculo.RecalculoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -247,6 +248,9 @@ public class DocumentoFiscalApiController {
 				response.getErrors().add("Erro ao recalcular o documento fiscal: ");
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 			}
+
+			// NFCES
+
 	}
 }
 
