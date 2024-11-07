@@ -101,23 +101,23 @@ public class EmissorFiscalApplication {
 			
 		
 			
-			String crc = "SP000205767/O-0";
+			String crc = "RJ000292898/1-7";
 			Optional<Contador> opContador = contadorService.findByCrc(crc);
 			if (!opContador.isPresent()) {
 				Contador contador = new Contador();
-				contador.setNome("IVONE APARECIDA VAZ ALVES");
-				contador.setCpf("17737325875");
+				contador.setNome("SILVIO SANTOS VEM AI");
+				contador.setCpf("07379981056");
 				contador.setCrc(crc);
 //				contador.setCrc(0002057670L);
 //				contador 
-				contador.setCep(13304675L);
-				contador.setEndereco("RUA PASTOR PAULO LEIVAS MACALÃO");
-				contador.setNumImovel(27);
+				contador.setCep(12333444L);
+				contador.setEndereco("Rua Onde Judas Perdeu as Botas");
+				contador.setNumImovel(314);
 				contador.setComplementoEndereco("");
-				contador.setBairroDoImovel("JD AEROPORTO");
-				contador.setTelefone("11971837908");
+				contador.setBairroDoImovel("Jd Paquitas da Mara");
+				contador.setTelefone("11999991111");
 				contador.setNumFax("");
-				contador.setEmail("ivone-vaz@bol.com.br");
+				contador.setEmail("email@email.com");
 				contador.setCodMunicipio(3523909L);
 				contadorService.save(contador);
 			}

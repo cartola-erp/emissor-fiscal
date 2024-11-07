@@ -1,23 +1,5 @@
 package net.cartola.emissorfiscal.documento;
 
-import static java.util.stream.Collectors.toMap;
-import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.DESTINATARIO;
-import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.DESTINATARIO_PROPRIO;
-import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.TERCEIROS;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.sun.org.apache.bcel.internal.generic.DCONST;
-import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeOperacao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import net.cartola.emissorfiscal.devolucao.Devolucao;
 import net.cartola.emissorfiscal.devolucao.DevolucaoService;
 import net.cartola.emissorfiscal.estado.Estado;
@@ -36,8 +18,18 @@ import net.cartola.emissorfiscal.tributacao.federal.CalculoFiscalFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederalService;
 import net.cartola.emissorfiscal.util.ValidationHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.stream.Collectors.toMap;
+import static net.cartola.emissorfiscal.sped.fiscal.enums.FreteConta.*;
 
 @Service
 public class DocumentoFiscalService extends DocumentoService {
@@ -380,7 +372,7 @@ public class DocumentoFiscalService extends DocumentoService {
 	/**
 	 * Irá definir o {@link ModeloDocumentoFiscal}, para alguns tipos de servicos "essenciais". E que hoje em dia para darmos entrada não é através de um xml.
 	 * Ou seja, é os famosos "papéis" de: CONTA de ENERGIA, ÁGUA, TELEFONE  etc....
-	 * @param documentoFiscal
+	 * @param docuFisc
 	 */
 	private void defineModeloDocumentoParaServico(DocumentoFiscal docuFisc) {
 		ModeloDocumentoFiscal modelo = null;
