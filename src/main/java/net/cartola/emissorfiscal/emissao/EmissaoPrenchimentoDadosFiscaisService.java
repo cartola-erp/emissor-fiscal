@@ -1,6 +1,6 @@
 package net.cartola.emissorfiscal.emissao;
 
-import autogeral.emissorfiscal.vo.model.nfceByNfeIo.InvoiceModel;
+import autogeral.emissorfiscal.vo.InvoiceModel;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
