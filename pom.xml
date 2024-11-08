@@ -43,18 +43,6 @@
 					</exclusions>
 				</dependency>
 
-				<!-- NFE NFCE -->
-				<dependency>
-					<groupId>br.com.swconsultoria</groupId>
-					<artifactId>java-nfe</artifactId>
-					<version>4.00.35-SNAPSHOT</version>
-				</dependency>
-
-				<dependency>
-					<groupId>br.com.swconsultoria</groupId>
-					<artifactId>java_certificado</artifactId>
-					<version>3.8-SNAPSHOT</version>
-				</dependency>
 
 				<!-- CLOUD -->
 				<dependency>
@@ -69,7 +57,7 @@
 					<groupId>org.springframework.cloud</groupId>
 					<artifactId>spring-cloud-gcp-starter-trace</artifactId>
 				</dependency>
-				
+
 			</dependencies>
 		</profile>
 		<profile>
@@ -245,15 +233,22 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- NFE NFCE -->
 		<dependency>
 			<groupId>br.com.swconsultoria</groupId>
 			<artifactId>java-nfe</artifactId>
 			<version>4.00.35-SNAPSHOT</version>
 		</dependency>
+
 		<dependency>
 			<groupId>br.com.swconsultoria</groupId>
-			<artifactId>Java_Certificado</artifactId>
+			<artifactId>java_certificado</artifactId>
 			<version>3.8-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>autogeral.emissorfiscal.vo</groupId>
+			<artifactId>emissor-fiscal-vo</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

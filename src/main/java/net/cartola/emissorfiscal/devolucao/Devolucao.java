@@ -114,7 +114,6 @@ public class Devolucao extends Documento<DevolucaoItem> implements Serializable 
 		this.operacao = operacao;
 	}
 
-	
 	@Override
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "devo_loja_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "fnk_devo_loja_id"))
