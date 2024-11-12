@@ -65,6 +65,7 @@ public class NcmService {
 	public Optional<Ncm> findNcmByNumeroAndExcecao(int numero, int excecao) {
 		return ncmRepository.findNumeroAndExcecao(numero, excecao);
 	}
+
 	
 	public Optional<Ncm> findOne(Long id) {
 		return ncmRepository.findById(id);

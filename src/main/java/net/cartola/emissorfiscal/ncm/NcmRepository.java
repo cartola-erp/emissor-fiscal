@@ -8,10 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface NcmRepository extends JpaRepository<Ncm, Long> {
-	
-
 
 //	@Query("SELECT n FROM Ncm n WHERE n.numero LIKE %:numero%")
 	@Query("SELECT n FROM Ncm n WHERE n.numero = :numero")
