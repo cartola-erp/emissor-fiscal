@@ -481,12 +481,13 @@ public class EmissaoNfceTestPreenchimentoNotaAndTestValidacoesCampos {
             listNcmsItemsNota.add(Integer.parseInt(ncm));
         }
 
-        List<TributacaoEstadual> tributacaoEstadual = recalculoRepository.findImpostoEstadualByNcmAndOperacao(listNcmsItemsNota,1L);
-        List<TributacaoFederal> tributacaoFederal = recalculoRepository.findImpostoFederalByNcmAndOperacao(listNcmsItemsNota,1L);
+        /*List<TributacaoEstadual> tributacaoEstadual = recalculoRepository.findImpostoEstadualByNcmAndOperacao(listNcmsItemsNota,1L);
+        //List<TributacaoFederal> tributacaoFederal = recalculoRepository.findImpostoFederalByNcmAndOperacao(listNcmsItemsNota,1L);
 
         if (!tributacaoEstadual.isEmpty() && !tributacaoFederal.isEmpty()) {
             System.out.println("Foram encontradas tributacoes para os ncm");
         }
+         */
     }
 
     @Test

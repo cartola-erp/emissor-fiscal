@@ -2,7 +2,8 @@ package net.cartola.emissorfiscal.recalculo;
 
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
-import net.cartola.emissorfiscal.documento.DocumentoFiscalItemRepository;
+import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecalculoService {
-
-    @Autowired
-    DocumentoFiscalItemRepository documentoFiscalItemRepository;
 
     @Autowired
     RecalculoRepository recalculoRepository;
@@ -38,21 +36,16 @@ public class RecalculoService {
          throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
     }
 
-    /*
-    public Optional<DocumentoFiscal> documentoFiscalNaoExiste(DocumentoFiscal documentoFiscalNaoCadastrado){
-        documentoFiscalExiste(documentoFiscalNaoCadastrado);
-        return Optional.of(documentoFiscalNaoCadastrado);
-    }
-    */
-
     public Optional<DocumentoFiscal> calcularImpostoEstadual(DocumentoFiscal documentoFiscalParaCalcularImpostoIcms){
 
         Long operacaoId = documentoFiscalParaCalcularImpostoIcms.getOperacao().getId();
-        String operacaoDesc = documentoFiscalParaCalcularImpostoIcms.getOperacao().getDescricao();
+        EstadoSigla estadoOrigem = documentoFiscalParaCalcularImpostoIcms.getEmitente().getEndereco().getUf();
+        EstadoSigla estadoDestino = documentoFiscalParaCalcularImpostoIcms.getDestinatario().getEndereco().getUf();
 
         List<DocumentoFiscalItem> itens = documentoFiscalParaCalcularImpostoIcms.getItens();
         boolean todosItensTemNcmPreenchido = true;
         List<String> ncms = new ArrayList<>();
+        List<Finalidade> finalidade = new ArrayList<>();
 
         for (DocumentoFiscalItem item : itens) {
             if (item.getClasseFiscal() == null || item.getClasseFiscal().isEmpty()) {
@@ -61,6 +54,7 @@ public class RecalculoService {
                 break;
             } else {
                 ncms.add(item.getClasseFiscal());
+                finalidade.add(item.getFinalidadeEmpresa());
             }
         }
 
@@ -69,7 +63,7 @@ public class RecalculoService {
                     .map(Integer::valueOf)
                     .collect(Collectors.toList());
 
-            List<TributacaoEstadual> tributacoes = recalculoRepository.findImpostoEstadualByNcmAndOperacao(ncmList, operacaoId);
+            List<TributacaoEstadual> tributacoes = recalculoRepository.findImpostoEstadualByNcmAndOperacao(ncmList, operacaoId, finalidade, estadoOrigem, estadoDestino);
 
             if (!tributacoes.isEmpty()) {
                 System.out.println("Tributações encontradas: " + tributacoes);
@@ -125,11 +119,12 @@ public class RecalculoService {
     public Optional<DocumentoFiscal> calcularImpostoFederal(DocumentoFiscal documentoFiscalCalculado){
 
         Long operacaoId = documentoFiscalCalculado.getOperacao().getId();
-        String operacaoDesc = documentoFiscalCalculado.getOperacao().getDescricao();
+
 
         List<DocumentoFiscalItem> itens = documentoFiscalCalculado.getItens();
         boolean todosItensTemNcmPreenchido = true;
         List<String> ncms = new ArrayList<>();
+        List<Finalidade> finalidade = new ArrayList<>();
 
         for (DocumentoFiscalItem item : itens) {
             if (item.getClasseFiscal() == null || item.getClasseFiscal().isEmpty()) {
@@ -138,6 +133,7 @@ public class RecalculoService {
                 break;
             } else {
                 ncms.add(item.getClasseFiscal());
+                finalidade.add(item.getFinalidadeEmpresa());
             }
         }
 
@@ -146,7 +142,7 @@ public class RecalculoService {
                     .map(Integer::valueOf)
                     .collect(Collectors.toList());
 
-            List<TributacaoFederal> tributacoes = recalculoRepository.findImpostoFederalByNcmAndOperacao(ncmList, operacaoId);
+            List<TributacaoFederal> tributacoes = recalculoRepository.findImpostoFederalByNcmAndOperacao(ncmList, operacaoId, finalidade);
 
             if (!tributacoes.isEmpty()) {
                 System.out.println("Tributações encontradas: " + tributacoes);

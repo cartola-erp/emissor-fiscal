@@ -200,17 +200,14 @@ public class DocumentoFiscalApiController {
 		}
 	}
 
-	// ** PARA ME LEMBRAR DE CRIAR O METODO QUE IRA SALVAR O DOCUMENTO FISCAL ATUALIZADO NO BANCO DO EMISSOR
-
 		@PostMapping(value = "/recalcular")
 		public ResponseEntity<Response<DocumentoFiscal>> recalculo(@RequestBody DocumentoFiscal docFiscalRecebido) {
 
 		Response<DocumentoFiscal> response = new Response<>();
-		 List<DocumentoFiscalItem> itensSemNcm = docFiscalRecebido.getItens();
+		List<DocumentoFiscalItem> itensSemNcm = docFiscalRecebido.getItens();
 
 		 for(DocumentoFiscalItem item : itensSemNcm ){
 			 if(item.getClasseFiscal() == ""){
-				 //item.setClasseFiscal("39172290");
 				 response.getErrors().add("Não foi possivel encontrar todos ncm dos itens, ncm faltante: " + item.getDescricaoEmpresa());
 				 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 			 }
@@ -218,22 +215,11 @@ public class DocumentoFiscalApiController {
 		 saveCompra(docFiscalRecebido);
 
 		 Optional<DocumentoFiscal> docParaRecalculo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
-		 Optional<DocumentoFiscal> documentoFiscalNaoSalvo = Optional.empty();
 		 Optional<DocumentoFiscal> documentoCalculado = Optional.empty();
 
 		if(docParaRecalculo.isPresent()){
 			documentoCalculado = recalculoService.documentoFiscalExiste(docParaRecalculo.get());
 		}
-		/*
-		else {
-			documentoFiscalRepository.saveAndFlush(docFiscalRecebido);
-			Optional<DocumentoFiscal> isDocumentoFiscalFoiSalvo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
-			if(isDocumentoFiscalFoiSalvo.isPresent()){
-				documentoFiscalNaoSalvo = recalculoService.documentoFiscalNaoExiste(docFiscalRecebido);
-				documentoCalculado = documentoFiscalNaoSalvo;
-			}
-		}
-		 */
 			try {
 				if (documentoCalculado.isPresent()) {
 					DocumentoFiscal documentoFiscalAtualizado = documentoCalculado.get();
@@ -250,7 +236,6 @@ public class DocumentoFiscalApiController {
 			}
 
 			// NFCES
-
 	}
 }
 
