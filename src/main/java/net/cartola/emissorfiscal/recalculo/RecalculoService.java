@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.recalculo;
 
+import autogeral.emissorfiscal.vo.ItemModel;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
@@ -193,6 +194,40 @@ public class RecalculoService {
             }
         }
         throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
+    }
+
+    public List<TributacaoEstadual> TributacaoEstadualForNfce(List<ItemModel> itens){
+        List<Integer> listaNcm = new ArrayList<>();
+
+        for(ItemModel itemNcm : itens){
+          listaNcm.add(Integer.parseInt(itemNcm.getNcm()));
+        }
+
+        EstadoSigla estadoOrigem = EstadoSigla.SP;
+        EstadoSigla estadoDestino = EstadoSigla.SP;
+
+        Long operacaoId = 1L;
+        List<Finalidade> finalidade = new ArrayList<>();
+        Finalidade finalidadeFixa = Finalidade.CONSUMO;
+        finalidade.add(finalidadeFixa);
+
+        return recalculoRepository.findImpostoEstadualByNcmAndOperacao(listaNcm, operacaoId, finalidade, estadoOrigem, estadoDestino);
+    }
+
+    public List<TributacaoFederal> TributacaoFederalForNfce(List<ItemModel> itens){
+
+        List<Integer> listaNcm = new ArrayList<>();
+
+        for(ItemModel itemNcm : itens){
+            listaNcm.add(Integer.parseInt(itemNcm.getNcm()));
+        }
+
+        Long operacaoId = 1L;
+        List<Finalidade> finalidade = new ArrayList<>();
+        Finalidade finalidadeFixa = Finalidade.CONSUMO;
+        finalidade.add(finalidadeFixa);
+
+        return recalculoRepository.findImpostoFederalByNcmAndOperacao(listaNcm, operacaoId, finalidade);
     }
 
     public static class CalculaImpostoException extends RuntimeException {
