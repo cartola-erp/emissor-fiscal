@@ -4,16 +4,15 @@ import autogeral.emissorfiscal.vo.ItemModel;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
+import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
+import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,15 +28,15 @@ public class RecalculoService {
         Optional<DocumentoFiscal> docComImpostoEstadualCalculado = calcularImpostoEstadual(docParaRecalculo);
         calcularImpostoFederal(docComImpostoEstadualCalculado.get());
 
-         if(docComImpostoEstadualCalculado.isPresent()){
+        if (docComImpostoEstadualCalculado.isPresent()) {
 
-             DocumentoFiscal docComOprimeiroImpostoCalculado = docComImpostoEstadualCalculado.get();
-             return Optional.of(docComOprimeiroImpostoCalculado);
-         }
-         throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
+            DocumentoFiscal docComOprimeiroImpostoCalculado = docComImpostoEstadualCalculado.get();
+            return Optional.of(docComOprimeiroImpostoCalculado);
+        }
+        throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
     }
 
-    public Optional<DocumentoFiscal> calcularImpostoEstadual(DocumentoFiscal documentoFiscalParaCalcularImpostoIcms){
+    public Optional<DocumentoFiscal> calcularImpostoEstadual(DocumentoFiscal documentoFiscalParaCalcularImpostoIcms) {
 
         Long operacaoId = documentoFiscalParaCalcularImpostoIcms.getOperacao().getId();
         EstadoSigla estadoOrigem = documentoFiscalParaCalcularImpostoIcms.getEmitente().getEndereco().getUf();
@@ -100,7 +99,7 @@ public class RecalculoService {
                         item.setIcmsCest(tributacao.getIcmsCst());
                         item.setCfop(tributacao.getCfop());
                         item.setCodigoAnp(tributacao.getCodigoAnp());
-                    }else {
+                    } else {
                         itensSemTributacao.add(item.getClasseFiscal());
                     }
                 }
@@ -117,7 +116,8 @@ public class RecalculoService {
         }
         throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
     }
-    public Optional<DocumentoFiscal> calcularImpostoFederal(DocumentoFiscal documentoFiscalCalculado){
+
+    public Optional<DocumentoFiscal> calcularImpostoFederal(DocumentoFiscal documentoFiscalCalculado) {
 
         Long operacaoId = documentoFiscalCalculado.getOperacao().getId();
 
@@ -178,13 +178,13 @@ public class RecalculoService {
                         item.setPisAliquota(tributacao.getPisAliquota());
                         item.setPisBase(tributacao.getPisBase());
                         item.setPisCst(tributacao.getPisCst());
-                    }else{
+                    } else {
                         itensSemTributacao.add(item.getClasseFiscal());
                     }
                 }
                 if (!itensSemTributacao.isEmpty()) {
                     throw new CalculaImpostoException(
-                            "Não foram encontradas TRIBUTAÇOES FEDERAIS para os NCMS( " +String.join(", ", itensSemTributacao ) + " )"
+                            "Não foram encontradas TRIBUTAÇOES FEDERAIS para os NCMS( " + String.join(", ", itensSemTributacao) + " )"
                                     + " | VERIFICAR / CADASTRAR no EMISSOR FISCAL com a OPERAÇÃO descrita na nota.");
                 }
 
@@ -196,43 +196,36 @@ public class RecalculoService {
         throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
     }
 
-    public List<TributacaoEstadual> TributacaoEstadualForNfce(List<ItemModel> itens){
+    public List<TributacaoEstadual> TributacaoEstadualForNfce(List<ItemModel> itens, EstadoSigla siglaOrigem, EstadoSigla siglaDestino, Long operacao) {
         List<Integer> listaNcm = new ArrayList<>();
 
-        for(ItemModel itemNcm : itens){
-          listaNcm.add(Integer.parseInt(itemNcm.getNcm()));
-        }
-
-        EstadoSigla estadoOrigem = EstadoSigla.SP;
-        EstadoSigla estadoDestino = EstadoSigla.SP;
-
-        Long operacaoId = 1L;
-        List<Finalidade> finalidade = new ArrayList<>();
-        Finalidade finalidadeFixa = Finalidade.CONSUMO;
-        finalidade.add(finalidadeFixa);
-
-        return recalculoRepository.findImpostoEstadualByNcmAndOperacao(listaNcm, operacaoId, finalidade, estadoOrigem, estadoDestino);
-    }
-
-    public List<TributacaoFederal> TributacaoFederalForNfce(List<ItemModel> itens){
-
-        List<Integer> listaNcm = new ArrayList<>();
-
-        for(ItemModel itemNcm : itens){
+        for (ItemModel itemNcm : itens) {
             listaNcm.add(Integer.parseInt(itemNcm.getNcm()));
         }
 
-        Long operacaoId = 1L;
         List<Finalidade> finalidade = new ArrayList<>();
-        Finalidade finalidadeFixa = Finalidade.CONSUMO;
-        finalidade.add(finalidadeFixa);
+        finalidade.add(Finalidade.CONSUMO);
 
-        return recalculoRepository.findImpostoFederalByNcmAndOperacao(listaNcm, operacaoId, finalidade);
+        return recalculoRepository.findImpostoEstadualByNcmAndOperacao(listaNcm, operacao, finalidade, siglaOrigem, siglaDestino);
+    }
+
+    public List<TributacaoFederal> TributacaoFederalForNfce(List<ItemModel> itens, Long operacao) {
+
+        List<Integer> listaNcm = new ArrayList<>();
+
+        for (ItemModel itemNcm : itens) {
+            listaNcm.add(Integer.parseInt(itemNcm.getNcm()));
+        }
+
+        List<Finalidade> finalidade = new ArrayList<>();
+        finalidade.add(Finalidade.CONSUMO);
+
+        return recalculoRepository.findImpostoFederalByNcmAndOperacao(listaNcm, operacao, finalidade);
     }
 
     public static class CalculaImpostoException extends RuntimeException {
-        public CalculaImpostoException(String mensagem){
+        public CalculaImpostoException(String mensagem) {
             super(mensagem);
-        };
+        }
     }
 }

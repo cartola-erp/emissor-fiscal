@@ -1,57 +1,50 @@
 package net.cartola.emissorfiscal.emissao;
 
 import autogeral.emissorfiscal.vo.InvoiceModel;
-import autogeral.emissorfiscal.vo.ItemModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.org.slf4j.internal.Logger;
 import com.sun.org.slf4j.internal.LoggerFactory;
-import net.cartola.emissorfiscal.documento.Documento;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Map;
 
 @Service
 public class Emissao {
     private static final Logger logger = LoggerFactory.getLogger(Emissao.class);
 
     @Autowired
-    EmissaoPrenchimentoDadosFiscaisService emissaoPrenchimentoDadosFiscaisService;
+    private EmissaoPrenchimentoDadosFiscaisService emissaoPrenchimentoDadosFiscaisService;
 
-    /**
-     *     @Autowired
-     *     EmissaoCriacaoXmlService emissaoCriacaoXmlService;
-     */
+    @Autowired
+    private EmissaoCriacaoXmlService emissaoCriacaoXmlService;
 
     @RabbitListener(queues = "hello")
     public void processMessage(String content) {
-        System.out.println("Recebeu o Json: " + content);
+        InvoiceModel invoice = new InvoiceModel();
 
-        if(!content.isEmpty()){
+        if (!content.isEmpty()) {
             ObjectMapper om = new ObjectMapper();
             try {
-                InvoiceModel invoice = om.readValue(content, InvoiceModel.class);
-                ResultadoUtil fullInvoice = emissaoPrenchimentoDadosFiscaisService.preencherDadosFiscais(invoice);
-                System.out.println("Resultado: " + fullInvoice.getErros());
-
-                //Validacoes importantes para o xml da nfce ser preenchido corretamente
-                 // *------ AS VALIDACOES VIRAM AQUI -----*
-
-                //*----- APOS AS VALIDACOES COMECO MONTAR O XML ---*
-                //MontaXml(fullInvoice);
-
-            }catch (JsonProcessingException e) {
-                logger.error("Erro ao processar JSON: {}", e.getMessage(), e);
-
+                invoice = om.readValue(content, InvoiceModel.class);
+            } catch (JsonProcessingException e) {
+                logger.error("Erro no processamento da mensagem: " + e.getMessage()); ;
             }
         }
+
+        ResultadoUtil retornaErrosOuTributacaoPreenchida = emissaoPrenchimentoDadosFiscaisService.preencherDadosFiscais(invoice);
+
+        if (!retornaErrosOuTributacaoPreenchida.getErros().isEmpty()) {
+            System.out.println("Ocorreram erros: " + retornaErrosOuTributacaoPreenchida.getErros());
+            return;
+        }
+
+        InvoiceModel invoiceTratada = retornaErrosOuTributacaoPreenchida.getInvoice();
+        montaXml(invoiceTratada);
     }
 
-    public String MontaXml(InvoiceModel invoice){
-
-        //emissaoCriacaoXmlService.criaXmlNota(invoice); // RETORNA O XML // inf Importantes
-        return "ok";
+    public void montaXml(InvoiceModel invoice){
+        emissaoCriacaoXmlService.montaXmlNota(invoice);
     }
 
     public void transmissao(){

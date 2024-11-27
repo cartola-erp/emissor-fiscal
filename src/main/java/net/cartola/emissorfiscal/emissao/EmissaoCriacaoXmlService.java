@@ -1,76 +1,55 @@
-/*
 package net.cartola.emissorfiscal.emissao;
 
-import autogeral.emissorfiscal.vo.BuyerModel;
-import autogeral.emissorfiscal.vo.EmitModel;
 import autogeral.emissorfiscal.vo.InvoiceModel;
 import autogeral.emissorfiscal.vo.ItemModel;
-import br.com.swconsultoria.certificado.Certificado;
-import br.com.swconsultoria.certificado.CertificadoService;
+import autogeral.emissorfiscal.vo.TotalsModel;
 import br.com.swconsultoria.nfe.Nfe;
 import br.com.swconsultoria.nfe.dom.ConfiguracoesNfe;
 import br.com.swconsultoria.nfe.dom.enuns.*;
 import br.com.swconsultoria.nfe.exception.NfeException;
 import br.com.swconsultoria.nfe.schema_4.enviNFe.*;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.*;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.COFINS;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.COFINS.COFINSAliq;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.ICMS;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.PIS;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.PIS.PISAliq;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Prod;
+import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Total.ICMSTot;
 import br.com.swconsultoria.nfe.schema_4.retConsReciNFe.TRetConsReciNFe;
 import br.com.swconsultoria.nfe.util.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.cartola.emissorfiscal.recalculo.RecalculoService;
-import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
-import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
-import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
-import java.io.File;
-import java.io.StringWriter;
-import java.nio.file.Files;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static br.com.swconsultoria.nfe.dom.enuns.DocumentoEnum.NFE;
-
-*/
 /**
- * Essa classe devera preencher o xml da nota fiscal eletronica ou da nota nota fiscal consumidor eletronico (NFCE)
- * Essa e a etapa 3 do processo de emissao do documento fiscal
- *//*
-
+ * @author Samuel Oliveira
+ *
+ */
 
 @Service
 public class EmissaoCriacaoXmlService {
 
-    public void criaXmlNota(InvoiceModel invoice) {
+    @Autowired
+    private CertificadoPfxModel certificadoPfx;
 
-        String codigoOperacao = invoice.getOperationType();
-        String codUfDestino = invoice.getBuyer().getAddress().getCountry();
-        String codUfOrigem = "SP";
-        String codloja = invoice.getCodigoLoja();
-        String finalidade = invoice.getFinalidadeNota();
+    public void montaXmlNota(InvoiceModel invoice) {
 
-
-        //Emitente e dest infos
-        EmitModel emitente = invoice.getEmitente();
-        BuyerModel destinatario = invoice.getBuyer();
-
-        //Produtos infos
-        List<ItemModel> itens =  invoice.getItems();
-
-        Map<String, String> resultado = new HashMap<>();
         try {
-            File file = new File("/Users/wesleymendonca/.DBF/dist/20250220A1.pfx");
-            byte[] bytes = Files.readAllBytes(file.toPath());
-            String senha = "V552289";
-
-            Certificado certificado = CertificadoService.certificadoPfxBytes(bytes, senha);
-            ConfiguracoesNfe config = ConfiguracoesNfe.criarConfiguracoes(EstadosEnum.SP, AmbienteEnum.HOMOLOGACAO, certificado, "/Users/wesleymendonca/Documents/schemas");
-            config.setEncode("UTF-8");
+            // Inicia As Configurações - ver https://github.com/Samuel-Oliveira/Java_NFe/wiki/1-:-Configuracoes
+            ConfiguracoesNfe config = NfceEmissaoConfig.iniciaConfiguracoes();
 
             //Informe o Numero da NFCe
             int numeroNFCe = invoice.getNumber();
@@ -85,11 +64,7 @@ public class EmissaoCriacaoXmlService {
             String cnf = ChaveUtil.completarComZerosAEsquerda(String.valueOf(numeroNFCe), 8);
 
             //Informe o modelo da NFCe
-            String modelo;
-            if(!invoice.getModeloNota().equals("55")) {
-                modelo = NFE.getModelo();
-            }
-            modelo = DocumentoEnum.NFCE.getModelo();
+            String modelo = invoice.getModeloNota();
 
             //Informe a Serie da NFCe
             int serie = invoice.getSerie();
@@ -98,40 +73,40 @@ public class EmissaoCriacaoXmlService {
             String tipoEmissao = "1";
 
             //Informe o idToken
-            String idToken = "000001";
+            String idToken = certificadoPfx.getTokenSefaz();
 
             //Informe o CSC da NFCe
-            String csc = "536fd53c-9091-4b0f-8f5b-bddf416b3bea";
+            String csc = certificadoPfx.getCscSefaz();
 
             // MontaChave a NFCe
             ChaveUtil chaveUtil = new ChaveUtil(config.getEstado(), cnpj, modelo, serie, numeroNFCe, tipoEmissao, cnf, dataEmissao);
             String chave = chaveUtil.getChaveNF();
             String cdv = chaveUtil.getDigitoVerificador();
 
-            TNFe.InfNFe infNFe = new TNFe.InfNFe();
+            InfNFe infNFe = new InfNFe();
             infNFe.setId(chave);
             infNFe.setVersao(ConstantesUtil.VERSAO.NFE);
 
             //Preenche IDE
-            infNFe.setIde(preencheIde(config, cnf, numeroNFCe, tipoEmissao, modelo, serie, cdv, dataEmissao, codigoOperacao, codUfOrigem, codUfDestino, codloja, finalidade, emitente));
+            infNFe.setIde(preencheIde(config, cnf, numeroNFCe, tipoEmissao, modelo, serie, cdv, dataEmissao, invoice));
 
             //Preenche Emitente
-            infNFe.setEmit(preencheEmitente(config, cnpj, emitente));
+            infNFe.setEmit(preencheEmitente(config, cnpj, invoice));
 
             //Preenche o Destinatario
-            infNFe.setDest(preencheDestinatario(destinatario));
+            infNFe.setDest(preencheDestinatario(invoice));
 
             //Preenche os dados do Produto da NFCe e adiciona a Lista
-            infNFe.getDet().addAll(preencheDet(itens));
+            infNFe.getDet().addAll(preencheDet(invoice));
 
             //Preenche totais da NFCe
-            infNFe.setTotal(preencheTotal());
+            infNFe.setTotal(preencheTotal(invoice.getTotals()));
 
             //Preenche os dados de Transporte
             infNFe.setTransp(preencheTransporte());
 
             // Preenche dados Pagamento
-            infNFe.setPag(preenchePag());
+            infNFe.setPag(preenchePag(invoice, invoice.getTotals()));
 
             TNFe nfe = new TNFe();
             nfe.setInfNFe(infNFe);
@@ -142,6 +117,16 @@ public class EmissaoCriacaoXmlService {
             enviNFe.setIdLote("1");
             enviNFe.setIndSinc("1");
             enviNFe.getNFe().add(nfe);
+
+            // Conversão do objeto enviNFe para JSON e exibição no console
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(enviNFe);
+                System.out.println("# JSON da NFC-e:");
+                System.out.println(json);
+            } catch (Exception e) {
+                System.err.println("Erro ao converter para JSON: " + e.getMessage());
+            }
 
             // Monta e Assina o XML
             enviNFe = Nfe.montaNfe(config, enviNFe, true);
@@ -164,9 +149,9 @@ public class EmissaoCriacaoXmlService {
                 int tentativa = 0;
                 TRetConsReciNFe retornoNfe = null;
 
-                //Define Numero de tentativas que irá tentar a Consulta
+                //Define Numero de tentativas que iráx tentar a Consulta
                 while (tentativa < 15) {
-                    retornoNfe = Nfe.consultaRecibo(config, recibo, NFE);
+                    retornoNfe = Nfe.consultaRecibo(config, recibo, DocumentoEnum.NFE);
                     if (retornoNfe.getCStat().equals(StatusEnum.LOTE_EM_PROCESSAMENTO.getCodigo())) {
                         System.out.println("INFO: Lote Em Processamento, vai tentar novamente apos 1 Segundo.");
                         Thread.sleep(1000);
@@ -197,11 +182,10 @@ public class EmissaoCriacaoXmlService {
             System.err.println();
             System.err.println("# Erro: " + e.getMessage());
         }
-        return resultado;
+
     }
 
-    */
-/**
+    /**
      * Preenche o IDE
      * @param config
      * @param cnf
@@ -211,296 +195,294 @@ public class EmissaoCriacaoXmlService {
      * @param dataEmissao
      * @return
      * @throws NfeException
-     *//*
-
-    private static TNFe.InfNFe.Ide preencheIde(ConfiguracoesNfe config, String cnf, int numeroNFCe, String tipoEmissao, String modelo, int serie, String cDv, LocalDateTime dataEmissao, String operacaoCodigo, String ufOrigem, String ufDest, String codLoja, String finalidade, EmitModel emitente) throws NfeException {
-        TNFe.InfNFe.Ide ide = new TNFe.InfNFe.Ide();
-        ide.setCUF(config.getEstado().getCodigoUF());
+     */
+    private static Ide preencheIde(ConfiguracoesNfe config, String cnf, int numeroNFCe, String tipoEmissao, String modelo, int serie, String cDv, LocalDateTime dataEmissao, InvoiceModel invoice) throws NfeException {
+        Ide ide = new Ide();
+        ide.setCUF(invoice.getEmitente().getUfEmitente());
         ide.setCNF(cnf);
-
-        if(!modelo.equals("NFE")) {
-            ide.setNatOp("NOTA FISCAL ELETRONICA");
-        }
         ide.setNatOp("NOTA FISCAL CONSUMIDOR ELETRONICA");
-
         ide.setMod(modelo);
         ide.setSerie(String.valueOf(serie));
 
         ide.setNNF(String.valueOf(numeroNFCe));
         ide.setDhEmi(XmlNfeUtil.dataNfe(dataEmissao));
-
-        ide.setTpNF("1"); // Sempre vai ser 1 pois a nfce sempre vai ser uma nota de saida
-        ide.setIdDest("1"); // sempre vai ser 1 pois a nfce sempre vai ser uma nota utilizada dentro do proprio estado
-        ide.setCMunFG(emitente.getCodIbgeMunicipioEmitente());
-        ide.setTpImp("4"); // padrao para nfce
+        ide.setTpNF("1"); // SEMPRE SERA 1 POR SE TRATAR DE NOTAS DE SAIDAS
+        ide.setIdDest("1"); // SEMPRE VAI SER 1 POR SE TRATAR DE NOTAS PARA O MESMO ESTADO
+        ide.setCMunFG(invoice.getEmitente().getCodIbgeMunicipioEmitente());
+        ide.setTpImp("4"); // NFCE COM DANFE
         ide.setTpEmis(tipoEmissao);
         ide.setCDV(cDv);
         ide.setTpAmb(config.getAmbiente().getCodigo());
-        ide.setFinNFe(finalidade);
-        ide.setIndFinal("1"); // Padrao
-        ide.setIndPres("0"); // Padrao
-        ide.setProcEmi("0"); // Padrao
-        ide.setVerProc("1.0"); // Padrao
+        ide.setFinNFe("1"); // PADRAO
+        ide.setIndFinal("1"); // PADRAO
+        ide.setIndPres("1"); // PADRAO
+        ide.setProcEmi("0"); // PADRAO
+        ide.setVerProc("1.0"); // PADRAO
 
         return ide;
     }
 
-    */
-/**
+    /**
      * Preenche o Emitente da NFCe
      * @param config
      * @param cnpj
      * @return
-     *//*
-
-    private static TNFe.InfNFe.Emit preencheEmitente(ConfiguracoesNfe config, String cnpj, EmitModel emitente) {
-        TNFe.InfNFe.Emit emit = new TNFe.InfNFe.Emit();
+     */
+    private static Emit preencheEmitente(ConfiguracoesNfe config, String cnpj, InvoiceModel invoice) {
+        Emit emit = new Emit();
         emit.setCNPJ(cnpj);
-        emit.setXNome(emitente.getNomeEmitente());
+        emit.setXNome(invoice.getEmitente().getNomeEmitente());
 
         TEnderEmi enderEmit = new TEnderEmi();
-        enderEmit.setXLgr(emitente.getLogradouroEmitente());
-        enderEmit.setNro(emitente.getNumeroLogradouroEmitente());
-        enderEmit.setXCpl(emitente.getComplementoEdenrecoEmitente());
-        enderEmit.setXBairro(emitente.getBairroEmitente());
-        enderEmit.setCMun(emitente.getMunicipioEmitente());
-        enderEmit.setXMun(emitente.getBairroEmitente());
+        enderEmit.setXLgr(invoice.getEmitente().getLogradouroEmitente());
+        enderEmit.setNro(invoice.getEmitente().getNumeroLogradouroEmitente());
+        enderEmit.setXCpl(invoice.getEmitente().getComplementoEdenrecoEmitente());
+        enderEmit.setXBairro(invoice.getEmitente().getBairroEmitente());
+        enderEmit.setCMun(invoice.getEmitente().getCodIbgeMunicipioEmitente());
+        enderEmit.setXMun(invoice.getEmitente().getCodIbgeMunicipioEmitente());
         enderEmit.setUF(TUfEmi.valueOf(config.getEstado().toString()));
-        enderEmit.setCEP(emitente.getBairroEmitente());
-        enderEmit.setCPais("1058"); // Padrao
-        enderEmit.setXPais("Brasil"); // Padrao
-        enderEmit.setFone(""); // Emitente tem telefone ?
+        enderEmit.setCEP(invoice.getEmitente().getCepEmitente());
+        enderEmit.setCPais("1058");
+        enderEmit.setXPais("Brasil");
+        enderEmit.setFone(invoice.getEmitente().getTelefoneEmitente());
         emit.setEnderEmit(enderEmit);
 
-        emit.setIE(emitente.getInscricaoEstadual());
-        emit.setCRT(emitente.getRegimeTributario());
+        emit.setIE(invoice.getEmitente().getInscricaoEstadual());
+        emit.setCRT("3");
 
         return emit;
     }
 
-    */
-/**
+    /**
      * Preenche o Destinatario da NFCe
      * @return
-     *//*
-
-    private static TNFe.InfNFe.Dest preencheDestinatario(BuyerModel destinatario) {
-        TNFe.InfNFe.Dest dest = new TNFe.InfNFe.Dest();
-        Long cnpjDestinatario = destinatario.getFederalTaxNumber();
-        String cnpjDestinatarioString = cnpjDestinatario.toString();
-        dest.setCNPJ(cnpjDestinatarioString);
-        dest.setXNome(destinatario.getName());
+     */
+    private static Dest preencheDestinatario(InvoiceModel invoice) {
+        Dest dest = new Dest();
+        dest.setCNPJ(String.valueOf(invoice.getBuyer().getFederalTaxNumber()));
+        dest.setXNome(invoice.getBuyer().getName());
 
         TEndereco enderDest = new TEndereco();
-        enderDest.setXLgr(destinatario.getAddress().getDistrict());
-        enderDest.setNro(destinatario.getAddress().getNumber());
-        enderDest.setXBairro(destinatario.getAddress().getCountry());
-        enderDest.setCMun(destinatario.getAddress().getCodMunicipioIbge());
-        enderDest.setXMun(destinatario.getAddress().getMunicipioNome());
-        enderDest.setUF(TUf.valueOf(destinatario.getAddress().getAdditionalInformation()));
-        enderDest.setCEP(destinatario.getAddress().getPostalCode());
-        enderDest.setCPais("1058"); // Padrao
-        enderDest.setXPais("Brasil"); // Padrao
-        enderDest.setFone(""); // Destinatario tem telefone ?
+        enderDest.setXLgr(invoice.getBuyer().getAddress().getDistrict());
+        enderDest.setNro(invoice.getBuyer().getAddress().getNumber());
+        enderDest.setXBairro(invoice.getBuyer().getAddress().getCountry());
+        enderDest.setCMun(invoice.getBuyer().getAddress().getCodMunicipioIbge());
+        enderDest.setXMun(invoice.getBuyer().getAddress().getMunicipioNome());
+        enderDest.setUF(TUf.valueOf(invoice.getBuyer().getAddress().getAdditionalInformation()));
+        enderDest.setCEP(invoice.getBuyer().getAddress().getPostalCode());
+        enderDest.setCPais("1058");
+        enderDest.setXPais("Brasil");
+        //enderDest.setFone(invoice.getBuyer().getN);
         dest.setEnderDest(enderDest);
-        dest.setEmail(""); // Destinatario tem email ?
-        dest.setIndIEDest("9"); // Padrao para consumidor final
+        //dest.setEmail("teste@test");
+        dest.setIndIEDest("9");
         return dest;
     }
 
-    */
-/**
+    /**
      * Preenche Det NFCe
-     *//*
-
-    private static List<TNFe.InfNFe.Det> preencheDet(List<ItemModel> itens) {
+     */
+    private static List<Det> preencheDet(InvoiceModel invoice) {
 
         //O Preenchimento deve ser feito por produto, Então deve ocorrer uma LIsta
-        List<TNFe.InfNFe.Det> detalhes = new ArrayList<>();
+        List<Det> listDeDet = new ArrayList<>();
 
-        //O numero do Item deve seguir uma sequencia
-        int numeroItem = 1;
-        for(ItemModel item : itens){
-            TNFe.InfNFe.Det det = new TNFe.InfNFe.Det();
+        List<ItemModel> itemInvoice = invoice.getItems();
+        Integer numeroItem = 1;
+        for(ItemModel item : itemInvoice){
+            Det det = new Det();
+
+            //O numero do Item deve seguir uma sequencia
             det.setNItem(String.valueOf(numeroItem));
 
             // Preenche dados do Produto
-            det.setProd(preencheProduto(item));
+            det.setProd(preencheProduto(item, invoice));
 
             //Preenche dados do Imposto
             det.setImposto(preencheImposto(item));
 
-            detalhes.add(det);
-
+            listDeDet.add(det);
             numeroItem++;
+
         }
 
         //Retorna a Lista de Det
-        return detalhes;
+        return listDeDet;
     }
 
-    */
-/**
+    /**
      * Preenche dados do Produto
      * @return
-     *//*
-
-    private static TNFe.InfNFe.Det.Prod preencheProduto(ItemModel item) {
-        TNFe.InfNFe.Det.Prod prod = new TNFe.InfNFe.Det.Prod();
+     */
+    private static Prod preencheProduto(ItemModel item, InvoiceModel invoice) {
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+        Prod prod = new Prod();
         prod.setCProd(item.getCode());
         prod.setCEAN(item.getCodeGTIN());
         prod.setXProd(item.getDescription());
         prod.setNCM(item.getNcm());
         prod.setCEST(item.getCest());
         //prod.setIndEscala("S");
-        prod.setCFOP(String.valueOf(item.getCfop()));
+        prod.setCFOP(item.getTax().getCfop());
         prod.setUCom(item.getUnit());
         prod.setQCom(String.valueOf(item.getQuantity()));
         prod.setVUnCom(String.valueOf(item.getUnitAmount()));
-        prod.setVProd(String.valueOf(item.getQuantity() * item.getUnitAmount()));
+        prod.setVProd(decimalFormat.format(item.getUnitAmount()));
         prod.setCEANTrib(item.getCodeGTIN());
         prod.setUTrib(item.getUnit());
         prod.setQTrib(String.valueOf(item.getQuantity()));
-        prod.setVUnTrib(String.valueOf(item.getQuantity()));
+        prod.setVUnTrib(String.valueOf(item.getUnitAmount()));
         prod.setIndTot("1");
 
         return prod;
     }
-
-    */
-/**
+    /**
      * Preenche dados do Imposto da NFCe
      * @return
-     *//*
+     */
+    private static Imposto preencheImposto(ItemModel item) {
+        Imposto imposto = new Imposto();
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+        ICMS icms = new ICMS();
 
-    private static TNFe.InfNFe.Det.Imposto preencheImposto(ItemModel item) {
-        TNFe.InfNFe.Det.Imposto imposto = new TNFe.InfNFe.Det.Imposto();
-        TNFe.InfNFe.Det.Imposto.ICMS icms = new TNFe.InfNFe.Det.Imposto.ICMS();
-        TNFe.InfNFe.Det.Imposto.ICMS.ICMS00 icms00 = new TNFe.InfNFe.Det.Imposto.ICMS.ICMS00();
-        RecalculoService calcularImposto = new RecalculoService();
+        if(item.getTax().getIcms().getCst().equals("60")){
+            ICMS.ICMS60 icms60 = new ICMS.ICMS60();
+            icms60.setOrig("0");
+            icms60.setCST(item.getTax().getIcms().getCst());
+            icms60.setVBCSTRet(decimalFormat.format(item.getTotalAmount()));
+            icms60.setPST(decimalFormat.format(item.getTax().getIcms().getRate()));
 
-        List<TributacaoEstadual> tributacaoEstadual = calcularImposto.TributacaoEstadualForNfce(item);
-        if(!tributacaoEstadual.isEmpty()){
-            for(TributacaoEstadual tributacaoEstadualSet : tributacaoEstadual){
-                icms00.setCST(String.valueOf(tributacaoEstadualSet.getIcmsCst()));
-                icms00.setOrig(item.getAdditionalInformation());
-                icms00.setModBC("3");
-                icms00.setVBC(String.valueOf(tributacaoEstadualSet.getIcmsBase()));
-                icms00.setPICMS(String.valueOf(tributacaoEstadualSet.getIcmsAliquota()));
+            BigDecimal valorNf = new BigDecimal(String.valueOf(item.getTotalAmount()));
+            BigDecimal aliqBig = new BigDecimal(String.valueOf(item.getTax().getIcms().getRate()));
 
-                Integer vbc = Integer.parseInt(icms00.getVBC());
-                Integer picms = Integer.parseInt(icms00.getPICMS());
-                icms00.setVICMS(String.valueOf((vbc * picms) / 100));
-            }
+            BigDecimal valorf = valorNf.multiply(aliqBig).setScale(2, RoundingMode.HALF_UP);
+
+            icms60.setVICMSSubstituto(decimalFormat.format(valorf));
+            icms60.setVICMSSTRet(decimalFormat.format(valorf));
+
+            icms.setICMS60(icms60);
         }
-        icms.setICMS00(icms00);
 
+        if(item.getTax().getIcms().equals("00")){
+            ICMS.ICMS00 icms00 = new ICMS.ICMS00();
+            icms00.setOrig("0"); // Produto nacional ou importado ?
+            icms00.setCST(item.getTax().getIcms().getCst());
+            icms00.setModBC("3"); // valor da operacao
+            icms00.setVBC(decimalFormat.format(item.getTotalAmount()));
+            icms00.setPICMS(decimalFormat.format(item.getTax().getIcms().getRate()));
 
-        TNFe.InfNFe.Det.Imposto.PIS pis = new TNFe.InfNFe.Det.Imposto.PIS();
-        TNFe.InfNFe.Det.Imposto.PIS.PISAliq pisAliq = new TNFe.InfNFe.Det.Imposto.PIS.PISAliq();
+            double valorProd = item.getTotalAmount();
+            BigDecimal valorProdFormat = new BigDecimal(valorProd);
 
-        List<TributacaoFederal> tributacaoFederal = calcularImposto.TributacaoFederalForNfce(item);
-        if(!tributacaoFederal.isEmpty()){
-            for(TributacaoFederal tributacaoFederalSet : tributacaoFederal){
-                pisAliq.setCST(String.valueOf(tributacaoFederalSet.getPisCst()));
-                pisAliq.setVBC(String.valueOf(tributacaoFederalSet.getPisBase()));
-                pisAliq.setPPIS(String.valueOf(tributacaoFederalSet.getPisAliquota()));
+            double aliqProd = item.getTax().getIcms().getRate();
+            BigDecimal aliqProdFormat = new BigDecimal(aliqProd);
 
-                Integer vbc = Integer.parseInt(pisAliq.getVBC());
-                Integer picms = Integer.parseInt(pisAliq.getPPIS());
-                pisAliq.setVPIS(String.valueOf((vbc * picms) / 100));
-            }
+            BigDecimal valorVIcms = valorProdFormat.multiply(aliqProdFormat).setScale(2, RoundingMode.HALF_UP);
+
+            icms00.setVICMS(decimalFormat.format(valorVIcms));
+
+            icms.setICMS00(icms00);
         }
+
+        PIS pis = new PIS();
+        PISAliq pisAliq = new PISAliq();
+
+        String cst = item.getTax().getPis().getCst();
+
+        // Verifica se o CST é um número de um dígito e adiciona o zero à esquerda se necessário
+        String cstFormatted = cst.length() == 1 ? String.format("%02d", Integer.parseInt(cst)) : cst;
+
+        pisAliq.setCST(cstFormatted);
+
+        pisAliq.setVBC(decimalFormat.format(item.getTax().getPis().getBaseTax()));
+        pisAliq.setPPIS(decimalFormat.format(item.getTax().getPis().getRate()));
+        pisAliq.setVPIS(decimalFormat.format(item.getTax().getPis().getAmount()));
         pis.setPISAliq(pisAliq);
 
-        TNFe.InfNFe.Det.Imposto.COFINS cofins = new TNFe.InfNFe.Det.Imposto.COFINS();
-        TNFe.InfNFe.Det.Imposto.COFINS.COFINSAliq cofinsAliq = new TNFe.InfNFe.Det.Imposto.COFINS.COFINSAliq();
-        for(TributacaoFederal tributacaoFederalSet : tributacaoFederal){
-            cofinsAliq.setCST(String.valueOf(tributacaoFederalSet.getCofinsCst()));
-            cofinsAliq.setVBC(String.valueOf(tributacaoFederalSet.getCofinsBase()));
-            cofinsAliq.setPCOFINS(String.valueOf(tributacaoFederalSet.getCofinsAliquota()));
+        COFINS cofins = new COFINS();
+        COFINSAliq cofinsAliq = new COFINSAliq();
 
-            Integer vbc = Integer.parseInt(cofinsAliq.getVBC());
-            Integer picms = Integer.parseInt(cofinsAliq.getPCOFINS());
-            pisAliq.setVPIS(String.valueOf((vbc * picms) / 100));
-        }
+        String cstCofins = item.getTax().getCofins().getCst();
+
+        String cstFormattedCofins = cstCofins.length() == 1 ? String.format("%02d", Integer.parseInt(cst)) : cst;
+
+        cofinsAliq.setCST(cstFormattedCofins);
+
+        cofinsAliq.setVBC(decimalFormat.format(item.getTax().getCofins().getBaseTax()));
+        cofinsAliq.setPCOFINS(decimalFormat.format(item.getTax().getCofins().getRate()));
+        cofinsAliq.setVCOFINS(decimalFormat.format(item.getTax().getCofins().getAmount()));
         cofins.setCOFINSAliq(cofinsAliq);
 
-        JAXBElement<TNFe.InfNFe.Det.Imposto.ICMS> icmsElement = new JAXBElement<TNFe.InfNFe.Det.Imposto.ICMS>(new QName("ICMS"), TNFe.InfNFe.Det.Imposto.ICMS.class, icms);
+        JAXBElement<ICMS> icmsElement = new JAXBElement<ICMS>(new QName("ICMS"), ICMS.class, icms);
         imposto.getContent().add(icmsElement);
 
-        JAXBElement<TNFe.InfNFe.Det.Imposto.PIS> pisElement = new JAXBElement<TNFe.InfNFe.Det.Imposto.PIS>(new QName("PIS"), TNFe.InfNFe.Det.Imposto.PIS.class, pis);
+        JAXBElement<PIS> pisElement = new JAXBElement<PIS>(new QName("PIS"), PIS.class, pis);
         imposto.getContent().add(pisElement);
 
-        JAXBElement<TNFe.InfNFe.Det.Imposto.COFINS> cofinsElement = new JAXBElement<TNFe.InfNFe.Det.Imposto.COFINS>(new QName("COFINS"), TNFe.InfNFe.Det.Imposto.COFINS.class, cofins);
+        JAXBElement<COFINS> cofinsElement = new JAXBElement<COFINS>(new QName("COFINS"), COFINS.class, cofins);
         imposto.getContent().add(cofinsElement);
 
         return imposto;
     }
 
-    */
-/**
+    /**
      * Prenche Total NFCe
      * @return
-     *//*
-
-    private static TNFe.InfNFe.Total preencheTotal() {
-        TNFe.InfNFe.Total total = new TNFe.InfNFe.Total();
-        TNFe.InfNFe.Total.ICMSTot icmstot = new TNFe.InfNFe.Total.ICMSTot();
-        icmstot.setVBC("13.00");
-        icmstot.setVICMS();
-        icmstot.setVICMSDeson("0.00");
-        //icmstot.setVFCP("0.00");
-        //icmstot.setVFCPST("0.00");
-        icmstot.setVFCPSTRet("0.00");
-        icmstot.setVBCST("0.00");
-        icmstot.setVST("0.00");
-        icmstot.setVProd("13.00"); --
-                icmstot.setVFrete("0.00"); --
-                icmstot.setVSeg("0.00"); --
-                icmstot.setVDesc("0.00"); --
-                //icmstot.setVII("0.00");
-                //icmstot.setVIPI("0.00");
-                //icmstot.setVIPIDevol("0.00");
-                icmstot.setVPIS("0.21");
-        icmstot.setVCOFINS("0.99");
-        icmstot.setVOutro("0.00");
-        icmstot.setVNF("13.00");
+     */
+    private static Total preencheTotal(TotalsModel totals) {
+        Total total = new Total();
+        ICMSTot icmstot = new ICMSTot();
+        icmstot.setVBC(totals.getvBc());
+        icmstot.setVICMS(totals.getvIcms());
+        icmstot.setVICMSDeson(totals.getvIcmsDeson());
+        icmstot.setVFCP(totals.getvFcp());
+        icmstot.setVFCPST(totals.getvFcpSt());
+        icmstot.setVFCPSTRet(totals.getvFcpStRet());
+        icmstot.setVBCST(totals.getvBcst());
+        icmstot.setVST(totals.getvSt());
+        icmstot.setVProd(totals.getvProd());
+        icmstot.setVFrete(totals.getvFrete());
+        icmstot.setVSeg(totals.getvSeg());
+        icmstot.setVDesc(totals.getvDesc());
+        icmstot.setVII(totals.getvII());
+        icmstot.setVIPI(totals.getvIpi());
+        icmstot.setVIPIDevol(totals.getvIpiDevol());
+        icmstot.setVPIS(String.valueOf(totals.getvPis()));
+        icmstot.setVCOFINS(String.valueOf(totals.getvCofins()));
+        icmstot.setVOutro(String.valueOf(totals.getvOutro()));
+        icmstot.setVNF(String.valueOf(totals.getvNf()));
+        icmstot.setVTotTrib(String.valueOf(totals.getvTotTrib()));
         total.setICMSTot(icmstot);
 
         return total;
     }
 
-    */
-/**
+    /**
      * Preenche Transporte
      * @return
-     *//*
-
-    private static TNFe.InfNFe.Transp preencheTransporte() {
-        TNFe.InfNFe.Transp transp = new TNFe.InfNFe.Transp();
-        transp.setModFrete("9");
+     */
+    private static Transp preencheTransporte() {
+        Transp transp = new Transp();
+        transp.setModFrete("9"); // Sem frete, comum para nfces
         return transp;
     }
 
-    */
-/**
+    /**
      * Preenche dados Pagamento
      * @return
-     *//*
-
-    private static TNFe.InfNFe.Pag preenchePag() {
-        TNFe.InfNFe.Pag pag = new TNFe.InfNFe.Pag();
-        TNFe.InfNFe.Pag.DetPag detPag = new TNFe.InfNFe.Pag.DetPag();
-        detPag.setTPag("01");
-        detPag.setVPag("13.00");
+     */
+    private static Pag preenchePag(InvoiceModel invoice, TotalsModel totals) {
+        Pag pag = new Pag();
+        Pag.DetPag detPag = new Pag.DetPag();
+        detPag.setTPag("0" + invoice.getModoPagamento());
+        detPag.setVPag(totals.getvNf());
+        detPag.setXPag(invoice.getModoDePagamentoDescricao());
         pag.getDetPag().add(detPag);
 
         return pag;
     }
 
-    */
-/**
+    /**
      * Preenche QRCode
      * @param enviNFe
      * @param config
@@ -509,8 +491,7 @@ public class EmissaoCriacaoXmlService {
      * @return
      * @throws NfeException
      * @throws NoSuchAlgorithmException
-     *//*
-
+     */
     private static String preencheQRCode(TEnviNFe enviNFe, ConfiguracoesNfe config, String idToken, String csc) throws NfeException, NoSuchAlgorithmException {
 
         //QRCODE EMISAO ONLINE
@@ -534,4 +515,3 @@ public class EmissaoCriacaoXmlService {
     }
 
 }
-*/
