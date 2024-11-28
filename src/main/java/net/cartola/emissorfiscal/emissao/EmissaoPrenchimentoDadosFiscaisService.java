@@ -11,10 +11,19 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.*;
 
 @Service
 public class EmissaoPrenchimentoDadosFiscaisService {
+
+    private static final NumberFormat CEST_FORMATTER = NumberFormat.getIntegerInstance();
+
+    static {
+        CEST_FORMATTER.setMinimumIntegerDigits(7);
+        CEST_FORMATTER.setMaximumIntegerDigits(7);
+        CEST_FORMATTER.setGroupingUsed(false);
+    }
 
     @Autowired
     RecalculoService recalculoService;
@@ -52,6 +61,7 @@ public class EmissaoPrenchimentoDadosFiscaisService {
         }
 
         preencheTributacaoInvoice(ncmsDosItensDaInvoice, detalhesErros, invoice);
+
         if (!detalhesErros.isEmpty()) {
             result.put("ErroNoPreenchimentoDaTributacao", detalhesErros);
             resultado.setErros(result);
@@ -149,19 +159,17 @@ public class EmissaoPrenchimentoDadosFiscaisService {
                 TaxModel imposto = new TaxModel();
                 IcmsModel icms = new IcmsModel();
 
-                BigDecimal icmsBase = tributacao.getIcmsBase();
-                BigDecimal icmsAliquota = tributacao.getIcmsAliquota();
-                BigDecimal icmsAmount = BigDecimal.valueOf(item.getTotalAmount())
-                        .multiply(icmsAliquota.divide(BigDecimal.valueOf(100)));
+                BigDecimal icmsBase = BigDecimal.valueOf(item.getTotalAmount());
+                BigDecimal icmsAliquota = tributacao.getIcmsAliquota().multiply(BigDecimal.valueOf(100));
+                BigDecimal icmsAmount = icmsBase.multiply(icmsAliquota.divide(BigDecimal.valueOf(100)));
 
-                icms.setCst(String.valueOf(tributacao.getIcmsCst()));
-                icms.setOrigin(item.getAdditionalInformation());
+                icms.setCst(String.format("%02d",tributacao.getIcmsCst()));
                 icms.setBaseTax(icmsBase.doubleValue());
                 icms.setRate(icmsAliquota.doubleValue());
                 icms.setAmount(icmsAmount.doubleValue());
 
                 if (tributacao.getCest() != null && tributacao.getCest() != 0) {
-                    item.setCest(String.valueOf(tributacao.getCest()));
+                    item.setCest(CEST_FORMATTER.format(tributacao.getCest()));
                 }
 
                 imposto.setCfop(String.valueOf(tributacao.getCfop()));
@@ -175,23 +183,21 @@ public class EmissaoPrenchimentoDadosFiscaisService {
                 CofinsModel cofins = new CofinsModel();
 
                 // PIS
-                BigDecimal pisBase = tributacaoFederal1.getPisBase();
-                BigDecimal pisAliquota = tributacaoFederal1.getPisAliquota();
-                BigDecimal pisAmount = BigDecimal.valueOf(item.getTotalAmount())
-                        .multiply(pisAliquota.divide(BigDecimal.valueOf(100)));
+                BigDecimal pisBase = BigDecimal.valueOf(item.getTotalAmount());
+                BigDecimal pisAliquota = tributacaoFederal1.getPisAliquota().multiply(BigDecimal.valueOf(100));
+                BigDecimal pisAmount = pisBase.multiply(pisAliquota.divide(BigDecimal.valueOf(100)));
 
-                pis.setCst(String.valueOf(tributacaoFederal1.getPisCst()));
+                pis.setCst(String.format("%02d", tributacaoFederal1.getPisCst()));
                 pis.setBaseTax(pisBase.doubleValue());
                 pis.setRate(pisAliquota.doubleValue());
                 pis.setAmount(pisAmount.doubleValue());
 
                 // COFINS
-                BigDecimal cofinsBase = tributacaoFederal1.getCofinsBase();
-                BigDecimal cofinsAliquota = tributacaoFederal1.getCofinsAliquota();
-                BigDecimal cofinsAmount = BigDecimal.valueOf(item.getTotalAmount())
-                        .multiply(cofinsAliquota.divide(BigDecimal.valueOf(100)));
+                BigDecimal cofinsBase = BigDecimal.valueOf(item.getTotalAmount());
+                BigDecimal cofinsAliquota = tributacaoFederal1.getCofinsAliquota().multiply(BigDecimal.valueOf(100));
+                BigDecimal cofinsAmount = cofinsBase.multiply(cofinsAliquota.divide(BigDecimal.valueOf(100)));
 
-                cofins.setCst(String.valueOf(tributacaoFederal1.getCofinsCst()));
+                cofins.setCst(String.format("%02d",tributacaoFederal1.getCofinsCst()));
                 cofins.setBaseTax(cofinsBase.doubleValue());
                 cofins.setRate(cofinsAliquota.doubleValue());
                 cofins.setAmount(cofinsAmount.doubleValue());
@@ -202,56 +208,84 @@ public class EmissaoPrenchimentoDadosFiscaisService {
                 item.getTax().setPis(pis);
                 item.getTax().setCofins(cofins);
             }
+            preencheCalculosRefAoTotalsDaNota(itensDaInvoice, invoice);
         }
     }
 
     private void preencheCalculosRefAoTotalsDaNota(List<ItemModel> itensInvoice, InvoiceModel invoice) {
 
         TotalsModel totals = new TotalsModel();
-        BigDecimal totalPis = BigDecimal.ZERO;
-        BigDecimal totalCofins = BigDecimal.ZERO;
-        BigDecimal totalIcms = BigDecimal.ZERO;
-        BigDecimal totalsDesc = BigDecimal.ZERO;
-        BigDecimal totalsFreight = BigDecimal.ZERO;
-        BigDecimal totalsProd = BigDecimal.ZERO;
-        BigDecimal totalsVnf = BigDecimal.ZERO;
-        BigDecimal totalsVoutros = BigDecimal.ZERO;
-        BigDecimal totalsVtotTrib = BigDecimal.ZERO;
+
+        BigDecimal  vBc = BigDecimal.ZERO;
+        BigDecimal  vIcms = BigDecimal.ZERO;
+        BigDecimal  vIcmsDeson = BigDecimal.ZERO;
+        BigDecimal  vFcp = BigDecimal.ZERO;
+        BigDecimal  vBcst = BigDecimal.ZERO;
+        BigDecimal  vSt = BigDecimal.ZERO;
+        BigDecimal  vFcpSt = BigDecimal.ZERO;
+        BigDecimal  vFcpStRet = BigDecimal.ZERO;
+        BigDecimal  vProd = BigDecimal.ZERO;
+        BigDecimal  vFrete = BigDecimal.ZERO;
+        BigDecimal  vSeg = BigDecimal.ZERO;
+        BigDecimal  vDesc = BigDecimal.ZERO;
+        BigDecimal  vII = BigDecimal.ZERO;
+        BigDecimal  vIpi = BigDecimal.ZERO;
+        BigDecimal  vIpiDevol = BigDecimal.ZERO;
+        BigDecimal  vPis = BigDecimal.ZERO;
+        BigDecimal  vCofins = BigDecimal.ZERO;
+        BigDecimal  vOutro = BigDecimal.ZERO;
+        BigDecimal  vTotTrib = BigDecimal.ZERO;
+        BigDecimal  vNf = BigDecimal.ZERO;
 
         for (ItemModel item : itensInvoice) {
-
-            totalPis = totalPis.add(BigDecimal.valueOf(item.getTax().getPis().getAmount()));
-            totalCofins = totalCofins.add(BigDecimal.valueOf(item.getTax().getCofins().getAmount()));
-            totalIcms = totalIcms.add(BigDecimal.valueOf(item.getTax().getIcms().getAmount()));
-            totalsProd = totalsProd.add(BigDecimal.valueOf(item.getTotalAmount()));
-            totalsVnf = totalsVnf.add(BigDecimal.valueOf(item.getTotalAmount() + item.getFreightAmount() + item.getOthersAmount() - item.getDiscountAmount()));
-            totalsVtotTrib = totalsVtotTrib.add(BigDecimal.valueOf(item.getTotalAmount()));
+            vBc = vBc.add(BigDecimal.valueOf(item.getTax().getIcms().getBaseTax()));
+            vIcms = vIcms.add(BigDecimal.valueOf(item.getTax().getIcms().getAmount()));
+            vProd = vProd.add(BigDecimal.valueOf(item.getTotalAmount()));
+            vPis = vPis.add(BigDecimal.valueOf(item.getTax().getPis().getAmount()));
+            vCofins = vCofins.add(BigDecimal.valueOf(item.getTax().getCofins().getAmount()));
+            vNf = vNf.add(BigDecimal.valueOf(item.getTotalAmount() + item.getFreightAmount() + item.getOthersAmount() - item.getDiscountAmount()));
+            vTotTrib = vTotTrib.add(BigDecimal.valueOf(item.getTotalAmount()));
 
             //A outras somas na nota ?
             if (item.getOthersAmount() > 0) {
-                totalsVoutros = totalsVoutros.add(BigDecimal.valueOf(item.getOthersAmount()));
+                vOutro = vOutro.add(BigDecimal.valueOf(item.getOthersAmount()));
+            }
+
+            if(item.getTax().getIcms().getCst().equals("60")){
+                vBc = BigDecimal.ZERO;
             }
 
             //O item tem desconto ? se tiver iremos setar
             if (item.getDiscountAmount() > 0) {
-                totalsDesc = totalsDesc.add(BigDecimal.valueOf(item.getDiscountAmount()));
+                vDesc = vDesc.add(BigDecimal.valueOf(item.getDiscountAmount()));
             }
 
             //O item tem valor de frete ?
             if (item.getFreightAmount() > 0) {
-                totalsFreight = totalsFreight.add(BigDecimal.valueOf(item.getFreightAmount()));
+                vFrete = vFrete.add(BigDecimal.valueOf(item.getFreightAmount()));
             }
         }
 
-        totals.setvOutro(stringUtil(formatBigDecimal(totalsVoutros)));
-        totals.setvTotTrib(stringUtil(formatBigDecimal(totalsVtotTrib)));
-        totals.setvNf(stringUtil(formatBigDecimal(totalsVnf)));
-        totals.setvProd(stringUtil(formatBigDecimal(totalsProd)));
-        totals.setvPis(stringUtil(formatBigDecimal(totalPis)));
-        totals.setvCofins(stringUtil(formatBigDecimal(totalCofins)));
-        totals.setvIcms(stringUtil(formatBigDecimal(totalIcms)));
-        totals.setvDesc(stringUtil(formatBigDecimal(totalsDesc)));
-        totals.setvFrete(stringUtil(formatBigDecimal(totalsFreight)));
+        totals.setvBc(stringUtil(formatBigDecimal(vBc)));
+        totals.setvIpiDevol(stringUtil(formatBigDecimal(vIpiDevol)));
+        totals.setvFcpSt(stringUtil(formatBigDecimal(vFcpSt)));
+        totals.setvFcpStRet(stringUtil(formatBigDecimal(vFcpStRet)));
+        totals.setvFcp(stringUtil(formatBigDecimal(vFcp)));
+        totals.setvSt(stringUtil(formatBigDecimal(vSt)));
+        totals.setvBcst(stringUtil(formatBigDecimal(vBcst)));
+        totals.setvIcmsDeson(stringUtil(formatBigDecimal(vIcmsDeson)));
+        totals.setvSeg(stringUtil(formatBigDecimal(vSeg)));
+        totals.setvIpi(stringUtil(formatBigDecimal(vIpi)));
+        totals.setvII(stringUtil(formatBigDecimal(vII)));
+        totals.setvOutro(stringUtil(formatBigDecimal(vOutro)));
+        totals.setvTotTrib(stringUtil(formatBigDecimal(vTotTrib)));
+        totals.setvNf(stringUtil(formatBigDecimal(vNf)));
+        totals.setvProd(stringUtil(formatBigDecimal(vProd)));
+        totals.setvPis(stringUtil(formatBigDecimal(vPis)));
+        totals.setvCofins(stringUtil(formatBigDecimal(vCofins)));
+        totals.setvIcms(stringUtil(formatBigDecimal(vIcms)));
+        totals.setvDesc(stringUtil(formatBigDecimal(vDesc)));
+        totals.setvFrete(stringUtil(formatBigDecimal(vFrete)));
 
         invoice.setTotals(totals);
     }

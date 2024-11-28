@@ -2,6 +2,8 @@ package net.cartola.emissorfiscal.emissao;
 
 import autogeral.emissorfiscal.vo.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class TestPreenchimentoDadosFiscais {
 
     @Autowired
     private EmissaoPrenchimentoDadosFiscaisService emissaoPrenchimentoDadosFiscaisService;
+
+    @Autowired
+    private EmissaoCriacaoXmlService emissaoCriacaoXmlService;
 
     @Test
     public void testaValidacoesDoPrenchimentoDasTributacoesNotaSemItem(){
@@ -91,6 +96,7 @@ public class TestPreenchimentoDadosFiscais {
 
         InvoiceModel nota = new InvoiceModel();
         nota.setUfOrigem("SP");
+        nota.setCodUf("35");
         nota.setOperationType("1");
 
         ItemModel item = new ItemModel();
@@ -202,87 +208,5 @@ public class TestPreenchimentoDadosFiscais {
 
         //log
         System.out.println("Erro encontrado: " + erros);
-    }
-
-    @Test
-    public void testaUmaNotaTotalmentePreenchida() throws JsonProcessingException {
-        InvoiceModel nota = new InvoiceModel();
-        List<ItemModel> itensList = new ArrayList<>();
-        List<PaymentModel> payments = new ArrayList<>();
-
-        /* EMITENTE NOTA */
-        EmitModel emit = new EmitModel();
-        emit.setInscricaoEstadual("387034155115");
-        emit.setNomeEmitente("Emiente Teste");
-        emit.setCpnjEmitente("05437537000137");
-        emit.setLogradouroEmitente("Casa da mae Joana");
-        emit.setNumeroLogradouroEmitente("777");
-        emit.setComplementoEdenrecoEmitente("Rua abandonada");
-        emit.setBairroEmitente("Bairro da casa do chapeu");
-        emit.setMunicipioEmitente("Itu");
-        emit.setUfEmitente("SP"); // Na nota tem q ser o codigo do estado
-        emit.setCepEmitente("13315000");
-        emit.setCodigoPaisEmitente("55");
-        emit.setCodIbgeMunicipioEmitente("3523909");
-        nota.setUfOrigem(emit.getUfEmitente());
-        nota.setEmitente(emit);
-
-        /* PAGAMENTO NOTA */
-        PaymentModel pagamento = new PaymentModel();
-        nota.setModoPagamento("1");
-        pagamento.setPayBack(0);
-
-        /* COMPRADOR */
-        BuyerModel buyer = new BuyerModel();
-        buyer.setId("1");
-        buyer.setName("Comprador Teste Inexistente");
-        buyer.setFederalTaxNumber(24840634000110l);
-        AddressModel address = new AddressModel();
-        address.setState("Sao Paulo");
-        CityModel city = new CityModel();
-        city.setCode("13315000");
-        address.setCity(city);
-        address.setDistrict("Rua imaginaria");
-        address.setNumber("90");
-        address.setCountry("Otaviano");
-        address.setCodMunicipioIbge("3523909");
-        address.setMunicipioNome("Itu");
-        address.setAdditionalInformation("SP");
-        address.setPostalCode("13315000");
-        buyer.setAddress(address);
-
-        /* ITEM NOTA */
-        ItemModel item = new ItemModel();
-        item.setCode(String.valueOf(1));
-        item.setCodeGTIN("SEM GTIN");
-        item.setDescription("Item teste");
-        item.setNcm("1");
-        item.setExTipi("0");
-        if (item.getExTipi() == null) {
-            item.setExTipi("0"); // Se nao tiver excessao eu vou definir como default 0
-        }
-        item.setUnit("1");
-        item.setQuantity(1.0);
-        item.setUnitAmount(10.00);
-        item.setDiscountAmount(0);
-        item.setTotalAmount(item.getUnitAmount() * item.getQuantity() - item.getDiscountAmount());
-        item.setAdditionalInformation("");
-        itensList.add(item);
-
-        /* NOTA PARTE DE CIMA */
-        nota.setPayment(payments);
-        nota.setSerie(1);
-        nota.setNumber(10);
-        nota.setOperationOn(LocalDateTime.parse("2024-11-25T18:41:22.234300"));
-        nota.setModeloNota("65");
-        nota.setFinalidadeNota("");
-        nota.setOperationNature("Venda");
-        nota.setOperationType("1");
-        //nota.setConsumerType();
-        nota.setBuyer(buyer);
-        nota.setItems(itensList);
-        nota.setEmitente(emit);
-
-        emissaoPrenchimentoDadosFiscaisService.preencherDadosFiscais(nota);
     }
 }

@@ -11,19 +11,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class NfceEmissaoConfig {
-
-    @Value("${certificado.pfx.path}")
-    private static String certificadoPfxPath;
-
-    @Value("${certificado.senha}")
-    private static String certificadoSenha;
+public class ConfigNfceService {
 
     public static ConfiguracoesNfe iniciaConfiguracoes() throws CertificadoException, IOException {
 
-        File file = new File(certificadoPfxPath);
+        File file = new File("/Users/wesleymendonca/.DBF/dist/20250220A1.pfx");
         byte[] bytes = Files.readAllBytes(file.toPath());
-        String senha = certificadoSenha;
+        String senha = "V552289";
 
         Certificado certificado = CertificadoService.certificadoPfxBytes(bytes, senha);
         ConfiguracoesNfe config = ConfiguracoesNfe.criarConfiguracoes(EstadosEnum.SP, AmbienteEnum.HOMOLOGACAO, certificado, "/Users/wesleymendonca/Documents/schemas");

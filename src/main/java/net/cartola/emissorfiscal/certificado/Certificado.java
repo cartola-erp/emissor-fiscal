@@ -1,5 +1,8 @@
 package net.cartola.emissorfiscal.certificado;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +18,6 @@ public class Certificado implements Serializable {
     private Date vencimento;
     private String nomeArquivo;
     private byte[] conteudo;
-
 
     public Long getId() {
         return id;

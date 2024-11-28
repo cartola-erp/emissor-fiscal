@@ -26,8 +26,6 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -49,7 +47,7 @@ public class EmissaoCriacaoXmlService {
 
         try {
             // Inicia As Configurações - ver https://github.com/Samuel-Oliveira/Java_NFe/wiki/1-:-Configuracoes
-            ConfiguracoesNfe config = NfceEmissaoConfig.iniciaConfiguracoes();
+            ConfiguracoesNfe config = ConfigNfceService.iniciaConfiguracoes();
 
             //Informe o Numero da NFCe
             int numeroNFCe = invoice.getNumber();
@@ -118,6 +116,9 @@ public class EmissaoCriacaoXmlService {
             enviNFe.setIndSinc("1");
             enviNFe.getNFe().add(nfe);
 
+            // Monta e Assina o XML
+            enviNFe = Nfe.montaNfe(config, enviNFe, true);
+
             // Conversão do objeto enviNFe para JSON e exibição no console
             ObjectMapper objectMapper = new ObjectMapper();
             try {
@@ -127,9 +128,6 @@ public class EmissaoCriacaoXmlService {
             } catch (Exception e) {
                 System.err.println("Erro ao converter para JSON: " + e.getMessage());
             }
-
-            // Monta e Assina o XML
-            enviNFe = Nfe.montaNfe(config, enviNFe, true);
 
             //Monta QRCode
             String qrCode = preencheQRCode(enviNFe,config,idToken,csc);
@@ -183,6 +181,7 @@ public class EmissaoCriacaoXmlService {
             System.err.println("# Erro: " + e.getMessage());
         }
 
+
     }
 
     /**
@@ -198,7 +197,7 @@ public class EmissaoCriacaoXmlService {
      */
     private static Ide preencheIde(ConfiguracoesNfe config, String cnf, int numeroNFCe, String tipoEmissao, String modelo, int serie, String cDv, LocalDateTime dataEmissao, InvoiceModel invoice) throws NfeException {
         Ide ide = new Ide();
-        ide.setCUF(invoice.getEmitente().getUfEmitente());
+        ide.setCUF(invoice.getCodUf());
         ide.setCNF(cnf);
         ide.setNatOp("NOTA FISCAL CONSUMIDOR ELETRONICA");
         ide.setMod(modelo);
@@ -322,6 +321,15 @@ public class EmissaoCriacaoXmlService {
         prod.setXProd(item.getDescription());
         prod.setNCM(item.getNcm());
         prod.setCEST(item.getCest());
+        Prod.Comb c = new Prod.Comb();
+        
+        if(!item.getFuelDetail().getCodeANP().isEmpty()){
+            c.setCProdANP(item.getFuelDetail().getCodeANP());
+            c.setDescANP(item.getFuelDetail().getDescriptionANP());
+            c.setUFCons(TUf.SP);
+            prod.setComb(c);
+        }
+
         //prod.setIndEscala("S");
         prod.setCFOP(item.getTax().getCfop());
         prod.setUCom(item.getUnit());
@@ -349,17 +357,10 @@ public class EmissaoCriacaoXmlService {
             ICMS.ICMS60 icms60 = new ICMS.ICMS60();
             icms60.setOrig("0");
             icms60.setCST(item.getTax().getIcms().getCst());
-            icms60.setVBCSTRet(decimalFormat.format(item.getTotalAmount()));
+            icms60.setVBCSTRet(decimalFormat.format(item.getTax().getIcms().getBaseTax()));
             icms60.setPST(decimalFormat.format(item.getTax().getIcms().getRate()));
-
-            BigDecimal valorNf = new BigDecimal(String.valueOf(item.getTotalAmount()));
-            BigDecimal aliqBig = new BigDecimal(String.valueOf(item.getTax().getIcms().getRate()));
-
-            BigDecimal valorf = valorNf.multiply(aliqBig).setScale(2, RoundingMode.HALF_UP);
-
-            icms60.setVICMSSubstituto(decimalFormat.format(valorf));
-            icms60.setVICMSSTRet(decimalFormat.format(valorf));
-
+            icms60.setVICMSSubstituto(decimalFormat.format(item.getTax().getIcms().getAmount()));
+            icms60.setVICMSSTRet(decimalFormat.format(item.getTax().getIcms().getAmount()));
             icms.setICMS60(icms60);
         }
 
@@ -368,19 +369,9 @@ public class EmissaoCriacaoXmlService {
             icms00.setOrig("0"); // Produto nacional ou importado ?
             icms00.setCST(item.getTax().getIcms().getCst());
             icms00.setModBC("3"); // valor da operacao
-            icms00.setVBC(decimalFormat.format(item.getTotalAmount()));
+            icms00.setVBC(decimalFormat.format(item.getTax().getIcms().getBaseTax()));
             icms00.setPICMS(decimalFormat.format(item.getTax().getIcms().getRate()));
-
-            double valorProd = item.getTotalAmount();
-            BigDecimal valorProdFormat = new BigDecimal(valorProd);
-
-            double aliqProd = item.getTax().getIcms().getRate();
-            BigDecimal aliqProdFormat = new BigDecimal(aliqProd);
-
-            BigDecimal valorVIcms = valorProdFormat.multiply(aliqProdFormat).setScale(2, RoundingMode.HALF_UP);
-
-            icms00.setVICMS(decimalFormat.format(valorVIcms));
-
+            icms00.setVICMS(decimalFormat.format(item.getTax().getIcms().getAmount()));
             icms.setICMS00(icms00);
         }
 
@@ -451,7 +442,7 @@ public class EmissaoCriacaoXmlService {
         icmstot.setVCOFINS(String.valueOf(totals.getvCofins()));
         icmstot.setVOutro(String.valueOf(totals.getvOutro()));
         icmstot.setVNF(String.valueOf(totals.getvNf()));
-        icmstot.setVTotTrib(String.valueOf(totals.getvTotTrib()));
+        //icmstot.setVTotTrib(String.valueOf(totals.getvTotTrib()));
         total.setICMSTot(icmstot);
 
         return total;
