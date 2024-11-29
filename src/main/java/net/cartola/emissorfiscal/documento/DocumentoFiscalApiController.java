@@ -201,52 +201,29 @@ public class DocumentoFiscalApiController {
 
 	// ** PARA ME LEMBRAR DE CRIAR O METODO QUE IRA SALVAR O DOCUMENTO FISCAL ATUALIZADO NO BANCO DO EMISSOR
 
-		@PostMapping(value = "/recalcular")
-		public ResponseEntity<Response<DocumentoFiscal>> recalculo(@RequestBody DocumentoFiscal docFiscalRecebido) {
+	@PostMapping(value = "/recalcular")
+	public ResponseEntity<Response<DocumentoFiscal>> recalculo(@RequestBody DocumentoFiscal docFiscalRecebido) {
 
 		Response<DocumentoFiscal> response = new Response<>();
-		 List<DocumentoFiscalItem> itensSemNcm = docFiscalRecebido.getItens();
+		List<DocumentoFiscalItem> itensSemNcm = docFiscalRecebido.getItens();
 
-		 for(DocumentoFiscalItem item : itensSemNcm ){
-			 if(item.getClasseFiscal() == ""){
-				 //item.setClasseFiscal("39172290");
-				 response.getErrors().add("Não foi possivel encontrar todos ncm dos itens, ncm faltante: " + item.getDescricaoEmpresa());
-				 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-			 }
-		 }
-		 saveCompra(docFiscalRecebido);
-
-		 Optional<DocumentoFiscal> docParaRecalculo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
-		 Optional<DocumentoFiscal> documentoFiscalNaoSalvo = Optional.empty();
-		 Optional<DocumentoFiscal> documentoCalculado = Optional.empty();
-
-		if(docParaRecalculo.isPresent()){
-			documentoCalculado = recalculoService.documentoFiscalExiste(docParaRecalculo.get());
-		}
-		/*
-		else {
-			documentoFiscalRepository.saveAndFlush(docFiscalRecebido);
-			Optional<DocumentoFiscal> isDocumentoFiscalFoiSalvo = docFiscalService.findDocumentoFiscal(docFiscalRecebido);
-			if(isDocumentoFiscalFoiSalvo.isPresent()){
-				documentoFiscalNaoSalvo = recalculoService.documentoFiscalNaoExiste(docFiscalRecebido);
-				documentoCalculado = documentoFiscalNaoSalvo;
+		for (DocumentoFiscalItem item : itensSemNcm) {
+			if ("".equals(item.getClasseFiscal())){
+				response.getErrors().add("Não foi possivel encontrar todos ncm dos itens, ncm faltante: " + item.getDescricaoEmpresa());
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 			}
 		}
-		 */
-			try {
-				if (documentoCalculado.isPresent()) {
-					DocumentoFiscal documentoFiscalAtualizado = documentoCalculado.get();
-					response.setData(documentoFiscalAtualizado);
-					documentoFiscalRepository.saveAndFlush(documentoFiscalAtualizado);
-					return ResponseEntity.ok(response);
-				} else {
-					response.getErrors().add("Documento fiscal não encontrado.");
-					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-				}
-			} catch (Exception e) {
-				response.getErrors().add("Erro ao recalcular o documento fiscal: ");
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-			}
+
+		recalculoService.documentoFiscalExiste(docFiscalRecebido);
+
+		try {
+			response.setData(docFiscalRecebido);
+			//documentoFiscalRepository.saveAndFlush(docFiscalRecebido);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			response.getErrors().add("Erro ao recalcular o documento fiscal: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
 	}
 }
 
