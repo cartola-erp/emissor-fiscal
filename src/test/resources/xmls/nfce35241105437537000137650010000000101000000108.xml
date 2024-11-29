@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc versao="4.00"
+	xmlns="http://www.portalfiscal.inf.br/nfe">
+	<NFe
+		xmlns="http://www.portalfiscal.inf.br/nfe">
+		<infNFe versao="4.00" Id="NFe35241105437537000137650010000000101000000108">
+			<ide>
+				<cUF>35</cUF>
+				<cNF>00000010</cNF>
+				<natOp>NOTA FISCAL CONSUMIDOR ELETRONICA</natOp>
+				<mod>65</mod>
+				<serie>1</serie>
+				<nNF>10</nNF>
+				<dhEmi>2024-11-28T16:04:21-03:00</dhEmi>
+				<tpNF>1</tpNF>
+				<idDest>1</idDest>
+				<cMunFG>3523909</cMunFG>
+				<tpImp>4</tpImp>
+				<tpEmis>1</tpEmis>
+				<cDV>8</cDV>
+				<tpAmb>2</tpAmb>
+				<finNFe>1</finNFe>
+				<indFinal>1</indFinal>
+				<indPres>1</indPres>
+				<procEmi>0</procEmi>
+				<verProc>1.0</verProc>
+			</ide>
+			<emit>
+				<CNPJ>05437537000137</CNPJ>
+				<xNome>Emiente Teste</xNome>
+				<enderEmit>
+					<xLgr>Casa da mae Joana</xLgr>
+					<nro>777</nro>
+					<xCpl>Rua abandonada</xCpl>
+					<xBairro>Bairro da casa do chapeu</xBairro>
+					<cMun>3523909</cMun>
+					<xMun>3523909</xMun>
+					<UF>SP</UF>
+					<CEP>13315000</CEP>
+					<cPais>1058</cPais>
+					<xPais>Brasil</xPais>
+				</enderEmit>
+				<IE>387034155115</IE>
+				<CRT>3</CRT>
+			</emit>
+			<dest>
+				<CNPJ>24840634000110</CNPJ>
+				<xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
+				<enderDest>
+					<xLgr>Rua imaginaria</xLgr>
+					<nro>90</nro>
+					<xBairro>Otaviano</xBairro>
+					<cMun>3523909</cMun>
+					<xMun>Itu</xMun>
+					<UF>SP</UF>
+					<CEP>13315000</CEP>
+					<cPais>1058</cPais>
+					<xPais>Brasil</xPais>
+				</enderDest>
+				<indIEDest>9</indIEDest>
+			</dest>
+			<det nItem="1">
+				<prod>
+					<cProd>1</cProd>
+					<cEAN>SEM GTIN</cEAN>
+					<xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
+					<NCM>27101932</NCM>
+					<CEST>1999000</CEST>
+					<CFOP>5656</CFOP>
+					<uCom>1</uCom>
+					<qCom>1.0</qCom>
+					<vUnCom>10.0</vUnCom>
+					<vProd>10.00</vProd>
+					<cEANTrib>SEM GTIN</cEANTrib>
+					<uTrib>1</uTrib>
+					<qTrib>1.0</qTrib>
+					<vUnTrib>10.0</vUnTrib>
+					<indTot>1</indTot>
+					<comb>
+						<cProdANP>620101008</cProdANP>
+						<descANP>Oleo lubrificante</descANP>
+						<UFCons>SP</UFCons>
+					</comb>
+				</prod>
+				<imposto>
+					<ICMS>
+						<ICMS60>
+							<orig>0</orig>
+							<CST>60</CST>
+							<vBCSTRet>10.00</vBCSTRet>
+							<pST>0.00</pST>
+							<vICMSSubstituto>0.00</vICMSSubstituto>
+							<vICMSSTRet>0.00</vICMSSTRet>
+						</ICMS60>
+					</ICMS>
+					<PIS>
+						<PISAliq>
+							<CST>01</CST>
+							<vBC>10.00</vBC>
+							<pPIS>1.65</pPIS>
+							<vPIS>0.17</vPIS>
+						</PISAliq>
+					</PIS>
+					<COFINS>
+						<COFINSAliq>
+							<CST>01</CST>
+							<vBC>10.00</vBC>
+							<pCOFINS>7.60</pCOFINS>
+							<vCOFINS>0.76</vCOFINS>
+						</COFINSAliq>
+					</COFINS>
+				</imposto>
+			</det>
+			<total>
+				<ICMSTot>
+					<vBC>0.00</vBC>
+					<vICMS>0.00</vICMS>
+					<vICMSDeson>0.00</vICMSDeson>
+					<vFCP>0.00</vFCP>
+					<vBCST>0.00</vBCST>
+					<vST>0.00</vST>
+					<vFCPST>0.00</vFCPST>
+					<vFCPSTRet>0.00</vFCPSTRet>
+					<vProd>10.00</vProd>
+					<vFrete>0.00</vFrete>
+					<vSeg>0.00</vSeg>
+					<vDesc>0.00</vDesc>
+					<vII>0.00</vII>
+					<vIPI>0.00</vIPI>
+					<vIPIDevol>0.00</vIPIDevol>
+					<vPIS>0.17</vPIS>
+					<vCOFINS>0.76</vCOFINS>
+					<vOutro>0.00</vOutro>
+					<vNF>10.00</vNF>
+				</ICMSTot>
+			</total>
+			<transp>
+				<modFrete>9</modFrete>
+			</transp>
+			<pag>
+				<detPag>
+					<tPag>01</tPag>
+					<vPag>10.00</vPag>
+				</detPag>
+			</pag>
+		</infNFe>
+		<infNFeSupl>
+			<qrCode>https://www.homologacao.nfce.fazenda.sp.gov.br/qrcode?p=35241105437537000137650010000000101000000108|2|2|1|D0BB23F45008F8C430B168DF9BA29D0B2D0D08F0</qrCode>
+			<urlChave>https://www.homologacao.nfce.fazenda.sp.gov.br/consulta</urlChave>
+		</infNFeSupl>
+		<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+			<SignedInfo>
+				<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+				<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+				<Reference URI="#NFe35241105437537000137650010000000101000000108">
+					<Transforms>
+						<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+						<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+					</Transforms>
+					<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+					<DigestValue>jqU2T4Ta/NQw6zAkrjUniQStVf8=</DigestValue>
+				</Reference>
+			</SignedInfo>
+			<SignatureValue>AyGIhfq8EAQV5iyTKHWrmcLKINCP268GgrG5WHjdcDkf59icJgpOrV2AVF747S2864YRLzhEIOnpMIa0sPMUiuMVWyzd22WkP4cX/e73QBnmD8IESfCMdkkTjR8my+jao8iC5cVeAg2B2SV9uVjkFFuMGweeIyEZ4sdtmuZHDYdXmVzZ9mylTqM1u4qZWZ3HpyNqkaXMB+fEizxe4E2X99Iqy13dTKGOOvVWDlbJcCFrov9tTM1Q4MZHMAwOAt5L5bExnp2vcXdsI/Cy+LqDa1NZDxWhThdi4D9k/qcl2+Y+udu+BkC7vEVHf/v1qmKMfAF9yXHvUXHBktXxZSqI1w==</SignatureValue>
+			<KeyInfo>
+				<X509Data>
+					<X509Certificate>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</X509Certificate>
+				</X509Data>
+			</KeyInfo>
+		</Signature>
+	</NFe>
+	<protNFe versao="4.00">
+		<infProt>
+			<tpAmb>2</tpAmb>
+			<verAplic>SP_NFCE_PL_009_V400</verAplic>
+			<chNFe>35241105437537000137650010000000101000000108</chNFe>
+			<dhRecbto>2024-11-28T16:04:56-03:00</dhRecbto>
+			<nProt>135240002580923</nProt>
+			<digVal>jqU2T4Ta/NQw6zAkrjUniQStVf8=</digVal>
+			<cStat>100</cStat>
+			<xMotivo>Autorizado o uso da NF-e</xMotivo>
+		</infProt>
+	</protNFe>
+</nfeProc>
