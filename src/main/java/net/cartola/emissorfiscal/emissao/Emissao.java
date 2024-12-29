@@ -1,17 +1,20 @@
 package net.cartola.emissorfiscal.emissao;
 
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import autogeral.emissorfiscal.vo.InvoiceModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
+import net.cartola.emissorfiscal.produto.ProdutoAlteradoSpedApiController;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Emissao {
-    private static final Logger logger = LoggerFactory.getLogger(Emissao.class);
+
+    private static final Logger LOG = Logger.getLogger(Emissao.class.getName());
 
     @Autowired
     private EmissaoPrenchimentoDadosFiscaisService emissaoPrenchimentoDadosFiscaisService;
@@ -28,7 +31,7 @@ public class Emissao {
             try {
                 invoice = om.readValue(content, InvoiceModel.class);
             } catch (JsonProcessingException e) {
-                logger.error("Erro no processamento da mensagem: " + e.getMessage()); ;
+                LOG.severe("Erro no processamento da mensagem: " + e.getMessage()); ;
             }
         }
 
