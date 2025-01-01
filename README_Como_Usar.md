@@ -216,6 +216,15 @@ git clone https://github.com/cartola-erp/emissor-fiscal.git
 ```
 create database emissorfiscal;
 create database emissorfiscal_teste;      (para ser usado em ambiente de teste)
+
+create user 'erpj-ws' identified by 'erpj-ws-homologacao';
+create user 'erpj-ws'@'localhost' identified by 'erpj-ws-homologacao';
+create user 'erpj-ws'@'127.0.0.1' identified by 'erpj-ws-homologacao';
+
+grant all on emissorfiscal.* to 'erpj-ws';
+grant all on emissorfiscal.* to 'erpj-ws'@'localhost';
+grant all on emissorfiscal.* to 'erpj-ws'@'127.0.0.1';
+
 ```
 
 And repeat
