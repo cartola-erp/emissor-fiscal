@@ -87,22 +87,6 @@ public class EmissorFiscalApplication {
 			}
 			
 			
-			Optional<Usuario> opUser = usuarioService.findByLogin("robson.costa");
-			if (!opUser.isPresent()) {
-				UsuarioPerfil upa = new UsuarioPerfil();
-				upa.setPerfil(Perfil.ADMIN);
-
-				Usuario u = new Usuario();
-				u.setLogin("robson.costa");
-				u.setNome("Robson"); 
-				u.setSenha(bcryptEncoder.encode("root"));
-				u.setPerfis(Arrays.asList(upa));
-				usuarioService.save(u);
-				System.out.printf("Usuario criado : %s", u);
-			}
-			
-		
-			
 			String crc = "RJ000292898/1-7";
 			Optional<Contador> opContador = contadorService.findByCrc(crc);
 			if (!opContador.isPresent()) {
