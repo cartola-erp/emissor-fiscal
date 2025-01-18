@@ -1,14 +1,11 @@
 package net.cartola.emissorfiscal.recalculo;
 
-import jdk.nashorn.internal.runtime.regexp.joni.ast.StringNode;
 import net.cartola.emissorfiscal.documento.*;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 

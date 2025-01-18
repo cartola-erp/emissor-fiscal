@@ -10,11 +10,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.org.apache.bcel.internal.generic.DCONST;
-import net.cartola.emissorfiscal.sped.fiscal.enums.TipoDeOperacao;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -382,11 +380,11 @@ public class DocumentoFiscalService extends DocumentoService {
 	 * Ou seja, é os famosos "papéis" de: CONTA de ENERGIA, ÁGUA, TELEFONE  etc....
 	 * @param documentoFiscal
 	 */
-	private void defineModeloDocumentoParaServico(DocumentoFiscal docuFisc) {
+	private void defineModeloDocumentoParaServico(DocumentoFiscal documentoFiscal) {
 		ModeloDocumentoFiscal modelo = null;
-		switch (docuFisc.getTipoServico()) {
+		switch (documentoFiscal.getTipoServico()) {
 		case NENHUM:
-			modelo = docuFisc.getModelo();
+			modelo = documentoFiscal.getModelo();
 			break;
 		case OUTROS:
 			modelo = ModeloDocumentoFiscal.NFSE;
@@ -415,7 +413,7 @@ public class DocumentoFiscalService extends DocumentoService {
 //		default:
 //			break;
 		}
-		docuFisc.setModelo(modelo);
+		documentoFiscal.setModelo(modelo);
 	}
 
 	
