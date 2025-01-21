@@ -29,7 +29,9 @@ public abstract class Builder<T> {
 		try {
 			@SuppressWarnings("unchecked")
 			Class<T> clazz = (Class<T>) t.getClass();
-			newT = clazz.newInstance();
+			//clazz.getDeclaredConstructor().newInstance();
+			//newT = clazz.newInstance();
+			newT = clazz.getDeclaredConstructor().newInstance();
 			Method[] methodsArray = clazz.getDeclaredMethods();
 			
 			List<Method> methods = Arrays.asList(methodsArray);
@@ -62,11 +64,16 @@ public abstract class Builder<T> {
 				}
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
+			LOG.error("{}:{}", lastField, lastValue);
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			LOG.error("{}:{}", lastField, lastValue);
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
+			LOG.error("{}:{}", lastField, lastValue);
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			LOG.error("{}:{}", lastField, lastValue);
 			e.printStackTrace();
 		}
 		return newT;

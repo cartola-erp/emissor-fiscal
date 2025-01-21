@@ -17,11 +17,11 @@ public class RecalculoService {
 
     @Autowired
     RecalculoRepository recalculoRepository;
-    Long ifOperation;
+
 
     public Optional<DocumentoFiscal> documentoFiscalExiste(DocumentoFiscal docParaRecalculo) {
 
-        ifOperation = docParaRecalculo.getOperacao().getId();
+        Long ifOperation = docParaRecalculo.getOperacao().getId();
         Optional<DocumentoFiscal> docComImpostoEstadualCalculado = calcularImpostoEstadual(docParaRecalculo);
         calcularImpostoFederal(docComImpostoEstadualCalculado.get());
 
