@@ -1,7 +1,7 @@
 package net.cartola.emissorfiscal.emissao;
 
 
-import autogeral.emissorfiscal.vo.*;
+import br.com.autogeral.emissorfiscal.vo.*;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
 import net.cartola.emissorfiscal.recalculo.RecalculoService;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;

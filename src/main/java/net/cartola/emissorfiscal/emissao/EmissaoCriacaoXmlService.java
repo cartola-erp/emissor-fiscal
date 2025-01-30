@@ -1,8 +1,8 @@
 package net.cartola.emissorfiscal.emissao;
 
-import autogeral.emissorfiscal.vo.InvoiceModel;
-import autogeral.emissorfiscal.vo.ItemModel;
-import autogeral.emissorfiscal.vo.TotalsModel;
+import br.com.autogeral.emissorfiscal.vo.InvoiceModel;
+import br.com.autogeral.emissorfiscal.vo.ItemModel;
+import br.com.autogeral.emissorfiscal.vo.TotalsModel;
 import br.com.swconsultoria.nfe.Nfe;
 import br.com.swconsultoria.nfe.dom.ConfiguracoesNfe;
 import br.com.swconsultoria.nfe.dom.enuns.*;

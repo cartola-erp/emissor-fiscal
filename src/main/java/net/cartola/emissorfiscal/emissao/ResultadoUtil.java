@@ -1,6 +1,6 @@
 package net.cartola.emissorfiscal.emissao;
 
-import autogeral.emissorfiscal.vo.InvoiceModel;
+import br.com.autogeral.emissorfiscal.vo.InvoiceModel;
 
 import java.util.HashMap;
 import java.util.List;

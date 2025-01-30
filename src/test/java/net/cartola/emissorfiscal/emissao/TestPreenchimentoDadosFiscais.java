@@ -1,6 +1,6 @@
 package net.cartola.emissorfiscal.emissao;
 
-import autogeral.emissorfiscal.vo.*;
+import br.com.autogeral.emissorfiscal.vo.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

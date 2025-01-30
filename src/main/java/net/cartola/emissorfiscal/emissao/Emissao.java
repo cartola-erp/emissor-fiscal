@@ -3,7 +3,7 @@ package net.cartola.emissorfiscal.emissao;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import autogeral.emissorfiscal.vo.InvoiceModel;
+import br.com.autogeral.emissorfiscal.vo.InvoiceModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSpedApiController;

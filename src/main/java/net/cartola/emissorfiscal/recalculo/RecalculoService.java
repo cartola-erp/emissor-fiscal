@@ -1,6 +1,6 @@
 package net.cartola.emissorfiscal.recalculo;
 
-import autogeral.emissorfiscal.vo.ItemModel;
+import br.com.autogeral.emissorfiscal.vo.ItemModel;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
