@@ -1,13 +1,13 @@
 package net.cartola.emissorfiscal.emissao;
 
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import br.com.autogeral.emissorfiscal.vo.InvoiceModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSpedApiController;
 //import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +22,13 @@ public class Emissao {
     @Autowired
     private EmissaoCriacaoXmlService emissaoCriacaoXmlService;
 
-//    @RabbitListener(queues = "hello")
-    public void processMessage(String content) {
+    @RabbitListener(queues = "hello")
+    public void processMessageHello(String content) {
+        System.out.println(content);
+    }
+
+    @RabbitListener(queues = "emissorFiscal.emissao.emitir")
+    public void processMessageEmitir(String content) {
         InvoiceModel invoice = new InvoiceModel();
 
         if (!content.isEmpty()) {
