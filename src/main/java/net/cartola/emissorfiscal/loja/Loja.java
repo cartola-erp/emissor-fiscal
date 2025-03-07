@@ -65,8 +65,6 @@ public class Loja implements Serializable {
     private int ibgeCodigo;		// vem do obj cidade
 
 	private String telefone = "";
-	private LocalDateTime cadastro;
-	private LocalDateTime alterado;
 //	private Integer cedenteCodigo;
 //	private String site = "";
 //	private RegimeTributario tributacao = RegimeTributario.NORMAL;
@@ -79,7 +77,16 @@ public class Loja implements Serializable {
 	private PerfilEnquadramento spedFiscalPerfil; //No erpj é String -> ver se não implica em algo na integração
 	private String eMail = "";
 	private String criadoPor;
+	private LocalDateTime cadastro;
 	private String alteradoPor;
+	private LocalDateTime alterado;
+	// Numero fornecido pela SEFAZ, https://www.nfce.fazenda.sp.gov.br/NFCeSiteContribuinte/Secure/GerenciamentoCodAutQRCode.aspx
+	// O número sempre está formatado com 6 digitos
+	@Column(name="nfce_codi_segu_id")
+	private Integer nfceCodigoSegurancaId;
+	// Numero fornecido pela SEFAZ, https://www.nfce.fazenda.sp.gov.br/NFCeSiteContribuinte/Secure/GerenciamentoCodAutQRCode.aspx
+	@Column(name="nfce_codi_segu_nume")
+	private String nfceCodigoSegurancaNumero;
 
 	public String getLojaAndRazaoSocial() {
 		return this.codigoLoja +" - "+ razaoSocial;

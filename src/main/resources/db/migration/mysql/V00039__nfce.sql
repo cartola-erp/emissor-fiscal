@@ -1,0 +1,17 @@
+ALTER TABLE `emissorfiscal`.`loja`
+ADD COLUMN `nfce_codi_segu_id` INT NULL AFTER `sped_fisc_perf`,
+ADD COLUMN `nfce_codi_segu_nume` VARCHAR(45) NULL AFTER `nfce_codi_segu_id`,
+CHANGE COLUMN `sped_fisc_perf` `sped_fisc_perf` ENUM('A', 'B', 'C') NULL DEFAULT NULL AFTER `uf`,
+CHANGE COLUMN `nome` `nome` VARCHAR(255) NOT NULL ,
+CHANGE COLUMN `razao_social` `razao_social` VARCHAR(255) NOT NULL ,
+CHANGE COLUMN `bairro` `bairro` VARCHAR(255) NOT NULL ,
+CHANGE COLUMN `cep` `cep` CHAR(9) NOT NULL ,
+CHANGE COLUMN `cidade_codigo` `cidade_codigo` INT NOT NULL ,
+CHANGE COLUMN `cnae` `cnae` CHAR(20) NOT NULL DEFAULT '' ,
+CHANGE COLUMN `cnpj` `cnpj` CHAR(14) NOT NULL ,
+CHANGE COLUMN `endereco` `endereco` VARCHAR(255) NOT NULL ,
+CHANGE COLUMN `ende_nume` `ende_nume` INT NULL ,
+CHANGE COLUMN `ie` `ie` VARCHAR(255) NOT NULL ,
+CHANGE COLUMN `regime_tribu` `regime_tribu` ENUM('SIMPLES', 'SIMPLES_EXCESSO', 'NORMAL') NOT NULL ,
+CHANGE COLUMN `telefone` `telefone` CHAR(15) NULL DEFAULT NULL ,
+CHANGE COLUMN `uf` `uf` CHAR(2) NOT NULL ;
