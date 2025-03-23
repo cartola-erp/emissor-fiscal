@@ -13,10 +13,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 @Service
 public class EmissaoPrenchimentoDadosFiscaisService {
 
+    private static final Logger LOG = Logger.getLogger(EmissaoPrenchimentoDadosFiscaisService.class.getName());
     private static final NumberFormat CEST_FORMATTER = NumberFormat.getIntegerInstance();
 
     static {
@@ -65,92 +68,59 @@ public class EmissaoPrenchimentoDadosFiscaisService {
         if (!detalhesErros.isEmpty()) {
             result.put("ErroNoPreenchimentoDaTributacao", detalhesErros);
             resultado.setErros(result);
-            return resultado;
+        } else {
+            resultado.setInvoice(invoice);
         }
-
-        Map<String, List<String>> detalhesSucesso = new HashMap<>();
-        List<String> mensagemSucesso = new ArrayList<>();
-        mensagemSucesso.add("NenhumErroEncontrado");
-        detalhesSucesso.put("Concluido", mensagemSucesso);
-        result.put("SucessoAoRealizarOPreenchimentoDosDadosFiscais: ", detalhesSucesso);
-
-        resultado.setInvoice(invoice);
-        resultado.setErros(result);
         return resultado;
     }
 
-    public void preencheTributacaoInvoice(List<ItemModel> itensDaInvoice, Map<String, List<String>> erros, InvoiceModel invoice) {
+    public boolean preencheTributacaoInvoice(List<ItemModel> itensDaInvoice, Map<String, List<String>> erros, InvoiceModel invoice) {
+        validaDadosParaPreencherTributacaoInvoice(erros, invoice);
 
-        if (invoice.getUfOrigem() == null || invoice.getUfOrigem().isEmpty()) {
-            erros.put("UfOrigem", Collections.singletonList("Uf de origem da nota não pode estar nulo / vazio"));
+        boolean resultado = false;
+        if (erros.isEmpty()) {
+            EstadoSigla estadoOrigem, estadoDestino;
+            long operacaoid;
+            try {
+                estadoOrigem = EstadoSigla.valueOf(invoice.getUfOrigem());
+                estadoDestino = EstadoSigla.valueOf(invoice.getBuyer().getAddress().getState());
+                operacaoid = Long.parseLong(invoice.getOperationType());
+
+                List<TributacaoEstadual> tributacaoEstadual = recalculoService
+                        .carregarTributacaoEstadualForNfce(itensDaInvoice, estadoOrigem, estadoDestino, operacaoid);
+
+                List<TributacaoFederal> tributacaoFederal = recalculoService
+                        .carregarTributacaoFederalForNfce(itensDaInvoice, operacaoid);
+                verificaSeTemItensSemTributacaoCadastrada(itensDaInvoice, tributacaoEstadual, tributacaoFederal, erros);
+
+                if(erros.isEmpty()) {
+                    calculaTributacaoDoItens(itensDaInvoice, tributacaoEstadual, tributacaoFederal);
+                    calculosTotais(invoice);
+                    resultado = true;
+                }
+            } catch (IllegalArgumentException e) {
+                erros.put("DadosInvalidos", Collections.singletonList("Uf ou operação inválidos"));
+            }
+
         }
+        return resultado;
+    }
 
-        if (invoice.getBuyer() == null) {
-            erros.put("Cliente", Collections.singletonList("Os dados do cliente nao podem estar nulo / vazio"));
-        } else if (invoice.getBuyer().getAddress() == null) {
-            erros.put("EnderecoCliente", Collections.singletonList("O endereco do cliente nao pode estar nulo / vazio "));
-        } else if (invoice.getBuyer().getAddress().getAdditionalInformation() == null || invoice.getBuyer().getAddress().getAdditionalInformation().isEmpty()) {
-            erros.put("UfDestino", Collections.singletonList("Uf de destino da nota não pode estar nulo / vazio"));
-        }
-
-        if (invoice.getOperationType() == null || invoice.getOperationType().isEmpty()) {
-            erros.put("IdDaOperacao", Collections.singletonList("Id da operação não pode estar nulo / vazio"));
-        }
-
-        if (!erros.isEmpty()) return; // Encerrar caso existam erros de validação.
-
-        EstadoSigla estadoOrigem, estadoDestino;
-        long operacaoid;
-        try {
-            estadoOrigem = EstadoSigla.valueOf(invoice.getUfOrigem());
-            estadoDestino = EstadoSigla.valueOf(invoice.getBuyer().getAddress().getAdditionalInformation());
-            operacaoid = Long.parseLong(invoice.getOperationType());
-        } catch (IllegalArgumentException e) {
-            erros.put("DadosInvalidos", Collections.singletonList("Uf ou operação inválidos"));
-            return;
-        }
-
-        // Buscar tributações
-        List<TributacaoEstadual> tributacaoEstadual = recalculoService
-                .TributacaoEstadualForNfce(itensDaInvoice, estadoOrigem, estadoDestino, operacaoid);
-
-        List<TributacaoFederal> tributacaoFederal = recalculoService
-                .TributacaoFederalForNfce(itensDaInvoice, operacaoid);
-
-        // Verificar itens sem tributação
-        List<String> ncmsSemTributacaoEstadual = new ArrayList<>();
-        List<String> ncmsSemTributacaoFederal = new ArrayList<>();
-
-        for (ItemModel item : itensDaInvoice) {
-            int ncm = Integer.parseInt(item.getNcm());
-
-            boolean temTributacaoEstadual = tributacaoEstadual.stream()
-                    .anyMatch(t -> t.getNcm().getNumero() == ncm);
-
-            boolean temTributacaoFederal = tributacaoFederal.stream()
-                    .anyMatch(t -> t.getNcm().getNumero() == ncm);
-
-            if (!temTributacaoEstadual) ncmsSemTributacaoEstadual.add(String.valueOf(ncm));
-            if (!temTributacaoFederal) ncmsSemTributacaoFederal.add(String.valueOf(ncm));
-        }
-
-        if (!ncmsSemTributacaoEstadual.isEmpty() || !ncmsSemTributacaoFederal.isEmpty()) {
-            erros.put("ncmsSemTributacaoEstadual", ncmsSemTributacaoEstadual);
-            erros.put("ncmsSemTributacaoFederal", ncmsSemTributacaoFederal);
-            return;
-        }
-
+    private void calculaTributacaoDoItens(List<ItemModel> itensDaInvoice, List<TributacaoEstadual> tributacaoEstadual, List<TributacaoFederal> tributacaoFederal) {
         // Preencher impostos nos itens
         for (ItemModel item : itensDaInvoice) {
-            int ncm = Integer.parseInt(item.getNcm());
+            final int ncm = Integer.parseInt(item.getNcm());
+            final int exIpi = (null != item.getExTipi() && !item.getExTipi().isEmpty() ? Integer.parseInt(item.getExTipi()) : 0);
+            Predicate<TributacaoEstadual> pe = t -> t.getNcm().getNumero() == ncm && t.getNcm().getExcecao() == exIpi;
+            Predicate<TributacaoFederal> pf = t -> t.getNcm().getNumero() == ncm && t.getNcm().getExcecao() == exIpi;
 
             TributacaoEstadual tributacao = tributacaoEstadual.stream()
-                    .filter(t -> t.getNcm().getNumero() == ncm)
+                    .filter(pe)
                     .findFirst()
                     .orElse(null);
 
             TributacaoFederal tributacaoFederal1 = tributacaoFederal.stream()
-                    .filter(t -> t.getNcm().getNumero() == ncm)
+                    .filter(pf)
                     .findFirst()
                     .orElse(null);
 
@@ -208,12 +178,70 @@ public class EmissaoPrenchimentoDadosFiscaisService {
                 item.getTax().setPis(pis);
                 item.getTax().setCofins(cofins);
             }
-            preencheCalculosRefAoTotalsDaNota(itensDaInvoice, invoice);
+            String msg = String.format("Item com tributação calculada : %s", item);
+            LOG.fine(msg);
         }
     }
 
-    private void preencheCalculosRefAoTotalsDaNota(List<ItemModel> itensInvoice, InvoiceModel invoice) {
+    private void verificaSeTemItensSemTributacaoCadastrada(List<ItemModel> itensDaInvoice, List<TributacaoEstadual> tributacaoEstadual, List<TributacaoFederal> tributacaoFederal, Map<String, List<String>> erros) {
+        for(ItemModel item:itensDaInvoice) {
+            final int ncm = Integer.parseInt(item.getNcm());
+            final int exIpi = (null != item.getExTipi() && !item.getExTipi().isEmpty() ? Integer.parseInt(item.getExTipi()) : 0);
 
+            Predicate<TributacaoEstadual> pe = t -> t.getNcm().getNumero() == ncm && t.getNcm().getExcecao() == exIpi;
+            Predicate<TributacaoFederal> pf = t -> t.getNcm().getNumero() == ncm && t.getNcm().getExcecao() == exIpi;
+
+            Optional<TributacaoEstadual> opTe = tributacaoEstadual.stream()
+                    .filter(pe)
+                    .findFirst();
+
+            if (!opTe.isPresent()) {
+                String msg = String.format("Item %s sem tributação estadual", item.getCode());
+                erros.putIfAbsent("ItemTributacaoEstadual", new ArrayList<>()).add(msg);
+            }
+
+            Optional<TributacaoFederal> opTf = tributacaoFederal.stream()
+                    .filter(pf)
+                    .findFirst();
+            if (!opTf.isPresent()) {
+                String msg = String.format("Item %s sem tributação federal", item.getCode());
+                erros.putIfAbsent("ItemTributacaoFederal", new ArrayList<>()).add(msg);
+            }
+        }
+    }
+
+    /**
+     * Valida os dados necessários para preencher a tributação da nota<br/>
+     * Os dados são:<br/>
+     * - Uf de origem da nota<br/>
+     * - Uf de destino da nota<br/>
+     * - Id da operação<br/>
+     * - Cliente<br/>
+     * - Endereço do cliente<br/>
+     * Não há valor de retorno pois os erros são adicionados ao mapa de erros passado como argumento<br/>
+     * @param erros - mapa de erros
+     * @param invoice
+     */
+    private void validaDadosParaPreencherTributacaoInvoice(Map<String, List<String>> erros, InvoiceModel invoice) {
+        if (invoice.getUfOrigem() == null || invoice.getUfOrigem().isEmpty()) {
+            erros.put("UfOrigem", Collections.singletonList("Uf de origem da nota não pode estar nulo / vazio"));
+        }
+
+        if (invoice.getBuyer() == null) {
+            erros.put("Cliente", Collections.singletonList("Os dados do cliente nao podem estar nulo / vazio"));
+        } else if (invoice.getBuyer().getAddress() == null) {
+            erros.put("EnderecoCliente", Collections.singletonList("O endereco do cliente nao pode estar nulo / vazio "));
+        } else if (invoice.getBuyer().getAddress().getState() == null || invoice.getBuyer().getAddress().getState().isEmpty()) {
+            // } else if (invoice.getBuyer().getAddress().getAdditionalInformation() == null || invoice.getBuyer().getAddress().getAdditionalInformation().isEmpty()) {
+            erros.put("UfDestino", Collections.singletonList("Uf de destino da nota não pode estar nulo / vazio"));
+        }
+
+        if (invoice.getOperationType() == null || invoice.getOperationType().isEmpty()) {
+            erros.put("IdDaOperacao", Collections.singletonList("Id da operação não pode estar nulo / vazio"));
+        }
+    }
+
+    private void calculosTotais(InvoiceModel invoice) {
         TotalsModel totals = new TotalsModel();
 
         BigDecimal  vBc = BigDecimal.ZERO;
@@ -237,12 +265,24 @@ public class EmissaoPrenchimentoDadosFiscaisService {
         BigDecimal  vTotTrib = BigDecimal.ZERO;
         BigDecimal  vNf = BigDecimal.ZERO;
 
+        List<ItemModel> itensInvoice = invoice.getItems();
         for (ItemModel item : itensInvoice) {
-            vBc = vBc.add(BigDecimal.valueOf(item.getTax().getIcms().getBaseTax()));
-            vIcms = vIcms.add(BigDecimal.valueOf(item.getTax().getIcms().getAmount()));
+            if (item.getTax().getIcms() != null) {
+//                    && item.getTax().getIcms().getBaseTax() != null
+//                    && item.getTax().getIcms().getAmount() != null) {
+                vBc = vBc.add(BigDecimal.valueOf(item.getTax().getIcms().getBaseTax()));
+                vIcms = vIcms.add(BigDecimal.valueOf(item.getTax().getIcms().getAmount()));
+            }
+
             vProd = vProd.add(BigDecimal.valueOf(item.getTotalAmount()));
-            vPis = vPis.add(BigDecimal.valueOf(item.getTax().getPis().getAmount()));
-            vCofins = vCofins.add(BigDecimal.valueOf(item.getTax().getCofins().getAmount()));
+            if (item.getTax().getPis() != null) {
+                vPis = vPis.add(BigDecimal.valueOf(item.getTax().getPis().getAmount()));
+            }
+
+            if (item.getTax().getCofins() != null) {
+                vCofins = vCofins.add(BigDecimal.valueOf(item.getTax().getCofins().getAmount()));
+            }
+
             vNf = vNf.add(BigDecimal.valueOf(item.getTotalAmount() + item.getFreightAmount() + item.getOthersAmount() - item.getDiscountAmount()));
             vTotTrib = vTotTrib.add(BigDecimal.valueOf(item.getTotalAmount()));
 

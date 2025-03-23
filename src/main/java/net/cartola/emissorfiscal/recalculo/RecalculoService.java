@@ -4,9 +4,7 @@ import br.com.autogeral.emissorfiscal.vo.ItemModel;
 import net.cartola.emissorfiscal.documento.DocumentoFiscal;
 import net.cartola.emissorfiscal.documento.DocumentoFiscalItem;
 import net.cartola.emissorfiscal.documento.Finalidade;
-import net.cartola.emissorfiscal.estado.Estado;
 import net.cartola.emissorfiscal.estado.EstadoSigla;
-import net.cartola.emissorfiscal.operacao.Operacao;
 import net.cartola.emissorfiscal.tributacao.estadual.TributacaoEstadual;
 import net.cartola.emissorfiscal.tributacao.federal.TributacaoFederal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -196,7 +194,7 @@ public class RecalculoService {
         throw new CalculaImpostoException("Erro: itens sem ncms preenchidos / informações faltantes para realizar o recalculo");
     }
 
-    public List<TributacaoEstadual> TributacaoEstadualForNfce(List<ItemModel> itens, EstadoSigla siglaOrigem, EstadoSigla siglaDestino, Long operacao) {
+    public List<TributacaoEstadual> carregarTributacaoEstadualForNfce(List<ItemModel> itens, EstadoSigla siglaOrigem, EstadoSigla siglaDestino, Long operacao) {
         List<Integer> listaNcm = new ArrayList<>();
 
         for (ItemModel itemNcm : itens) {
@@ -209,7 +207,7 @@ public class RecalculoService {
         return recalculoRepository.findImpostoEstadualByNcmAndOperacao(listaNcm, operacao, finalidade, siglaOrigem, siglaDestino);
     }
 
-    public List<TributacaoFederal> TributacaoFederalForNfce(List<ItemModel> itens, Long operacao) {
+    public List<TributacaoFederal> carregarTributacaoFederalForNfce(List<ItemModel> itens, Long operacao) {
 
         List<Integer> listaNcm = new ArrayList<>();
 

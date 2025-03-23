@@ -180,8 +180,6 @@ public class EmissaoCriacaoXmlService {
             System.err.println();
             System.err.println("# Erro: " + e.getMessage());
         }
-
-
     }
 
     /**

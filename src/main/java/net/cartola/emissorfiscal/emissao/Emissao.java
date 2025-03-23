@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import br.com.autogeral.emissorfiscal.vo.InvoiceModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.cartola.emissorfiscal.produto.ProdutoAlteradoSpedApiController;
 //import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -33,6 +34,7 @@ public class Emissao {
 
         if (!content.isEmpty()) {
             ObjectMapper om = new ObjectMapper();
+            om.registerModule(new JavaTimeModule());
             try {
                 invoice = om.readValue(content, InvoiceModel.class);
             } catch (JsonProcessingException e) {
