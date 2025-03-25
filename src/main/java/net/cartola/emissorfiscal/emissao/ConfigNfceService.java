@@ -15,12 +15,13 @@ public class ConfigNfceService {
 
     public static ConfiguracoesNfe iniciaConfiguracoes() throws CertificadoException, IOException {
 
-        File file = new File("/Users/wesleymendonca/.DBF/dist/20250220A1.pfx");
+        //File file = new File("/Users/wesleymendonca/.DBF/dist/20250220A1.pfx");
+        File file = new File("C:/DBF/dist/A1260217.pfx");
         byte[] bytes = Files.readAllBytes(file.toPath());
         String senha = "V552289";
 
         Certificado certificado = CertificadoService.certificadoPfxBytes(bytes, senha);
-        ConfiguracoesNfe config = ConfiguracoesNfe.criarConfiguracoes(EstadosEnum.SP, AmbienteEnum.HOMOLOGACAO, certificado, "/Users/wesleymendonca/Documents/schemas");
+        ConfiguracoesNfe config = ConfiguracoesNfe.criarConfiguracoes(EstadosEnum.SP, AmbienteEnum.HOMOLOGACAO, certificado, "S:\\projects\\Java_NFe\\schemas");
         config.setEncode("UTF-8");
 
         return config;

@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.emissao;
 import br.com.autogeral.emissorfiscal.vo.InvoiceModel;
 import br.com.autogeral.emissorfiscal.vo.ItemModel;
 import br.com.autogeral.emissorfiscal.vo.TotalsModel;
+import br.com.swconsultoria.certificado.exception.CertificadoException;
 import br.com.swconsultoria.nfe.Nfe;
 import br.com.swconsultoria.nfe.dom.ConfiguracoesNfe;
 import br.com.swconsultoria.nfe.dom.enuns.*;
@@ -25,12 +26,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Samuel Oliveira
@@ -39,6 +45,8 @@ import java.util.List;
 
 @Service
 public class EmissaoCriacaoXmlService {
+
+    private static final Logger LOG = Logger.getLogger(EmissaoCriacaoXmlService.class.getName());
 
     @Autowired
     private CertificadoPfxModel certificadoPfx;
@@ -175,10 +183,18 @@ public class EmissaoCriacaoXmlService {
                 System.out.println("# Protocolo: " + retorno.getProtNFe().getInfProt().getNProt());
                 System.out.println("# Xml Final :" + XmlNfeUtil.criaNfeProc(enviNFe, retorno.getProtNFe()));
             }
-
-        } catch (Exception e) {
-            System.err.println();
-            System.err.println("# Erro: " + e.getMessage());
+        } catch (NfeException e) {
+            LOG.log(Level.ALL, "Erro na geração do XML", e);
+        } catch (CertificadoException e) {
+            LOG.log(Level.ALL, "Erro com o certificado", e);
+        } catch (IOException e) {
+            LOG.log(Level.ALL, "Erro com rede ou arquivo", e);
+        } catch (NoSuchAlgorithmException e) {
+            LOG.log(Level.ALL, "Erro de criptografia", e);
+        } catch (InterruptedException e) {
+            LOG.log(Level.ALL, "Erro de threads", e);
+        } catch (JAXBException e) {
+            LOG.log(Level.ALL, "Erro com o JSON/XML", e);
         }
     }
 
@@ -265,7 +281,7 @@ public class EmissaoCriacaoXmlService {
         enderDest.setXBairro(invoice.getBuyer().getAddress().getCountry());
         enderDest.setCMun(invoice.getBuyer().getAddress().getCodMunicipioIbge());
         enderDest.setXMun(invoice.getBuyer().getAddress().getMunicipioNome());
-        enderDest.setUF(TUf.valueOf(invoice.getBuyer().getAddress().getAdditionalInformation()));
+        enderDest.setUF(TUf.valueOf(invoice.getBuyer().getAddress().getState()));
         enderDest.setCEP(invoice.getBuyer().getAddress().getPostalCode());
         enderDest.setCPais("1058");
         enderDest.setXPais("Brasil");
@@ -319,9 +335,11 @@ public class EmissaoCriacaoXmlService {
         prod.setXProd(item.getDescription());
         prod.setNCM(item.getNcm());
         prod.setCEST(item.getCest());
-        Prod.Comb c = new Prod.Comb();
-        
-        if(!item.getFuelDetail().getCodeANP().isEmpty()){
+
+        if(null != item.getFuelDetail() &&
+                null != item.getFuelDetail().getCodeANP() &&
+                !item.getFuelDetail().getCodeANP().isEmpty()){
+            Prod.Comb c = new Prod.Comb();
             c.setCProdANP(item.getFuelDetail().getCodeANP());
             c.setDescANP(item.getFuelDetail().getDescriptionANP());
             c.setUFCons(TUf.SP);
@@ -348,7 +366,15 @@ public class EmissaoCriacaoXmlService {
      */
     private static Imposto preencheImposto(ItemModel item) {
         Imposto imposto = new Imposto();
-        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+        NumberFormat decimalFormat = NumberFormat.getInstance();
+        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMinimumFractionDigits(2);
+        decimalFormat.setGroupingUsed(false);
+
+        NumberFormat percentFormat = NumberFormat.getPercentInstance();
+        percentFormat.setMaximumFractionDigits(2);
+        percentFormat.setMinimumFractionDigits(2);
+
         ICMS icms = new ICMS();
 
         if(item.getTax().getIcms().getCst().equals("60")){
@@ -356,7 +382,7 @@ public class EmissaoCriacaoXmlService {
             icms60.setOrig("0");
             icms60.setCST(item.getTax().getIcms().getCst());
             icms60.setVBCSTRet(decimalFormat.format(item.getTax().getIcms().getBaseTax()));
-            icms60.setPST(decimalFormat.format(item.getTax().getIcms().getRate()));
+            icms60.setPST(percentFormat.format(item.getTax().getIcms().getRate()));
             icms60.setVICMSSubstituto(decimalFormat.format(item.getTax().getIcms().getAmount()));
             icms60.setVICMSSTRet(decimalFormat.format(item.getTax().getIcms().getAmount()));
             icms.setICMS60(icms60);
@@ -368,7 +394,7 @@ public class EmissaoCriacaoXmlService {
             icms00.setCST(item.getTax().getIcms().getCst());
             icms00.setModBC("3"); // valor da operacao
             icms00.setVBC(decimalFormat.format(item.getTax().getIcms().getBaseTax()));
-            icms00.setPICMS(decimalFormat.format(item.getTax().getIcms().getRate()));
+            icms00.setPICMS(percentFormat.format(item.getTax().getIcms().getRate()));
             icms00.setVICMS(decimalFormat.format(item.getTax().getIcms().getAmount()));
             icms.setICMS00(icms00);
         }
@@ -384,7 +410,7 @@ public class EmissaoCriacaoXmlService {
         pisAliq.setCST(cstFormatted);
 
         pisAliq.setVBC(decimalFormat.format(item.getTax().getPis().getBaseTax()));
-        pisAliq.setPPIS(decimalFormat.format(item.getTax().getPis().getRate()));
+        pisAliq.setPPIS(percentFormat.format(item.getTax().getPis().getRate()));
         pisAliq.setVPIS(decimalFormat.format(item.getTax().getPis().getAmount()));
         pis.setPISAliq(pisAliq);
 
@@ -398,7 +424,7 @@ public class EmissaoCriacaoXmlService {
         cofinsAliq.setCST(cstFormattedCofins);
 
         cofinsAliq.setVBC(decimalFormat.format(item.getTax().getCofins().getBaseTax()));
-        cofinsAliq.setPCOFINS(decimalFormat.format(item.getTax().getCofins().getRate()));
+        cofinsAliq.setPCOFINS(percentFormat.format(item.getTax().getCofins().getRate()));
         cofinsAliq.setVCOFINS(decimalFormat.format(item.getTax().getCofins().getAmount()));
         cofins.setCOFINSAliq(cofinsAliq);
 

@@ -80,17 +80,18 @@ public class EmissaoPrenchimentoDadosFiscaisService {
         boolean resultado = false;
         if (erros.isEmpty()) {
             EstadoSigla estadoOrigem, estadoDestino;
-            long operacaoid;
+            // Para emitir NFe vai ser necessário validar a operação, aqui está só venda pois a inteção agora é a NFCe
+//            long operacaoid;
             try {
                 estadoOrigem = EstadoSigla.valueOf(invoice.getUfOrigem());
                 estadoDestino = EstadoSigla.valueOf(invoice.getBuyer().getAddress().getState());
-                operacaoid = Long.parseLong(invoice.getOperationType());
+//                operacaoid = Long.parseLong(invoice.getOperationType());
 
                 List<TributacaoEstadual> tributacaoEstadual = recalculoService
-                        .carregarTributacaoEstadualForNfce(itensDaInvoice, estadoOrigem, estadoDestino, operacaoid);
+                        .carregarTributacaoEstadualForNfce(itensDaInvoice, estadoOrigem, estadoDestino, 1L);
 
                 List<TributacaoFederal> tributacaoFederal = recalculoService
-                        .carregarTributacaoFederalForNfce(itensDaInvoice, operacaoid);
+                        .carregarTributacaoFederalForNfce(itensDaInvoice, 1L);
                 verificaSeTemItensSemTributacaoCadastrada(itensDaInvoice, tributacaoEstadual, tributacaoFederal, erros);
 
                 if(erros.isEmpty()) {
@@ -101,7 +102,6 @@ public class EmissaoPrenchimentoDadosFiscaisService {
             } catch (IllegalArgumentException e) {
                 erros.put("DadosInvalidos", Collections.singletonList("Uf ou operação inválidos"));
             }
-
         }
         return resultado;
     }
