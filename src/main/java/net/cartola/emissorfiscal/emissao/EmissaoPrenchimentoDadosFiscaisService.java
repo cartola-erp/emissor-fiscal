@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.function.Predicate;
@@ -21,8 +20,14 @@ public class EmissaoPrenchimentoDadosFiscaisService {
 
     private static final Logger LOG = Logger.getLogger(EmissaoPrenchimentoDadosFiscaisService.class.getName());
     private static final NumberFormat CEST_FORMATTER = NumberFormat.getIntegerInstance();
+    private static final NumberFormat DECIMAL_FORMAT;
 
     static {
+        DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
+        DECIMAL_FORMAT.setMaximumFractionDigits(2);
+        DECIMAL_FORMAT.setMinimumFractionDigits(2);
+        DECIMAL_FORMAT.setGroupingUsed(false);
+
         CEST_FORMATTER.setMinimumIntegerDigits(7);
         CEST_FORMATTER.setMaximumIntegerDigits(7);
         CEST_FORMATTER.setGroupingUsed(false);
@@ -110,7 +115,7 @@ public class EmissaoPrenchimentoDadosFiscaisService {
         // Preencher impostos nos itens
         for (ItemModel item : itensDaInvoice) {
             final int ncm = Integer.parseInt(item.getNcm());
-            final int exIpi = (null != item.getExTipi() && !item.getExTipi().isEmpty() ? Integer.parseInt(item.getExTipi()) : 0);
+            final int exIpi = item.getExTipi();
             Predicate<TributacaoEstadual> pe = t -> t.getNcm().getNumero() == ncm && t.getNcm().getExcecao() == exIpi;
             Predicate<TributacaoFederal> pf = t -> t.getNcm().getNumero() == ncm && t.getNcm().getExcecao() == exIpi;
 
@@ -186,7 +191,7 @@ public class EmissaoPrenchimentoDadosFiscaisService {
     private void verificaSeTemItensSemTributacaoCadastrada(List<ItemModel> itensDaInvoice, List<TributacaoEstadual> tributacaoEstadual, List<TributacaoFederal> tributacaoFederal, Map<String, List<String>> erros) {
         for(ItemModel item:itensDaInvoice) {
             final int ncm = Integer.parseInt(item.getNcm());
-            final int exIpi = (null != item.getExTipi() && !item.getExTipi().isEmpty() ? Integer.parseInt(item.getExTipi()) : 0);
+            final int exIpi = item.getExTipi();
 
             Predicate<TributacaoEstadual> pe = t -> t.getNcm().getNumero() == ncm && t.getNcm().getExcecao() == exIpi;
             Predicate<TributacaoFederal> pf = t -> t.getNcm().getNumero() == ncm && t.getNcm().getExcecao() == exIpi;
@@ -306,38 +311,27 @@ public class EmissaoPrenchimentoDadosFiscaisService {
             }
         }
 
-        totals.setvBc(stringUtil(formatBigDecimal(vBc)));
-        totals.setvIpiDevol(stringUtil(formatBigDecimal(vIpiDevol)));
-        totals.setvFcpSt(stringUtil(formatBigDecimal(vFcpSt)));
-        totals.setvFcpStRet(stringUtil(formatBigDecimal(vFcpStRet)));
-        totals.setvFcp(stringUtil(formatBigDecimal(vFcp)));
-        totals.setvSt(stringUtil(formatBigDecimal(vSt)));
-        totals.setvBcst(stringUtil(formatBigDecimal(vBcst)));
-        totals.setvIcmsDeson(stringUtil(formatBigDecimal(vIcmsDeson)));
-        totals.setvSeg(stringUtil(formatBigDecimal(vSeg)));
-        totals.setvIpi(stringUtil(formatBigDecimal(vIpi)));
-        totals.setvII(stringUtil(formatBigDecimal(vII)));
-        totals.setvOutro(stringUtil(formatBigDecimal(vOutro)));
-        totals.setvTotTrib(stringUtil(formatBigDecimal(vTotTrib)));
-        totals.setvNf(stringUtil(formatBigDecimal(vNf)));
-        totals.setvProd(stringUtil(formatBigDecimal(vProd)));
-        totals.setvPis(stringUtil(formatBigDecimal(vPis)));
-        totals.setvCofins(stringUtil(formatBigDecimal(vCofins)));
-        totals.setvIcms(stringUtil(formatBigDecimal(vIcms)));
-        totals.setvDesc(stringUtil(formatBigDecimal(vDesc)));
-        totals.setvFrete(stringUtil(formatBigDecimal(vFrete)));
+        totals.setvBc(DECIMAL_FORMAT.format(vBc.doubleValue()));
+        totals.setvIpiDevol(DECIMAL_FORMAT.format(vIpiDevol.doubleValue()));
+        totals.setvFcpSt(DECIMAL_FORMAT.format(vFcpSt.doubleValue()));
+        totals.setvFcpStRet(DECIMAL_FORMAT.format(vFcpStRet.doubleValue()));
+        totals.setvFcp(DECIMAL_FORMAT.format(vFcp.doubleValue()));
+        totals.setvSt(DECIMAL_FORMAT.format(vSt.doubleValue()));
+        totals.setvBcst(DECIMAL_FORMAT.format(vBcst.doubleValue()));
+        totals.setvIcmsDeson(DECIMAL_FORMAT.format(vIcmsDeson.doubleValue()));
+        totals.setvSeg(DECIMAL_FORMAT.format(vSeg.doubleValue()));
+        totals.setvIpi(DECIMAL_FORMAT.format(vIpi.doubleValue()));
+        totals.setvII(DECIMAL_FORMAT.format(vII.doubleValue()));
+        totals.setvOutro(DECIMAL_FORMAT.format(vOutro.doubleValue()));
+        totals.setvTotTrib(DECIMAL_FORMAT.format(vTotTrib.doubleValue()));
+        totals.setvNf(DECIMAL_FORMAT.format(vNf.doubleValue()));
+        totals.setvProd(DECIMAL_FORMAT.format(vProd.doubleValue()));
+        totals.setvPis(DECIMAL_FORMAT.format(vPis.doubleValue()));
+        totals.setvCofins(DECIMAL_FORMAT.format(vCofins.doubleValue()));
+        totals.setvIcms(DECIMAL_FORMAT.format(vIcms.doubleValue()));
+        totals.setvDesc(DECIMAL_FORMAT.format(vDesc.doubleValue()));
+        totals.setvFrete(DECIMAL_FORMAT.format(vFrete.doubleValue()));
 
         invoice.setTotals(totals);
-    }
-
-    private String formatBigDecimal(BigDecimal value) {
-        return value.setScale(2, RoundingMode.HALF_UP).toString();
-    }
-
-    private String stringUtil(String valor) {
-        if (valor == null || valor.trim().isEmpty()) {
-            valor = "0.00";
-        }
-        return valor;
     }
 }

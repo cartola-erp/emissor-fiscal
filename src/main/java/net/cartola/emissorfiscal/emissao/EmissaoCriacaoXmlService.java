@@ -1,5 +1,6 @@
 package net.cartola.emissorfiscal.emissao;
 
+import br.com.autogeral.emissorfiscal.vo.BuyerModel;
 import br.com.autogeral.emissorfiscal.vo.InvoiceModel;
 import br.com.autogeral.emissorfiscal.vo.ItemModel;
 import br.com.autogeral.emissorfiscal.vo.TotalsModel;
@@ -30,21 +31,45 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author Samuel Oliveira
- *
  */
 
 @Service
 public class EmissaoCriacaoXmlService {
+
+    private static final NumberFormat DECIMAL_FORMAT;
+    private static final NumberFormat CPF_FORMAT;
+    private static final NumberFormat CNPJ_FORMAT;
+
+    static {
+        DECIMAL_FORMAT = NumberFormat.getInstance(Locale.US);
+        DECIMAL_FORMAT.setMaximumFractionDigits(2);
+        DECIMAL_FORMAT.setMinimumFractionDigits(2);
+        DECIMAL_FORMAT.setGroupingUsed(false);
+
+        CPF_FORMAT = NumberFormat.getInstance(Locale.US);
+        CPF_FORMAT.setMaximumFractionDigits(0);
+        CPF_FORMAT.setMinimumFractionDigits(0);
+        CPF_FORMAT.setMaximumIntegerDigits(11);
+        CPF_FORMAT.setMinimumIntegerDigits(11);
+        CPF_FORMAT.setGroupingUsed(false);
+
+        CNPJ_FORMAT = NumberFormat.getInstance(Locale.US);
+        CNPJ_FORMAT.setMaximumFractionDigits(0);
+        CNPJ_FORMAT.setMinimumFractionDigits(0);
+        CNPJ_FORMAT.setMaximumIntegerDigits(14);
+        CNPJ_FORMAT.setMinimumIntegerDigits(14);
+        CNPJ_FORMAT.setGroupingUsed(false);
+    }
 
     private static final Logger LOG = Logger.getLogger(EmissaoCriacaoXmlService.class.getName());
 
@@ -138,7 +163,7 @@ public class EmissaoCriacaoXmlService {
             }
 
             //Monta QRCode
-            String qrCode = preencheQRCode(enviNFe,config,idToken,csc);
+            String qrCode = preencheQRCode(enviNFe, config, idToken, csc);
 
             TNFe.InfNFeSupl infNFeSupl = new TNFe.InfNFeSupl();
             infNFeSupl.setQrCode(qrCode);
@@ -184,22 +209,29 @@ public class EmissaoCriacaoXmlService {
                 System.out.println("# Xml Final :" + XmlNfeUtil.criaNfeProc(enviNFe, retorno.getProtNFe()));
             }
         } catch (NfeException e) {
+            e.printStackTrace(System.err);
             LOG.log(Level.ALL, "Erro na geração do XML", e);
         } catch (CertificadoException e) {
+            e.printStackTrace(System.err);
             LOG.log(Level.ALL, "Erro com o certificado", e);
         } catch (IOException e) {
+            e.printStackTrace(System.err);
             LOG.log(Level.ALL, "Erro com rede ou arquivo", e);
         } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace(System.err);
             LOG.log(Level.ALL, "Erro de criptografia", e);
         } catch (InterruptedException e) {
+            e.printStackTrace(System.err);
             LOG.log(Level.ALL, "Erro de threads", e);
         } catch (JAXBException e) {
+            e.printStackTrace(System.err);
             LOG.log(Level.ALL, "Erro com o JSON/XML", e);
         }
     }
 
     /**
      * Preenche o IDE
+     *
      * @param config
      * @param cnf
      * @param numeroNFCe
@@ -237,6 +269,7 @@ public class EmissaoCriacaoXmlService {
 
     /**
      * Preenche o Emitente da NFCe
+     *
      * @param config
      * @param cnpj
      * @return
@@ -252,7 +285,7 @@ public class EmissaoCriacaoXmlService {
         enderEmit.setXCpl(invoice.getEmitente().getComplementoEdenrecoEmitente());
         enderEmit.setXBairro(invoice.getEmitente().getBairroEmitente());
         enderEmit.setCMun(invoice.getEmitente().getCodIbgeMunicipioEmitente());
-        enderEmit.setXMun(invoice.getEmitente().getCodIbgeMunicipioEmitente());
+        enderEmit.setXMun(invoice.getEmitente().getMunicipioEmitente());
         enderEmit.setUF(TUfEmi.valueOf(config.getEstado().toString()));
         enderEmit.setCEP(invoice.getEmitente().getCepEmitente());
         enderEmit.setCPais("1058");
@@ -268,12 +301,18 @@ public class EmissaoCriacaoXmlService {
 
     /**
      * Preenche o Destinatario da NFCe
+     *
      * @return
      */
     private static Dest preencheDestinatario(InvoiceModel invoice) {
+        BuyerModel buyer = invoice.getBuyer();
         Dest dest = new Dest();
-        dest.setCNPJ(String.valueOf(invoice.getBuyer().getFederalTaxNumber()));
-        dest.setXNome(invoice.getBuyer().getName());
+        if (99999999999L < buyer.getFederalTaxNumber()) {
+            dest.setCNPJ(CNPJ_FORMAT.format(buyer.getFederalTaxNumber()));
+        } else {
+            dest.setCPF(CPF_FORMAT.format(buyer.getFederalTaxNumber()));
+        }
+        dest.setXNome(buyer.getName());
 
         TEndereco enderDest = new TEndereco();
         enderDest.setXLgr(invoice.getBuyer().getAddress().getDistrict());
@@ -302,7 +341,7 @@ public class EmissaoCriacaoXmlService {
 
         List<ItemModel> itemInvoice = invoice.getItems();
         Integer numeroItem = 1;
-        for(ItemModel item : itemInvoice){
+        for (ItemModel item : itemInvoice) {
             Det det = new Det();
 
             //O numero do Item deve seguir uma sequencia
@@ -325,10 +364,10 @@ public class EmissaoCriacaoXmlService {
 
     /**
      * Preenche dados do Produto
+     *
      * @return
      */
     private static Prod preencheProduto(ItemModel item, InvoiceModel invoice) {
-        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
         Prod prod = new Prod();
         prod.setCProd(item.getCode());
         prod.setCEAN(item.getCodeGTIN());
@@ -336,9 +375,9 @@ public class EmissaoCriacaoXmlService {
         prod.setNCM(item.getNcm());
         prod.setCEST(item.getCest());
 
-        if(null != item.getFuelDetail() &&
+        if (null != item.getFuelDetail() &&
                 null != item.getFuelDetail().getCodeANP() &&
-                !item.getFuelDetail().getCodeANP().isEmpty()){
+                !item.getFuelDetail().getCodeANP().isEmpty()) {
             Prod.Comb c = new Prod.Comb();
             c.setCProdANP(item.getFuelDetail().getCodeANP());
             c.setDescANP(item.getFuelDetail().getDescriptionANP());
@@ -351,7 +390,7 @@ public class EmissaoCriacaoXmlService {
         prod.setUCom(item.getUnit());
         prod.setQCom(String.valueOf(item.getQuantity()));
         prod.setVUnCom(String.valueOf(item.getUnitAmount()));
-        prod.setVProd(decimalFormat.format(item.getUnitAmount()));
+        prod.setVProd(DECIMAL_FORMAT.format(item.getUnitAmount()));
         prod.setCEANTrib(item.getCodeGTIN());
         prod.setUTrib(item.getUnit());
         prod.setQTrib(String.valueOf(item.getQuantity()));
@@ -360,73 +399,89 @@ public class EmissaoCriacaoXmlService {
 
         return prod;
     }
+
     /**
      * Preenche dados do Imposto da NFCe
+     *
      * @return
      */
     private static Imposto preencheImposto(ItemModel item) {
         Imposto imposto = new Imposto();
-        NumberFormat decimalFormat = NumberFormat.getInstance();
-        decimalFormat.setMaximumFractionDigits(2);
-        decimalFormat.setMinimumFractionDigits(2);
-        decimalFormat.setGroupingUsed(false);
 
-        NumberFormat percentFormat = NumberFormat.getPercentInstance();
-        percentFormat.setMaximumFractionDigits(2);
-        percentFormat.setMinimumFractionDigits(2);
+//        NumberFormat percentFormat = NumberFormat.getPercentInstance();
+//        percentFormat.setMaximumFractionDigits(2);
+//        percentFormat.setMinimumFractionDigits(2);
 
         ICMS icms = new ICMS();
 
-        if(item.getTax().getIcms().getCst().equals("60")){
+        if (item.getTax().getIcms().getCst().equals("60")) {
             ICMS.ICMS60 icms60 = new ICMS.ICMS60();
             icms60.setOrig("0");
             icms60.setCST(item.getTax().getIcms().getCst());
-            icms60.setVBCSTRet(decimalFormat.format(item.getTax().getIcms().getBaseTax()));
-            icms60.setPST(percentFormat.format(item.getTax().getIcms().getRate()));
-            icms60.setVICMSSubstituto(decimalFormat.format(item.getTax().getIcms().getAmount()));
-            icms60.setVICMSSTRet(decimalFormat.format(item.getTax().getIcms().getAmount()));
+            icms60.setVBCSTRet(DECIMAL_FORMAT.format(item.getTax().getIcms().getBaseTax()));
+            icms60.setPST(DECIMAL_FORMAT.format(item.getTax().getIcms().getRate() * 100));
+            icms60.setVICMSSubstituto(DECIMAL_FORMAT.format(item.getTax().getIcms().getAmount()));
+            icms60.setVICMSSTRet(DECIMAL_FORMAT.format(item.getTax().getIcms().getAmount()));
             icms.setICMS60(icms60);
         }
 
-        if(item.getTax().getIcms().equals("00")){
+        if (item.getTax().getIcms().equals("00")) {
             ICMS.ICMS00 icms00 = new ICMS.ICMS00();
             icms00.setOrig("0"); // Produto nacional ou importado ?
             icms00.setCST(item.getTax().getIcms().getCst());
             icms00.setModBC("3"); // valor da operacao
-            icms00.setVBC(decimalFormat.format(item.getTax().getIcms().getBaseTax()));
-            icms00.setPICMS(percentFormat.format(item.getTax().getIcms().getRate()));
-            icms00.setVICMS(decimalFormat.format(item.getTax().getIcms().getAmount()));
+            icms00.setVBC(DECIMAL_FORMAT.format(item.getTax().getIcms().getBaseTax()));
+            icms00.setPICMS(DECIMAL_FORMAT.format(item.getTax().getIcms().getRate() * 100));
+            icms00.setVICMS(DECIMAL_FORMAT.format(item.getTax().getIcms().getAmount()));
             icms.setICMS00(icms00);
         }
 
         PIS pis = new PIS();
-        PISAliq pisAliq = new PISAliq();
 
         String cst = item.getTax().getPis().getCst();
 
+        int iPisCst = Integer.parseInt(cst);
         // Verifica se o CST é um número de um dígito e adiciona o zero à esquerda se necessário
-        String cstFormatted = cst.length() == 1 ? String.format("%02d", Integer.parseInt(cst)) : cst;
-
-        pisAliq.setCST(cstFormatted);
-
-        pisAliq.setVBC(decimalFormat.format(item.getTax().getPis().getBaseTax()));
-        pisAliq.setPPIS(percentFormat.format(item.getTax().getPis().getRate()));
-        pisAliq.setVPIS(decimalFormat.format(item.getTax().getPis().getAmount()));
-        pis.setPISAliq(pisAliq);
+        String cstFormatted = String.format("%02d", iPisCst);
+        switch (iPisCst) {
+            case 1: {
+                PISAliq pisAliq = new PISAliq();
+                pisAliq.setCST(cstFormatted);
+                pisAliq.setVBC(DECIMAL_FORMAT.format(item.getTax().getPis().getBaseTax()));
+                pisAliq.setPPIS(DECIMAL_FORMAT.format(item.getTax().getPis().getRate() * 100));
+                pisAliq.setVPIS(DECIMAL_FORMAT.format(item.getTax().getPis().getAmount()));
+                pis.setPISAliq(pisAliq);
+            } break;
+            case 4: {
+                PIS.PISNT pisNt = new PIS.PISNT();
+                pisNt.setCST(cstFormatted);
+                pis.setPISNT(pisNt);
+            }
+        }
 
         COFINS cofins = new COFINS();
-        COFINSAliq cofinsAliq = new COFINSAliq();
+//        COFINSAliq cofinsAliq = new COFINSAliq();
 
         String cstCofins = item.getTax().getCofins().getCst();
 
-        String cstFormattedCofins = cstCofins.length() == 1 ? String.format("%02d", Integer.parseInt(cst)) : cst;
-
-        cofinsAliq.setCST(cstFormattedCofins);
-
-        cofinsAliq.setVBC(decimalFormat.format(item.getTax().getCofins().getBaseTax()));
-        cofinsAliq.setPCOFINS(percentFormat.format(item.getTax().getCofins().getRate()));
-        cofinsAliq.setVCOFINS(decimalFormat.format(item.getTax().getCofins().getAmount()));
-        cofins.setCOFINSAliq(cofinsAliq);
+        int iCofinsCst = Integer.parseInt(cstCofins);
+        // Verifica se o CST é um número de um dígito e adiciona o zero à esquerda se necessário
+        String cofinsCstFormatted = String.format("%02d", iCofinsCst);
+        switch (iCofinsCst) {
+            case 1: {
+                COFINSAliq cofinsAliq = new COFINSAliq();
+                cofinsAliq.setCST(cofinsCstFormatted);
+                cofinsAliq.setVBC(DECIMAL_FORMAT.format(item.getTax().getCofins().getBaseTax()));
+                cofinsAliq.setPCOFINS(DECIMAL_FORMAT.format(item.getTax().getCofins().getRate() * 100));
+                cofinsAliq.setVCOFINS(DECIMAL_FORMAT.format(item.getTax().getCofins().getAmount()));
+                cofins.setCOFINSAliq(cofinsAliq);
+            } break;
+            case 4: {
+                COFINS.COFINSNT cofinsNt = new COFINS.COFINSNT();
+                cofinsNt.setCST(cofinsCstFormatted);
+                cofins.setCOFINSNT(cofinsNt);
+            }
+        }
 
         JAXBElement<ICMS> icmsElement = new JAXBElement<ICMS>(new QName("ICMS"), ICMS.class, icms);
         imposto.getContent().add(icmsElement);
@@ -442,6 +497,7 @@ public class EmissaoCriacaoXmlService {
 
     /**
      * Prenche Total NFCe
+     *
      * @return
      */
     private static Total preencheTotal(TotalsModel totals) {
@@ -462,10 +518,11 @@ public class EmissaoCriacaoXmlService {
         icmstot.setVII(totals.getvII());
         icmstot.setVIPI(totals.getvIpi());
         icmstot.setVIPIDevol(totals.getvIpiDevol());
-        icmstot.setVPIS(String.valueOf(totals.getvPis()));
-        icmstot.setVCOFINS(String.valueOf(totals.getvCofins()));
-        icmstot.setVOutro(String.valueOf(totals.getvOutro()));
-        icmstot.setVNF(String.valueOf(totals.getvNf()));
+        //icmstot.setVPIS(DECIMAL_FORMAT.format(totals.getvPis()));
+        icmstot.setVPIS(totals.getvPis());
+        icmstot.setVCOFINS(totals.getvCofins());
+        icmstot.setVOutro((totals.getvOutro()));
+        icmstot.setVNF((totals.getvNf()));
         //icmstot.setVTotTrib(String.valueOf(totals.getvTotTrib()));
         total.setICMSTot(icmstot);
 
@@ -474,6 +531,7 @@ public class EmissaoCriacaoXmlService {
 
     /**
      * Preenche Transporte
+     *
      * @return
      */
     private static Transp preencheTransporte() {
@@ -484,12 +542,13 @@ public class EmissaoCriacaoXmlService {
 
     /**
      * Preenche dados Pagamento
+     *
      * @return
      */
     private static Pag preenchePag(InvoiceModel invoice, TotalsModel totals) {
         Pag pag = new Pag();
         Pag.DetPag detPag = new Pag.DetPag();
-        detPag.setTPag("0" + invoice.getModoPagamento());
+        detPag.setTPag(invoice.getModoPagamento());
         detPag.setVPag(totals.getvNf());
         detPag.setXPag(invoice.getModoDePagamentoDescricao());
         pag.getDetPag().add(detPag);
@@ -499,6 +558,7 @@ public class EmissaoCriacaoXmlService {
 
     /**
      * Preenche QRCode
+     *
      * @param enviNFe
      * @param config
      * @param idToken
@@ -515,7 +575,7 @@ public class EmissaoCriacaoXmlService {
                 config.getAmbiente().getCodigo(),
                 idToken,
                 csc,
-                WebServiceUtil.getUrl(config,DocumentoEnum.NFCE, ServicosEnum.URL_QRCODE));
+                WebServiceUtil.getUrl(config, DocumentoEnum.NFCE, ServicosEnum.URL_QRCODE));
 
         //QRCODE EMISSAO OFFLINE
 //        return NFCeUtil.getCodeQRCodeContingencia(

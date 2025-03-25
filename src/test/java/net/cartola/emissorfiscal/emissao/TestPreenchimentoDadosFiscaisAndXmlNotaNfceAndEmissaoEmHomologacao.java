@@ -77,10 +77,8 @@ public class TestPreenchimentoDadosFiscaisAndXmlNotaNfceAndEmissaoEmHomologacao 
         item.setCodeGTIN("SEM GTIN");
         item.setDescription("NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
         item.setNcm("27101932");
+        item.setExTipi(0);
 
-        if (item.getExTipi() == null) {
-            item.setExTipi("0"); // Se nao tiver excessao eu vou definir como default 0
-        }
         FuelDetailModel c = new FuelDetailModel();
         c.setCodeANP("620101008");
         c.setDescriptionANP("Oleo lubrificante");

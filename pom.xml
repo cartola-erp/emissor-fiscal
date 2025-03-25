@@ -12,7 +12,7 @@
 	<groupId>net.cartola.emissorfiscal</groupId>
 	<artifactId>emissor-fiscal</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1</version>
+	<version>0.2</version>
 	<name>emissor-fiscal</name>
 	<description>Projeto de emissao de documentos fiscais</description>
 
