@@ -3,6 +3,7 @@ package net.cartola.emissorfiscal.emissao;
 import br.com.autogeral.emissorfiscal.vo.*;
 import br.com.swconsultoria.certificado.exception.CertificadoException;
 import br.com.swconsultoria.nfe.dom.ConfiguracoesNfe;
+import br.com.swconsultoria.nfe.dom.enuns.AmbienteEnum;
 import br.com.swconsultoria.nfe.dom.enuns.DocumentoEnum;
 import br.com.swconsultoria.nfe.dom.enuns.ServicosEnum;
 import br.com.swconsultoria.nfe.exception.NfeException;
@@ -18,6 +19,7 @@ import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.PIS.PIS
 import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Prod;
 import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Total.ICMSTot;
 import br.com.swconsultoria.nfe.util.*;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -144,7 +146,7 @@ public class EmissaoCriacaoXmlService {
      * @return
      * @throws NfeException
      */
-    private static Ide preencheIde(ConfiguracoesNfe config, String cnf, int numeroNFCe, String tipoEmissao, String modelo, int serie, String cDv, LocalDateTime dataEmissao, InvoiceModel invoice) throws NfeException {
+    private Ide preencheIde(ConfiguracoesNfe config, String cnf, int numeroNFCe, String tipoEmissao, String modelo, int serie, String cDv, LocalDateTime dataEmissao, InvoiceModel invoice) throws NfeException {
         Ide ide = new Ide();
         ide.setCUF(invoice.getCodUf());
         ide.setCNF(cnf);
@@ -176,7 +178,7 @@ public class EmissaoCriacaoXmlService {
      * @param cnpj
      * @return
      */
-    private static Emit preencheEmitente(ConfiguracoesNfe config, String cnpj, InvoiceModel invoice) {
+    private Emit preencheEmitente(ConfiguracoesNfe config, String cnpj, InvoiceModel invoice) {
         Emit emit = new Emit();
         emit.setCNPJ(cnpj);
         emit.setXNome(invoice.getEmitente().getNomeEmitente());
@@ -214,7 +216,12 @@ public class EmissaoCriacaoXmlService {
         } else {
             dest.setCPF(CPF_FORMAT.format(buyer.getFederalTaxNumber()));
         }
-        dest.setXNome(buyer.getName());
+        if (AmbienteEnum.HOMOLOGACAO.equals(config.getAmbiente())) {
+            dest.setXNome("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
+        } else {
+            dest.setXNome(buyer.getName());
+        }
+
 
         TEndereco enderDest = new TEndereco();
         AddressModel address = invoice.getBuyer().getAddress();
@@ -237,13 +244,13 @@ public class EmissaoCriacaoXmlService {
     /**
      * Preenche Det NFCe
      */
-    private static List<Det> preencheDet(InvoiceModel invoice) {
+    private List<Det> preencheDet(InvoiceModel invoice) {
 
         //O Preenchimento deve ser feito por produto, Então deve ocorrer uma LIsta
         List<Det> listDeDet = new ArrayList<>();
 
         List<ItemModel> itemInvoice = invoice.getItems();
-        Integer numeroItem = 1;
+        int numeroItem = 1;
         for (ItemModel item : itemInvoice) {
             Det det = new Det();
 
@@ -251,7 +258,7 @@ public class EmissaoCriacaoXmlService {
             det.setNItem(String.valueOf(numeroItem));
 
             // Preenche dados do Produto
-            det.setProd(preencheProduto(item, invoice));
+            det.setProd(preencheProduto(item, numeroItem));
 
             //Preenche dados do Imposto
             det.setImposto(preencheImposto(item));
@@ -270,11 +277,16 @@ public class EmissaoCriacaoXmlService {
      *
      * @return
      */
-    private static Prod preencheProduto(ItemModel item, InvoiceModel invoice) {
+    private Prod preencheProduto(ItemModel item, int numeroItem) {
         Prod prod = new Prod();
         prod.setCProd(item.getCode());
         prod.setCEAN(item.getCodeGTIN());
-        prod.setXProd(item.getDescription());
+
+        if (AmbienteEnum.HOMOLOGACAO.equals(config.getAmbiente()) && numeroItem == 1) {
+            prod.setXProd("NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
+        } else {
+            prod.setXProd(item.getDescription());
+        }
         prod.setNCM(item.getNcm());
         prod.setCEST(item.getCest());
 
@@ -293,7 +305,7 @@ public class EmissaoCriacaoXmlService {
         prod.setUCom(item.getUnit());
         prod.setQCom(String.valueOf(item.getQuantity()));
         prod.setVUnCom(String.valueOf(item.getUnitAmount()));
-        prod.setVProd(DECIMAL_FORMAT.format(item.getUnitAmount()));
+        prod.setVProd(DECIMAL_FORMAT.format(item.getTotalAmount()));
         prod.setCEANTrib(item.getCodeGTIN());
         prod.setUTrib(item.getUnit());
         prod.setQTrib(String.valueOf(item.getQuantity()));
@@ -308,7 +320,7 @@ public class EmissaoCriacaoXmlService {
      *
      * @return
      */
-    private static Imposto preencheImposto(ItemModel item) {
+    private Imposto preencheImposto(ItemModel item) {
         Imposto imposto = new Imposto();
 
 //        NumberFormat percentFormat = NumberFormat.getPercentInstance();
@@ -403,7 +415,7 @@ public class EmissaoCriacaoXmlService {
      *
      * @return
      */
-    private static Total preencheTotal(TotalsModel totals) {
+    private Total preencheTotal(TotalsModel totals) {
         Total total = new Total();
         ICMSTot icmstot = new ICMSTot();
         icmstot.setVBC(totals.getvBc());
@@ -437,7 +449,7 @@ public class EmissaoCriacaoXmlService {
      *
      * @return
      */
-    private static Transp preencheTransporte() {
+    private Transp preencheTransporte() {
         Transp transp = new Transp();
         transp.setModFrete("9"); // Sem frete, comum para nfces
         return transp;
@@ -448,7 +460,7 @@ public class EmissaoCriacaoXmlService {
      *
      * @return
      */
-    private static Pag preenchePag(InvoiceModel invoice, TotalsModel totals) {
+    private Pag preenchePag(InvoiceModel invoice, TotalsModel totals) {
         Pag pag = new Pag();
         Pag.DetPag detPag = new Pag.DetPag();
         detPag.setTPag(invoice.getModoPagamento());
@@ -458,7 +470,6 @@ public class EmissaoCriacaoXmlService {
         }
 
         pag.getDetPag().add(detPag);
-
         return pag;
     }
 

@@ -1,6 +1,7 @@
 package net.cartola.emissorfiscal.emissao;
 
 import br.com.autogeral.emissorfiscal.vo.*;
+import br.com.swconsultoria.nfe.exception.NfeException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -108,7 +110,12 @@ public class TestPreenchimentoDadosFiscaisAndXmlNotaNfceAndEmissaoEmHomologacao 
         nota.setEmitente(emit);
 
         emissaoPrenchimentoDadosFiscaisService.preencherDadosFiscais(nota);
-        emissaoCriacaoXmlService.montaXmlNota(nota);
+        try {
+            emissaoCriacaoXmlService.montaXmlNota(nota);
+        } catch (NfeException e) {
+            e.printStackTrace(System.err);
+            fail("Erro ao gerar XML: " + e.getMessage());
+        }
 
     }
 }
