@@ -1,13 +1,10 @@
 package net.cartola.emissorfiscal.emissao;
 
-import br.com.autogeral.emissorfiscal.vo.BuyerModel;
-import br.com.autogeral.emissorfiscal.vo.InvoiceModel;
-import br.com.autogeral.emissorfiscal.vo.ItemModel;
-import br.com.autogeral.emissorfiscal.vo.TotalsModel;
+import br.com.autogeral.emissorfiscal.vo.*;
 import br.com.swconsultoria.certificado.exception.CertificadoException;
-import br.com.swconsultoria.nfe.Nfe;
 import br.com.swconsultoria.nfe.dom.ConfiguracoesNfe;
-import br.com.swconsultoria.nfe.dom.enuns.*;
+import br.com.swconsultoria.nfe.dom.enuns.DocumentoEnum;
+import br.com.swconsultoria.nfe.dom.enuns.ServicosEnum;
 import br.com.swconsultoria.nfe.exception.NfeException;
 import br.com.swconsultoria.nfe.schema_4.enviNFe.*;
 import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe;
@@ -20,14 +17,11 @@ import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.PIS;
 import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.PIS.PISAliq;
 import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Prod;
 import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe.InfNFe.Total.ICMSTot;
-import br.com.swconsultoria.nfe.schema_4.retConsReciNFe.TRetConsReciNFe;
 import br.com.swconsultoria.nfe.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -36,12 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-/**
- * @author Samuel Oliveira
- */
 
 @Service
 public class EmissaoCriacaoXmlService {
@@ -73,160 +62,74 @@ public class EmissaoCriacaoXmlService {
 
     private static final Logger LOG = Logger.getLogger(EmissaoCriacaoXmlService.class.getName());
 
-    @Autowired
-    private CertificadoPfxModel certificadoPfx;
+    private ConfiguracoesNfe config;
 
-    public void montaXmlNota(InvoiceModel invoice) {
-
+    public EmissaoCriacaoXmlService() {
         try {
-            // Inicia As Configurações - ver https://github.com/Samuel-Oliveira/Java_NFe/wiki/1-:-Configuracoes
-            ConfiguracoesNfe config = ConfigNfceService.iniciaConfiguracoes();
-
-            //Informe o Numero da NFCe
-            int numeroNFCe = invoice.getNumber();
-
-            //Informe o CNPJ do Emitente da NFCe
-            String cnpj = invoice.getEmitente().getCpnjEmitente();
-
-            //Informe a data de Emissao da NFCe
-            LocalDateTime dataEmissao = invoice.getOperationOn();
-
-            //Informe o cnf da NFCe com 8 digitos
-            String cnf = ChaveUtil.completarComZerosAEsquerda(String.valueOf(numeroNFCe), 8);
-
-            //Informe o modelo da NFCe
-            String modelo = invoice.getModeloNota();
-
-            //Informe a Serie da NFCe
-            int serie = invoice.getSerie();
-
-            //Informe o tipo de Emissao da NFCe
-            String tipoEmissao = "1";
-
-            //Informe o idToken
-            String idToken = certificadoPfx.getTokenSefaz();
-
-            //Informe o CSC da NFCe
-            String csc = certificadoPfx.getCscSefaz();
-
-            // MontaChave a NFCe
-            ChaveUtil chaveUtil = new ChaveUtil(config.getEstado(), cnpj, modelo, serie, numeroNFCe, tipoEmissao, cnf, dataEmissao);
-            String chave = chaveUtil.getChaveNF();
-            String cdv = chaveUtil.getDigitoVerificador();
-
-            InfNFe infNFe = new InfNFe();
-            infNFe.setId(chave);
-            infNFe.setVersao(ConstantesUtil.VERSAO.NFE);
-
-            //Preenche IDE
-            infNFe.setIde(preencheIde(config, cnf, numeroNFCe, tipoEmissao, modelo, serie, cdv, dataEmissao, invoice));
-
-            //Preenche Emitente
-            infNFe.setEmit(preencheEmitente(config, cnpj, invoice));
-
-            //Preenche o Destinatario
-            infNFe.setDest(preencheDestinatario(invoice));
-
-            //Preenche os dados do Produto da NFCe e adiciona a Lista
-            infNFe.getDet().addAll(preencheDet(invoice));
-
-            //Preenche totais da NFCe
-            infNFe.setTotal(preencheTotal(invoice.getTotals()));
-
-            //Preenche os dados de Transporte
-            infNFe.setTransp(preencheTransporte());
-
-            // Preenche dados Pagamento
-            infNFe.setPag(preenchePag(invoice, invoice.getTotals()));
-
-            TNFe nfe = new TNFe();
-            nfe.setInfNFe(infNFe);
-
-            // Monta EnviNfe
-            TEnviNFe enviNFe = new TEnviNFe();
-            enviNFe.setVersao(ConstantesUtil.VERSAO.NFE);
-            enviNFe.setIdLote("1");
-            enviNFe.setIndSinc("1");
-            enviNFe.getNFe().add(nfe);
-
-            // Monta e Assina o XML
-            enviNFe = Nfe.montaNfe(config, enviNFe, true);
-
-            // Conversão do objeto enviNFe para JSON e exibição no console
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(enviNFe);
-                System.out.println("# JSON da NFC-e:");
-                System.out.println(json);
-            } catch (Exception e) {
-                System.err.println("Erro ao converter para JSON: " + e.getMessage());
-            }
-
-            //Monta QRCode
-            String qrCode = preencheQRCode(enviNFe, config, idToken, csc);
-
-            TNFe.InfNFeSupl infNFeSupl = new TNFe.InfNFeSupl();
-            infNFeSupl.setQrCode(qrCode);
-            infNFeSupl.setUrlChave(WebServiceUtil.getUrl(config, DocumentoEnum.NFCE, ServicosEnum.URL_CONSULTANFCE));
-            enviNFe.getNFe().get(0).setInfNFeSupl(infNFeSupl);
-
-            // Envia a Nfe para a Sefaz
-            TRetEnviNFe retorno = Nfe.enviarNfe(config, enviNFe, DocumentoEnum.NFCE);
-
-            //Valida se o Retorno é Assincrono
-            if (RetornoUtil.isRetornoAssincrono(retorno)) {
-                //Pega o Recibo
-                String recibo = retorno.getInfRec().getNRec();
-                int tentativa = 0;
-                TRetConsReciNFe retornoNfe = null;
-
-                //Define Numero de tentativas que iráx tentar a Consulta
-                while (tentativa < 15) {
-                    retornoNfe = Nfe.consultaRecibo(config, recibo, DocumentoEnum.NFE);
-                    if (retornoNfe.getCStat().equals(StatusEnum.LOTE_EM_PROCESSAMENTO.getCodigo())) {
-                        System.out.println("INFO: Lote Em Processamento, vai tentar novamente apos 1 Segundo.");
-                        Thread.sleep(1000);
-                        tentativa++;
-                    } else {
-                        break;
-                    }
-                }
-
-                RetornoUtil.validaAssincrono(retornoNfe);
-                System.out.println();
-                System.out.println("# Status: " + retornoNfe.getProtNFe().get(0).getInfProt().getCStat() + " - " + retornoNfe.getProtNFe().get(0).getInfProt().getXMotivo());
-                System.out.println("# Protocolo: " + retornoNfe.getProtNFe().get(0).getInfProt().getNProt());
-                System.out.println("# XML Final: " + XmlNfeUtil.criaNfeProc(enviNFe, retornoNfe.getProtNFe().get(0)));
-
-            } else {
-                //Se for else o Retorno é Sincrono
-
-                //Valida Retorno Sincrono
-                RetornoUtil.validaSincrono(retorno);
-                System.out.println();
-                System.out.println("# Status: " + retorno.getProtNFe().getInfProt().getCStat() + " - " + retorno.getProtNFe().getInfProt().getXMotivo());
-                System.out.println("# Protocolo: " + retorno.getProtNFe().getInfProt().getNProt());
-                System.out.println("# Xml Final :" + XmlNfeUtil.criaNfeProc(enviNFe, retorno.getProtNFe()));
-            }
-        } catch (NfeException e) {
-            e.printStackTrace(System.err);
-            LOG.log(Level.ALL, "Erro na geração do XML", e);
+            config = ConfigNfceService.iniciaConfiguracoes();
         } catch (CertificadoException e) {
-            e.printStackTrace(System.err);
-            LOG.log(Level.ALL, "Erro com o certificado", e);
+            throw new RuntimeException(e);
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            LOG.log(Level.ALL, "Erro com rede ou arquivo", e);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace(System.err);
-            LOG.log(Level.ALL, "Erro de criptografia", e);
-        } catch (InterruptedException e) {
-            e.printStackTrace(System.err);
-            LOG.log(Level.ALL, "Erro de threads", e);
-        } catch (JAXBException e) {
-            e.printStackTrace(System.err);
-            LOG.log(Level.ALL, "Erro com o JSON/XML", e);
+            throw new RuntimeException(e);
         }
+    }
+
+    public TNFe montaXmlNota(InvoiceModel invoice) throws NfeException {
+
+        //Informe o Numero da NFCe
+        int numeroNFCe = invoice.getNumber();
+
+        //Informe o CNPJ do Emitente da NFCe
+        String cnpj = invoice.getEmitente().getCpnjEmitente();
+
+        //Informe o cnf da NFCe com 8 digitos
+        String cnf = ChaveUtil.completarComZerosAEsquerda(String.valueOf(numeroNFCe), 8);
+
+        //Informe o modelo da NFCe
+        String modelo = invoice.getModeloNota();
+
+        //Informe a Serie da NFCe
+        int serie = invoice.getSerie();
+
+        //Informe o tipo de Emissao da NFCe
+        String tipoEmissao = "1";
+
+
+        LocalDateTime dataEmissao = LocalDateTime.now();
+        // MontaChave a NFCe
+        ChaveUtil chaveUtil = new ChaveUtil(config.getEstado(), cnpj, modelo, serie, numeroNFCe, tipoEmissao, cnf, dataEmissao);
+        String chave = chaveUtil.getChaveNF();
+        String cdv = chaveUtil.getDigitoVerificador();
+
+        InfNFe infNFe = new InfNFe();
+        infNFe.setId(chave);
+        infNFe.setVersao(ConstantesUtil.VERSAO.NFE);
+
+        //Preenche IDE
+        infNFe.setIde(preencheIde(config, cnf, numeroNFCe, tipoEmissao, modelo, serie, cdv, dataEmissao, invoice));
+
+        //Preenche Emitente
+        infNFe.setEmit(preencheEmitente(config, cnpj, invoice));
+
+        //Preenche o Destinatario
+        infNFe.setDest(preencheDestinatario(invoice));
+
+        //Preenche os dados do Produto da NFCe e adiciona a Lista
+        infNFe.getDet().addAll(preencheDet(invoice));
+
+        //Preenche totais da NFCe
+        infNFe.setTotal(preencheTotal(invoice.getTotals()));
+
+        //Preenche os dados de Transporte
+        infNFe.setTransp(preencheTransporte());
+
+        // Preenche dados Pagamento
+        infNFe.setPag(preenchePag(invoice, invoice.getTotals()));
+
+        TNFe nfe = new TNFe();
+        nfe.setInfNFe(infNFe);
+
+        return nfe;
     }
 
     /**
@@ -263,7 +166,6 @@ public class EmissaoCriacaoXmlService {
         ide.setIndPres("1"); // PADRAO
         ide.setProcEmi("0"); // PADRAO
         ide.setVerProc("1.0"); // PADRAO
-
         return ide;
     }
 
@@ -304,7 +206,7 @@ public class EmissaoCriacaoXmlService {
      *
      * @return
      */
-    private static Dest preencheDestinatario(InvoiceModel invoice) {
+    private Dest preencheDestinatario(InvoiceModel invoice) {
         BuyerModel buyer = invoice.getBuyer();
         Dest dest = new Dest();
         if (99999999999L < buyer.getFederalTaxNumber()) {
@@ -315,13 +217,14 @@ public class EmissaoCriacaoXmlService {
         dest.setXNome(buyer.getName());
 
         TEndereco enderDest = new TEndereco();
-        enderDest.setXLgr(invoice.getBuyer().getAddress().getDistrict());
-        enderDest.setNro(invoice.getBuyer().getAddress().getNumber());
-        enderDest.setXBairro(invoice.getBuyer().getAddress().getCountry());
-        enderDest.setCMun(invoice.getBuyer().getAddress().getCodMunicipioIbge());
-        enderDest.setXMun(invoice.getBuyer().getAddress().getMunicipioNome());
-        enderDest.setUF(TUf.valueOf(invoice.getBuyer().getAddress().getState()));
-        enderDest.setCEP(invoice.getBuyer().getAddress().getPostalCode());
+        AddressModel address = invoice.getBuyer().getAddress();
+        enderDest.setXLgr(address.getDistrict());
+        enderDest.setNro(address.getNumber());
+        enderDest.setXBairro(address.getCountry());
+        enderDest.setCMun(address.getCity().getCode());
+        enderDest.setXMun(address.getCity().getName());
+        enderDest.setUF(TUf.valueOf(address.getState()));
+        enderDest.setCEP(address.getPostalCode());
         enderDest.setCPais("1058");
         enderDest.setXPais("Brasil");
         //enderDest.setFone(invoice.getBuyer().getN);
@@ -550,43 +453,13 @@ public class EmissaoCriacaoXmlService {
         Pag.DetPag detPag = new Pag.DetPag();
         detPag.setTPag(invoice.getModoPagamento());
         detPag.setVPag(totals.getvNf());
-        detPag.setXPag(invoice.getModoDePagamentoDescricao());
+        if ("99".equals(detPag.getTPag())) {
+            detPag.setXPag(invoice.getModoDePagamentoDescricao());
+        }
+
         pag.getDetPag().add(detPag);
 
         return pag;
-    }
-
-    /**
-     * Preenche QRCode
-     *
-     * @param enviNFe
-     * @param config
-     * @param idToken
-     * @param csc
-     * @return
-     * @throws NfeException
-     * @throws NoSuchAlgorithmException
-     */
-    private static String preencheQRCode(TEnviNFe enviNFe, ConfiguracoesNfe config, String idToken, String csc) throws NfeException, NoSuchAlgorithmException {
-
-        //QRCODE EMISAO ONLINE
-        return NFCeUtil.getCodeQRCode(
-                enviNFe.getNFe().get(0).getInfNFe().getId().substring(3),
-                config.getAmbiente().getCodigo(),
-                idToken,
-                csc,
-                WebServiceUtil.getUrl(config, DocumentoEnum.NFCE, ServicosEnum.URL_QRCODE));
-
-        //QRCODE EMISSAO OFFLINE
-//        return NFCeUtil.getCodeQRCodeContingencia(
-//                enviNFe.getNFe().get(0).getInfNFe().getId().substring(3),
-//                config.getAmbiente().getCodigo(),
-//                enviNFe.getNFe().get(0).getInfNFe().getIde().getDhEmi(),
-//                enviNFe.getNFe().get(0).getInfNFe().getTotal().getICMSTot().getVNF(),
-//                Base64.getEncoder().encodeToString(enviNFe.getNFe().get(0).getSignature().getSignedInfo().getReference().getDigestValue()),
-//                idToken,
-//                csc,
-//                WebServiceUtil.getUrl(config, DocumentoEnum.NFCE, ServicosEnum.URL_QRCODE));
     }
 
 }
