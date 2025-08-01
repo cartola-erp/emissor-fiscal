@@ -311,26 +311,26 @@ public class EmissaoPrenchimentoDadosFiscaisService {
             }
         }
 
-        totals.setvBc(DECIMAL_FORMAT.format(vBc.doubleValue()));
-        totals.setvIpiDevol(DECIMAL_FORMAT.format(vIpiDevol.doubleValue()));
-        totals.setvFcpSt(DECIMAL_FORMAT.format(vFcpSt.doubleValue()));
-        totals.setvFcpStRet(DECIMAL_FORMAT.format(vFcpStRet.doubleValue()));
-        totals.setvFcp(DECIMAL_FORMAT.format(vFcp.doubleValue()));
-        totals.setvSt(DECIMAL_FORMAT.format(vSt.doubleValue()));
-        totals.setvBcst(DECIMAL_FORMAT.format(vBcst.doubleValue()));
-        totals.setvIcmsDeson(DECIMAL_FORMAT.format(vIcmsDeson.doubleValue()));
-        totals.setvSeg(DECIMAL_FORMAT.format(vSeg.doubleValue()));
-        totals.setvIpi(DECIMAL_FORMAT.format(vIpi.doubleValue()));
-        totals.setvII(DECIMAL_FORMAT.format(vII.doubleValue()));
-        totals.setvOutro(DECIMAL_FORMAT.format(vOutro.doubleValue()));
-        totals.setvTotTrib(DECIMAL_FORMAT.format(vTotTrib.doubleValue()));
-        totals.setvNf(DECIMAL_FORMAT.format(vNf.doubleValue()));
-        totals.setvProd(DECIMAL_FORMAT.format(vProd.doubleValue()));
-        totals.setvPis(DECIMAL_FORMAT.format(vPis.doubleValue()));
-        totals.setvCofins(DECIMAL_FORMAT.format(vCofins.doubleValue()));
-        totals.setvIcms(DECIMAL_FORMAT.format(vIcms.doubleValue()));
-        totals.setvDesc(DECIMAL_FORMAT.format(vDesc.doubleValue()));
-        totals.setvFrete(DECIMAL_FORMAT.format(vFrete.doubleValue()));
+        totals.setVBc(DECIMAL_FORMAT.format(vBc.doubleValue()));
+        totals.setVIpiDevol(DECIMAL_FORMAT.format(vIpiDevol.doubleValue()));
+        totals.setVFcpSt(DECIMAL_FORMAT.format(vFcpSt.doubleValue()));
+        totals.setVFcpStRet(DECIMAL_FORMAT.format(vFcpStRet.doubleValue()));
+        totals.setVFcp(DECIMAL_FORMAT.format(vFcp.doubleValue()));
+        totals.setVSt(DECIMAL_FORMAT.format(vSt.doubleValue()));
+        totals.setVBcst(DECIMAL_FORMAT.format(vBcst.doubleValue()));
+        totals.setVIcmsDeson(DECIMAL_FORMAT.format(vIcmsDeson.doubleValue()));
+        totals.setVSeg(DECIMAL_FORMAT.format(vSeg.doubleValue()));
+        totals.setVIpi(DECIMAL_FORMAT.format(vIpi.doubleValue()));
+        totals.setVII(DECIMAL_FORMAT.format(vII.doubleValue()));
+        totals.setVOutro(DECIMAL_FORMAT.format(vOutro.doubleValue()));
+        totals.setVTotTrib(DECIMAL_FORMAT.format(vTotTrib.doubleValue()));
+        totals.setVNf(DECIMAL_FORMAT.format(vNf.doubleValue()));
+        totals.setVProd(DECIMAL_FORMAT.format(vProd.doubleValue()));
+        totals.setVPis(DECIMAL_FORMAT.format(vPis.doubleValue()));
+        totals.setVCofins(DECIMAL_FORMAT.format(vCofins.doubleValue()));
+        totals.setVIcms(DECIMAL_FORMAT.format(vIcms.doubleValue()));
+        totals.setVDesc(DECIMAL_FORMAT.format(vDesc.doubleValue()));
+        totals.setVFrete(DECIMAL_FORMAT.format(vFrete.doubleValue()));
 
         invoice.setTotals(totals);
     }

@@ -418,27 +418,27 @@ public class EmissaoCriacaoXmlService {
     private Total preencheTotal(TotalsModel totals) {
         Total total = new Total();
         ICMSTot icmstot = new ICMSTot();
-        icmstot.setVBC(totals.getvBc());
-        icmstot.setVICMS(totals.getvIcms());
-        icmstot.setVICMSDeson(totals.getvIcmsDeson());
-        icmstot.setVFCP(totals.getvFcp());
-        icmstot.setVFCPST(totals.getvFcpSt());
-        icmstot.setVFCPSTRet(totals.getvFcpStRet());
-        icmstot.setVBCST(totals.getvBcst());
-        icmstot.setVST(totals.getvSt());
-        icmstot.setVProd(totals.getvProd());
-        icmstot.setVFrete(totals.getvFrete());
-        icmstot.setVSeg(totals.getvSeg());
-        icmstot.setVDesc(totals.getvDesc());
-        icmstot.setVII(totals.getvII());
-        icmstot.setVIPI(totals.getvIpi());
-        icmstot.setVIPIDevol(totals.getvIpiDevol());
-        //icmstot.setVPIS(DECIMAL_FORMAT.format(totals.getvPis()));
-        icmstot.setVPIS(totals.getvPis());
-        icmstot.setVCOFINS(totals.getvCofins());
-        icmstot.setVOutro((totals.getvOutro()));
-        icmstot.setVNF((totals.getvNf()));
-        //icmstot.setVTotTrib(String.valueOf(totals.getvTotTrib()));
+        icmstot.setVBC(totals.getVBc());
+        icmstot.setVICMS(totals.getVIcms());
+        icmstot.setVICMSDeson(totals.getVIcmsDeson());
+        icmstot.setVFCP(totals.getVFcp());
+        icmstot.setVFCPST(totals.getVFcpSt());
+        icmstot.setVFCPSTRet(totals.getVFcpStRet());
+        icmstot.setVBCST(totals.getVBcst());
+        icmstot.setVST(totals.getVSt());
+        icmstot.setVProd(totals.getVProd());
+        icmstot.setVFrete(totals.getVFrete());
+        icmstot.setVSeg(totals.getVSeg());
+        icmstot.setVDesc(totals.getVDesc());
+        icmstot.setVII(totals.getVII());
+        icmstot.setVIPI(totals.getVIpi());
+        icmstot.setVIPIDevol(totals.getVIpiDevol());
+        //icmstot.setVPIS(DECIMAL_FORMAT.format(totals.getVPis()));
+        icmstot.setVPIS(totals.getVPis());
+        icmstot.setVCOFINS(totals.getVCofins());
+        icmstot.setVOutro((totals.getVOutro()));
+        icmstot.setVNF((totals.getVNf()));
+        //icmstot.setVTotTrib(String.valueOf(totals.getVTotTrib()));
         total.setICMSTot(icmstot);
 
         return total;
@@ -464,7 +464,7 @@ public class EmissaoCriacaoXmlService {
         Pag pag = new Pag();
         Pag.DetPag detPag = new Pag.DetPag();
         detPag.setTPag(invoice.getModoPagamento());
-        detPag.setVPag(totals.getvNf());
+        detPag.setVPag(totals.getVNf());
         if ("99".equals(detPag.getTPag())) {
             detPag.setXPag(invoice.getModoDePagamentoDescricao());
         }
