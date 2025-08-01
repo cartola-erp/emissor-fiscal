@@ -1,6 +1,5 @@
 package net.cartola.emissorfiscal.emissao;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -18,13 +17,10 @@ import br.com.swconsultoria.nfe.exception.NfeException;
 import br.com.swconsultoria.nfe.schema_4.enviNFe.TNFe;
 import br.com.swconsultoria.nfe.schema_4.retConsReciNFe.TRetConsReciNFe;
 import br.com.swconsultoria.nfe.util.XmlNfeUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import net.cartola.emissorfiscal.amqp.documentosfiscais.service.AmqpNfceService;
 import net.sf.jasperreports.engine.JRException;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
@@ -32,9 +28,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
 @Service
-public class Emissao {
+public class EmissaoService {
 
-    private static final Logger LOG = Logger.getLogger(Emissao.class.getName());
+    private static final Logger LOG = Logger.getLogger(EmissaoService.class.getName());
 
     @Autowired
     private EmissaoPrenchimentoDadosFiscaisService emissaoPrenchimentoDadosFiscaisService;
@@ -46,26 +42,12 @@ public class Emissao {
     private TransmissaoService transmissaoService;
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    @Lazy
+    private AmqpNfceService amqpNfceService;
 
-    @RabbitListener(queues = "hello")
-    public void processMessageHello(String content) {
-        System.out.println(content);
-    }
-
-    @RabbitListener(queues = "emissorFiscal.emissao.emitir")
-    public void processMessageEmitir(String content) {
-        InvoiceModel invoice = new InvoiceModel();
-
-        if (!content.isEmpty()) {
-            ObjectMapper om = new ObjectMapper();
-            om.registerModule(new JavaTimeModule());
-            try {
-                invoice = om.readValue(content, InvoiceModel.class);
-            } catch (JsonProcessingException e) {
-                LOG.severe("Erro no processamento da mensagem: " + e.getMessage()); ;
-            }
-        }
+//    @RabbitListener(queues = "emissorFiscal.emissao.emitir")
+//    public void processMessageEmitir(String content) {
+    public void processMessageEmitir(InvoiceModel invoice) {
 
         ResultadoUtil retornaErrosOuTributacaoPreenchida = emissaoPrenchimentoDadosFiscaisService.preencherDadosFiscais(invoice);
 
@@ -120,7 +102,9 @@ public class Emissao {
                         e.printStackTrace(System.err);
                     }
                 }
-                rabbitTemplate.convertAndSend(respondeQueue, invoiceResponse);
+//                rabbitTemplate.convertAndSend(respondeQueue, invoiceResponse);
+                amqpNfceService.enviarRespostaRequisicaoEmissao(invoiceResponse);
+                
             }
         } catch (NfeException e) {
             LOG.severe("Erro no processamento da mensagem: " + e.getMessage()); ;
@@ -138,6 +122,5 @@ public class Emissao {
         String pdf = new String(pdfBase64, StandardCharsets.UTF_8);
         invoiceResponse.setPdf(pdf);
     }
-
 
 }
