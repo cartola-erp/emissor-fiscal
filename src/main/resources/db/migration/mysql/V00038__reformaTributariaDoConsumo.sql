@@ -23,7 +23,8 @@
 -- </IBSCBS>
 
 ALTER TABLE `emissorfiscal`.`trib_fede`  ADD COLUMN `cbs_aliq` DECIMAL(7,6) NOT NULL DEFAULT '0.000000' COMMENT 'A tributação federal apenas define a alíquota da CBS, a base está definida na tributação estadual' AFTER `finalidade`;
-
+update emissorfiscal.trib_fede set cbs_aliq=0.001  where oper_id in (1,2,3,8,9);
+update emissorfiscal.trib_fede set cbs_aliq=0  where oper_id in (4);
 
 ALTER TABLE `emissorfiscal`.`trib_esta`
     ADD COLUMN `ibs_cbs_cst` INT NOT NULL DEFAULT 0 COMMENT 'Código informado no campo CST do campo IBSCBS da NFe' AFTER `is_prod_impor`,
@@ -31,3 +32,7 @@ ADD COLUMN `ibs_cbs_clas_trib` INT NOT NULL DEFAULT 0 COMMENT 'Código informado
 ADD COLUMN `ibs_cbs_base` DECIMAL(7,6) NOT NULL DEFAULT '0.000000' COMMENT 'Base de cálculo da CBS e dos IBS estaduais e municipais' AFTER `ibs_cbs_clas_trib`,
 ADD COLUMN `ibs_esta_aliq` DECIMAL(7,6) NOT NULL DEFAULT '0.000000' COMMENT 'Alíquota do IBS relativa ao estado (Unidade Federativa)' AFTER `ibs_cbs_base`,
 ADD COLUMN `ibs_muni_aliq` DECIMAL(7,6) NOT NULL DEFAULT '0.000000' COMMENT 'Alíquota do IBS relativa ao município' AFTER `ibs_esta_aliq`;
+
+update emissorfiscal.trib_esta set ibs_cbs_cst=0, ibs_cbs_clas_trib=0, ibs_cbs_base=1.0, ibs_esta_aliq=0.009, ibs_muni_aliq=0.0 where oper_id in (1,2,3,8,9);
+update emissorfiscal.trib_esta set ibs_cbs_cst=410, ibs_cbs_clas_trib=410999, ibs_cbs_base=0, ibs_esta_aliq=0.0, ibs_muni_aliq=0.0 where oper_id in (4);
+
