@@ -26,8 +26,8 @@ public class UsuarioSenhaGerador {
         assertNotNull(bCryptPasswordEncoder);
 
 
-        String login = "murilo.tuvani";
-        String senha = "senha";
+        String login = "admin";
+        String senha = "teste123";
         Optional<Usuario> opUser = usuarioService.findByLogin(login);
 
         assertTrue(opUser.isPresent());
